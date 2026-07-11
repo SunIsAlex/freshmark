@@ -8,6 +8,9 @@ import { parseFrontmatter, renderMarkdown, summaryFromBody } from "../lib/markdo
   const results = document.querySelector("[data-search-results]");
   const shell = document.querySelector(".site-shell");
   const pageCache = new Map();
+  const prefetchQueue = [];
+  const queuedPrefetches = new Set();
+  let prefetching = false;
   let index;
 
   const escape = (value) => String(value).replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[char]);
@@ -150,6 +153,44 @@ import { parseFrontmatter, renderMarkdown, summaryFromBody } from "../lib/markdo
     };
   }
 
+  function canPrefetch() {
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    return navigator.onLine !== false
+      && !connection?.saveData
+      && connection?.type !== "cellular"
+      && !["slow-2g", "2g", "3g"].includes(connection?.effectiveType);
+  }
+
+  function idle(callback) {
+    if (typeof requestIdleCallback === "function") requestIdleCallback(callback, { timeout: 2000 });
+    else setTimeout(callback, 800);
+  }
+
+  function drainPrefetchQueue() {
+    if (prefetching || !prefetchQueue.length || !canPrefetch()) return;
+    prefetching = true;
+    idle(async () => {
+      if (canPrefetch()) {
+        const url = prefetchQueue.shift();
+        try { await getPage(url); } catch {}
+      }
+      prefetching = false;
+      drainPrefetchQueue();
+    });
+  }
+
+  function scheduleArticlePrefetch(scope = document) {
+    const postsBase = `${basePath}/posts/`.replace(/\/+/g, "/");
+    for (const anchor of scope.querySelectorAll("a[href]")) {
+      const url = new URL(anchor.href, location.href);
+      const key = `${url.pathname}${url.search}`;
+      if (url.origin !== location.origin || !url.pathname.startsWith(postsBase) || !url.pathname.endsWith("/") || pageCache.has(key) || queuedPrefetches.has(key)) continue;
+      queuedPrefetches.add(key);
+      prefetchQueue.push(url);
+    }
+    drainPrefetchQueue();
+  }
+
   function rebaseMainUrls(main, pageUrl) {
     for (const element of main.querySelectorAll("[src], a[href]")) {
       const attribute = element.hasAttribute("src") ? "src" : "href";
@@ -182,6 +223,7 @@ import { parseFrontmatter, renderMarkdown, summaryFromBody } from "../lib/markdo
       const swap = () => {
         currentMain.replaceWith(nextMain);
         renderMath(nextMain);
+        scheduleArticlePrefetch(nextMain);
         document.querySelector("[data-reading-progress]")?.remove();
         if (nextPage.article) {
           const progress = document.createElement("div");
@@ -231,6 +273,8 @@ import { parseFrontmatter, renderMarkdown, summaryFromBody } from "../lib/markdo
   history.replaceState({ ...(history.state || {}), spa: true, scrollY }, "", location.href);
   addEventListener("popstate", (event) => navigate(new URL(location.href), { push: false, restoreScroll: event.state?.scrollY || 0 }));
   addEventListener("scroll", updateProgress, { passive: true });
+  (navigator.connection || navigator.mozConnection || navigator.webkitConnection)?.addEventListener("change", drainPrefetchQueue);
   renderMath();
   updateProgress();
+  scheduleArticlePrefetch();
 })();

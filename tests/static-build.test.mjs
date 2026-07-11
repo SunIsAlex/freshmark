@@ -114,6 +114,11 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /rebaseMainUrls\(nextMain, url\)/);
   assert.match(app, /new URL\(value, pageUrl\)\.href/);
   assert.match(app, /location\.href = url\.href/);
+  assert.match(app, /connection\?\.type !== "cellular"/);
+  assert.match(app, /!connection\?\.saveData/);
+  assert.match(app, /\["slow-2g", "2g", "3g"\]/);
+  assert.match(app, /requestIdleCallback/);
+  assert.match(app, /scheduleArticlePrefetch\(nextMain\)/);
 });
 
 test("published posts retain raw Markdown for downloads and SPA navigation", async () => {
