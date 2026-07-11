@@ -1,0 +1,72 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="codex-preview" content="development"><title>一加Ace3Pro安装crDroid — Freshmark</title><meta name="description" content="[!WARNING] 以下教程仅供 一加Ace3Pro 安装crDroid 12(corvette)使用 玩机不规范,亲人两行泪 由操作不当造成的硬件损坏,请读者自负!"><link rel="canonical" href="https://example.com/posts/android/PJX110-crdroid/"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="Freshmark RSS" href="/rss.xml"><link rel="stylesheet" href="/assets/katex.min.css"><link rel="stylesheet" href="/assets/styles.css"><script>try{document.documentElement.dataset.theme=localStorage.getItem('freshmark-theme')||''}catch(e){}</script></head><body><div class="site-shell"><div class="ambient"></div><div class="reading-progress" data-reading-progress></div><header class="container header"><a class="brand" href="/" aria-label="Freshmark home"><span class="brand-mark"><span>✦</span></span>Freshmark</a><nav class="nav" aria-label="Main navigation"><a href="/#writing">Writing</a><a href="/about/">About</a><a href="/rss.xml">RSS</a><button class="icon-btn" type="button" data-search-open aria-label="Open search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><button class="icon-btn" type="button" data-theme-toggle aria-label="Switch color theme"><svg data-theme-icon width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 15.1A8.5 8.5 0 0 1 8.9 4a8.5 8.5 0 1 0 11.1 11.1Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></button></nav></header><main><header class="container article-header"><a class="back-link" href="/">← Back to all writing</a><h1>一加Ace3Pro安装crDroid</h1><p class="article-dek">[!WARNING] 以下教程仅供 一加Ace3Pro 安装crDroid 12(corvette)使用 玩机不规范,亲人两行泪 由操作不当造成的硬件损坏,请读者自负!</p><div class="article-meta"><time datetime="2026-05-03">May 3, 2026</time><span>3 min read</span><span>刷机 · crDroid · ROM</span></div></header><div class="article-wrap"><aside class="toc"><p>On this page</p><a href="#">操作准备</a><a href="#">安装步骤</a><a href="#c16">底包(C16)</a><a href="#recovery">recovery</a><a href="#crdroid">crDroid</a><a href="#">结语</a></aside><article class="prose"><p>&gt;[!WARNING] &gt;以下教程仅供<strong>一加Ace3Pro</strong>安装crDroid 12(corvette)使用 &gt; &gt;<strong>玩机不规范,亲人两行泪</strong> &gt; &gt;由操作不当造成的硬件损坏,请读者自负!</p>
+<!--more-->
+<p>本篇教程参考了<a href="https://crdroid.net/corvette/12/install">crDroid官网教程</a></p>
+<h2 id="">操作准备</h2>
+<p>{{&lt; file-tree &gt;}}</p>
+<ol><li>一加Ace3Pro(已解锁BL且安装ColorOS16)+电脑+原厂数据线</li><li>下载以下文件</li></ol>
+<p>type: file comment: Download the latest ROM file</p>
+<p>type: dir children: - name: boot.img type: file - name: dtbo.img type: file - name: init_boot.img type: file - name: vbmeta.img type: file - name: vendor_boot.img type: file - name: recovery.img type: file</p>
+<p>type: file comment: Download the latest GApps {{&lt; /file-tree &gt;}}</p>
+<ul><li>name: crdroid.zip</li><li>name: recovery/</li><li>name: nikgapps.zip</li></ul>
+<p>以上文件(不包含<a href="https://nikgapps.com/crdroid-official">gapps</a>)可以在<a href="https://sourceforge.net/projects/crdroid/files/corvette/12.x/">sourceforge</a>下载</p>
+<p>下载之后目录如下图(本文使用当时的最新版本)</p>
+<p>{{&lt; file-tree &gt;}}</p>
+<p>type: file</p>
+<p>type: file</p>
+<p>type: file</p>
+<p>type: file</p>
+<p>type: file</p>
+<p>type: file</p>
+<p>type: file</p>
+<p>type: file {{&lt; /file-tree &gt;}}</p>
+<ul><li>name: 20260429-boot.img</li><li>name: 20260429-dtbo.img</li><li>name: 20260429-init_boot.img</li><li>name: 20260429-recovery.img</li><li>name: 20260429-vbmeta.img</li><li>name: 20260429-vendor_boot.img</li><li>name: crDroidAndroid-16.0-20260429-corvette-v12.9.zip</li><li>name: NikGapps-crdroid-official-arm64-16-20260223-signed.zip</li></ul>
+<p>如果没有解锁bootloader,可以在CMD里如下操作:</p>
+<pre><code>adb reboot bootloader
+fastboot flashing unlock</code></pre>
+<p>注意解锁会清除所有数据.</p>
+<p>成功效果如图:</p>
+<p><img src="fastboot_flashing_unlock.png" alt="alt text" loading="lazy" decoding="async"> ![alt text](unlock_bootloader.webp &quot;参考&quot;)</p>
+<h2 id="">安装步骤</h2>
+<h3 id="c16">底包(C16)</h3>
+<p>首先查看所需要的底包(理论上Android 16,即ColorOS16都可以)</p>
+<p>但是(firmware)最好和crDroid构建时的底层版本一致.</p>
+<p>在GitHub上查看<a href="https://github.com/crdroidandroid/android_device_oneplus_corvette/blob/16.0/proprietary-files.txt#L2">专有文件列表</a>前两行</p>
+<pre><code>## All proprietary files from this list, unless pinned and noted otherwise,
+## are from OnePlus Ace 3 Pro (PJX110_16.0.5.701(CN01)).</code></pre>
+<p>遂下载对应版本的ColorOS(701)</p>
+<p>在<a href="https://op-rom.lian86.top/#/brand/OnePlus/model/%E4%B8%80%E5%8A%A0%20Ace%203%20Pro">OPlus 收集站</a>可以解析任意版本的系统全量包链接.</p>
+<p>对于ColorOS PJX110_16.0.5.701(CN01),其链接为:</p>
+<p>https://gauss-compota-c-cn.allawnfs.com/remove-a39fc75063832d557a24f7ab02a02380/g-0e1e77d02e7bdea2328fda27ff230743/component-ota/26/04/14/faba2a6afc834843855599af7be64cf5.zip?sign=a0c55ee3494086f0981d65e678b94665&amp;t=69f71e0a&amp;AWSAccessKeyId=ayjy7KyLVHvDqDax6_KqJgtBeORTJARg9MSGiL66&amp;Expires=1777804562&amp;Signature=1dpWvcI4eyGiQT7obLfw2t91l54%3D</p>
+<p>在应用管理中清除软件升级数据,然后断网即可在系统更新里手动安装全量包.</p>
+<p><img src="Screenshot_2026-05-02-19-36-28-06_fc704e6b13c4fb26bf5e411f75da84f2.jpg" alt="" loading="lazy" decoding="async"></p>
+<p><img src="Screenshot_2026-05-02-21-06-36-51_9492aa3750dca76abb7c25b39a5f1e8e.jpg" alt="" loading="lazy" decoding="async"></p>
+<h3 id="recovery">recovery</h3>
+<pre><code>fastboot flash boot boot.img
+fastboot flash dtbo dtbo.img
+fastboot flash init_boot init_boot.img
+fastboot flash vbmeta vbmeta.img
+fastboot flash vendor_boot vendor_boot.img
+fastboot flash recovery recovery.img</code></pre>
+<p>![alt text](Snipaste_2026-05-03_18-28-18.png &quot;参考图&quot;)</p>
+<p>成功刷入REC及其底层后,由bootloader进入recovery</p>
+<pre><code>fastboot reboot recovery</code></pre>
+<h3 id="crdroid">crDroid</h3>
+<p>| 方式 | 介质 | 是否需要电脑 | 典型操作 | |------|------|-------------|----------| | 线刷 | USB 数据线 | ✅ 需要 | fastboot flash/adb sideload | | 卡刷 | SD 卡 / 本地存储 | ❌ 不需要 | 在 Recovery 中选择本地 zip 包刷入 |</p>
+<p>这里我们采取sideload线刷(REC环境).</p>
+<p>![alt text](crDroid-recovery.jpeg &quot;参考图&quot;) 用 音量键+电源键 选择<strong>Factory Reset</strong> &gt; <strong>Format data</strong></p>
+<p>然后回到主菜单,选择<strong>Apply update</strong></p>
+<pre><code>adb sideload crDroid.zip</code></pre>
+<p>这里简单科普一下sideload原理:</p>
+<p>| 方式 | 是否落盘 | 流程 | |------|---------|------| | 卡刷（本地 zip） | ✅ 完整文件已在设备上 | 读取 → 校验 → 解压安装 | | adb sideload | ❌ 不完整落盘 | 流式传输 + 同步校验安装 | | fastboot flash | ❌ | 直接写入对应分区，无&quot;安装&quot;概念 |</p>
+<p>安装到一半,REC会询问是否进行额外安装(reboot in recovery again for installing additional packages),请根据实际情况选择.</p>
+<p>{{&lt; tabs &gt;}} {{% tab title=&quot;安装gapps&quot; %}}<code>adb sideload gapps.zip</code></p>
+<p><img src="Snipaste_2026-05-03_18-28-32.png" alt="alt text" loading="lazy" decoding="async">{{% /tab %}} {{% tab title=&quot;不安装gapps&quot; %}}继续安装 <img src="image.png" alt="alt text" loading="lazy" decoding="async">{{% /tab %}} {{&lt; /tabs &gt;}}</p>
+<p>Total xfer(Total transfer)是<strong>总传输倍率</strong>，表示实际传输的数据量与原始包大小的比值,如果没有出错应该等于1,大于1说明数据出错,进行了重传。</p>
+<p>最后,crDroid安装完成,重启即可.</p>
+<h2 id="">结语</h2>
+<p>在厂商 ROM 日趋完善的今天，ColorOS 的流畅、MIUI(HyperOS) 的生态、甚至各家&quot;AI 系统&quot;的种种噱头， 早已将智能手机打磨得无懈可击——至少表面上如此。</p>
+<p>那我们为什么还要费尽周折，刷一个看起来&quot;简陋&quot;的类原生 ROM？</p>
+<p>答案或许很简单：<strong>我们不在乎手机里塞了多少用不到的功能，我们在乎的是这台手机究竟听谁的。</strong></p>
+<p>没有云控，没有静默推送，没有哪个进程在后台悄悄做着你不知道的事。 你的设备，运行着你选择的系统，只为你服务。</p>
+<p>这种掌控感，是任何一套&quot;智慧生活&quot;或&quot;AI 调度&quot;都换不来的。</p>
+<p>自由、隐私、开放——从来不是开箱即用的功能，而是你亲手刷进去的。</p></article></div></main><footer class="container footer"><span>© 2026 Freshmark. Made for unhurried reading.</span><div class="footer-links"><a href="/about/">About</a><a href="/rss.xml">RSS</a><a href="#">Top ↑</a></div></footer><div class="search-modal" data-search-modal role="dialog" aria-modal="true" aria-label="Search articles" hidden><div class="search-panel"><div class="search-field"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><input data-search-input placeholder="Search titles, topics, or ideas…" aria-label="Search articles" autocomplete="off"><button type="button" data-search-close aria-label="Close search">Esc</button></div><div class="search-results" data-search-results></div></div></div></div><script>window.FRESHMARK={basePath:""};</script><script src="/assets/app.js" defer></script></body></html>
