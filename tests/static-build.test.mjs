@@ -17,6 +17,8 @@ test("build emits portable static pages", async () => {
     "public/sitemap.xml",
     "public/assets/styles.css",
     "public/assets/app.js",
+    "public/sw.js",
+    "public/version.json",
   ];
   for (const file of files) {
     assert.equal((await stat(new URL(file, root))).isFile(), true, file);
@@ -119,6 +121,19 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /\["slow-2g", "2g", "3g"\]/);
   assert.match(app, /requestIdleCallback/);
   assert.match(app, /scheduleArticlePrefetch\(nextMain\)/);
+  assert.match(app, /navigator\.serviceWorker\.register/);
+  assert.match(app, /updateViaCache: "none"/);
+});
+
+test("service worker versions and persists generated resources", async () => {
+  const { version } = JSON.parse(await read("public/version.json"));
+  const worker = await read("public/sw.js");
+  assert.match(version, /^[a-f0-9]{16}$/);
+  assert.match(worker, new RegExp(`const VERSION="${version}"`));
+  assert.match(worker, /name\.startsWith\("freshmark-"\)/);
+  assert.match(worker, /path\.endsWith\("\.md"\).*staleWhileRevalidate/);
+  assert.match(worker, /path\.startsWith\("\/assets\/"\).*cacheFirst/);
+  assert.match(worker, /request\.mode==="navigate".*networkFirst/);
 });
 
 test("published posts retain raw Markdown for downloads and SPA navigation", async () => {

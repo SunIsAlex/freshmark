@@ -271,6 +271,9 @@ import { parseFrontmatter, renderMarkdown, summaryFromBody } from "../lib/markdo
   });
 
   history.replaceState({ ...(history.state || {}), spa: true, scrollY }, "", location.href);
+  if ("serviceWorker" in navigator) {
+    addEventListener("load", () => navigator.serviceWorker.register(`${basePath}/sw.js`, { scope: `${basePath}/`, updateViaCache: "none" }).catch(() => {}));
+  }
   addEventListener("popstate", (event) => navigate(new URL(location.href), { push: false, restoreScroll: event.state?.scrollY || 0 }));
   addEventListener("scroll", updateProgress, { passive: true });
   (navigator.connection || navigator.mozConnection || navigator.webkitConnection)?.addEventListener("change", drainPrefetchQueue);

@@ -1,5 +1,6 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { createHash } from "node:crypto";
 import { build as bundle } from "esbuild";
 import config from "../site.config.mjs";
 import { parseFrontmatter, renderMarkdown, summaryFromBody } from "../lib/markdown.mjs";
@@ -104,6 +105,42 @@ async function write(relative, content) {
   await fs.writeFile(target, content);
 }
 
+async function outputVersion() {
+  const files = [];
+  const visit = async (directory) => {
+    for (const entry of await fs.readdir(directory, { withFileTypes: true })) {
+      const file = path.join(directory, entry.name);
+      if (entry.isDirectory()) await visit(file);
+      else if (!file.endsWith(`${path.sep}sw.js`) && !file.endsWith(`${path.sep}version.json`)) files.push(file);
+    }
+  };
+  await visit(outputDir);
+  const hash = createHash("sha256");
+  for (const file of files.sort()) {
+    hash.update(path.relative(outputDir, file));
+    hash.update("\0");
+    hash.update(await fs.readFile(file));
+    hash.update("\0");
+  }
+  return hash.digest("hex").slice(0, 16);
+}
+
+function serviceWorker(version) {
+  return `const VERSION=${JSON.stringify(version)};
+const CACHE_NAME="freshmark-"+VERSION;
+const BASE_PATH=${JSON.stringify(basePath)};
+const at=(path)=>BASE_PATH+path;
+const PRECACHE=["/","/404.html","/about/","/page.html","/about/page.html","/search-index.json","/assets/styles.css","/assets/app.js","/assets/katex.min.css","/assets/katex.min.js","/assets/mhchem.min.js","/assets/auto-render.min.js"].map(at);
+self.addEventListener("install",(event)=>event.waitUntil(caches.open(CACHE_NAME).then((cache)=>cache.addAll(PRECACHE)).then(()=>self.skipWaiting())));
+self.addEventListener("activate",(event)=>event.waitUntil(caches.keys().then((names)=>Promise.all(names.filter((name)=>name.startsWith("freshmark-")&&name!==CACHE_NAME).map((name)=>caches.delete(name)))).then(()=>self.clients.claim())));
+const cacheResponse=async(request,response)=>{if(response&&response.ok){const cache=await caches.open(CACHE_NAME);await cache.put(request,response.clone())}return response};
+const cacheFirst=async(request)=>(await caches.match(request))||cacheResponse(request,await fetch(request));
+const networkFirst=async(request)=>{try{return await cacheResponse(request,await fetch(request))}catch{return (await caches.match(request))||(request.mode==="navigate"?caches.match(at("/404.html")):Response.error())}};
+const staleWhileRevalidate=async(request)=>{const cached=await caches.match(request);const fresh=fetch(request).then((response)=>cacheResponse(request,response)).catch(()=>null);return cached||await fresh||Response.error()};
+self.addEventListener("fetch",(event)=>{const request=event.request;if(request.method!=="GET")return;const url=new URL(request.url);if(url.origin!==self.location.origin||!url.pathname.startsWith(BASE_PATH||"/"))return;const path=url.pathname.slice(BASE_PATH.length);if(request.mode==="navigate"||path.endsWith(".html")||["/search-index.json","/rss.xml","/sitemap.xml"].includes(path))event.respondWith(networkFirst(request));else if(path.endsWith(".md"))event.respondWith(staleWhileRevalidate(request));else if(path.startsWith("/assets/")||/\.(?:png|jpe?g|gif|webp|svg|avif)$/i.test(path))event.respondWith(cacheFirst(request));});
+`;
+}
+
 const posts = await loadPosts();
 if (!posts.length) throw new Error("No publishable Markdown posts found.");
 await fs.rm(outputDir, { recursive: true, force: true });
@@ -142,4 +179,7 @@ const rss = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><
 await write("rss.xml", rss);
 await write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${absolute("/")}</loc></url><url><loc>${absolute("/about/")}</loc></url>${posts.map((post) => `<url><loc>${absolute(`/posts/${post.slug}/`)}</loc><lastmod>${post.date}</lastmod></url>`).join("")}</urlset>`);
 await write("robots.txt", `User-agent: *\nAllow: /\nSitemap: ${absolute("/sitemap.xml")}\n`);
+const version = await outputVersion();
+await write("version.json", JSON.stringify({ version }));
+await write("sw.js", serviceWorker(version));
 console.log(`Freshmark built ${posts.length} posts to public/`);
