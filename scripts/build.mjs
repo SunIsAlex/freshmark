@@ -2,6 +2,9 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { build as bundle } from "esbuild";
+import CleanCSS from "clean-css";
+import { minify as minifyHtml } from "html-minifier-terser";
+import { minify as minifyJavaScript } from "terser";
 import config from "../site.config.mjs";
 import { parseFrontmatter, renderMarkdown, summaryFromBody } from "../lib/markdown.mjs";
 
@@ -102,6 +105,16 @@ function aboutPage() {
 async function write(relative, content) {
   const target = path.join(outputDir, relative);
   await fs.mkdir(path.dirname(target), { recursive: true });
+  if (relative.endsWith(".html")) content = await minifyHtml(content, {
+    collapseBooleanAttributes: true,
+    collapseWhitespace: true,
+    minifyCSS: true,
+    minifyJS: true,
+    removeComments: false,
+    removeRedundantAttributes: true,
+    sortAttributes: true,
+    sortClassName: true,
+  });
   await fs.writeFile(target, content);
 }
 
@@ -145,8 +158,10 @@ const posts = await loadPosts();
 if (!posts.length) throw new Error("No publishable Markdown posts found.");
 await fs.rm(outputDir, { recursive: true, force: true });
 await fs.mkdir(path.join(outputDir, "assets"), { recursive: true });
+const styles = new CleanCSS({ level: 2 }).minify(await fs.readFile(path.join(themeDir, "styles.css"), "utf8"));
+if (styles.errors.length) throw new Error(`CSS minification failed: ${styles.errors.join(", ")}`);
 await Promise.all([
-  fs.copyFile(path.join(themeDir, "styles.css"), path.join(outputDir, "assets", "styles.css")),
+  fs.writeFile(path.join(outputDir, "assets", "styles.css"), styles.styles),
   fs.copyFile(path.join(themeDir, "favicon.svg"), path.join(outputDir, "favicon.svg")),
   fs.copyFile(path.join(root, "node_modules", "katex", "dist", "katex.min.css"), path.join(outputDir, "assets", "katex.min.css")),
   fs.copyFile(path.join(root, "node_modules", "katex", "dist", "katex.min.js"), path.join(outputDir, "assets", "katex.min.js")),
@@ -154,7 +169,10 @@ await Promise.all([
   fs.copyFile(path.join(root, "node_modules", "katex", "dist", "contrib", "auto-render.min.js"), path.join(outputDir, "assets", "auto-render.min.js")),
   fs.cp(path.join(root, "node_modules", "katex", "dist", "fonts"), path.join(outputDir, "assets", "fonts"), { recursive: true }),
 ]);
-await bundle({ entryPoints: [path.join(themeDir, "app.js")], outfile: path.join(outputDir, "assets", "app.js"), bundle: true, format: "iife", platform: "browser", minify: true });
+const bundled = await bundle({ entryPoints: [path.join(themeDir, "app.js")], bundle: true, format: "iife", platform: "browser", write: false });
+const minifiedApp = await minifyJavaScript(bundled.outputFiles[0].text, { compress: true, mangle: true });
+if (!minifiedApp.code) throw new Error("JavaScript minification produced no output");
+await fs.writeFile(path.join(outputDir, "assets", "app.js"), minifiedApp.code);
 await fs.cp(contentDir, path.join(outputDir, "posts"), {
   recursive: true,
   filter: (source) => !source.endsWith(".md") && !source.endsWith(".md.bak"),
@@ -181,5 +199,7 @@ await write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns=
 await write("robots.txt", `User-agent: *\nAllow: /\nSitemap: ${absolute("/sitemap.xml")}\n`);
 const version = await outputVersion();
 await write("version.json", JSON.stringify({ version }));
-await write("sw.js", serviceWorker(version));
+const minifiedWorker = await minifyJavaScript(serviceWorker(version), { compress: true, mangle: true });
+if (!minifiedWorker.code) throw new Error("Service worker minification produced no output");
+await write("sw.js", minifiedWorker.code);
 console.log(`Freshmark built ${posts.length} posts to public/`);

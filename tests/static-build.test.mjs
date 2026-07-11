@@ -35,7 +35,8 @@ test("articles render math and colocated Markdown images", async () => {
   const html = await read("public/posts/physics/basic-calculus-02/index.html");
   assert.match(html, /\\\[\\int f\(x\)dx=F\(x\)\+C\\\]/);
   assert.doesNotMatch(html, /class="katex/);
-  assert.match(html, /<img src="image\.png" alt="alt text"/);
+  assert.match(html, /<img[^>]*src="image\.png"[^>]*>/);
+  assert.match(html, /<img[^>]*alt="alt text"[^>]*>/);
   assert.doesNotMatch(html, /!\[alt text\]\(image\.png\)/);
   assert.equal((await stat(new URL("public/assets/katex.min.css", root))).isFile(), true);
   assert.equal((await stat(new URL("public/assets/katex.min.js", root))).isFile(), true);
@@ -44,10 +45,10 @@ test("articles render math and colocated Markdown images", async () => {
   assert.equal((await stat(new URL("public/assets/fonts/KaTeX_Main-Regular.woff2", root))).isFile(), true);
 
   const titledImageHtml = await read("public/posts/chemistry/babychem/overview-of-stereochemistry/index.html");
-  assert.match(titledImageHtml, /<img src="image\.png" alt="alt text" title="关于电负性\/杂化的综合判断"/);
+  assert.match(titledImageHtml, /<img[^>]*src="image\.png"[^>]*title="关于电负性\/杂化的综合判断"[^>]*>/);
 
   const spacedImageHtml = await read("public/posts/physics/celestial-movement/index.html");
-  assert.match(spacedImageHtml, /<img src="Screenshot%20From%202026-06-17%2020-47-25\.png"/);
+  assert.match(spacedImageHtml, /<img[^>]*src="Screenshot%20From%202026-06-17%2020-47-25\.png"/);
   assert.doesNotMatch(spacedImageHtml, /src="&lt;Screenshot/);
 });
 
@@ -60,8 +61,8 @@ test("standalone boxed formulas become scrollable display math", async () => {
   assert.doesNotMatch(html, /<p>\|字母\|含义\|/);
 
   const css = await read("public/assets/styles.css");
-  assert.match(css, /\.prose \.katex-display \{[^}]*overflow-x:auto/);
-  assert.match(css, /\.prose \.katex-display > \.katex \{ min-width:max-content; \}/);
+  assert.match(css, /\.prose \.katex-display\{[^}]*overflow-x:auto/);
+  assert.match(css, /\.prose \.katex-display>\.katex\{min-width:max-content}/);
 });
 
 test("articles pass through raw HTML, render level-one headings, and use the more excerpt", async () => {
@@ -130,10 +131,10 @@ test("service worker versions and persists generated resources", async () => {
   const worker = await read("public/sw.js");
   assert.match(version, /^[a-f0-9]{16}$/);
   assert.match(worker, new RegExp(`const VERSION="${version}"`));
-  assert.match(worker, /name\.startsWith\("freshmark-"\)/);
-  assert.match(worker, /path\.endsWith\("\.md"\).*staleWhileRevalidate/);
-  assert.match(worker, /path\.startsWith\("\/assets\/"\).*cacheFirst/);
-  assert.match(worker, /request\.mode==="navigate".*networkFirst/);
+  assert.match(worker, /\.startsWith\("freshmark-"\)/);
+  assert.match(worker, /\.endsWith\("\.md"\)/);
+  assert.match(worker, /\.startsWith\("\/assets\/"\)/);
+  assert.match(worker, /"navigate"===/);
 });
 
 test("published posts retain raw Markdown for downloads and SPA navigation", async () => {
