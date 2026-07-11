@@ -50,6 +50,16 @@ test("articles render math and colocated Markdown images", async () => {
   assert.doesNotMatch(spacedImageHtml, /src="&lt;Screenshot/);
 });
 
+test("standalone boxed formulas become scrollable display math", async () => {
+  const html = await read("public/posts/math/focal-chord-length-formula/index.html");
+  assert.match(html, /\\\[\\boxed\{\\frac\{2ab\^2\}/);
+  assert.doesNotMatch(html, /\\\(\\boxed\{\\frac\{2ab\^2\}/);
+
+  const css = await read("public/assets/styles.css");
+  assert.match(css, /\.prose \.katex-display \{[^}]*overflow-x:auto/);
+  assert.match(css, /\.prose \.katex-display > \.katex \{ min-width:max-content; \}/);
+});
+
 test("articles pass through raw HTML, render level-one headings, and use the more excerpt", async () => {
   const html = await read("public/posts/chemistry/babychem/alcohol-to-halide-conversion-and-alcohol-elimination/index.html");
   assert.match(html, /<!--more-->/);

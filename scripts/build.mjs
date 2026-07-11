@@ -85,6 +85,7 @@ async function findMarkdownFiles(directory, relative = "") {
 function renderMarkdown(markdown) {
   markdown = markdown.replace(/(\$[^$\n]+)\$\$(?=\S)/g, "$1$ $");
   markdown = markdown.replace(/\$(\\begin\{[^}]+\}[\s\S]*?\\end\{[^}]+\})\$/g, (_, math) => `$${math.replace(/\s*\n\s*/g, " ")}$`);
+  markdown = markdown.replace(/^\s*\$([^$\n]+)\$\s*$/gm, (_, math) => `$$${math}$$`);
   const html = [];
   const headings = [];
   let paragraph = [];
