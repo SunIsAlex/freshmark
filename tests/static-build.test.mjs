@@ -78,6 +78,13 @@ test("articles pass through raw HTML, render level-one headings, and use the mor
   assert.equal(post.summary, "本文是【基础有机化学 L9-3 补充你的知识盲区，你真的理解醇的取代和消除反应吗？】的学习笔记");
 });
 
+test("math placeholders never leak into heading links", async () => {
+  const html = await read("public/posts/physics/basic-calculus-01/index.html");
+  assert.match(html, /id="例由定义推导"/);
+  assert.match(html, /href="#例由定义推导"/);
+  assert.doesNotMatch(html, /FRESHMARKMATH/i);
+});
+
 test("adjacent inline math delimiters do not become display math", async () => {
   const html = await read("public/posts/math/2022-labour-day/5-01-02/index.html");
   assert.match(html, /即\\\(x=2k\\pi\\\)或\\\(x=\\frac\{\\pi\}\{3\}\+2k\\pi\\\)/);
@@ -122,6 +129,13 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /\["slow-2g", "2g", "3g"\]/);
   assert.match(app, /requestIdleCallback/);
   assert.match(app, /scheduleArticlePrefetch\(nextMain\)/);
+  assert.match(app, /function scrollToHash/);
+  assert.match(app, /document\.getElementById\(id\)/);
+  assert.match(app, /target\.scrollIntoView/);
+  assert.match(app, /=== renderedRoute/);
+  assert.match(app, /function toggleToc/);
+  assert.match(app, /data-toc-toggle/);
+  assert.match(app, /toc-level-\$\{heading\.level\}/);
   assert.match(app, /navigator\.serviceWorker\.register/);
   assert.match(app, /updateViaCache: "none"/);
 });

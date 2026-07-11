@@ -91,9 +91,9 @@ function homePage(posts) {
 }
 
 function postPage(post) {
-  const toc = post.headings.map((heading) => `<a href="#${heading.id}">${escapeHtml(heading.text)}</a>`).join("");
+  const toc = post.headings.map((heading) => `<a class="toc-level-${heading.level}" href="#${heading.id}">${escapeHtml(heading.text)}</a>`).join("");
   const tags = post.tags.map(escapeHtml).join(" · ");
-  const content = `<main><header class="container article-header"><a class="back-link" href="${href("/")}">← Back to all writing</a><h1>${escapeHtml(post.title)}</h1><p class="article-dek">${escapeHtml(post.summary)}</p><div class="article-meta"><time datetime="${post.date}">${formatLongDate(post.date)}</time><span>${post.readingTime} min read</span>${tags ? `<span>${tags}</span>` : ""}<a href="index.md" download>Download Markdown</a></div></header><div class="article-wrap"><aside class="toc"><p>On this page</p>${toc}</aside><article class="prose">${post.html}</article></div></main>`;
+  const content = `<main><header class="container article-header"><a class="back-link" href="${href("/")}">← Back to all writing</a><h1>${escapeHtml(post.title)}</h1><p class="article-dek">${escapeHtml(post.summary)}</p><div class="article-meta"><time datetime="${post.date}">${formatLongDate(post.date)}</time><span>${post.readingTime} min read</span>${tags ? `<span>${tags}</span>` : ""}<a href="index.md" download>Download Markdown</a></div></header><div class="article-wrap"><aside class="toc"><div class="toc-head"><p>On this page</p><button class="toc-toggle" type="button" data-toc-toggle aria-expanded="false" aria-label="Toggle table of contents"><span class="toc-toggle-label">Table of contents</span><span class="toc-toggle-icon" aria-hidden="true"></span></button></div><nav class="toc-links" data-toc-links aria-label="Table of contents">${toc}</nav></aside><article class="prose">${post.html}</article></div></main>`;
   return page({ title: post.title, description: post.summary, content, article: true, pathName: `/posts/${post.slug}/` });
 }
 

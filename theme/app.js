@@ -11,6 +11,7 @@ import { parseFrontmatter, renderMarkdown, summaryFromBody } from "../lib/markdo
   const prefetchQueue = [];
   const queuedPrefetches = new Set();
   let prefetching = false;
+  let renderedRoute = `${location.pathname}${location.search}`;
   let index;
 
   const escape = (value) => String(value).replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[char]);
@@ -56,6 +57,11 @@ import { parseFrontmatter, renderMarkdown, summaryFromBody } from "../lib/markdo
     });
     const empty = document.querySelector("[data-filter-empty]");
     if (empty) empty.hidden = shown !== 0;
+  }
+
+  function toggleToc(button, expanded = button.getAttribute("aria-expanded") !== "true") {
+    button.setAttribute("aria-expanded", String(expanded));
+    button.closest(".toc")?.classList.toggle("toc-open", expanded);
   }
 
   function updateProgress() {
@@ -141,9 +147,9 @@ import { parseFrontmatter, renderMarkdown, summaryFromBody } from "../lib/markdo
     const words = body.replace(/[#*`>\[\]()_-]/g, " ").split(/\s+/).filter(Boolean).length;
     const readingTime = Math.max(1, Math.ceil(words / 220));
     const formattedDate = new Intl.DateTimeFormat(window.FRESHMARK.language, { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(`${date}T00:00:00Z`));
-    const toc = headings.map((heading) => `<a href="#${escape(heading.id)}">${escape(heading.text)}</a>`).join("");
+    const toc = headings.map((heading) => `<a class="toc-level-${heading.level}" href="#${escape(heading.id)}">${escape(heading.text)}</a>`).join("");
     const tagText = tags.map(escape).join(" · ");
-    const main = `<main><header class="container article-header"><a class="back-link" href="${basePath || "/"}">← Back to all writing</a><h1>${escape(data.title)}</h1><p class="article-dek">${escape(summary)}</p><div class="article-meta"><time datetime="${date}">${formattedDate}</time><span>${readingTime} min read</span>${tagText ? `<span>${tagText}</span>` : ""}<a href="index.md" download>Download Markdown</a></div></header><div class="article-wrap"><aside class="toc"><p>On this page</p>${toc}</aside><article class="prose">${html}</article></div></main>`;
+    const main = `<main><header class="container article-header"><a class="back-link" href="${basePath || "/"}">← Back to all writing</a><h1>${escape(data.title)}</h1><p class="article-dek">${escape(summary)}</p><div class="article-meta"><time datetime="${date}">${formattedDate}</time><span>${readingTime} min read</span>${tagText ? `<span>${tagText}</span>` : ""}<a href="index.md" download>Download Markdown</a></div></header><div class="article-wrap"><aside class="toc"><div class="toc-head"><p>On this page</p><button class="toc-toggle" type="button" data-toc-toggle aria-expanded="false" aria-label="Toggle table of contents"><span class="toc-toggle-label">Table of contents</span><span class="toc-toggle-icon" aria-hidden="true"></span></button></div><nav class="toc-links" data-toc-links aria-label="Table of contents">${toc}</nav></aside><article class="prose">${html}</article></div></main>`;
     return {
       title: `${data.title} — ${window.FRESHMARK.title}`,
       description: summary,
@@ -210,6 +216,19 @@ import { parseFrontmatter, renderMarkdown, summaryFromBody } from "../lib/markdo
     }
   }
 
+  function scrollToHash(url, { push = true } = {}) {
+    const id = decodeURIComponent(url.hash.slice(1));
+    const target = id ? document.getElementById(id) : document.documentElement;
+    if (!target) return false;
+    if (push) {
+      history.replaceState({ ...(history.state || {}), scrollY }, "", location.href);
+      history.pushState({ spa: true, scrollY: 0 }, "", url);
+    }
+    if (id) target.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    else scrollTo({ top: 0, behavior: "smooth" });
+    return true;
+  }
+
   async function navigate(url, { push = true, restoreScroll = null } = {}) {
     shell.setAttribute("aria-busy", "true");
     try {
@@ -240,6 +259,7 @@ import { parseFrontmatter, renderMarkdown, summaryFromBody } from "../lib/markdo
         history.replaceState({ ...(history.state || {}), scrollY }, "", location.href);
         history.pushState({ spa: true, scrollY: 0 }, "", url);
       }
+      renderedRoute = `${url.pathname}${url.search}`;
       closeSearch();
       if (restoreScroll !== null) scrollTo(0, restoreScroll);
       else if (url.hash) document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView();
@@ -257,14 +277,22 @@ import { parseFrontmatter, renderMarkdown, summaryFromBody } from "../lib/markdo
   }
 
   document.addEventListener("click", (event) => {
-    const command = event.target.closest("[data-search-open], [data-theme-toggle], [data-tag]");
+    const command = event.target.closest("[data-search-open], [data-theme-toggle], [data-tag], [data-toc-toggle]");
     if (command?.matches("[data-search-open]")) { event.preventDefault(); openSearch(); return; }
     if (command?.matches("[data-theme-toggle]")) { event.preventDefault(); setTheme(root.dataset.theme === "dark" ? "light" : "dark"); return; }
     if (command?.matches("[data-tag]")) { event.preventDefault(); applyFilter(command); return; }
+    if (command?.matches("[data-toc-toggle]")) { event.preventDefault(); toggleToc(command); return; }
 
     const anchor = event.target.closest("a[href]");
     if (!anchor || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || anchor.target || anchor.hasAttribute("download")) return;
     const url = new URL(anchor.href, location.href);
+    if (url.pathname === location.pathname && url.search === location.search && (url.hash || anchor.getAttribute("href") === "#")) {
+      if (scrollToHash(url)) {
+        event.preventDefault();
+        if (anchor.closest(".toc") && matchMedia("(max-width: 820px)").matches) toggleToc(anchor.closest(".toc").querySelector("[data-toc-toggle]"), false);
+      }
+      return;
+    }
     if (!isSpaRoute(url) || (url.pathname === location.pathname && url.search === location.search)) return;
     event.preventDefault();
     navigate(url);
@@ -274,7 +302,14 @@ import { parseFrontmatter, renderMarkdown, summaryFromBody } from "../lib/markdo
   if ("serviceWorker" in navigator) {
     addEventListener("load", () => navigator.serviceWorker.register(`${basePath}/sw.js`, { scope: `${basePath}/`, updateViaCache: "none" }).catch(() => {}));
   }
-  addEventListener("popstate", (event) => navigate(new URL(location.href), { push: false, restoreScroll: event.state?.scrollY || 0 }));
+  addEventListener("popstate", (event) => {
+    const url = new URL(location.href);
+    if (`${url.pathname}${url.search}` === renderedRoute) {
+      if (!url.hash || !scrollToHash(url, { push: false })) scrollTo(0, event.state?.scrollY || 0);
+      return;
+    }
+    navigate(url, { push: false, restoreScroll: event.state?.scrollY || 0 });
+  });
   addEventListener("scroll", updateProgress, { passive: true });
   (navigator.connection || navigator.mozConnection || navigator.webkitConnection)?.addEventListener("change", drainPrefetchQueue);
   renderMath();
