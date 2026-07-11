@@ -10,6 +10,8 @@ test("build emits portable static pages", async () => {
     "public/index.html",
     "public/about/index.html",
     "public/posts/chemistry/babychem/overview-of-stereochemistry/index.html",
+    "public/posts/chemistry/babychem/overview-of-stereochemistry/index.md",
+    "public/posts/chemistry/babychem/overview-of-stereochemistry/page.html",
     "public/posts/chemistry/babychem/overview-of-stereochemistry/image.png",
     "public/search-index.json",
     "public/rss.xml",
@@ -30,11 +32,22 @@ test("generated HTML has no application framework runtime", async () => {
 
 test("articles render math and colocated Markdown images", async () => {
   const html = await read("public/posts/physics/basic-calculus-02/index.html");
-  assert.match(html, /class="katex/);
+  assert.match(html, /\\\[\\int f\(x\)dx=F\(x\)\+C\\\]/);
+  assert.doesNotMatch(html, /class="katex/);
   assert.match(html, /<img src="image\.png" alt="alt text"/);
   assert.doesNotMatch(html, /!\[alt text\]\(image\.png\)/);
   assert.equal((await stat(new URL("public/assets/katex.min.css", root))).isFile(), true);
+  assert.equal((await stat(new URL("public/assets/katex.min.js", root))).isFile(), true);
+  assert.equal((await stat(new URL("public/assets/mhchem.min.js", root))).isFile(), true);
+  assert.equal((await stat(new URL("public/assets/auto-render.min.js", root))).isFile(), true);
   assert.equal((await stat(new URL("public/assets/fonts/KaTeX_Main-Regular.woff2", root))).isFile(), true);
+
+  const titledImageHtml = await read("public/posts/chemistry/babychem/overview-of-stereochemistry/index.html");
+  assert.match(titledImageHtml, /<img src="image\.png" alt="alt text" title="关于电负性\/杂化的综合判断"/);
+
+  const spacedImageHtml = await read("public/posts/physics/celestial-movement/index.html");
+  assert.match(spacedImageHtml, /<img src="Screenshot From 2026-06-17 20-47-25\.png"/);
+  assert.doesNotMatch(spacedImageHtml, /src="&lt;Screenshot/);
 });
 
 test("articles pass through raw HTML, render level-one headings, and use the more excerpt", async () => {
@@ -42,7 +55,7 @@ test("articles pass through raw HTML, render level-one headings, and use the mor
   assert.match(html, /<!--more-->/);
   assert.doesNotMatch(html, /&lt;!--more--&gt;/);
   assert.match(html, /<h1 id="parti">PartI:醇的取代<\/h1>/);
-  assert.match(html, /<li>消除成烯烃<span class="katex">/);
+  assert.match(html, /<li>消除成烯烃\\\(\\begin\{cases\}/);
   assert.doesNotMatch(html, /<p>\\text\{立体选择性\}/);
 
   const index = JSON.parse(await read("public/search-index.json"));
@@ -52,12 +65,12 @@ test("articles pass through raw HTML, render level-one headings, and use the mor
 
 test("adjacent inline math delimiters do not become display math", async () => {
   const html = await read("public/posts/math/2022-labour-day/5-01-02/index.html");
-  assert.doesNotMatch(html, /<p>[^<]*\\frac\{\\pi\}\{3\}/);
-  assert.match(html, /annotation encoding="application\/x-tex">\(k\\in\\Z\)<\/annotation>/);
-  assert.doesNotMatch(html, /<p>\(k\\in\\Z\)\$/);
+  assert.match(html, /即\\\(x=2k\\pi\\\)或\\\(x=\\frac\{\\pi\}\{3\}\+2k\\pi\\\)/);
+  assert.match(html, /\\\(\(k\\in\\Z\)\\\)/);
+  assert.doesNotMatch(html, /\$\$\(k\\in\\Z\)/);
 
   const displayHtml = await read("public/posts/math/2022-labour-day/5-01-01/index.html");
-  assert.match(displayHtml, /得:<span class="katex-display">/);
+  assert.match(displayHtml, /得:\\\[/);
 });
 
 test("frontmatter categories and tags are indexed and displayed", async () => {
@@ -73,4 +86,33 @@ test("frontmatter categories and tags are indexed and displayed", async () => {
   const home = await read("public/index.html");
   assert.match(home, /data-tag="物理"/);
   assert.doesNotMatch(home, /data-tag="微积分"/);
+});
+
+test("client enhances internal links with SPA navigation", async () => {
+  const app = await read("public/assets/app.js");
+  assert.match(app, /history\.pushState/);
+  assert.match(app, /addEventListener\("popstate"/);
+  assert.match(app, /DOMParser/);
+  assert.match(app, /renderMathInElement/);
+  assert.match(app, /renderMath\(nextMain\)/);
+  assert.match(app, /new URL\("page\.html", url\)/);
+  assert.match(app, /currentMain\.replaceWith\(nextMain\)/);
+  assert.match(app, /rebaseMainUrls\(nextMain, url\)/);
+  assert.match(app, /new URL\(value, pageUrl\)\.href/);
+  assert.match(app, /location\.href = url\.href/);
+});
+
+test("published posts retain raw Markdown and expose SPA fragments", async () => {
+  const source = await read("content/posts/physics/basic-calculus-02/index.md");
+  const published = await read("public/posts/physics/basic-calculus-02/index.md");
+  assert.equal(published, source);
+
+  const fragment = await read("public/posts/physics/basic-calculus-02/page.html");
+  assert.match(fragment, /^<meta data-freshmark-page/);
+  assert.match(fragment, /data-canonical="https:\/\/example\.com\/posts\/physics\/basic-calculus-02\/"/);
+  assert.match(fragment, /data-article="true"><main>/);
+  assert.doesNotMatch(fragment, /<!doctype|<head>|<footer/);
+
+  const html = await read("public/posts/physics/basic-calculus-02/index.html");
+  assert.match(html, /<a href="index\.md" download>Download Markdown<\/a>/);
 });

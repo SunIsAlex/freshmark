@@ -1,7 +1,5 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import katex from "katex";
-import "katex/contrib/mhchem";
 import config from "../site.config.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
@@ -21,14 +19,15 @@ const formatLongDate = (value) => new Intl.DateTimeFormat(config.language, { mon
 function inline(text) {
   const fragments = [];
   const preserve = (html) => `FRESHMARKFRAGMENT${fragments.push(html) - 1}END`;
-  const renderMath = (source, displayMode) => preserve(katex.renderToString(source, {
-    displayMode,
-    throwOnError: false,
-    strict: "ignore",
-    output: "htmlAndMathml",
-  }));
+  const renderMath = (source, displayMode) => preserve(`${displayMode ? "\\[" : "\\("}${escapeHtml(source)}${displayMode ? "\\]" : "\\)"}`);
   const rendered = String(text)
     .replace(/`([^`]+)`/g, (_, code) => preserve(`<code>${escapeHtml(code)}</code>`))
+    .replace(/!\[([^\]]*)\]\(\s*(?:<([^>]+)>|([^\s)]+))(?:\s+["']([^"']*)["'])?\s*\)/g, (match, alt, bracketedSource, source, title) => {
+      const imageSource = bracketedSource || source;
+      if (/^javascript:/i.test(imageSource)) return match;
+      const titleAttribute = title ? ` title="${escapeHtml(title)}"` : "";
+      return preserve(`<img src="${escapeHtml(imageSource)}" alt="${escapeHtml(alt)}"${titleAttribute} loading="lazy" decoding="async">`);
+    })
     .replace(/<!--[\s\S]*?-->|<\/?[A-Za-z][^>]*>/g, (html) => preserve(html))
     .replace(/\$\$([\s\S]+?)\$\$/g, (_, math) => renderMath(math.trim(), true))
     .replace(/\\\[([\s\S]+?)\\\]/g, (_, math) => renderMath(math.trim(), true))
@@ -166,7 +165,7 @@ async function loadPosts() {
     const relativeSlug = file.replace(/\.md$/, "").replace(/(^|\/)index$/, "");
     const summary = data.summary || data.description || summaryFromBody(body);
     posts.push({
-      slug: relativeSlug, title: data.title, date, summary,
+      slug: relativeSlug, sourceFile: file, title: data.title, date, summary,
       tags: Array.isArray(data.tags) ? data.tags : [], categories: Array.isArray(data.categories) ? data.categories : [], featured: data.featured === true,
       readingTime: Math.max(1, Math.ceil(words / 220)), html, headings,
       searchText: body.replace(/[#*`>\[\]()_-]/g, " ").replace(/\s+/g, " ").trim(),
@@ -192,7 +191,14 @@ function searchModal() {
 
 function page({ title, description, content, article = false, pathName = "/" }) {
   const fullTitle = title ? `${escapeHtml(title)} — ${escapeHtml(config.title)}` : `${escapeHtml(config.title)} — ${escapeHtml(config.description)}`;
-  return `<!doctype html><html lang="${escapeHtml(config.language)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="codex-preview" content="development"><title>${fullTitle}</title><meta name="description" content="${escapeHtml(description || config.description)}"><link rel="canonical" href="${absolute(pathName)}"><link rel="icon" href="${href("/favicon.svg")}" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="${escapeHtml(config.title)} RSS" href="${href("/rss.xml")}"><link rel="stylesheet" href="${href("/assets/katex.min.css")}"><link rel="stylesheet" href="${href("/assets/styles.css")}"><script>try{document.documentElement.dataset.theme=localStorage.getItem('freshmark-theme')||''}catch(e){}</script></head><body><div class="site-shell"><div class="ambient"></div>${article ? '<div class="reading-progress" data-reading-progress></div>' : ""}${header()}${content}${footer()}${searchModal()}</div><script>window.FRESHMARK={basePath:${JSON.stringify(basePath)}};</script><script src="${href("/assets/app.js")}" defer></script></body></html>`;
+  return `<!doctype html><html lang="${escapeHtml(config.language)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="codex-preview" content="development"><title>${fullTitle}</title><meta name="description" content="${escapeHtml(description || config.description)}"><link rel="canonical" href="${absolute(pathName)}"><link rel="icon" href="${href("/favicon.svg")}" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="${escapeHtml(config.title)} RSS" href="${href("/rss.xml")}"><link rel="stylesheet" href="${href("/assets/katex.min.css")}"><link rel="stylesheet" href="${href("/assets/styles.css")}"><script>try{document.documentElement.dataset.theme=localStorage.getItem('freshmark-theme')||''}catch(e){}</script></head><body><div class="site-shell"><div class="ambient"></div>${article ? '<div class="reading-progress" data-reading-progress></div>' : ""}${header()}${content}${footer()}${searchModal()}</div><script>window.FRESHMARK={basePath:${JSON.stringify(basePath)}};</script><script src="${href("/assets/katex.min.js")}" defer></script><script src="${href("/assets/mhchem.min.js")}" defer></script><script src="${href("/assets/auto-render.min.js")}" defer></script><script src="${href("/assets/app.js")}" defer></script></body></html>`;
+}
+
+function pageFragment(html, { title, description, pathName = "/", article = false }) {
+  const content = html.match(/<main[\s\S]*<\/main>/)?.[0];
+  if (!content) throw new Error(`Could not extract main content for ${pathName}`);
+  const pageTitle = title ? `${title} — ${config.title}` : `${config.title} — ${config.description}`;
+  return `<meta data-freshmark-page data-title="${escapeHtml(pageTitle)}" data-description="${escapeHtml(description || config.description)}" data-canonical="${absolute(pathName)}" data-article="${article}">${content}`;
 }
 
 function homePage(posts) {
@@ -206,7 +212,7 @@ function homePage(posts) {
 function postPage(post) {
   const toc = post.headings.map((heading) => `<a href="#${heading.id}">${escapeHtml(heading.text)}</a>`).join("");
   const tags = post.tags.map(escapeHtml).join(" · ");
-  const content = `<main><header class="container article-header"><a class="back-link" href="${href("/")}">← Back to all writing</a><h1>${escapeHtml(post.title)}</h1><p class="article-dek">${escapeHtml(post.summary)}</p><div class="article-meta"><time datetime="${post.date}">${formatLongDate(post.date)}</time><span>${post.readingTime} min read</span>${tags ? `<span>${tags}</span>` : ""}</div></header><div class="article-wrap"><aside class="toc"><p>On this page</p>${toc}</aside><article class="prose">${post.html}</article></div></main>`;
+  const content = `<main><header class="container article-header"><a class="back-link" href="${href("/")}">← Back to all writing</a><h1>${escapeHtml(post.title)}</h1><p class="article-dek">${escapeHtml(post.summary)}</p><div class="article-meta"><time datetime="${post.date}">${formatLongDate(post.date)}</time><span>${post.readingTime} min read</span>${tags ? `<span>${tags}</span>` : ""}<a href="index.md" download>Download Markdown</a></div></header><div class="article-wrap"><aside class="toc"><p>On this page</p>${toc}</aside><article class="prose">${post.html}</article></div></main>`;
   return page({ title: post.title, description: post.summary, content, article: true, pathName: `/posts/${post.slug}/` });
 }
 
@@ -230,16 +236,29 @@ await Promise.all([
   fs.copyFile(path.join(themeDir, "app.js"), path.join(outputDir, "assets", "app.js")),
   fs.copyFile(path.join(themeDir, "favicon.svg"), path.join(outputDir, "favicon.svg")),
   fs.copyFile(path.join(root, "node_modules", "katex", "dist", "katex.min.css"), path.join(outputDir, "assets", "katex.min.css")),
+  fs.copyFile(path.join(root, "node_modules", "katex", "dist", "katex.min.js"), path.join(outputDir, "assets", "katex.min.js")),
+  fs.copyFile(path.join(root, "node_modules", "katex", "dist", "contrib", "mhchem.min.js"), path.join(outputDir, "assets", "mhchem.min.js")),
+  fs.copyFile(path.join(root, "node_modules", "katex", "dist", "contrib", "auto-render.min.js"), path.join(outputDir, "assets", "auto-render.min.js")),
   fs.cp(path.join(root, "node_modules", "katex", "dist", "fonts"), path.join(outputDir, "assets", "fonts"), { recursive: true }),
 ]);
 await fs.cp(contentDir, path.join(outputDir, "posts"), {
   recursive: true,
   filter: (source) => !source.endsWith(".md") && !source.endsWith(".md.bak"),
 });
-await write("index.html", homePage(posts));
-await write("about/index.html", aboutPage());
+const homeHtml = homePage(posts);
+const aboutHtml = aboutPage();
+await write("index.html", homeHtml);
+await write("page.html", pageFragment(homeHtml, {}));
+await write("about/index.html", aboutHtml);
+await write("about/page.html", pageFragment(aboutHtml, { title: "About", description: `About ${config.title}`, pathName: "/about/" }));
 await write("404.html", page({ title: "Not found", description: "Page not found", content: `<main class="container article-header"><p class="eyebrow">404</p><h1>This page wandered off.</h1><p class="article-dek"><a class="read-link" href="${href("/")}">Return to the writing →</a></p></main>`, pathName: "/404.html" }));
-for (const post of posts) await write(`posts/${post.slug}/index.html`, postPage(post));
+for (const post of posts) {
+  const html = postPage(post);
+  const directory = `posts/${post.slug}`;
+  await write(`${directory}/index.html`, html);
+  await write(`${directory}/page.html`, pageFragment(html, { title: post.title, description: post.summary, pathName: `/posts/${post.slug}/`, article: true }));
+  await fs.copyFile(path.join(contentDir, post.sourceFile), path.join(outputDir, directory, "index.md"));
+}
 
 const searchIndex = posts.map(({ slug, title, summary, tags, categories, readingTime, searchText }) => ({ title, summary, tags, categories, readingTime, searchText, url: href(`/posts/${slug}/`) }));
 await write("search-index.json", JSON.stringify(searchIndex));

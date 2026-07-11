@@ -15,6 +15,8 @@ button { color:inherit; }
 [hidden] { display:none !important; }
 ::selection { background:var(--mint); color:#19332d; }
 .site-shell { min-height:100vh; overflow:hidden; }
+.site-shell main { transition:opacity .16s ease; }
+.site-shell[aria-busy="true"] main { opacity:.55; }
 .ambient { position:fixed; inset:0; z-index:-1; pointer-events:none; background:radial-gradient(circle at 82% 9%,color-mix(in srgb,var(--mint) 42%,transparent) 0 10%,transparent 32%),radial-gradient(circle at 4% 45%,color-mix(in srgb,var(--coral) 10%,transparent),transparent 28%); }
 .container { width:min(1160px,calc(100% - 40px)); margin-inline:auto; }
 .header { display:flex; align-items:center; justify-content:space-between; height:88px; border-bottom:1px solid var(--line); }
