@@ -11,7 +11,6 @@ test("build emits portable static pages", async () => {
     "public/about/index.html",
     "public/posts/chemistry/babychem/overview-of-stereochemistry/index.html",
     "public/posts/chemistry/babychem/overview-of-stereochemistry/index.md",
-    "public/posts/chemistry/babychem/overview-of-stereochemistry/page.html",
     "public/posts/chemistry/babychem/overview-of-stereochemistry/image.png",
     "public/search-index.json",
     "public/rss.xml",
@@ -46,7 +45,7 @@ test("articles render math and colocated Markdown images", async () => {
   assert.match(titledImageHtml, /<img src="image\.png" alt="alt text" title="关于电负性\/杂化的综合判断"/);
 
   const spacedImageHtml = await read("public/posts/physics/celestial-movement/index.html");
-  assert.match(spacedImageHtml, /<img src="Screenshot From 2026-06-17 20-47-25\.png"/);
+  assert.match(spacedImageHtml, /<img src="Screenshot%20From%202026-06-17%2020-47-25\.png"/);
   assert.doesNotMatch(spacedImageHtml, /src="&lt;Screenshot/);
 });
 
@@ -54,6 +53,9 @@ test("standalone boxed formulas become scrollable display math", async () => {
   const html = await read("public/posts/math/focal-chord-length-formula/index.html");
   assert.match(html, /\\\[\\boxed\{\\frac\{2ab\^2\}/);
   assert.doesNotMatch(html, /\\\(\\boxed\{\\frac\{2ab\^2\}/);
+  assert.match(html, /<table>[\s\S]*<thead>[\s\S]*<th>字母<\/th>[\s\S]*<th>含义<\/th>[\s\S]*<tbody>/);
+  assert.match(html, /<td>\\\(\\theta\\\)<\/td>[\s\S]*<td>直线的倾斜角<\/td>/);
+  assert.doesNotMatch(html, /<p>\|字母\|含义\|/);
 
   const css = await read("public/assets/styles.css");
   assert.match(css, /\.prose \.katex-display \{[^}]*overflow-x:auto/);
@@ -64,7 +66,7 @@ test("articles pass through raw HTML, render level-one headings, and use the mor
   const html = await read("public/posts/chemistry/babychem/alcohol-to-halide-conversion-and-alcohol-elimination/index.html");
   assert.match(html, /<!--more-->/);
   assert.doesNotMatch(html, /&lt;!--more--&gt;/);
-  assert.match(html, /<h1 id="parti">PartI:醇的取代<\/h1>/);
+  assert.match(html, /<h1 id="parti醇的取代">PartI:醇的取代<\/h1>/);
   assert.match(html, /<li>消除成烯烃\\\(\\begin\{cases\}/);
   assert.doesNotMatch(html, /<p>\\text\{立体选择性\}/);
 
@@ -99,29 +101,27 @@ test("frontmatter categories and tags are indexed and displayed", async () => {
 });
 
 test("client enhances internal links with SPA navigation", async () => {
-  const app = await read("public/assets/app.js");
+  const app = await read("theme/app.js");
+  const bundle = await read("public/assets/app.js");
+  assert.ok(bundle.length > 10_000);
   assert.match(app, /history\.pushState/);
   assert.match(app, /addEventListener\("popstate"/);
   assert.match(app, /DOMParser/);
   assert.match(app, /renderMathInElement/);
   assert.match(app, /renderMath\(nextMain\)/);
-  assert.match(app, /new URL\("page\.html", url\)/);
+  assert.match(app, /index\.md/);
   assert.match(app, /currentMain\.replaceWith\(nextMain\)/);
   assert.match(app, /rebaseMainUrls\(nextMain, url\)/);
   assert.match(app, /new URL\(value, pageUrl\)\.href/);
   assert.match(app, /location\.href = url\.href/);
 });
 
-test("published posts retain raw Markdown and expose SPA fragments", async () => {
+test("published posts retain raw Markdown for downloads and SPA navigation", async () => {
   const source = await read("content/posts/physics/basic-calculus-02/index.md");
   const published = await read("public/posts/physics/basic-calculus-02/index.md");
   assert.equal(published, source);
 
-  const fragment = await read("public/posts/physics/basic-calculus-02/page.html");
-  assert.match(fragment, /^<meta data-freshmark-page/);
-  assert.match(fragment, /data-canonical="https:\/\/example\.com\/posts\/physics\/basic-calculus-02\/"/);
-  assert.match(fragment, /data-article="true"><main>/);
-  assert.doesNotMatch(fragment, /<!doctype|<head>|<footer/);
+  await assert.rejects(stat(new URL("public/posts/physics/basic-calculus-02/page.html", root)), { code: "ENOENT" });
 
   const html = await read("public/posts/physics/basic-calculus-02/index.html");
   assert.match(html, /<a href="index\.md" download>Download Markdown<\/a>/);

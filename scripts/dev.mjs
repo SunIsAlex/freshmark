@@ -26,7 +26,7 @@ build();
 if (shouldWatch) {
   let timer;
   const rebuild = () => { clearTimeout(timer); timer = setTimeout(build, 80); };
-  for (const target of [path.join(root, "content", "posts"), path.join(root, "theme")]) watch(target, rebuild);
+  for (const target of [path.join(root, "content", "posts"), path.join(root, "theme"), path.join(root, "lib")]) watch(target, rebuild);
   watch(path.join(root, "site.config.mjs"), rebuild);
 }
 

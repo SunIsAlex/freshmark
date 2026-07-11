@@ -1,6 +1,6 @@
 # Freshmark
 
-Freshmark is a zero-dependency, Markdown-first static blog generator. It has the
+Freshmark is a Markdown-first static blog generator. It has the
 writing workflow of Hugo with a softer editorial design and built-in browser
 search.
 
@@ -11,7 +11,7 @@ The build produces ordinary HTML, CSS, JavaScript, XML, and JSON in `public/`.
 
 - Node.js 20 or newer
 
-That is all. `npm install` has no packages to download.
+Install the build dependencies with `npm install`.
 
 ## Start writing
 
@@ -92,7 +92,8 @@ basePath: "/my-blog",
 ```text
 content/posts/       Markdown articles
 theme/styles.css     Visual design
-theme/app.js         Search, tags, dark mode, reading progress
+lib/markdown.mjs     Shared server/browser Markdown pipeline
+theme/app.js         SPA navigation, search, tags, and reading progress
 site.config.mjs      Site title, URL, author, and path settings
 scripts/build.mjs    Static generator
 public/              Portable generated website
@@ -100,12 +101,13 @@ public/              Portable generated website
 
 ## Features
 
-- Build-time Markdown rendering
+- Shared `markdown-it` rendering on the server and in the browser
 - Pre-generated article and about pages
+- SPA article navigation using published raw Markdown
 - Client-side full-text search from `search-index.json`
 - Tags and filters
 - Automatic table of contents and reading time
 - Dark mode and reading progress
 - RSS, sitemap, robots.txt, and 404 page
 - Draft support and configurable base paths
-- No production dependencies
+- Raw Markdown downloads for every published article

@@ -10,9 +10,13 @@
     "dev": "node scripts/dev.mjs",
     "build": "node scripts/build.mjs",
     "test": "npm run build && node --test tests/static-build.test.mjs",
-    "lint": "node --check scripts/build.mjs && node --check scripts/dev.mjs && node --check theme/app.js"
+    "lint": "node --check scripts/build.mjs && node --check scripts/dev.mjs && node --check lib/markdown.mjs && node --check theme/app.js"
   },
   "dependencies": {
-    "katex": "^0.17.0"
+    "katex": "^0.17.0",
+    "markdown-it": "^14.3.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1"
   }
 }

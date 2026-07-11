@@ -1,3 +1,5 @@
+import { parseFrontmatter, renderMarkdown, summaryFromBody } from "../lib/markdown.mjs";
+
 (() => {
   const root = document.documentElement;
   const basePath = window.FRESHMARK?.basePath || "";
@@ -89,7 +91,12 @@
     const key = `${url.pathname}${url.search}`;
     if (!pageCache.has(key)) {
       let page;
-      if (url.pathname.endsWith("/")) {
+      const postsBase = `${basePath}/posts/`.replace(/\/+/g, "/");
+      if (url.pathname.startsWith(postsBase) && url.pathname.endsWith("/")) {
+        const markdownUrl = new URL("index.md", url);
+        const response = await fetch(`${markdownUrl.pathname}${markdownUrl.search}`, { headers: { "X-Freshmark-Navigation": "spa" } });
+        if (response.ok) page = articlePage(await response.text(), url);
+      } else if (url.pathname.endsWith("/")) {
         const fragmentUrl = new URL("page.html", url);
         const response = await fetch(`${fragmentUrl.pathname}${fragmentUrl.search}`, { headers: { "X-Freshmark-Navigation": "spa" } });
         if (response.ok && response.headers.get("content-type")?.includes("text/html")) {
@@ -120,6 +127,27 @@
       pageCache.set(key, page);
     }
     return pageCache.get(key);
+  }
+
+  function articlePage(source, url) {
+    const { data, body } = parseFrontmatter(source, url.pathname);
+    const { html, headings } = renderMarkdown(body);
+    const date = String(data.date).slice(0, 10);
+    const summary = data.summary || data.description || summaryFromBody(body);
+    const tags = Array.isArray(data.tags) ? data.tags : [];
+    const words = body.replace(/[#*`>\[\]()_-]/g, " ").split(/\s+/).filter(Boolean).length;
+    const readingTime = Math.max(1, Math.ceil(words / 220));
+    const formattedDate = new Intl.DateTimeFormat(window.FRESHMARK.language, { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(`${date}T00:00:00Z`));
+    const toc = headings.map((heading) => `<a href="#${escape(heading.id)}">${escape(heading.text)}</a>`).join("");
+    const tagText = tags.map(escape).join(" · ");
+    const main = `<main><header class="container article-header"><a class="back-link" href="${basePath || "/"}">← Back to all writing</a><h1>${escape(data.title)}</h1><p class="article-dek">${escape(summary)}</p><div class="article-meta"><time datetime="${date}">${formattedDate}</time><span>${readingTime} min read</span>${tagText ? `<span>${tagText}</span>` : ""}<a href="index.md" download>Download Markdown</a></div></header><div class="article-wrap"><aside class="toc"><p>On this page</p>${toc}</aside><article class="prose">${html}</article></div></main>`;
+    return {
+      title: `${data.title} — ${window.FRESHMARK.title}`,
+      description: summary,
+      canonical: url.href,
+      article: true,
+      html: main,
+    };
   }
 
   function rebaseMainUrls(main, pageUrl) {
