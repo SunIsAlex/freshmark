@@ -1,5 +1,3 @@
-import { parseFrontmatter, renderMarkdown, summaryFromBody } from "../lib/markdown.mjs";
-
 (() => {
   const root = document.documentElement;
   const basePath = window.FRESHMARK?.basePath || "";
@@ -13,9 +11,29 @@ import { parseFrontmatter, renderMarkdown, summaryFromBody } from "../lib/markdo
   let prefetching = false;
   let renderedRoute = `${location.pathname}${location.search}`;
   let index;
+  let markdownRenderer;
 
   const escape = (value) => String(value).replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[char]);
   const setTheme = (theme) => { root.dataset.theme = theme; try { localStorage.setItem("freshmark-theme", theme); } catch {} };
+
+  function loadMarkdownRenderer() {
+    if (!markdownRenderer) markdownRenderer = new Promise((resolve, reject) => {
+      const existing = document.querySelector("script[data-markdown-renderer]");
+      const script = existing || Object.assign(document.createElement("script"), {
+        src: `${basePath}/assets/markdown.js`,
+        async: true,
+      });
+      script.dataset.markdownRenderer = "";
+      const ready = () => window.FRESHMARK_MARKDOWN ? resolve(window.FRESHMARK_MARKDOWN) : reject(new Error("Markdown renderer did not initialize"));
+      if (window.FRESHMARK_MARKDOWN) ready();
+      else {
+        script.addEventListener("load", ready, { once: true });
+        script.addEventListener("error", () => reject(new Error("Could not load Markdown renderer")), { once: true });
+        if (!existing) document.head.append(script);
+      }
+    });
+    return markdownRenderer;
+  }
 
   async function loadIndex() {
     if (!index) index = await fetch(`${basePath}/search-index.json`).then((response) => response.json());
@@ -104,7 +122,7 @@ import { parseFrontmatter, renderMarkdown, summaryFromBody } from "../lib/markdo
       if (url.pathname.startsWith(postsBase) && url.pathname.endsWith("/")) {
         const markdownUrl = new URL("index.md", url);
         const response = await fetch(`${markdownUrl.pathname}${markdownUrl.search}`, { headers: { "X-Freshmark-Navigation": "spa" } });
-        if (response.ok) page = articlePage(await response.text(), url);
+        if (response.ok) page = await articlePage(await response.text(), url);
       } else if (url.pathname.endsWith("/")) {
         const fragmentUrl = new URL("page.html", url);
         const response = await fetch(`${fragmentUrl.pathname}${fragmentUrl.search}`, { headers: { "X-Freshmark-Navigation": "spa" } });
@@ -138,7 +156,8 @@ import { parseFrontmatter, renderMarkdown, summaryFromBody } from "../lib/markdo
     return pageCache.get(key);
   }
 
-  function articlePage(source, url) {
+  async function articlePage(source, url) {
+    const { parseFrontmatter, renderMarkdown, summaryFromBody } = await loadMarkdownRenderer();
     const { data, body } = parseFrontmatter(source, url.pathname);
     const { html, headings } = renderMarkdown(body);
     const date = String(data.date).slice(0, 10);

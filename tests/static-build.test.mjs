@@ -17,6 +17,7 @@ test("build emits portable static pages", async () => {
     "public/sitemap.xml",
     "public/assets/styles.css",
     "public/assets/app.js",
+    "public/assets/markdown.js",
     "public/manifest.webmanifest",
     "public/icons/icon-192.png",
     "public/icons/icon-512.png",
@@ -132,7 +133,11 @@ test("frontmatter categories and tags are indexed and displayed", async () => {
 test("client enhances internal links with SPA navigation", async () => {
   const app = await read("theme/app.js");
   const bundle = await read("public/assets/app.js");
-  assert.ok(bundle.length > 10_000);
+  const markdownBundle = await read("public/assets/markdown.js");
+  assert.ok(bundle.length < markdownBundle.length);
+  assert.doesNotMatch(bundle, /MarkdownIt/);
+  assert.match(app, /assets\/markdown\.js/);
+  assert.match(app, /loadMarkdownRenderer/);
   assert.match(app, /history\.pushState/);
   assert.match(app, /addEventListener\("popstate"/);
   assert.match(app, /DOMParser/);

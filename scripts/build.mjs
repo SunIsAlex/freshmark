@@ -189,10 +189,13 @@ await Promise.all([
   fs.copyFile(path.join(root, "node_modules", "katex", "dist", "contrib", "auto-render.min.js"), path.join(outputDir, "assets", "auto-render.min.js")),
   fs.cp(path.join(root, "node_modules", "katex", "dist", "fonts"), path.join(outputDir, "assets", "fonts"), { recursive: true }),
 ]);
-const bundled = await bundle({ entryPoints: [path.join(themeDir, "app.js")], bundle: true, format: "iife", platform: "browser", write: false });
-const minifiedApp = await minifyJavaScript(bundled.outputFiles[0].text, { compress: true, mangle: true });
-if (!minifiedApp.code) throw new Error("JavaScript minification produced no output");
-await fs.writeFile(path.join(outputDir, "assets", "app.js"), minifiedApp.code);
+const browserBundles = await Promise.all(["app.js", "markdown.js"].map(async (file) => {
+  const bundled = await bundle({ entryPoints: [path.join(themeDir, file)], bundle: true, format: "iife", platform: "browser", write: false });
+  const minified = await minifyJavaScript(bundled.outputFiles[0].text, { compress: true, mangle: true });
+  if (!minified.code) throw new Error(`${file} minification produced no output`);
+  return fs.writeFile(path.join(outputDir, "assets", file), minified.code);
+}));
+await Promise.all(browserBundles);
 await fs.cp(contentDir, path.join(outputDir, "posts"), {
   recursive: true,
   filter: (source) => !source.endsWith(".md") && !source.endsWith(".md.bak"),
