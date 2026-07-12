@@ -6,7 +6,6 @@ import { generateMarkdown, listTemplates, quoteYaml, renderTemplate, slugify, ya
 
 const root = path.resolve(import.meta.dirname, "..");
 const templatesDir = path.join(root, "templates");
-const contentDir = path.join(root, "content", "posts");
 
 function usage() {
   return `Create Markdown from a Freshmark template.
@@ -20,6 +19,7 @@ Options:
   -t, --template <name>  Template in templates/ (default: post)
       --title <text>     Document title (or use the first positional value)
       --slug <slug>      Output slug (default: title converted to a slug)
+  -o, --output <path>    Output file, relative to the project (default: content/posts/<slug>.md)
       --date <YYYY-MM-DD> Publication date (default: today)
       --summary <text>   Frontmatter summary
       --tags <a,b>       Comma-separated tags
@@ -47,10 +47,11 @@ export function parseArgs(args) {
     else if (arg === "-f" || arg === "--force") options.force = true;
     else if (arg === "--publish") options.publish = true;
     else if (arg === "--dry-run") options.dryRun = true;
-    else if (["-t", "--template", "--title", "--slug", "--date", "--summary", "--tags", "--set"].includes(arg)) {
+    else if (["-t", "--template", "-o", "--output", "--title", "--slug", "--date", "--summary", "--tags", "--set"].includes(arg)) {
       const value = takeValue(args, index, arg);
       index += 1;
       if (arg === "-t" || arg === "--template") options.template = value;
+      else if (arg === "-o" || arg === "--output") options.output = value;
       else if (arg === "--tags") options.tags = value.split(",").map((tag) => tag.trim()).filter(Boolean);
       else if (arg === "--set") {
         const separator = value.indexOf("=");
@@ -67,6 +68,16 @@ export function parseArgs(args) {
 function safeName(value, label) {
   if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(value)) throw new Error(`${label} may contain only letters, numbers, hyphens, and underscores`);
   return value;
+}
+
+export function resolveOutput(output, slug, projectRoot = root) {
+  let relative = output || path.join("content", "posts", `${slug}.md`);
+  if (!path.extname(relative)) relative += ".md";
+  if (path.extname(relative).toLowerCase() !== ".md") throw new Error("output file must use the .md extension");
+  const destination = path.resolve(projectRoot, relative);
+  const relation = path.relative(projectRoot, destination);
+  if (!relation || relation.startsWith("..") || path.isAbsolute(relation)) throw new Error("output path must stay inside the project");
+  return destination;
 }
 
 export function templateVariables(options, today = new Date().toISOString().slice(0, 10)) {
@@ -97,7 +108,7 @@ export async function main(args = process.argv.slice(2)) {
   const templateName = safeName(options.template, "template name");
   const template = path.join(templatesDir, `${templateName}.md`);
   await fs.access(template).catch(() => { throw new Error(`template not found: ${templateName} (use --list to see available templates)`); });
-  const destination = path.join(contentDir, `${variables.slug}.md`);
+  const destination = resolveOutput(options.output, variables.slug);
   if (options.dryRun) {
     const source = await fs.readFile(template, "utf8");
     console.log(renderTemplate(source, variables, template).trimEnd());

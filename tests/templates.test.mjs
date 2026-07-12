@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { generateMarkdown, renderTemplate, slugify, yamlList } from "../lib/templates.mjs";
-import { parseArgs, templateVariables } from "../scripts/new.mjs";
+import { parseArgs, resolveOutput, templateVariables } from "../scripts/new.mjs";
 
 test("template helpers create safe Markdown values", () => {
   assert.equal(slugify(" A Thoughtful Post! "), "a-thoughtful-post");
@@ -14,12 +14,21 @@ test("template helpers create safe Markdown values", () => {
 });
 
 test("CLI arguments produce draft-safe defaults and custom values", () => {
-  const options = parseArgs(["A new post", "--tags", "Design, Notes", "--set", "kind=essay"]);
+  const options = parseArgs(["A new post", "--tags", "Design, Notes", "--output", "content/notes/custom", "--set", "kind=essay"]);
+  assert.equal(options.output, "content/notes/custom");
   assert.deepEqual(templateVariables(options, "2026-07-12"), {
     title: '"A new post"', slug: "a-new-post", date: "2026-07-12", summary: '""',
     tags: '["Design", "Notes"]', draft: "true", kind: "essay",
   });
   assert.equal(templateVariables(parseArgs(["Published", "--publish"]), "2026-07-12").draft, "false");
+});
+
+test("output paths support custom names without escaping the project", () => {
+  const project = path.join(path.sep, "workspace", "freshmark");
+  assert.equal(resolveOutput("content/notes/custom-name", "ignored", project), path.join(project, "content", "notes", "custom-name.md"));
+  assert.equal(resolveOutput(undefined, "generated", project), path.join(project, "content", "posts", "generated.md"));
+  assert.throws(() => resolveOutput("../outside.md", "ignored", project), /must stay inside/);
+  assert.throws(() => resolveOutput("content/post.txt", "ignored", project), /must use the .md extension/);
 });
 
 test("generator creates parent directories and refuses accidental overwrites", async () => {

@@ -41,6 +41,13 @@ Posts are drafts by default. Pass `--publish` to generate `draft: false`,
 `--dry-run` to preview the result, or `--help` for all options. Existing files
 are never overwritten unless `--force` is explicitly supplied.
 
+Choose an exact location and filename with `--output` (or `-o`). Paths are
+relative to the project root, and the `.md` extension is added when omitted:
+
+```bash
+npm run new -- "My first note" --output content/posts/notes/custom-name.md
+```
+
 Templates live in `templates/`. Add another `.md` file using placeholders such
 as `{{title}}`, `{{slug}}`, `{{date}}`, `{{summary}}`, `{{tags}}`, and `{{draft}}`,
 then select it with `--template name`. Custom placeholders can be supplied with
