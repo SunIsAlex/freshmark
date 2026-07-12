@@ -24,7 +24,29 @@ The preview automatically rebuilds when a Markdown post or theme file changes.
 
 ## Create a post
 
-Create `content/posts/my-first-note.md`:
+Generate a new draft from the built-in post template:
+
+```bash
+npm run new -- "My first note"
+```
+
+The command writes `content/posts/my-first-note.md`. Add metadata while creating
+it with options such as:
+
+```bash
+npm run new -- "My first note" --summary "A short description." --tags Design,Notes
+```
+
+Posts are drafts by default. Pass `--publish` to generate `draft: false`,
+`--dry-run` to preview the result, or `--help` for all options. Existing files
+are never overwritten unless `--force` is explicitly supplied.
+
+Templates live in `templates/`. Add another `.md` file using placeholders such
+as `{{title}}`, `{{slug}}`, `{{date}}`, `{{summary}}`, `{{tags}}`, and `{{draft}}`,
+then select it with `--template name`. Custom placeholders can be supplied with
+repeatable `--set key=value` arguments; the generator reports any missing value.
+
+You can also create a post manually. Create `content/posts/my-first-note.md`:
 
 ```md
 ---
@@ -96,6 +118,8 @@ lib/markdown.mjs     Shared server/browser Markdown pipeline
 theme/app.js         SPA navigation, search, tags, and reading progress
 site.config.mjs      Site title, URL, author, and path settings
 scripts/build.mjs    Static generator
+scripts/new.mjs      Markdown template generator
+templates/           Reusable Markdown templates
 public/              Portable generated website
 ```
 

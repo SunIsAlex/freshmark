@@ -9,8 +9,9 @@
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "build": "node scripts/build.mjs",
-    "test": "npm run build && node --test tests/static-build.test.mjs",
-    "lint": "node --check scripts/build.mjs && node --check scripts/dev.mjs && node --check lib/markdown.mjs && node --check theme/app.js"
+    "new": "node scripts/new.mjs",
+    "test": "npm run build && node --test tests/*.test.mjs",
+    "lint": "node --check scripts/build.mjs && node --check scripts/dev.mjs && node --check scripts/new.mjs && node --check lib/markdown.mjs && node --check lib/templates.mjs && node --check theme/app.js"
   },
   "dependencies": {
     "katex": "^0.17.0",
