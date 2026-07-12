@@ -1,10 +1,10 @@
 ---
-title: 2026北京化学预选赛
+title: 2026无机化学暑假培训(I)
 subtitle:
 date: 2026-04-19T17:12:05+08:00
 draft: false
 author:
-  name:
+  name: SunIsAlex
   link:
   email:
   avatar:
@@ -14,6 +14,7 @@ comment: false
 weight: 0
 tags:
   - 化学竞赛
+  - 元素化学
 categories:
   - 化学
 hiddenFromHomePage: false
