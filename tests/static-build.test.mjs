@@ -48,6 +48,12 @@ test("site is installable as a progressive web app", async () => {
 test("generated HTML has no application framework runtime", async () => {
   const html = await read("public/index.html");
   assert.match(html, /Search the archive/);
+  assert.match(html, /<style data-critical>[^<]*--paper:#f7f8f2/);
+  const stylesheetLinks = html.match(/<link[^>]+href="\/assets\/styles\.css"[^>]*>/g);
+  assert.equal(stylesheetLinks.length, 2);
+  assert.match(stylesheetLinks[0], /\bas="style"/);
+  assert.match(stylesheetLinks[0], /\brel="preload"/);
+  assert.match(stylesheetLinks[1], /\brel="stylesheet"/);
   assert.doesNotMatch(html, /\b(?:_next|__next|react(?:\.production)?\.min|vinext)\b/i);
 });
 
