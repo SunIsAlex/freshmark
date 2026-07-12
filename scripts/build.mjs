@@ -72,7 +72,26 @@ function searchModal() {
 
 function page({ title, description, content, article = false, pathName = "/" }) {
   const fullTitle = title ? `${escapeHtml(title)} — ${escapeHtml(config.title)}` : `${escapeHtml(config.title)} — ${escapeHtml(config.description)}`;
-  return `<!doctype html><html lang="${escapeHtml(config.language)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="codex-preview" content="development"><title>${fullTitle}</title><meta name="description" content="${escapeHtml(description || config.description)}"><link rel="canonical" href="${absolute(pathName)}"><link rel="icon" href="${href("/favicon.svg")}" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="${escapeHtml(config.title)} RSS" href="${href("/rss.xml")}"><link rel="stylesheet" href="${href("/assets/katex.min.css")}"><link rel="stylesheet" href="${href("/assets/styles.css")}"><script>try{document.documentElement.dataset.theme=localStorage.getItem('freshmark-theme')||''}catch(e){}</script></head><body><div class="site-shell"><div class="ambient"></div>${article ? '<div class="reading-progress" data-reading-progress></div>' : ""}${header()}${content}${footer()}${searchModal()}</div><script>window.FRESHMARK={basePath:${JSON.stringify(basePath)},title:${JSON.stringify(config.title)},language:${JSON.stringify(config.language)}};</script><script src="${href("/assets/katex.min.js")}" defer></script><script src="${href("/assets/mhchem.min.js")}" defer></script><script src="${href("/assets/auto-render.min.js")}" defer></script><script src="${href("/assets/app.js")}" defer></script></body></html>`;
+  return `<!doctype html><html lang="${escapeHtml(config.language)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="${escapeHtml(config.themeColor)}"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="${escapeHtml(config.title)}"><meta name="codex-preview" content="development"><title>${fullTitle}</title><meta name="description" content="${escapeHtml(description || config.description)}"><link rel="canonical" href="${absolute(pathName)}"><link rel="manifest" href="${href("/manifest.webmanifest")}"><link rel="icon" href="${href("/favicon.svg")}" type="image/svg+xml"><link rel="apple-touch-icon" href="${href("/icons/apple-touch-icon.png")}"><link rel="alternate" type="application/rss+xml" title="${escapeHtml(config.title)} RSS" href="${href("/rss.xml")}"><link rel="stylesheet" href="${href("/assets/katex.min.css")}"><link rel="stylesheet" href="${href("/assets/styles.css")}"><script>try{document.documentElement.dataset.theme=localStorage.getItem('freshmark-theme')||''}catch(e){}</script></head><body><div class="site-shell"><div class="ambient"></div>${article ? '<div class="reading-progress" data-reading-progress></div>' : ""}${header()}${content}${footer()}${searchModal()}</div><script>window.FRESHMARK={basePath:${JSON.stringify(basePath)},title:${JSON.stringify(config.title)},language:${JSON.stringify(config.language)}};</script><script src="${href("/assets/katex.min.js")}" defer></script><script src="${href("/assets/mhchem.min.js")}" defer></script><script src="${href("/assets/auto-render.min.js")}" defer></script><script src="${href("/assets/app.js")}" defer></script></body></html>`;
+}
+
+function webManifest() {
+  return JSON.stringify({
+    id: href("/"),
+    name: config.title,
+    short_name: config.title,
+    description: config.description,
+    lang: config.language,
+    start_url: href("/"),
+    scope: href("/"),
+    display: "standalone",
+    background_color: config.backgroundColor,
+    theme_color: config.themeColor,
+    icons: [
+      { src: href("/icons/icon-192.png"), sizes: "192x192", type: "image/png", purpose: "any maskable" },
+      { src: href("/icons/icon-512.png"), sizes: "512x512", type: "image/png", purpose: "any maskable" },
+    ],
+  });
 }
 
 function pageFragment(html, { title, description, pathName = "/", article = false }) {
@@ -143,7 +162,7 @@ function serviceWorker(version) {
 const CACHE_NAME="freshmark-"+VERSION;
 const BASE_PATH=${JSON.stringify(basePath)};
 const at=(path)=>BASE_PATH+path;
-const PRECACHE=["/","/404.html","/about/","/page.html","/about/page.html","/search-index.json","/assets/styles.css","/assets/app.js","/assets/katex.min.css","/assets/katex.min.js","/assets/mhchem.min.js","/assets/auto-render.min.js"].map(at);
+const PRECACHE=["/","/404.html","/about/","/page.html","/about/page.html","/manifest.webmanifest","/favicon.svg","/icons/icon-192.png","/icons/icon-512.png","/icons/apple-touch-icon.png","/search-index.json","/assets/styles.css","/assets/app.js","/assets/katex.min.css","/assets/katex.min.js","/assets/mhchem.min.js","/assets/auto-render.min.js"].map(at);
 self.addEventListener("install",(event)=>event.waitUntil(caches.open(CACHE_NAME).then((cache)=>cache.addAll(PRECACHE)).then(()=>self.skipWaiting())));
 self.addEventListener("activate",(event)=>event.waitUntil(caches.keys().then((names)=>Promise.all(names.filter((name)=>name.startsWith("freshmark-")&&name!==CACHE_NAME).map((name)=>caches.delete(name)))).then(()=>self.clients.claim())));
 const cacheResponse=async(request,response)=>{if(response&&response.ok){const cache=await caches.open(CACHE_NAME);await cache.put(request,response.clone())}return response};
@@ -163,16 +182,20 @@ if (styles.errors.length) throw new Error(`CSS minification failed: ${styles.err
 await Promise.all([
   fs.writeFile(path.join(outputDir, "assets", "styles.css"), styles.styles),
   fs.copyFile(path.join(themeDir, "favicon.svg"), path.join(outputDir, "favicon.svg")),
+  fs.cp(path.join(themeDir, "icons"), path.join(outputDir, "icons"), { recursive: true }),
   fs.copyFile(path.join(root, "node_modules", "katex", "dist", "katex.min.css"), path.join(outputDir, "assets", "katex.min.css")),
   fs.copyFile(path.join(root, "node_modules", "katex", "dist", "katex.min.js"), path.join(outputDir, "assets", "katex.min.js")),
   fs.copyFile(path.join(root, "node_modules", "katex", "dist", "contrib", "mhchem.min.js"), path.join(outputDir, "assets", "mhchem.min.js")),
   fs.copyFile(path.join(root, "node_modules", "katex", "dist", "contrib", "auto-render.min.js"), path.join(outputDir, "assets", "auto-render.min.js")),
   fs.cp(path.join(root, "node_modules", "katex", "dist", "fonts"), path.join(outputDir, "assets", "fonts"), { recursive: true }),
 ]);
-const bundled = await bundle({ entryPoints: [path.join(themeDir, "app.js")], bundle: true, format: "iife", platform: "browser", write: false });
-const minifiedApp = await minifyJavaScript(bundled.outputFiles[0].text, { compress: true, mangle: true });
-if (!minifiedApp.code) throw new Error("JavaScript minification produced no output");
-await fs.writeFile(path.join(outputDir, "assets", "app.js"), minifiedApp.code);
+const browserBundles = await Promise.all(["app.js", "markdown.js"].map(async (file) => {
+  const bundled = await bundle({ entryPoints: [path.join(themeDir, file)], bundle: true, format: "iife", platform: "browser", write: false });
+  const minified = await minifyJavaScript(bundled.outputFiles[0].text, { compress: true, mangle: true });
+  if (!minified.code) throw new Error(`${file} minification produced no output`);
+  return fs.writeFile(path.join(outputDir, "assets", file), minified.code);
+}));
+await Promise.all(browserBundles);
 await fs.cp(contentDir, path.join(outputDir, "posts"), {
   recursive: true,
   filter: (source) => !source.endsWith(".md") && !source.endsWith(".md.bak"),
@@ -193,6 +216,7 @@ for (const post of posts) {
 
 const searchIndex = posts.map(({ slug, title, summary, tags, categories, readingTime, searchText }) => ({ title, summary, tags, categories, readingTime, searchText, url: href(`/posts/${slug}/`) }));
 await write("search-index.json", JSON.stringify(searchIndex));
+await write("manifest.webmanifest", webManifest());
 const rss = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>${escapeHtml(config.title)}</title><link>${escapeHtml(config.baseUrl)}</link><description>${escapeHtml(config.description)}</description>${posts.map((post) => `<item><title>${escapeHtml(post.title)}</title><link>${absolute(`/posts/${post.slug}/`)}</link><guid>${absolute(`/posts/${post.slug}/`)}</guid><pubDate>${new Date(`${post.date}T12:00:00Z`).toUTCString()}</pubDate><description>${escapeHtml(post.summary)}</description></item>`).join("")}</channel></rss>`;
 await write("rss.xml", rss);
 await write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${absolute("/")}</loc></url><url><loc>${absolute("/about/")}</loc></url>${posts.map((post) => `<url><loc>${absolute(`/posts/${post.slug}/`)}</loc><lastmod>${post.date}</lastmod></url>`).join("")}</urlset>`);

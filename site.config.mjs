@@ -7,5 +7,7 @@ export default {
   author: "Your Name",
   baseUrl: "https://example.com",
   basePath: "",
+  themeColor: "#19332d",
+  backgroundColor: "#f8f5ed",
   postsPerPage: 12,
 };

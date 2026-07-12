@@ -17,12 +17,32 @@ test("build emits portable static pages", async () => {
     "public/sitemap.xml",
     "public/assets/styles.css",
     "public/assets/app.js",
+    "public/assets/markdown.js",
+    "public/manifest.webmanifest",
+    "public/icons/icon-192.png",
+    "public/icons/icon-512.png",
+    "public/icons/apple-touch-icon.png",
     "public/sw.js",
     "public/version.json",
   ];
   for (const file of files) {
     assert.equal((await stat(new URL(file, root))).isFile(), true, file);
   }
+});
+
+test("site is installable as a progressive web app", async () => {
+  const html = await read("public/index.html");
+  assert.match(html, /<link[^>]+href="\/manifest\.webmanifest"[^>]+rel="manifest"/);
+  assert.match(html, /<meta[^>]+content="#19332d"[^>]+name="theme-color"/);
+  assert.match(html, /<link[^>]+href="\/icons\/apple-touch-icon\.png"[^>]+rel="apple-touch-icon"/);
+
+  const manifest = JSON.parse(await read("public/manifest.webmanifest"));
+  assert.equal(manifest.name, "Freshmark");
+  assert.equal(manifest.start_url, "/");
+  assert.equal(manifest.scope, "/");
+  assert.equal(manifest.display, "standalone");
+  assert.equal(manifest.icons.some(({ sizes }) => sizes === "192x192"), true);
+  assert.equal(manifest.icons.some(({ sizes }) => sizes === "512x512"), true);
 });
 
 test("generated HTML has no application framework runtime", async () => {
@@ -113,7 +133,11 @@ test("frontmatter categories and tags are indexed and displayed", async () => {
 test("client enhances internal links with SPA navigation", async () => {
   const app = await read("theme/app.js");
   const bundle = await read("public/assets/app.js");
-  assert.ok(bundle.length > 10_000);
+  const markdownBundle = await read("public/assets/markdown.js");
+  assert.ok(bundle.length < markdownBundle.length);
+  assert.doesNotMatch(bundle, /MarkdownIt/);
+  assert.match(app, /assets\/markdown\.js/);
+  assert.match(app, /loadMarkdownRenderer/);
   assert.match(app, /history\.pushState/);
   assert.match(app, /addEventListener\("popstate"/);
   assert.match(app, /DOMParser/);
@@ -148,6 +172,8 @@ test("service worker versions and persists generated resources", async () => {
   assert.match(worker, /\.startsWith\("freshmark-"\)/);
   assert.match(worker, /\.endsWith\("\.md"\)/);
   assert.match(worker, /\.startsWith\("\/assets\/"\)/);
+  assert.match(worker, /manifest\.webmanifest/);
+  assert.match(worker, /icon-512\.png/);
   assert.match(worker, /"navigate"===/);
 });
 

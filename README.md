@@ -111,3 +111,4 @@ public/              Portable generated website
 - RSS, sitemap, robots.txt, and 404 page
 - Draft support and configurable base paths
 - Raw Markdown downloads for every published article
+- Installable PWA with versioned offline caching and app icons
