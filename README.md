@@ -85,6 +85,16 @@ Set `draft: true` to hide unfinished posts. Preview drafts with:
 FRESHMARK_DRAFTS=true npm run dev
 ```
 
+Add a visible caption to an image with standard Markdown image-title syntax:
+
+```md
+![A useful description](image.png "Caption shown below the image")
+```
+
+Captioned images render as semantic figures. Double-click an article image to
+open the gallery, then swipe or use the left and right arrow keys to move
+between images.
+
 ## Build the static site
 
 ```bash
@@ -139,6 +149,7 @@ public/              Portable generated website
 - Tags and filters
 - Automatic table of contents and reading time
 - Dark mode and reading progress
+- Image captions and a keyboard/touch-friendly image gallery
 - RSS, sitemap, robots.txt, and 404 page
 - Draft support and configurable base paths
 - Raw Markdown downloads for every published article

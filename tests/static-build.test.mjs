@@ -72,6 +72,7 @@ test("articles render math and colocated Markdown images", async () => {
 
   const titledImageHtml = await read("public/posts/chemistry/babychem/overview-of-stereochemistry/index.html");
   assert.match(titledImageHtml, /<img[^>]*src="image\.png"[^>]*title="关于电负性\/杂化的综合判断"[^>]*>/);
+  assert.match(titledImageHtml, /<figure class="prose-figure"><img[^>]*src="image\.png"[^>]*><figcaption>关于电负性\/杂化的综合判断<\/figcaption><\/figure>/);
 
   const spacedImageHtml = await read("public/posts/physics/celestial-movement/index.html");
   assert.match(spacedImageHtml, /<img[^>]*src="Screenshot%20From%202026-06-17%2020-47-25\.png"/);
@@ -159,6 +160,7 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /\["slow-2g", "2g", "3g"\]/);
   assert.match(app, /requestIdleCallback/);
   assert.match(app, /scheduleArticlePrefetch\(nextMain\)/);
+  assert.match(app, /prepareGallery\(nextMain\)/);
   assert.match(app, /function scrollToHash/);
   assert.match(app, /document\.getElementById\(id\)/);
   assert.match(app, /target\.scrollIntoView/);
@@ -168,6 +170,22 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /toc-level-\$\{heading\.level\}/);
   assert.match(app, /navigator\.serviceWorker\.register/);
   assert.match(app, /updateViaCache: "none"/);
+});
+
+test("article images open in a keyboard and touch-friendly gallery", async () => {
+  const html = await read("public/posts/physics/basic-calculus-02/index.html");
+  const app = await read("theme/app.js");
+  const css = await read("public/assets/styles.css");
+  assert.match(html, /data-image-gallery/);
+  assert.match(html, /data-gallery-prev/);
+  assert.match(html, /data-gallery-next/);
+  assert.match(app, /addEventListener\("dblclick"/);
+  assert.match(app, /event\.key === "ArrowLeft"/);
+  assert.match(app, /event\.key === "ArrowRight"/);
+  assert.match(app, /addEventListener\("pointerup"/);
+  assert.match(app, /Math\.abs\(deltaX\) >= 50/);
+  assert.match(css, /\.prose img\[data-gallery-item\]\{cursor:zoom-in/);
+  assert.match(css, /\.image-gallery\{position:fixed/);
 });
 
 test("service worker versions and persists generated resources", async () => {

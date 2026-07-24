@@ -5,6 +5,13 @@
   const input = document.querySelector("[data-search-input]");
   const results = document.querySelector("[data-search-results]");
   const shell = document.querySelector(".site-shell");
+  const gallery = document.querySelector("[data-image-gallery]");
+  const galleryImage = gallery?.querySelector("[data-gallery-image]");
+  const galleryCaption = gallery?.querySelector("[data-gallery-caption]");
+  const galleryCount = gallery?.querySelector("[data-gallery-count]");
+  const galleryPrevious = gallery?.querySelector("[data-gallery-prev]");
+  const galleryNext = gallery?.querySelector("[data-gallery-next]");
+  const galleryClose = gallery?.querySelector("[data-gallery-close]");
   const pageCache = new Map();
   const prefetchQueue = [];
   const queuedPrefetches = new Set();
@@ -12,6 +19,12 @@
   let renderedRoute = `${location.pathname}${location.search}`;
   let index;
   let markdownRenderer;
+  let galleryItems = [];
+  let galleryIndex = 0;
+  let galleryReturnFocus;
+  let bodyOverflow = "";
+  let swipeStart;
+  let lastImageTap = { image: null, time: 0 };
 
   const escape = (value) => String(value).replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[char]);
   const setTheme = (theme) => { root.dataset.theme = theme; try { localStorage.setItem("freshmark-theme", theme); } catch {} };
@@ -51,13 +64,109 @@
   }
   function closeSearch() { modal.hidden = true; document.body.style.overflow = ""; input.value = ""; }
 
+  function prepareGallery(scope = document) {
+    for (const image of scope.querySelectorAll(".prose img")) {
+      image.dataset.galleryItem = "";
+      image.tabIndex = 0;
+      image.setAttribute("aria-haspopup", "dialog");
+      image.setAttribute("aria-label", `${image.alt || image.title || "Article image"}. Open image gallery`);
+    }
+  }
+
+  function gallerySource(image) {
+    return image.currentSrc || image.src;
+  }
+
+  function showGalleryImage(nextIndex) {
+    if (!galleryItems.length) return;
+    galleryIndex = (nextIndex + galleryItems.length) % galleryItems.length;
+    const source = galleryItems[galleryIndex];
+    const figureCaption = source.closest("figure")?.querySelector("figcaption")?.textContent.trim();
+    const caption = source.title || figureCaption || source.alt || "";
+    galleryImage.src = gallerySource(source);
+    galleryImage.alt = source.alt || caption;
+    galleryCaption.textContent = caption;
+    galleryCaption.hidden = !caption;
+    galleryCount.textContent = `${galleryIndex + 1} / ${galleryItems.length}`;
+    galleryPrevious.hidden = galleryItems.length < 2;
+    galleryNext.hidden = galleryItems.length < 2;
+    if (galleryItems.length > 1) {
+      for (const offset of [-1, 1]) {
+        const preload = new Image();
+        preload.src = gallerySource(galleryItems[(galleryIndex + offset + galleryItems.length) % galleryItems.length]);
+      }
+    }
+  }
+
+  function openGallery(image) {
+    galleryItems = [...document.querySelectorAll("main .prose img")];
+    const nextIndex = galleryItems.indexOf(image);
+    if (!gallery || nextIndex < 0) return;
+    galleryReturnFocus = image;
+    bodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    gallery.hidden = false;
+    showGalleryImage(nextIndex);
+    galleryClose.focus({ preventScroll: true });
+  }
+
+  function closeGallery({ restoreFocus = true } = {}) {
+    if (!gallery || gallery.hidden) return;
+    gallery.hidden = true;
+    galleryImage.removeAttribute("src");
+    document.body.style.overflow = bodyOverflow;
+    if (restoreFocus && galleryReturnFocus?.isConnected) galleryReturnFocus.focus({ preventScroll: true });
+    galleryItems = [];
+    swipeStart = undefined;
+  }
+
+  function moveGallery(direction) {
+    if (galleryItems.length > 1) showGalleryImage(galleryIndex + direction);
+  }
+
   document.querySelector("[data-search-close]")?.addEventListener("click", closeSearch);
   modal?.addEventListener("click", (event) => { if (event.target === modal) closeSearch(); });
+  galleryClose?.addEventListener("click", () => closeGallery());
+  galleryPrevious?.addEventListener("click", () => moveGallery(-1));
+  galleryNext?.addEventListener("click", () => moveGallery(1));
+  gallery?.addEventListener("click", (event) => {
+    if (event.target === gallery || event.target === gallery.querySelector(".gallery-figure")) closeGallery();
+  });
+  galleryImage?.addEventListener("pointerdown", (event) => {
+    swipeStart = { x: event.clientX, y: event.clientY, pointerId: event.pointerId };
+    galleryImage.setPointerCapture?.(event.pointerId);
+  });
+  galleryImage?.addEventListener("pointerup", (event) => {
+    if (!swipeStart || event.pointerId !== swipeStart.pointerId) return;
+    const deltaX = event.clientX - swipeStart.x;
+    const deltaY = event.clientY - swipeStart.y;
+    swipeStart = undefined;
+    if (Math.abs(deltaX) >= 50 && Math.abs(deltaX) > Math.abs(deltaY)) moveGallery(deltaX < 0 ? 1 : -1);
+  });
+  galleryImage?.addEventListener("pointercancel", () => { swipeStart = undefined; });
   input?.addEventListener("input", async () => {
     const needle = input.value.toLowerCase().trim(); const posts = await loadIndex();
     draw(!needle ? posts : posts.filter((post) => `${post.title} ${post.summary} ${(post.categories || []).join(" ")} ${post.tags.join(" ")} ${post.searchText}`.toLowerCase().includes(needle)));
   });
   addEventListener("keydown", (event) => {
+    if (gallery && !gallery.hidden) {
+      if (event.key === "Escape") { event.preventDefault(); closeGallery(); return; }
+      if (event.key === "ArrowLeft") { event.preventDefault(); moveGallery(-1); return; }
+      if (event.key === "ArrowRight") { event.preventDefault(); moveGallery(1); return; }
+      if (event.key === "Home") { event.preventDefault(); showGalleryImage(0); return; }
+      if (event.key === "End") { event.preventDefault(); showGalleryImage(galleryItems.length - 1); return; }
+      if (event.key === "Tab") {
+        const controls = [...gallery.querySelectorAll("button:not([hidden])")];
+        const edge = event.shiftKey ? controls[0] : controls.at(-1);
+        if (event.target === edge) {
+          event.preventDefault();
+          controls[event.shiftKey ? controls.length - 1 : 0]?.focus();
+        }
+        return;
+      }
+    }
+    const galleryTrigger = event.target.closest?.(".prose img[data-gallery-item]");
+    if (galleryTrigger && ["Enter", " "].includes(event.key)) { event.preventDefault(); openGallery(galleryTrigger); return; }
     if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") { event.preventDefault(); openSearch(); }
     if (event.key === "/" && !["INPUT", "TEXTAREA"].includes(event.target.tagName)) { event.preventDefault(); openSearch(); }
     if (event.key === "Escape" && !modal?.hidden) closeSearch();
@@ -249,6 +358,7 @@
   }
 
   async function navigate(url, { push = true, restoreScroll = null } = {}) {
+    closeGallery({ restoreFocus: false });
     shell.setAttribute("aria-busy", "true");
     try {
       const nextPage = await getPage(url);
@@ -261,6 +371,7 @@
       const swap = () => {
         currentMain.replaceWith(nextMain);
         renderMath(nextMain);
+        prepareGallery(nextMain);
         scheduleArticlePrefetch(nextMain);
         document.querySelector("[data-reading-progress]")?.remove();
         if (nextPage.article) {
@@ -316,6 +427,25 @@
     event.preventDefault();
     navigate(url);
   });
+  document.addEventListener("dblclick", (event) => {
+    const image = event.target.closest(".prose img[data-gallery-item]");
+    if (!image) return;
+    event.preventDefault();
+    openGallery(image);
+  });
+  document.addEventListener("pointerup", (event) => {
+    if (event.pointerType !== "touch") return;
+    const image = event.target.closest(".prose img[data-gallery-item]");
+    if (!image) return;
+    const now = performance.now();
+    if (lastImageTap.image === image && now - lastImageTap.time < 350) {
+      event.preventDefault();
+      lastImageTap = { image: null, time: 0 };
+      openGallery(image);
+    } else {
+      lastImageTap = { image, time: now };
+    }
+  }, { passive: false });
 
   history.replaceState({ ...(history.state || {}), spa: true, scrollY }, "", location.href);
   if ("serviceWorker" in navigator) {
@@ -332,6 +462,7 @@
   addEventListener("scroll", updateProgress, { passive: true });
   (navigator.connection || navigator.mozConnection || navigator.webkitConnection)?.addEventListener("change", drainPrefetchQueue);
   renderMath();
+  prepareGallery();
   updateProgress();
   scheduleArticlePrefetch();
 })();
