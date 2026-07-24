@@ -33,7 +33,7 @@ test("build emits portable static pages", async () => {
 test("site is installable as a progressive web app", async () => {
   const html = await read("public/index.html");
   assert.match(html, /<link[^>]+href="\/manifest\.webmanifest"[^>]+rel="manifest"/);
-  assert.match(html, /<meta[^>]+content="#19332d"[^>]+name="theme-color"/);
+  assert.match(html, /<meta[^>]+content="#ff4500"[^>]+name="theme-color"/);
   assert.match(html, /<link[^>]+href="\/icons\/apple-touch-icon\.png"[^>]+rel="apple-touch-icon"/);
 
   const manifest = JSON.parse(await read("public/manifest.webmanifest"));
@@ -48,7 +48,7 @@ test("site is installable as a progressive web app", async () => {
 test("generated HTML has no application framework runtime", async () => {
   const html = await read("public/index.html");
   assert.match(html, /Search the archive/);
-  assert.match(html, /<style data-critical>[^<]*--paper:#f7f8f2/);
+  assert.match(html, /<style data-critical>[^<]*--paper:#f6f7f8/);
   const stylesheetLinks = html.match(/<link[^>]+href="\/assets\/styles\.css"[^>]*>/g);
   assert.equal(stylesheetLinks.length, 2);
   assert.match(stylesheetLinks[0], /\bas="style"/);
