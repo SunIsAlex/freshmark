@@ -8,6 +8,7 @@ import { parseArgs, resolveOutput, templateVariables } from "../scripts/new.mjs"
 
 test("template helpers create safe Markdown values", () => {
   assert.equal(slugify(" A Thoughtful Post! "), "a-thoughtful-post");
+  assert.equal(slugify("中文标题：第一篇"), "中文标题-第一篇");
   assert.equal(yamlList(["Design", "Builder's notes"]), '["Design", "Builder\'s notes"]');
   assert.equal(renderTemplate("# {{ title }}\n{{body}}", { title: "Hello", body: "World" }), "# Hello\nWorld");
   assert.throws(() => renderTemplate("{{unknown}}", {}), /missing template value: unknown/);
@@ -21,6 +22,10 @@ test("CLI arguments produce draft-safe defaults and custom values", () => {
     tags: '["Design", "Notes"]', draft: "true", kind: "essay",
   });
   assert.equal(templateVariables(parseArgs(["Published", "--publish"]), "2026-07-12").draft, "false");
+  assert.deepEqual(templateVariables(parseArgs(["中文标题：第一篇"]), "2026-07-12"), {
+    title: '"中文标题：第一篇"', slug: "中文标题-第一篇", date: "2026-07-12", summary: '""',
+    tags: "[]", draft: "true",
+  });
 });
 
 test("output paths support custom names without escaping the project", () => {

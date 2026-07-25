@@ -66,7 +66,7 @@ export function parseArgs(args) {
 }
 
 function safeName(value, label) {
-  if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(value)) throw new Error(`${label} may contain only letters, numbers, hyphens, and underscores`);
+  if (!/^[\p{L}\p{N}][\p{L}\p{N}_-]*$/u) throw new Error(`${label} may contain only letters, numbers, hyphens, and underscores`);
   return value;
 }
 
