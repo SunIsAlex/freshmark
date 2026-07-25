@@ -172,20 +172,30 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /updateViaCache: "none"/);
 });
 
-test("article images open in a keyboard and touch-friendly gallery", async () => {
+test("article images open in a PhotoSwipe keyboard and touch-friendly gallery", async () => {
   const html = await read("public/posts/physics/basic-calculus-02/index.html");
   const app = await read("theme/app.js");
   const css = await read("public/assets/styles.css");
-  assert.match(html, /data-image-gallery/);
-  assert.match(html, /data-gallery-prev/);
-  assert.match(html, /data-gallery-next/);
-  assert.match(app, /addEventListener\("dblclick"/);
-  assert.match(app, /event\.key === "ArrowLeft"/);
-  assert.match(app, /event\.key === "ArrowRight"/);
-  assert.match(app, /addEventListener\("pointerup"/);
-  assert.match(app, /Math\.abs\(deltaX\) >= 50/);
+  assert.doesNotMatch(html, /data-image-gallery/);
+  assert.match(app, /import PhotoSwipe from "photoswipe"/);
+  assert.match(app, /new PhotoSwipe/);
+  assert.doesNotMatch(app, /addEventListener\("dblclick"/);
+  assert.match(app, /image\.addEventListener\("click"/);
+  assert.match(app, /openGallery\(image\)/);
+  assert.doesNotMatch(app, /Promise\.all\(images\.map\(galleryImageSize\)\)/);
+  assert.match(app, /pswp\.on\("loadComplete"/);
+  assert.doesNotMatch(app, /imageTouchStart|touchGenerated|suppressImageClick/);
+  assert.match(app, /addFilter\("thumbEl"/);
+  assert.match(app, /addFilter\("placeholderSrc"/);
+  assert.match(app, /preload: \[1, 2\]/);
+  assert.match(app, /showHideAnimationType: "zoom"/);
+  assert.match(app, /arrowPrev: false/);
+  assert.match(app, /arrowNext: false/);
+  assert.doesNotMatch(app, /wheelToZoom: true/);
   assert.match(css, /\.prose img\[data-gallery-item\]\{cursor:zoom-in/);
-  assert.match(css, /\.image-gallery\{position:fixed/);
+  assert.match(css, /\.pswp\{/);
+  assert.match(css, /\.pswp__freshmark-caption/);
+  assert.doesNotMatch(css, /\.gallery-track/);
 });
 
 test("service worker versions and persists generated resources", async () => {

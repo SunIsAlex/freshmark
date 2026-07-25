@@ -91,9 +91,13 @@ Add a visible caption to an image with standard Markdown image-title syntax:
 ![A useful description](image.png "Caption shown below the image")
 ```
 
-Captioned images render as semantic figures. Double-click an article image to
-open the gallery, then swipe or use the left and right arrow keys to move
-between images.
+Captioned images render as semantic figures. The PhotoSwipe-powered gallery
+opens when an article image is clicked or tapped; swipe or use the left and
+right arrow keys to move between images. Pinch on a touchscreen to zoom and
+drag the enlarged image to pan; on a computer, hold `Ctrl` while using the
+mouse wheel to zoom around the pointer. Images animate from their position in
+the article into the gallery, and swipe navigation keeps the neighboring image
+visible while dragging.
 
 ## Build the static site
 
@@ -149,7 +153,7 @@ public/              Portable generated website
 - Tags and filters
 - Automatic table of contents and reading time
 - Dark mode and reading progress
-- Image captions and a keyboard/touch-friendly image gallery
+- Image captions and a PhotoSwipe keyboard/touch-friendly image gallery
 - RSS, sitemap, robots.txt, and 404 page
 - Draft support and configurable base paths
 - Raw Markdown downloads for every published article

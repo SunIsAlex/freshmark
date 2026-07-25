@@ -15,7 +15,8 @@
   },
   "dependencies": {
     "katex": "^0.17.0",
-    "markdown-it": "^14.3.0"
+    "markdown-it": "^14.3.0",
+    "photoswipe": "^5.4.4"
   },
   "devDependencies": {
     "clean-css": "^5.3.3",
