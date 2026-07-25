@@ -102,7 +102,8 @@ button { color:inherit; }
 .prose h3 { font-size:1.35rem; margin:2em 0 .65em; }
 .prose p { margin:0 0 1.45em; }
 .prose a { text-decoration:underline; text-decoration-color:var(--accent); text-decoration-thickness:2px; text-underline-offset:3px; }
-.prose img,.prose video,.prose iframe { display:block; max-width:100%; height:auto; margin:2em auto; border-radius:16px; }
+.prose img,.prose video,.prose iframe { display:block; max-width:100%; height:auto; margin:2em auto; }
+.prose video,.prose iframe { border-radius:16px; }
 .prose-figure { margin:2em auto; }
 .prose .prose-figure img { margin:0 auto; }
 .prose-figure figcaption { max-width:680px; margin:12px auto 0; color:var(--ink-soft); font-family:var(--font-sans); font-size:.82rem; line-height:1.55; text-align:center; }
