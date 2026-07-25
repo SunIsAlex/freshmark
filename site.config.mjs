@@ -5,7 +5,7 @@ export default {
   intro: "Small observations on design, technology, and building a thoughtful life—written to be useful, not noisy.",
   language: "en",
   author: "Your Name",
-  baseUrl: "https://example.com",
+  baseUrl: "https://next.sunisalex.org",
   basePath: "",
   themeColor: "#ff4500",
   backgroundColor: "#f6f7f8",
