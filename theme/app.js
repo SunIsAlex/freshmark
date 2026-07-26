@@ -4,6 +4,11 @@ import PhotoSwipe from "photoswipe";
   const root = document.documentElement;
   const basePath = window.FRESHMARK?.basePath || "";
   const assetVersion = window.FRESHMARK?.assetVersion || "";
+  const messages = window.FRESHMARK?.messages || {};
+  const localeRoot = window.FRESHMARK?.localeRoot || basePath || "/";
+  const alternateRoot = window.FRESHMARK?.alternateRoot || basePath || "/";
+  const postsRoot = window.FRESHMARK?.postsRoot || `${basePath}/posts/`;
+  const searchIndexPath = window.FRESHMARK?.searchIndexPath || `${basePath}/search-index.json`;
   const modal = document.querySelector("[data-search-modal]");
   const input = document.querySelector("[data-search-input]");
   const results = document.querySelector("[data-search-results]");
@@ -20,6 +25,7 @@ import PhotoSwipe from "photoswipe";
   const preparedGalleryImages = new WeakSet();
 
   const escape = (value) => String(value).replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[char]);
+  const message = (key, values = {}) => String(messages[key] || key).replace(/\{(\w+)\}/g, (_, name) => values[name] ?? "");
   const setTheme = (theme) => { root.dataset.theme = theme; try { localStorage.setItem("freshmark-theme", theme); } catch {} };
 
   function loadMarkdownRenderer() {
@@ -42,18 +48,21 @@ import PhotoSwipe from "photoswipe";
   }
 
   async function loadIndex() {
-    if (!index) index = await fetch(`${basePath}/search-index.json`).then((response) => response.json());
+    if (!index) index = await fetch(searchIndexPath).then((response) => response.json());
     return index;
   }
 
   function draw(items) {
-    if (!items.length) { results.innerHTML = '<p class="search-hint">No matching notes. Try a broader word.</p>'; return; }
-    results.innerHTML = items.slice(0, 8).map((post) => `<a class="search-result" href="${escape(post.url)}"><strong>${escape(post.title)}</strong><span>${escape([...(post.categories || []), ...post.tags].join(" · "))} · ${post.readingTime} min read</span></a>`).join("");
+    if (!items.length) { results.innerHTML = `<p class="search-hint">${escape(message("noResults"))}</p>`; return; }
+    results.innerHTML = items.slice(0, 8).map((post) => {
+      const metadata = [...(post.categories || []), ...(post.tags || [])].join(" · ");
+      return `<a class="search-result" href="${escape(post.url)}"><strong>${escape(post.title)}</strong><span>${metadata ? `${escape(metadata)} · ` : ""}${escape(message("minuteRead", { minutes: post.readingTime }))}</span></a>`;
+    }).join("");
   }
 
   async function openSearch() {
     modal.hidden = false; document.body.style.overflow = "hidden"; input.focus();
-    try { draw(await loadIndex()); } catch { results.innerHTML = '<p class="search-hint">Search index could not be loaded.</p>'; }
+    try { draw(await loadIndex()); } catch { results.innerHTML = `<p class="search-hint">${escape(message("searchFailed"))}</p>`; }
   }
   function closeSearch() { modal.hidden = true; document.body.style.overflow = ""; input.value = ""; }
 
@@ -62,7 +71,7 @@ import PhotoSwipe from "photoswipe";
       image.dataset.galleryItem = "";
       image.tabIndex = 0;
       image.setAttribute("aria-haspopup", "dialog");
-      image.setAttribute("aria-label", `${image.alt || image.title || "Article image"}. Open image gallery`);
+      image.setAttribute("aria-label", `${image.alt || image.title || message("articleImage")}. ${message("openGallery")}`);
       if (!preparedGalleryImages.has(image)) {
         preparedGalleryImages.add(image);
         image.addEventListener("click", (event) => {
@@ -200,7 +209,7 @@ import PhotoSwipe from "photoswipe";
     filters.forEach((item) => item.classList.toggle("active", item === button));
     let shown = 0;
     cards.forEach((card) => {
-      const visible = button.dataset.tag === "All" || card.dataset.tags.split("|").includes(button.dataset.tag);
+      const visible = button.dataset.tag === "__all__" || card.dataset.tags.split("|").includes(button.dataset.tag);
       card.hidden = !visible;
       if (visible) shown += 1;
     });
@@ -243,13 +252,15 @@ import PhotoSwipe from "photoswipe";
     document.title = page.title;
     document.head.querySelector('meta[name="description"]')?.setAttribute("content", page.description);
     document.head.querySelector('link[rel="canonical"]')?.setAttribute("href", page.canonical);
+    const languageSwitch = document.querySelector(".language-switch");
+    if (languageSwitch) languageSwitch.href = page.alternate || alternateRoot;
   }
 
   async function getPage(url) {
     const key = `${url.pathname}${url.search}`;
     if (!pageCache.has(key)) {
       let page;
-      const postsBase = `${basePath}/posts/`.replace(/\/+/g, "/");
+      const postsBase = new URL(postsRoot, location.origin).pathname;
       if (url.pathname.startsWith(postsBase) && url.pathname.endsWith("/")) {
         const markdownUrl = new URL("index.md", url);
         const response = await fetch(`${markdownUrl.pathname}${markdownUrl.search}`, { headers: { "X-Freshmark-Navigation": "spa" } });
@@ -264,6 +275,7 @@ import PhotoSwipe from "photoswipe";
             title: metadata?.dataset.title || "",
             description: metadata?.dataset.description || "",
             canonical: metadata?.dataset.canonical || url.href,
+            alternate: metadata?.dataset.alternate || alternateRoot,
             article: metadata?.dataset.article === "true",
             html: fragmentDocument.querySelector("main")?.outerHTML,
           };
@@ -277,6 +289,7 @@ import PhotoSwipe from "photoswipe";
           title: nextDocument.title,
           description: nextDocument.head.querySelector('meta[name="description"]')?.content || "",
           canonical: nextDocument.head.querySelector('link[rel="canonical"]')?.href || url.href,
+          alternate: [...nextDocument.head.querySelectorAll('link[rel="alternate"][hreflang]')].find((link) => ![window.FRESHMARK.language, "x-default"].includes(link.hreflang))?.href || alternateRoot,
           article: Boolean(nextDocument.querySelector("[data-reading-progress]")),
           html: nextDocument.querySelector("main")?.outerHTML,
         };
@@ -299,11 +312,12 @@ import PhotoSwipe from "photoswipe";
     const formattedDate = new Intl.DateTimeFormat(window.FRESHMARK.language, { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(`${date}T00:00:00Z`));
     const toc = headings.map((heading) => `<a class="toc-level-${heading.level}" href="#${escape(heading.id)}">${escape(heading.text)}</a>`).join("");
     const tagText = tags.map(escape).join(" · ");
-    const main = `<main><header class="container article-header"><a class="back-link" href="${basePath || "/"}">← Back to all writing</a><h1>${escape(data.title)}</h1><p class="article-dek">${renderSummary(summary)}</p><div class="article-meta"><time datetime="${date}">${formattedDate}</time><span>${readingTime} min read</span>${tagText ? `<span>${tagText}</span>` : ""}<a href="index.md" download>Download Markdown</a></div></header><div class="article-wrap"><aside class="toc"><div class="toc-head"><p>On this page</p><button class="toc-toggle" type="button" data-toc-toggle aria-expanded="false" aria-label="Toggle table of contents"><span class="toc-toggle-label">Table of contents</span><span class="toc-toggle-icon" aria-hidden="true"></span></button></div><nav class="toc-links" data-toc-links aria-label="Table of contents">${toc}</nav></aside><article class="prose">${html}</article></div></main>`;
+    const main = `<main><header class="container article-header"><a class="back-link" href="${localeRoot}">${escape(message("backToWriting"))}</a><h1>${escape(data.title)}</h1><p class="article-dek">${renderSummary(summary)}</p><div class="article-meta"><time datetime="${date}">${formattedDate}</time><span>${escape(message("minuteRead", { minutes: readingTime }))}</span>${tagText ? `<span>${tagText}</span>` : ""}<a href="index.md" download>${escape(message("downloadMarkdown"))}</a></div></header><div class="article-wrap"><aside class="toc"><div class="toc-head"><p>${escape(message("onThisPage"))}</p><button class="toc-toggle" type="button" data-toc-toggle aria-expanded="false" aria-label="${escape(message("toggleToc"))}"><span class="toc-toggle-label">${escape(message("tableOfContents"))}</span><span class="toc-toggle-icon" aria-hidden="true"></span></button></div><nav class="toc-links" data-toc-links aria-label="${escape(message("tableOfContents"))}">${toc}</nav></aside><article class="prose">${html}</article></div></main>`;
     return {
       title: `${data.title} — ${window.FRESHMARK.title}`,
       description: summary,
       canonical: url.href,
+      alternate: data.alternate ? new URL(`${basePath}${data.alternate}`, location.origin).href : alternateRoot,
       article: true,
       html: main,
     };
@@ -336,7 +350,7 @@ import PhotoSwipe from "photoswipe";
   }
 
   function scheduleArticlePrefetch(scope = document) {
-    const postsBase = `${basePath}/posts/`.replace(/\/+/g, "/");
+    const postsBase = new URL(postsRoot, location.origin).pathname;
     for (const anchor of scope.querySelectorAll("a[href]")) {
       const url = new URL(anchor.href, location.href);
       const key = `${url.pathname}${url.search}`;
@@ -436,7 +450,7 @@ import PhotoSwipe from "photoswipe";
     if (command?.matches("[data-toc-toggle]")) { event.preventDefault(); toggleToc(command); return; }
 
     const anchor = event.target.closest("a[href]");
-    if (!anchor || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || anchor.target || anchor.hasAttribute("download")) return;
+    if (!anchor || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || anchor.target || anchor.hasAttribute("download") || anchor.hasAttribute("data-no-spa")) return;
     const url = new URL(anchor.href, location.href);
     if (url.pathname === location.pathname && url.search === location.search && (url.hash || anchor.getAttribute("href") === "#")) {
       if (scrollToHash(url)) {

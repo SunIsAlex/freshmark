@@ -11,7 +11,7 @@
     "build": "node scripts/build.mjs",
     "new": "node scripts/new.mjs",
     "test": "npm run build && node --test tests/*.test.mjs",
-    "lint": "node --check scripts/build.mjs && node --check scripts/dev.mjs && node --check scripts/new.mjs && node --check lib/markdown.mjs && node --check lib/templates.mjs && node --check theme/app.js"
+    "lint": "node --check scripts/build.mjs && node --check scripts/dev.mjs && node --check scripts/new.mjs && node --check lib/i18n.mjs && node --check lib/markdown.mjs && node --check lib/templates.mjs && node --check theme/app.js"
   },
   "dependencies": {
     "katex": "^0.17.0",

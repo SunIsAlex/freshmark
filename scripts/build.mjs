@@ -6,6 +6,7 @@ import CleanCSS from "clean-css";
 import { minify as minifyHtml } from "html-minifier-terser";
 import { minify as minifyJavaScript } from "terser";
 import config from "../site.config.mjs";
+import { defaultLocale, interpolate, locales, localizedPath } from "../lib/i18n.mjs";
 import { parseFrontmatter, renderMarkdown, renderSummary, summaryFromBody } from "../lib/markdown.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
@@ -18,13 +19,15 @@ let assetVersion = "";
 const href = (value = "/") => `${basePath}${value.startsWith("/") ? value : `/${value}`}` || "/";
 const assetHref = (value) => `${href(value)}${assetVersion ? `?v=${assetVersion}` : ""}`;
 const absolute = (value) => new URL(href(value), config.baseUrl).href;
+const localeHref = (locale, value = "/") => href(localizedPath(locale, value));
+const localeAbsolute = (locale, value = "/") => absolute(localizedPath(locale, value));
 const criticalResult = new CleanCSS({ level: 2 }).minify(await fs.readFile(path.join(themeDir, "critical.css"), "utf8"));
 if (criticalResult.errors.length) throw new Error(`Critical CSS minification failed: ${criticalResult.errors.join(", ")}`);
 const criticalCss = criticalResult.styles;
 
 const escapeHtml = (text = "") => String(text).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
-const formatDate = (value) => new Intl.DateTimeFormat(config.language, { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(`${value}T00:00:00Z`));
-const formatLongDate = (value) => new Intl.DateTimeFormat(config.language, { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(`${value}T00:00:00Z`));
+const formatDate = (locale, value) => new Intl.DateTimeFormat(locales[locale].language, { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(`${value}T00:00:00Z`));
+const formatLongDate = (locale, value) => new Intl.DateTimeFormat(locales[locale].language, { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(`${value}T00:00:00Z`));
 
 async function findMarkdownFiles(directory, relative = "") {
   const entries = await fs.readdir(path.join(directory, relative), { withFileTypes: true });
@@ -46,17 +49,33 @@ async function loadPosts() {
     const { data, body } = parseFrontmatter(source, sourceFile);
     if (data.draft === true && process.env.FRESHMARK_DRAFTS !== "true") continue;
     for (const key of ["title", "date"]) if (!data[key]) throw new Error(`${sourceFile}: missing ${key} in frontmatter`);
+    const localizedFile = sourceFile.match(/\.([a-z]{2})\.md$/);
+    const requestedLocale = String(data.lang || localizedFile?.[1] || defaultLocale).split("-")[0];
+    const locale = locales[requestedLocale] ? requestedLocale : defaultLocale;
+    const suffix = localizedFile && locales[localizedFile[1]] ? `.${localizedFile[1]}.md` : ".md";
     const date = String(data.date).slice(0, 10);
     const { html, headings } = renderMarkdown(body);
     const words = body.replace(/[#*`>\[\]()_-]/g, " ").split(/\s+/).filter(Boolean).length;
-    const relativeSlug = sourceFile.replace(/\.md$/, "").replace(/(^|\/)index$/, "");
+    const relativeSlug = sourceFile.slice(0, -suffix.length).replace(/(^|\/)index$/, "");
     const summary = data.summary || data.description || summaryFromBody(body);
     posts.push({
-      slug: relativeSlug, sourceFile, title: data.title, date, summary,
+      slug: relativeSlug, sourceFile, locale, translationKey: data.translationKey || relativeSlug, alternate: data.alternate || "", title: data.title, date, summary,
       tags: Array.isArray(data.tags) ? data.tags : [], categories: Array.isArray(data.categories) ? data.categories : [], featured: data.featured === true,
       readingTime: Math.max(1, Math.ceil(words / 220)), html, headings,
       searchText: body.replace(/[#*`>\[\]()_-]/g, " ").replace(/\s+/g, " ").trim(),
     });
+  }
+  const groups = new Map();
+  for (const post of posts) {
+    if (!groups.has(post.translationKey)) groups.set(post.translationKey, new Map());
+    groups.get(post.translationKey).set(post.locale, post);
+  }
+  for (const post of posts) {
+    post.translations = groups.get(post.translationKey);
+    const alternateLocale = locales[post.locale].alternate;
+    const alternatePost = post.translations.get(alternateLocale);
+    post.hasTranslation = Boolean(alternatePost);
+    post.alternatePath = alternatePost ? localizedPath(alternateLocale, `/posts/${alternatePost.slug}/`) : localizedPath(alternateLocale, "/");
   }
   return posts.sort((a, b) => b.date.localeCompare(a.date));
 }
@@ -64,36 +83,47 @@ async function loadPosts() {
 const searchIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
 const moonIcon = '<svg data-theme-icon width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 15.1A8.5 8.5 0 0 1 8.9 4a8.5 8.5 0 1 0 11.1 11.1Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>';
 
-function header() {
-  return `<header class="container header"><a class="brand" href="${href("/")}" aria-label="${escapeHtml(config.title)} home"><span class="brand-mark"><span>✦</span></span>${escapeHtml(config.title)}</a><nav class="nav" aria-label="Main navigation"><a href="${href("/#writing")}">Writing</a><a href="${href("/about/")}">About</a><a href="${href("/rss.xml")}">RSS</a><button class="icon-btn" type="button" data-search-open aria-label="Open search">${searchIcon}</button><button class="icon-btn" type="button" data-theme-toggle aria-label="Switch color theme">${moonIcon}</button></nav></header>`;
+function header(locale, alternatePath = localizedPath(locales[locale].alternate, "/")) {
+  const messages = locales[locale];
+  const alternate = locales[messages.alternate];
+  return `<header class="container header"><a class="brand" href="${localeHref(locale, "/")}" aria-label="${escapeHtml(config.title)}"><span class="brand-mark"><span>✦</span></span>${escapeHtml(config.title)}</a><nav class="nav" aria-label="${escapeHtml(messages.mainNavigation)}"><a href="${localeHref(locale, "/#writing")}">${escapeHtml(messages.writing)}</a><a href="${localeHref(locale, "/about/")}">${escapeHtml(messages.about)}</a><a href="${localeHref(locale, "/rss.xml")}">RSS</a><a class="language-switch" href="${href(alternatePath)}" hreflang="${alternate.language}" lang="${alternate.language}" data-no-spa>${escapeHtml(messages.switchLabel)}</a><button class="icon-btn" type="button" data-search-open aria-label="${escapeHtml(messages.openSearch)}">${searchIcon}</button><button class="icon-btn" type="button" data-theme-toggle aria-label="${escapeHtml(messages.switchTheme)}">${moonIcon}</button></nav></header>`;
 }
 
-function footer() {
-  return `<footer class="container footer"><span>© ${currentYear} ${escapeHtml(config.title)}. Made for unhurried reading.</span><div class="footer-links"><a href="${href("/about/")}">About</a><a href="${href("/rss.xml")}">RSS</a><a href="#">Top ↑</a></div></footer>`;
+function footer(locale) {
+  const messages = locales[locale];
+  return `<footer class="container footer"><span>© ${currentYear} ${escapeHtml(config.title)}. ${escapeHtml(messages.footerNote)}</span><div class="footer-links"><a href="${localeHref(locale, "/about/")}">${escapeHtml(messages.about)}</a><a href="${localeHref(locale, "/rss.xml")}">RSS</a><a href="#">${escapeHtml(messages.top)}</a></div></footer>`;
 }
 
-function searchModal() {
-  return `<div class="search-modal" data-search-modal role="dialog" aria-modal="true" aria-label="Search articles" hidden><div class="search-panel"><div class="search-field">${searchIcon}<input data-search-input placeholder="Search titles, topics, or ideas…" aria-label="Search articles" autocomplete="off"><button type="button" data-search-close aria-label="Close search">Esc</button></div><div class="search-results" data-search-results></div></div></div>`;
+function searchModal(locale) {
+  const messages = locales[locale];
+  return `<div class="search-modal" data-search-modal role="dialog" aria-modal="true" aria-label="${escapeHtml(messages.searchArticles)}" hidden><div class="search-panel"><div class="search-field">${searchIcon}<input data-search-input placeholder="${escapeHtml(messages.searchPlaceholder)}" aria-label="${escapeHtml(messages.searchArticles)}" autocomplete="off"><button type="button" data-search-close aria-label="${escapeHtml(messages.closeSearch)}">Esc</button></div><div class="search-results" data-search-results></div></div></div>`;
 }
 
-function page({ title, description, content, article = false, pathName = "/" }) {
-  const fullTitle = title ? `${escapeHtml(title)} — ${escapeHtml(config.title)}` : `${escapeHtml(config.title)} — ${escapeHtml(config.description)}`;
+function page({ locale = defaultLocale, title, description, content, article = false, pathName = "/", alternatePath = localizedPath(locales[locale].alternate, "/"), hasAlternate = true }) {
+  const messages = locales[locale];
+  const alternateLocale = messages.alternate;
+  const alternate = locales[alternateLocale];
+  const pageDescription = description || messages.siteDescription;
+  const fullTitle = title ? `${escapeHtml(title)} — ${escapeHtml(config.title)}` : `${escapeHtml(config.title)} — ${escapeHtml(messages.siteDescription)}`;
   const deferredStyles = ["/assets/styles.css", "/assets/katex.min.css"].map((file) => {
     const url = file === "/assets/styles.css" ? assetHref(file) : href(file);
     return `<link rel="preload" href="${url}" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="${url}"></noscript>`;
   }).join("");
-  return `<!doctype html><html lang="${escapeHtml(config.language)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="${escapeHtml(config.themeColor)}"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="${escapeHtml(config.title)}"><meta name="codex-preview" content="development"><title>${fullTitle}</title><meta name="description" content="${escapeHtml(description || config.description)}"><link rel="canonical" href="${absolute(pathName)}"><link rel="manifest" href="${href("/manifest.webmanifest")}"><link rel="icon" href="${href("/favicon.svg")}" type="image/svg+xml"><link rel="apple-touch-icon" href="${href("/icons/apple-touch-icon.png")}"><link rel="alternate" type="application/rss+xml" title="${escapeHtml(config.title)} RSS" href="${href("/rss.xml")}"><script>try{document.documentElement.dataset.theme=localStorage.getItem('freshmark-theme')||''}catch(e){}</script><style data-critical>${criticalCss}</style>${deferredStyles}</head><body><div class="site-shell"><div class="ambient"></div>${article ? '<div class="reading-progress" data-reading-progress></div>' : ""}${header()}${content}${footer()}${searchModal()}</div><script>window.FRESHMARK={basePath:${JSON.stringify(basePath)},title:${JSON.stringify(config.title)},language:${JSON.stringify(config.language)},assetVersion:${JSON.stringify(assetVersion)}};</script><script src="${href("/assets/katex.min.js")}" defer></script><script src="${href("/assets/mhchem.min.js")}" defer></script><script src="${href("/assets/auto-render.min.js")}" defer></script><script src="${assetHref("/assets/app.js")}" defer></script></body></html>`;
+  const defaultPath = locale === defaultLocale ? pathName : alternatePath;
+  const alternateLink = hasAlternate ? `<link rel="alternate" hreflang="${alternate.language}" href="${absolute(alternatePath)}">` : "";
+  return `<!doctype html><html lang="${escapeHtml(messages.language)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="${escapeHtml(config.themeColor)}"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="${escapeHtml(config.title)}"><meta name="codex-preview" content="development"><title>${fullTitle}</title><meta name="description" content="${escapeHtml(pageDescription)}"><link rel="canonical" href="${absolute(pathName)}"><link rel="alternate" hreflang="${messages.language}" href="${absolute(pathName)}">${alternateLink}<link rel="alternate" hreflang="x-default" href="${absolute(defaultPath)}"><link rel="manifest" href="${localeHref(locale, "/manifest.webmanifest")}"><link rel="icon" href="${href("/favicon.svg")}" type="image/svg+xml"><link rel="apple-touch-icon" href="${href("/icons/apple-touch-icon.png")}"><link rel="alternate" type="application/rss+xml" title="${escapeHtml(config.title)} RSS" href="${localeHref(locale, "/rss.xml")}"><link rel="preload" href="${href("/assets/fonts/anthropic-sans-variable.ttf")}" as="font" type="font/ttf" crossorigin><script>try{document.documentElement.dataset.theme=localStorage.getItem('freshmark-theme')||''}catch(e){}</script><style data-critical>${criticalCss}</style>${deferredStyles}</head><body><div class="site-shell"><div class="ambient"></div>${article ? '<div class="reading-progress" data-reading-progress></div>' : ""}${header(locale, alternatePath)}${content}${footer(locale)}${searchModal(locale)}</div><script>window.FRESHMARK={basePath:${JSON.stringify(basePath)},title:${JSON.stringify(config.title)},locale:${JSON.stringify(locale)},language:${JSON.stringify(messages.language)},messages:${JSON.stringify(messages)},localeRoot:${JSON.stringify(localeHref(locale, "/"))},alternateRoot:${JSON.stringify(localeHref(alternateLocale, "/"))},postsRoot:${JSON.stringify(localeHref(locale, "/posts/"))},searchIndexPath:${JSON.stringify(localeHref(locale, "/search-index.json"))},assetVersion:${JSON.stringify(assetVersion)}};</script><script src="${href("/assets/katex.min.js")}" defer></script><script src="${href("/assets/mhchem.min.js")}" defer></script><script src="${href("/assets/auto-render.min.js")}" defer></script><script src="${assetHref("/assets/app.js")}" defer></script></body></html>`;
 }
 
-function webManifest() {
+function webManifest(locale = defaultLocale) {
+  const messages = locales[locale];
   return JSON.stringify({
-    id: href("/"),
+    id: localeHref(locale, "/"),
     name: config.title,
     short_name: config.title,
-    description: config.description,
-    lang: config.language,
-    start_url: href("/"),
-    scope: href("/"),
+    description: messages.siteDescription,
+    lang: messages.language,
+    start_url: localeHref(locale, "/"),
+    scope: localeHref(locale, "/"),
     display: "standalone",
     background_color: config.backgroundColor,
     theme_color: config.themeColor,
@@ -104,31 +134,37 @@ function webManifest() {
   });
 }
 
-function pageFragment(html, { title, description, pathName = "/", article = false }) {
+function pageFragment(html, { locale = defaultLocale, title, description, pathName = "/", article = false, alternatePath = localizedPath(locales[locale].alternate, "/") }) {
   const content = html.match(/<main[\s\S]*<\/main>/)?.[0];
   if (!content) throw new Error(`Could not extract main content for ${pathName}`);
-  const pageTitle = title ? `${title} — ${config.title}` : `${config.title} — ${config.description}`;
-  return `<meta data-freshmark-page data-title="${escapeHtml(pageTitle)}" data-description="${escapeHtml(description || config.description)}" data-canonical="${absolute(pathName)}" data-article="${article}">${content}`;
+  const pageTitle = title ? `${title} — ${config.title}` : `${config.title} — ${locales[locale].siteDescription}`;
+  return `<meta data-freshmark-page data-title="${escapeHtml(pageTitle)}" data-description="${escapeHtml(description || locales[locale].siteDescription)}" data-canonical="${absolute(pathName)}" data-alternate="${absolute(alternatePath)}" data-article="${article}">${content}`;
 }
 
-function homePage(posts) {
+function homePage(locale, posts) {
+  const messages = locales[locale];
   const featured = posts.find((post) => post.featured) || posts[0];
   const categories = [...new Set(posts.flatMap((post) => post.categories))];
-  const cards = posts.filter((post) => post !== featured).map((post) => `<a class="post-card" href="${href(`/posts/${post.slug}/`)}" data-post-card data-tags="${escapeHtml(post.categories.join("|"))}"><time class="post-date" datetime="${post.date}">${formatDate(post.date)}</time><div><h3>${escapeHtml(post.title)}</h3><p>${renderSummary(post.summary, { links: false })}</p></div><span class="post-arrow" aria-hidden="true">↗</span></a>`).join("");
-  const content = `<main><section class="container hero"><div><p class="eyebrow">${escapeHtml(config.tagline)}</p><h1>Notes for <em>curious</em> people.</h1></div><div class="hero-side"><p>${escapeHtml(config.intro)}</p><button class="search-trigger" type="button" data-search-open>${searchIcon}<span>Search the archive</span><kbd>⌘ K</kbd></button></div></section><section class="container featured" aria-label="Featured article"><div class="featured-art" aria-hidden="true"><span class="art-line"></span><span class="art-dot"></span></div><div class="featured-copy"><span class="meta">Featured · ${featured.readingTime} min read</span><h2>${escapeHtml(featured.title)}</h2><p>${renderSummary(featured.summary)}</p><a class="read-link" href="${href(`/posts/${featured.slug}/`)}">Read the essay <span aria-hidden="true">→</span></a></div></section><section class="container post-section" id="writing"><div class="section-head"><div><p class="eyebrow">The archive</p><h2>Recent writing</h2></div><div class="tag-row" aria-label="Filter posts by category"><button class="tag-filter active" type="button" data-tag="All">All</button>${categories.map((category) => `<button class="tag-filter" type="button" data-tag="${escapeHtml(category)}">${escapeHtml(category)}</button>`).join("")}</div></div><div class="post-list" data-post-list>${cards}<p class="empty" data-filter-empty hidden>No posts in this category yet.</p></div></section></main>`;
-  return page({ content, pathName: "/" });
+  const cards = posts.filter((post) => post !== featured).map((post) => `<a class="post-card" href="${localeHref(locale, `/posts/${post.slug}/`)}" data-post-card data-tags="${escapeHtml(post.categories.join("|"))}"><time class="post-date" datetime="${post.date}">${formatDate(locale, post.date)}</time><div><h3>${escapeHtml(post.title)}</h3><p>${renderSummary(post.summary, { links: false })}</p></div><span class="post-arrow" aria-hidden="true">↗</span></a>`).join("");
+  const content = `<main><section class="container hero"><div><p class="eyebrow">${escapeHtml(messages.tagline)}</p><h1>${escapeHtml(messages.heroLead)} <em>${escapeHtml(messages.heroEmphasis)}</em></h1></div><div class="hero-side"><p>${escapeHtml(messages.intro)}</p><button class="search-trigger" type="button" data-search-open>${searchIcon}<span>${escapeHtml(messages.searchArchive)}</span><kbd>⌘ K</kbd></button></div></section><section class="container featured" aria-label="${escapeHtml(messages.featuredArticle)}"><div class="featured-art" aria-hidden="true"><span class="art-line"></span><span class="art-dot"></span></div><div class="featured-copy"><span class="meta">${escapeHtml(messages.featured)} · ${escapeHtml(interpolate(messages.minuteRead, { minutes: featured.readingTime }))}</span><h2>${escapeHtml(featured.title)}</h2><p>${renderSummary(featured.summary)}</p><a class="read-link" href="${localeHref(locale, `/posts/${featured.slug}/`)}">${escapeHtml(messages.readEssay)} <span aria-hidden="true">→</span></a></div></section><section class="container post-section" id="writing"><div class="section-head"><div><p class="eyebrow">${escapeHtml(messages.archive)}</p><h2>${escapeHtml(messages.recentWriting)}</h2></div><div class="tag-row" aria-label="${escapeHtml(messages.filterByCategory)}"><button class="tag-filter active" type="button" data-tag="__all__">${escapeHtml(messages.all)}</button>${categories.map((category) => `<button class="tag-filter" type="button" data-tag="${escapeHtml(category)}">${escapeHtml(category)}</button>`).join("")}</div></div><div class="post-list" data-post-list>${cards}<p class="empty" data-filter-empty hidden>${escapeHtml(messages.emptyCategory)}</p></div></section></main>`;
+  const pathName = localizedPath(locale, "/");
+  return page({ locale, content, pathName, alternatePath: localizedPath(messages.alternate, "/") });
 }
 
 function postPage(post) {
+  const messages = locales[post.locale];
   const toc = post.headings.map((heading) => `<a class="toc-level-${heading.level}" href="#${heading.id}">${escapeHtml(heading.text)}</a>`).join("");
   const tags = post.tags.map(escapeHtml).join(" · ");
-  const content = `<main><header class="container article-header"><a class="back-link" href="${href("/")}">← Back to all writing</a><h1>${escapeHtml(post.title)}</h1><p class="article-dek">${renderSummary(post.summary)}</p><div class="article-meta"><time datetime="${post.date}">${formatLongDate(post.date)}</time><span>${post.readingTime} min read</span>${tags ? `<span>${tags}</span>` : ""}<a href="index.md" download>Download Markdown</a></div></header><div class="article-wrap"><aside class="toc"><div class="toc-head"><p>On this page</p><button class="toc-toggle" type="button" data-toc-toggle aria-expanded="false" aria-label="Toggle table of contents"><span class="toc-toggle-label">Table of contents</span><span class="toc-toggle-icon" aria-hidden="true"></span></button></div><nav class="toc-links" data-toc-links aria-label="Table of contents">${toc}</nav></aside><article class="prose">${post.html}</article></div></main>`;
-  return page({ title: post.title, description: post.summary, content, article: true, pathName: `/posts/${post.slug}/` });
+  const content = `<main><header class="container article-header"><a class="back-link" href="${localeHref(post.locale, "/")}">${escapeHtml(messages.backToWriting)}</a><h1>${escapeHtml(post.title)}</h1><p class="article-dek">${renderSummary(post.summary)}</p><div class="article-meta"><time datetime="${post.date}">${formatLongDate(post.locale, post.date)}</time><span>${escapeHtml(interpolate(messages.minuteRead, { minutes: post.readingTime }))}</span>${tags ? `<span>${tags}</span>` : ""}<a href="index.md" download>${escapeHtml(messages.downloadMarkdown)}</a></div></header><div class="article-wrap"><aside class="toc"><div class="toc-head"><p>${escapeHtml(messages.onThisPage)}</p><button class="toc-toggle" type="button" data-toc-toggle aria-expanded="false" aria-label="${escapeHtml(messages.toggleToc)}"><span class="toc-toggle-label">${escapeHtml(messages.tableOfContents)}</span><span class="toc-toggle-icon" aria-hidden="true"></span></button></div><nav class="toc-links" data-toc-links aria-label="${escapeHtml(messages.tableOfContents)}">${toc}</nav></aside><article class="prose">${post.html}</article></div></main>`;
+  const pathName = localizedPath(post.locale, `/posts/${post.slug}/`);
+  return page({ locale: post.locale, title: post.title, description: post.summary, content, article: true, pathName, alternatePath: post.alternatePath, hasAlternate: post.hasTranslation });
 }
 
-function aboutPage() {
-  const content = `<main><header class="container article-header"><p class="eyebrow">About this place</p><h1>A blog that respects your attention.</h1><p class="article-dek">${escapeHtml(config.title)} is a small collection of essays and field notes about design, technology, craft, and living with curiosity.</p></header><div class="article-wrap"><aside class="toc"><p>The idea</p><a href="#principles">Principles</a><a href="#contact">Say hello</a></aside><article class="prose"><p>This starter is built around a simple belief: reading on the web should feel clear, warm, and unhurried. There are no trackers, pop-ups, databases, or application servers—just static files.</p><h2 id="principles">Principles</h2><ul><li>Typography carries the design.</li><li>Every feature should earn its place.</li><li>Good defaults make publishing easy.</li><li>The site should remain pleasant on any screen.</li></ul><h2 id="contact">Say hello</h2><p>Replace this paragraph in <code>scripts/build.mjs</code> with a short introduction and your contact link.</p></article></div></main>`;
-  return page({ title: "About", description: `About ${config.title}`, content, pathName: "/about/" });
+function aboutPage(locale) {
+  const messages = locales[locale];
+  const content = `<main><header class="container article-header"><p class="eyebrow">${escapeHtml(messages.aboutEyebrow)}</p><h1>${escapeHtml(messages.aboutTitle)}</h1><p class="article-dek">${escapeHtml(messages.aboutDek)}</p></header><div class="article-wrap"><aside class="toc"><p>${escapeHtml(messages.aboutIdea)}</p><a href="#principles">${escapeHtml(messages.principles)}</a><a href="#contact">${escapeHtml(messages.sayHello)}</a></aside><article class="prose"><p>${escapeHtml(messages.aboutBody)}</p><h2 id="principles">${escapeHtml(messages.principles)}</h2><ul>${messages.principleItems.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul><h2 id="contact">${escapeHtml(messages.sayHello)}</h2><p>${escapeHtml(messages.contactBody)}</p></article></div></main>`;
+  const pathName = localizedPath(locale, "/about/");
+  return page({ locale, title: messages.about, description: messages.aboutDek, content, pathName, alternatePath: localizedPath(messages.alternate, "/about/") });
 }
 
 async function write(relative, content) {
@@ -168,20 +204,31 @@ async function outputVersion() {
 }
 
 function serviceWorker(version) {
+  const localizedPrecache = Object.keys(locales).flatMap((locale) => [
+    localizedPath(locale, "/"),
+    localizedPath(locale, "/404.html"),
+    localizedPath(locale, "/about/"),
+    localizedPath(locale, "/page.html"),
+    localizedPath(locale, "/about/page.html"),
+    localizedPath(locale, "/search-index.json"),
+    localizedPath(locale, "/rss.xml"),
+    localizedPath(locale, "/manifest.webmanifest"),
+  ]);
   return `const VERSION=${JSON.stringify(version)};
 const CACHE_NAME="freshmark-"+VERSION;
 const BASE_PATH=${JSON.stringify(basePath)};
 const ASSET_VERSION=${JSON.stringify(assetVersion)};
+const LOCALIZED_NOT_FOUND=${JSON.stringify(Object.keys(locales).filter((locale) => locale !== defaultLocale).map((locale) => [`/${locale}/`, localizedPath(locale, "/404.html")]))};
 const at=(path)=>BASE_PATH+path;
 const versioned=(path)=>at(path)+"?v="+ASSET_VERSION;
-const PRECACHE=["/","/404.html","/about/","/page.html","/about/page.html","/manifest.webmanifest","/favicon.svg","/icons/icon-192.png","/icons/icon-512.png","/icons/apple-touch-icon.png","/search-index.json","/assets/katex.min.css","/assets/katex.min.js","/assets/mhchem.min.js","/assets/auto-render.min.js"].map(at).concat(["/assets/styles.css","/assets/app.js","/assets/markdown.js"].map(versioned));
+  const PRECACHE=${JSON.stringify([...localizedPrecache, "/favicon.svg", "/icons/icon-192.png", "/icons/icon-512.png", "/icons/apple-touch-icon.png", "/assets/fonts/anthropic-sans-variable.ttf", "/assets/katex.min.css", "/assets/katex.min.js", "/assets/mhchem.min.js", "/assets/auto-render.min.js"])}.map(at).concat(["/assets/styles.css","/assets/app.js","/assets/markdown.js"].map(versioned));
 self.addEventListener("install",(event)=>event.waitUntil(caches.open(CACHE_NAME).then((cache)=>cache.addAll(PRECACHE)).then(()=>self.skipWaiting())));
 self.addEventListener("activate",(event)=>event.waitUntil(caches.keys().then((names)=>Promise.all(names.filter((name)=>name.startsWith("freshmark-")&&name!==CACHE_NAME).map((name)=>caches.delete(name)))).then(()=>self.clients.claim())));
 const cacheResponse=async(request,response)=>{if(response&&response.ok){const cache=await caches.open(CACHE_NAME);await cache.put(request,response.clone())}return response};
 const cacheFirst=async(request)=>(await caches.match(request))||cacheResponse(request,await fetch(request));
-const networkFirst=async(request)=>{try{return await cacheResponse(request,await fetch(request))}catch{return (await caches.match(request))||(request.mode==="navigate"?caches.match(at("/404.html")):Response.error())}};
+const networkFirst=async(request)=>{try{return await cacheResponse(request,await fetch(request))}catch{const path=new URL(request.url).pathname.slice(BASE_PATH.length);const fallback=LOCALIZED_NOT_FOUND.find(([prefix])=>path.startsWith(prefix))?.[1]||"/404.html";return (await caches.match(request))||(request.mode==="navigate"?caches.match(at(fallback)):Response.error())}};
 const staleWhileRevalidate=async(request)=>{const cached=await caches.match(request);const fresh=fetch(request).then((response)=>cacheResponse(request,response)).catch(()=>null);return cached||await fresh||Response.error()};
-self.addEventListener("fetch",(event)=>{const request=event.request;if(request.method!=="GET")return;const url=new URL(request.url);if(url.origin!==self.location.origin||!url.pathname.startsWith(BASE_PATH||"/"))return;const path=url.pathname.slice(BASE_PATH.length);if(request.mode==="navigate"||path.endsWith(".html")||["/search-index.json","/rss.xml","/sitemap.xml"].includes(path))event.respondWith(networkFirst(request));else if(path.endsWith(".md"))event.respondWith(staleWhileRevalidate(request));else if(path.startsWith("/assets/")||/\.(?:png|jpe?g|gif|webp|svg|avif)$/i.test(path))event.respondWith(cacheFirst(request));});
+self.addEventListener("fetch",(event)=>{const request=event.request;if(request.method!=="GET")return;const url=new URL(request.url);if(url.origin!==self.location.origin||!url.pathname.startsWith(BASE_PATH||"/"))return;const path=url.pathname.slice(BASE_PATH.length);if(request.mode==="navigate"||path.endsWith(".html")||path.endsWith("/search-index.json")||path.endsWith("/rss.xml")||path==="/sitemap.xml")event.respondWith(networkFirst(request));else if(path.endsWith(".md"))event.respondWith(staleWhileRevalidate(request));else if(path.startsWith("/assets/")||/\.(?:png|jpe?g|gif|webp|svg|avif|ttf|woff2?)$/i.test(path))event.respondWith(cacheFirst(request));});
 `;
 }
 
@@ -189,7 +236,7 @@ const posts = await loadPosts();
 if (!posts.length) throw new Error("No publishable Markdown posts found.");
 await fs.mkdir(outputDir, { recursive: true });
 await Promise.all((await fs.readdir(outputDir)).map((entry) => fs.rm(path.join(outputDir, entry), { recursive: true, force: true })));
-await fs.mkdir(path.join(outputDir, "assets"), { recursive: true });
+await fs.mkdir(path.join(outputDir, "assets", "fonts"), { recursive: true });
 const styles = new CleanCSS({ level: 2 }).minify([
   await fs.readFile(path.join(root, "node_modules", "photoswipe", "dist", "photoswipe.css"), "utf8"),
   await fs.readFile(path.join(themeDir, "styles.css"), "utf8"),
@@ -199,6 +246,7 @@ await Promise.all([
   fs.writeFile(path.join(outputDir, "assets", "styles.css"), styles.styles),
   fs.copyFile(path.join(themeDir, "favicon.svg"), path.join(outputDir, "favicon.svg")),
   fs.cp(path.join(themeDir, "icons"), path.join(outputDir, "icons"), { recursive: true }),
+  fs.copyFile(path.join(themeDir, "fonts", "anthropic-sans-variable.ttf"), path.join(outputDir, "assets", "fonts", "anthropic-sans-variable.ttf")),
   fs.copyFile(path.join(root, "node_modules", "katex", "dist", "katex.min.css"), path.join(outputDir, "assets", "katex.min.css")),
   fs.copyFile(path.join(root, "node_modules", "katex", "dist", "katex.min.js"), path.join(outputDir, "assets", "katex.min.js")),
   fs.copyFile(path.join(root, "node_modules", "katex", "dist", "contrib", "mhchem.min.js"), path.join(outputDir, "assets", "mhchem.min.js")),
@@ -221,26 +269,47 @@ await fs.cp(contentDir, path.join(outputDir, "posts"), {
   recursive: true,
   filter: (source) => !source.endsWith(".md") && !source.endsWith(".md.bak"),
 });
-const homeHtml = homePage(posts);
-const aboutHtml = aboutPage();
-await write("index.html", homeHtml);
-await write("page.html", pageFragment(homeHtml, {}));
-await write("about/index.html", aboutHtml);
-await write("about/page.html", pageFragment(aboutHtml, { title: "About", description: `About ${config.title}`, pathName: "/about/" }));
-await write("404.html", page({ title: "Not found", description: "Page not found", content: `<main class="container article-header"><p class="eyebrow">404</p><h1>This page wandered off.</h1><p class="article-dek"><a class="read-link" href="${href("/")}">Return to the writing →</a></p></main>`, pathName: "/404.html" }));
-for (const post of posts) {
-  const html = postPage(post);
-  const directory = `posts/${post.slug}`;
-  await write(`${directory}/index.html`, html);
-  await fs.copyFile(path.join(contentDir, post.sourceFile), path.join(outputDir, directory, "index.md"));
+const postsByLocale = Object.fromEntries(Object.keys(locales).map((locale) => [locale, posts.filter((post) => post.locale === locale)]));
+const localeOutput = (locale, relative) => `${locale === defaultLocale ? "" : `${locale}/`}${relative}`;
+for (const locale of Object.keys(locales)) {
+  const messages = locales[locale];
+  const localePosts = postsByLocale[locale];
+  if (!localePosts.length) throw new Error(`No publishable Markdown posts found for locale ${locale}.`);
+  const homeHtml = homePage(locale, localePosts);
+  const aboutHtml = aboutPage(locale);
+  const homePath = localizedPath(locale, "/");
+  const aboutPath = localizedPath(locale, "/about/");
+  await write(localeOutput(locale, "index.html"), homeHtml);
+  await write(localeOutput(locale, "page.html"), pageFragment(homeHtml, { locale, pathName: homePath, alternatePath: localizedPath(messages.alternate, "/") }));
+  await write(localeOutput(locale, "about/index.html"), aboutHtml);
+  await write(localeOutput(locale, "about/page.html"), pageFragment(aboutHtml, { locale, title: messages.about, description: messages.aboutDek, pathName: aboutPath, alternatePath: localizedPath(messages.alternate, "/about/") }));
+  const notFoundPath = localizedPath(locale, "/404.html");
+  const notFound = `<main class="container article-header"><p class="eyebrow">404</p><h1>${escapeHtml(messages.notFoundTitle)}</h1><p class="article-dek"><a class="read-link" href="${localeHref(locale, "/")}">${escapeHtml(messages.returnToWriting)}</a></p></main>`;
+  await write(localeOutput(locale, "404.html"), page({ locale, title: "404", description: messages.notFoundDescription, content: notFound, pathName: notFoundPath, alternatePath: localizedPath(messages.alternate, "/404.html") }));
+
+  const searchIndex = localePosts.map(({ slug, title, summary, tags, categories, readingTime, searchText }) => ({ title, summary, tags, categories, readingTime, searchText, url: localeHref(locale, `/posts/${slug}/`) }));
+  await write(localeOutput(locale, "search-index.json"), JSON.stringify(searchIndex));
+  await write(localeOutput(locale, "manifest.webmanifest"), webManifest(locale));
+  const rss = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>${escapeHtml(config.title)}</title><link>${localeAbsolute(locale, "/")}</link><description>${escapeHtml(messages.siteDescription)}</description><language>${escapeHtml(messages.language)}</language>${localePosts.map((post) => `<item><title>${escapeHtml(post.title)}</title><link>${localeAbsolute(locale, `/posts/${post.slug}/`)}</link><guid>${localeAbsolute(locale, `/posts/${post.slug}/`)}</guid><pubDate>${new Date(`${post.date}T12:00:00Z`).toUTCString()}</pubDate><description>${escapeHtml(post.summary)}</description></item>`).join("")}</channel></rss>`;
+  await write(localeOutput(locale, "rss.xml"), rss);
 }
 
-const searchIndex = posts.map(({ slug, title, summary, tags, categories, readingTime, searchText }) => ({ title, summary, tags, categories, readingTime, searchText, url: href(`/posts/${slug}/`) }));
-await write("search-index.json", JSON.stringify(searchIndex));
-await write("manifest.webmanifest", webManifest());
-const rss = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>${escapeHtml(config.title)}</title><link>${escapeHtml(config.baseUrl)}</link><description>${escapeHtml(config.description)}</description>${posts.map((post) => `<item><title>${escapeHtml(post.title)}</title><link>${absolute(`/posts/${post.slug}/`)}</link><guid>${absolute(`/posts/${post.slug}/`)}</guid><pubDate>${new Date(`${post.date}T12:00:00Z`).toUTCString()}</pubDate><description>${escapeHtml(post.summary)}</description></item>`).join("")}</channel></rss>`;
-await write("rss.xml", rss);
-await write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${absolute("/")}</loc></url><url><loc>${absolute("/about/")}</loc></url>${posts.map((post) => `<url><loc>${absolute(`/posts/${post.slug}/`)}</loc><lastmod>${post.date}</lastmod></url>`).join("")}</urlset>`);
+for (const post of posts) {
+  const html = postPage(post);
+  const directory = localeOutput(post.locale, `posts/${post.slug}`);
+  await write(`${directory}/index.html`, html);
+  await fs.copyFile(path.join(contentDir, post.sourceFile), path.join(outputDir, directory, "index.md"));
+  if (post.locale !== defaultLocale) {
+    const sourceDirectory = path.dirname(path.join(contentDir, post.sourceFile));
+    await fs.cp(sourceDirectory, path.join(outputDir, directory), {
+      recursive: true,
+      filter: (source) => source === sourceDirectory || (!source.endsWith(".md") && !source.endsWith(".md.bak")),
+    });
+  }
+}
+
+const sitemapPages = Object.keys(locales).flatMap((locale) => [localizedPath(locale, "/"), localizedPath(locale, "/about/")]);
+await write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${sitemapPages.map((pathName) => `<url><loc>${absolute(pathName)}</loc></url>`).join("")}${posts.map((post) => `<url><loc>${localeAbsolute(post.locale, `/posts/${post.slug}/`)}</loc><lastmod>${post.date}</lastmod></url>`).join("")}</urlset>`);
 await write("robots.txt", `User-agent: *\nAllow: /\nSitemap: ${absolute("/sitemap.xml")}\n`);
 const version = await outputVersion();
 await write("version.json", JSON.stringify({ version }));

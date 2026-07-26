@@ -15,12 +15,21 @@ test("build emits portable static pages", async () => {
     "public/posts/chemistry/babychem/overview-of-stereochemistry/image.png",
     "public/posts/chemistry/inorganic/manganese/index.html",
     "public/posts/chemistry/inorganic/manganese/image.png",
+    "public/en/index.html",
+    "public/en/about/index.html",
+    "public/en/posts/chemistry/inorganic/manganese/index.html",
+    "public/en/posts/chemistry/inorganic/manganese/index.md",
+    "public/en/posts/chemistry/inorganic/manganese/image.png",
+    "public/en/search-index.json",
+    "public/en/rss.xml",
+    "public/en/manifest.webmanifest",
     "public/search-index.json",
     "public/rss.xml",
     "public/sitemap.xml",
     "public/assets/styles.css",
     "public/assets/app.js",
     "public/assets/markdown.js",
+    "public/assets/fonts/anthropic-sans-variable.ttf",
     "public/manifest.webmanifest",
     "public/icons/icon-192.png",
     "public/icons/icon-512.png",
@@ -47,11 +56,17 @@ test("site is installable as a progressive web app", async () => {
   assert.equal(manifest.display, "standalone");
   assert.equal(manifest.icons.some(({ sizes }) => sizes === "192x192"), true);
   assert.equal(manifest.icons.some(({ sizes }) => sizes === "512x512"), true);
+
+  const englishManifest = JSON.parse(await read("public/en/manifest.webmanifest"));
+  assert.equal(englishManifest.lang, "en");
+  assert.equal(englishManifest.start_url, "/en/");
+  assert.equal(englishManifest.scope, "/en/");
+  assert.match(await read("public/en/index.html"), /href="\/en\/manifest\.webmanifest" rel="manifest"/);
 });
 
 test("generated HTML has no application framework runtime", async () => {
   const html = await read("public/index.html");
-  assert.match(html, /Search the archive/);
+  assert.match(html, /搜索文章/);
   assert.match(html, /<style data-critical>[^<]*--paper:#f6f7f8/);
   const stylesheetLinks = html.match(/<link[^>]+href="\/assets\/styles\.css\?v=[a-f0-9]{12}"[^>]*>/g);
   assert.equal(stylesheetLinks.length, 2);
@@ -60,7 +75,73 @@ test("generated HTML has no application framework runtime", async () => {
   assert.match(stylesheetLinks[1], /\brel="stylesheet"/);
   assert.match(html, /<script[^>]+src="\/assets\/app\.js\?v=[a-f0-9]{12}"/);
   assert.match(html, /assetVersion:"[a-f0-9]{12}"/);
+  assert.match(html, /<link[^>]+href="\/assets\/fonts\/anthropic-sans-variable\.ttf"[^>]+rel="preload"/);
   assert.doesNotMatch(html, /\b(?:_next|__next|react(?:\.production)?\.min|vinext)\b/i);
+});
+
+test("localized routes provide Chinese and English navigation", async () => {
+  const chineseHome = await read("public/index.html");
+  const englishHome = await read("public/en/index.html");
+  const chineseArticle = await read("public/posts/chemistry/inorganic/manganese/index.html");
+  const englishArticle = await read("public/en/posts/chemistry/inorganic/manganese/index.html");
+
+  assert.match(chineseHome, /<html lang="zh-CN"/);
+  assert.match(chineseHome, /写给 <em>好奇的人。<\/em>/);
+  assert.match(chineseHome, /href="\/en\/" class="language-switch"/);
+  assert.match(englishHome, /<html lang="en"/);
+  assert.match(englishHome, /Notes for <em>curious people.<\/em>/);
+  assert.match(englishHome, /href="\/" class="language-switch"/);
+
+  assert.match(chineseArticle, /href="\/en\/posts\/chemistry\/inorganic\/manganese\/" class="language-switch"/);
+  assert.match(englishArticle, /href="\/posts\/chemistry\/inorganic\/manganese\/" class="language-switch"/);
+  assert.match(chineseArticle, /hreflang="en"/);
+  assert.match(englishArticle, /hreflang="zh-CN"/);
+  assert.match(englishArticle, /Back to all writing/);
+  assert.match(englishArticle, /On this page/);
+  const untranslatedArticle = await read("public/posts/physics/basic-calculus-02/index.html");
+  assert.doesNotMatch(untranslatedArticle, /rel="alternate" hreflang="en"/);
+
+  const englishProse = englishArticle.match(/<article class="prose">([\s\S]*?)<\/article>/)?.[1] || "";
+  assert.match(englishProse, /Manganese ores occur mainly as/);
+  assert.match(englishProse, /Industrial Applications of Manganese/);
+  assert.doesNotMatch(englishProse, /\p{Script=Han}/u);
+
+  const chineseIndex = JSON.parse(await read("public/search-index.json"));
+  const englishIndex = JSON.parse(await read("public/en/search-index.json"));
+  assert.equal(chineseIndex.length, 30);
+  assert.equal(englishIndex.length, 1);
+  assert.equal(englishIndex[0].url, "/en/posts/chemistry/inorganic/manganese/");
+  const englishRss = await read("public/en/rss.xml");
+  assert.match(englishRss, /<language>en<\/language>/);
+  assert.match(englishRss, /https:\/\/next\.sunisalex\.org\/en\/posts\/chemistry\/inorganic\/manganese\//);
+});
+
+test("typography uses Claude's font family and size scale", async () => {
+  const css = await read("public/assets/styles.css");
+  assert.match(css, /@font-face\{[^}]*font-family:"Anthropic Sans"[^}]*anthropic-sans-variable\.ttf/);
+  assert.match(css, /--text-xs:12px;--text-sm:14px;--text-md:16px;--text-lg:20px/);
+  assert.match(css, /--heading-lg:20px;--heading-xl:24px;--heading-2xl:28px;--heading-3xl:36px/);
+  assert.match(css, /body\{[^}]*font-size:var\(--text-md\)[^}]*line-height:1\.4/);
+  assert.match(css, /\.prose\{[^}]*font-size:var\(--text-md\)[^}]*line-height:1\.4/);
+  assert.match(css, /\.article-header h1,\.hero h1\{font-size:var\(--heading-2xl\);line-height:1\.1\}/);
+  assert.match(css, /\.featured h2,\.section-head h2\{font-size:var\(--heading-xl\);line-height:1\.25\}/);
+  assert.match(css, /\.prose h2\{font-size:var\(--heading-xl\);line-height:1\.25\}/);
+  assert.doesNotMatch(css, /Iowan Old Style|Baskerville|Times New Roman/);
+});
+
+test("manganese color descriptions render with matching colors", async () => {
+  const html = await read("public/posts/chemistry/inorganic/manganese/index.html");
+  const css = await read("public/assets/styles.css");
+  assert.equal(html.match(/class="chemical-color"/g)?.length, 79);
+  for (const color of [
+    "black", "blue-violet", "brown", "brown-black", "brown-red", "brown-yellow",
+    "colorless", "dark-green", "flesh", "gray", "green", "light-green",
+    "near-white", "pale-pink", "pink", "purple", "purple-black", "purple-red",
+    "red", "rose", "silver-white", "white", "yellow",
+  ]) assert.match(html, new RegExp(`data-color="${color}"`));
+  assert.match(css, /\.chemical-color\{[^}]*color:var\(--chemical-color\)/);
+  assert.match(css, /\.chemical-color\[data-color=white\]\{[^}]*background:#667078/);
+  assert.match(css, /\.chemical-color\[data-color=colorless\]\{[^}]*text-decoration:underline dotted/);
 });
 
 test("articles render math and colocated Markdown images", async () => {
@@ -100,6 +181,8 @@ test("summaries render inline Markdown and preserve LaTeX for KaTeX", async () =
   );
   const longFormulaSummary = summaryFromBody(`${"a".repeat(175)} $\\frac{a_1+a_2+a_3}{b_1+b_2+b_3}$ trailing text`);
   assert.equal(longFormulaSummary, `${"a".repeat(175)} $\\frac{a_1+a_2+a_3}{b_1+b_2+b_3}$`);
+  assert.equal(summaryFromBody('黑<span class="chemical-color">色</span>文本'), "黑色文本");
+  assert.equal(summaryFromBody("<p>First</p><p>Second</p>"), "First Second");
   assert.match(renderSummary(longFormulaSummary), /\\\(\\frac\{a_1\+a_2\+a_3\}\{b_1\+b_2\+b_3\}\\\)$/);
   assert.doesNotMatch(longFormulaSummary, /FRESHMARKMATH/);
   const html = await read("public/posts/math/max-minus-min-sequence/index.html");
@@ -190,6 +273,9 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.ok(bundle.length < markdownBundle.length);
   assert.doesNotMatch(bundle, /MarkdownIt/);
   assert.match(app, /assets\/markdown\.js/);
+  assert.match(app, /searchIndexPath/);
+  assert.match(app, /postsRoot/);
+  assert.match(app, /data-no-spa/);
   assert.match(app, /loadMarkdownRenderer/);
   assert.match(app, /history\.pushState/);
   assert.match(app, /addEventListener\("popstate"/);
@@ -256,6 +342,9 @@ test("service worker versions and persists generated resources", async () => {
   assert.match(worker, /\.endsWith\("\.md"\)/);
   assert.match(worker, /\.startsWith\("\/assets\/"\)/);
   assert.match(worker, /manifest\.webmanifest/);
+  assert.match(worker, /en\/manifest\.webmanifest/);
+  assert.match(worker, /en\/search-index\.json/);
+  assert.match(worker, /en\/404\.html/);
   assert.match(worker, /icon-512\.png/);
   assert.match(worker, /assets\/markdown\.js/);
   assert.match(worker, /\?v=/);
@@ -270,5 +359,9 @@ test("published posts retain raw Markdown for downloads and SPA navigation", asy
   await assert.rejects(stat(new URL("public/posts/physics/basic-calculus-02/page.html", root)), { code: "ENOENT" });
 
   const html = await read("public/posts/physics/basic-calculus-02/index.html");
-  assert.match(html, /<a href="index\.md" download>Download Markdown<\/a>/);
+  assert.match(html, /<a href="index\.md" download>下载 Markdown<\/a>/);
+
+  const englishSource = await read("content/posts/chemistry/inorganic/manganese/index.en.md");
+  const englishPublished = await read("public/en/posts/chemistry/inorganic/manganese/index.md");
+  assert.equal(englishPublished, englishSource);
 });
