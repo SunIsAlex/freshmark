@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile, stat } from "node:fs/promises";
 import test from "node:test";
+import { parseFrontmatter, renderSummary, summaryFromBody } from "../lib/markdown.mjs";
 
 const root = new URL("../", import.meta.url);
 const read = (file) => readFile(new URL(file, root), "utf8");
@@ -49,11 +50,13 @@ test("generated HTML has no application framework runtime", async () => {
   const html = await read("public/index.html");
   assert.match(html, /Search the archive/);
   assert.match(html, /<style data-critical>[^<]*--paper:#f6f7f8/);
-  const stylesheetLinks = html.match(/<link[^>]+href="\/assets\/styles\.css"[^>]*>/g);
+  const stylesheetLinks = html.match(/<link[^>]+href="\/assets\/styles\.css\?v=[a-f0-9]{12}"[^>]*>/g);
   assert.equal(stylesheetLinks.length, 2);
   assert.match(stylesheetLinks[0], /\bas="style"/);
   assert.match(stylesheetLinks[0], /\brel="preload"/);
   assert.match(stylesheetLinks[1], /\brel="stylesheet"/);
+  assert.match(html, /<script[^>]+src="\/assets\/app\.js\?v=[a-f0-9]{12}"/);
+  assert.match(html, /assetVersion:"[a-f0-9]{12}"/);
   assert.doesNotMatch(html, /\b(?:_next|__next|react(?:\.production)?\.min|vinext)\b/i);
 });
 
@@ -77,6 +80,34 @@ test("articles render math and colocated Markdown images", async () => {
   const spacedImageHtml = await read("public/posts/physics/celestial-movement/index.html");
   assert.match(spacedImageHtml, /<img[^>]*src="Screenshot%20From%202026-06-17%2020-47-25\.png"/);
   assert.doesNotMatch(spacedImageHtml, /src="&lt;Screenshot/);
+});
+
+test("summaries render inline Markdown and preserve LaTeX for KaTeX", async () => {
+  assert.equal(
+    renderSummary("Use **AM-GM** for $a_4$ and `code`."),
+    "Use <strong>AM-GM</strong> for \\(a_4\\) and <code>code</code>.",
+  );
+  assert.equal(
+    renderSummary("[Reference](https://example.com) with *emphasis*", { links: false }),
+    "Reference with <em>emphasis</em>",
+  );
+  assert.equal(
+    parseFrontmatter("---\nsummary: >\n  First line with $x$.\n  Second line.\n---\nBody").data.summary,
+    "First line with $x$. Second line.",
+  );
+  const longFormulaSummary = summaryFromBody(`${"a".repeat(175)} $\\frac{a_1+a_2+a_3}{b_1+b_2+b_3}$ trailing text`);
+  assert.equal(longFormulaSummary, `${"a".repeat(175)} $\\frac{a_1+a_2+a_3}{b_1+b_2+b_3}$`);
+  assert.match(renderSummary(longFormulaSummary), /\\\(\\frac\{a_1\+a_2\+a_3\}\{b_1\+b_2\+b_3\}\\\)$/);
+  assert.doesNotMatch(longFormulaSummary, /FRESHMARKMATH/);
+  const html = await read("public/posts/math/max-minus-min-sequence/index.html");
+  assert.match(html, /<p class="article-dek">第\(I\)问枚举 \\\(a_4\\\)/);
+  const foldedHtml = await read("public/posts/physics/application-of-the-law-of-gravitation/index.html");
+  assert.match(foldedHtml, /<p class="article-dek">以轨道力学为主线/);
+  assert.doesNotMatch(foldedHtml, /<p class="article-dek">&gt;<\/p>/);
+  const manganeseSource = await read("content/posts/chemistry/inorganic/manganese/index.md");
+  const manganeseSummary = summaryFromBody(parseFrontmatter(manganeseSource).body);
+  assert.match(manganeseSummary, /\$\\ce\{MnCO3\}\$$/);
+  assert.doesNotMatch(manganeseSummary, /\$\(n-1\)d\^5n$/);
 });
 
 test("standalone boxed formulas become scrollable display math", async () => {
@@ -103,6 +134,7 @@ test("articles pass through raw HTML, render level-one headings, and use the mor
   const index = JSON.parse(await read("public/search-index.json"));
   const post = index.find(({ url }) => url.endsWith("/alcohol-to-halide-conversion-and-alcohol-elimination/"));
   assert.equal(post.summary, "本文是【基础有机化学 L9-3 补充你的知识盲区，你真的理解醇的取代和消除反应吗？】的学习笔记");
+  assert.equal("summaryHtml" in post, false);
 });
 
 test("math placeholders never leak into heading links", async () => {
@@ -160,6 +192,9 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /\["slow-2g", "2g", "3g"\]/);
   assert.match(app, /requestIdleCallback/);
   assert.match(app, /scheduleArticlePrefetch\(nextMain\)/);
+  assert.match(app, /renderSummary\(summary\)/);
+  assert.match(app, /window\.FRESHMARK\?\.assetVersion/);
+  assert.match(app, /assets\/markdown\.js\$\{assetVersion \? `\?v=\$\{assetVersion\}` : ""\}/);
   assert.match(app, /prepareGallery\(nextMain\)/);
   assert.match(app, /function scrollToHash/);
   assert.match(app, /document\.getElementById\(id\)/);
@@ -208,6 +243,8 @@ test("service worker versions and persists generated resources", async () => {
   assert.match(worker, /\.startsWith\("\/assets\/"\)/);
   assert.match(worker, /manifest\.webmanifest/);
   assert.match(worker, /icon-512\.png/);
+  assert.match(worker, /assets\/markdown\.js/);
+  assert.match(worker, /\?v=/);
   assert.match(worker, /"navigate"===/);
 });
 

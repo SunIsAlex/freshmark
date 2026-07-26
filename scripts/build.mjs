@@ -6,7 +6,7 @@ import CleanCSS from "clean-css";
 import { minify as minifyHtml } from "html-minifier-terser";
 import { minify as minifyJavaScript } from "terser";
 import config from "../site.config.mjs";
-import { parseFrontmatter, renderMarkdown, summaryFromBody } from "../lib/markdown.mjs";
+import { parseFrontmatter, renderMarkdown, renderSummary, summaryFromBody } from "../lib/markdown.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
 const contentDir = path.join(root, "content", "posts");
@@ -14,7 +14,9 @@ const themeDir = path.join(root, "theme");
 const outputDir = path.join(root, "public");
 const currentYear = new Date().getUTCFullYear();
 const basePath = `/${String(config.basePath || "").replace(/^\/+|\/+$/g, "")}`.replace(/^\/$/, "");
+let assetVersion = "";
 const href = (value = "/") => `${basePath}${value.startsWith("/") ? value : `/${value}`}` || "/";
+const assetHref = (value) => `${href(value)}${assetVersion ? `?v=${assetVersion}` : ""}`;
 const absolute = (value) => new URL(href(value), config.baseUrl).href;
 const criticalResult = new CleanCSS({ level: 2 }).minify(await fs.readFile(path.join(themeDir, "critical.css"), "utf8"));
 if (criticalResult.errors.length) throw new Error(`Critical CSS minification failed: ${criticalResult.errors.join(", ")}`);
@@ -75,8 +77,11 @@ function searchModal() {
 
 function page({ title, description, content, article = false, pathName = "/" }) {
   const fullTitle = title ? `${escapeHtml(title)} — ${escapeHtml(config.title)}` : `${escapeHtml(config.title)} — ${escapeHtml(config.description)}`;
-  const deferredStyles = ["/assets/styles.css", "/assets/katex.min.css"].map((file) => `<link rel="preload" href="${href(file)}" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="${href(file)}"></noscript>`).join("");
-  return `<!doctype html><html lang="${escapeHtml(config.language)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="${escapeHtml(config.themeColor)}"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="${escapeHtml(config.title)}"><meta name="codex-preview" content="development"><title>${fullTitle}</title><meta name="description" content="${escapeHtml(description || config.description)}"><link rel="canonical" href="${absolute(pathName)}"><link rel="manifest" href="${href("/manifest.webmanifest")}"><link rel="icon" href="${href("/favicon.svg")}" type="image/svg+xml"><link rel="apple-touch-icon" href="${href("/icons/apple-touch-icon.png")}"><link rel="alternate" type="application/rss+xml" title="${escapeHtml(config.title)} RSS" href="${href("/rss.xml")}"><script>try{document.documentElement.dataset.theme=localStorage.getItem('freshmark-theme')||''}catch(e){}</script><style data-critical>${criticalCss}</style>${deferredStyles}</head><body><div class="site-shell"><div class="ambient"></div>${article ? '<div class="reading-progress" data-reading-progress></div>' : ""}${header()}${content}${footer()}${searchModal()}</div><script>window.FRESHMARK={basePath:${JSON.stringify(basePath)},title:${JSON.stringify(config.title)},language:${JSON.stringify(config.language)}};</script><script src="${href("/assets/katex.min.js")}" defer></script><script src="${href("/assets/mhchem.min.js")}" defer></script><script src="${href("/assets/auto-render.min.js")}" defer></script><script src="${href("/assets/app.js")}" defer></script></body></html>`;
+  const deferredStyles = ["/assets/styles.css", "/assets/katex.min.css"].map((file) => {
+    const url = file === "/assets/styles.css" ? assetHref(file) : href(file);
+    return `<link rel="preload" href="${url}" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="${url}"></noscript>`;
+  }).join("");
+  return `<!doctype html><html lang="${escapeHtml(config.language)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="${escapeHtml(config.themeColor)}"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="${escapeHtml(config.title)}"><meta name="codex-preview" content="development"><title>${fullTitle}</title><meta name="description" content="${escapeHtml(description || config.description)}"><link rel="canonical" href="${absolute(pathName)}"><link rel="manifest" href="${href("/manifest.webmanifest")}"><link rel="icon" href="${href("/favicon.svg")}" type="image/svg+xml"><link rel="apple-touch-icon" href="${href("/icons/apple-touch-icon.png")}"><link rel="alternate" type="application/rss+xml" title="${escapeHtml(config.title)} RSS" href="${href("/rss.xml")}"><script>try{document.documentElement.dataset.theme=localStorage.getItem('freshmark-theme')||''}catch(e){}</script><style data-critical>${criticalCss}</style>${deferredStyles}</head><body><div class="site-shell"><div class="ambient"></div>${article ? '<div class="reading-progress" data-reading-progress></div>' : ""}${header()}${content}${footer()}${searchModal()}</div><script>window.FRESHMARK={basePath:${JSON.stringify(basePath)},title:${JSON.stringify(config.title)},language:${JSON.stringify(config.language)},assetVersion:${JSON.stringify(assetVersion)}};</script><script src="${href("/assets/katex.min.js")}" defer></script><script src="${href("/assets/mhchem.min.js")}" defer></script><script src="${href("/assets/auto-render.min.js")}" defer></script><script src="${assetHref("/assets/app.js")}" defer></script></body></html>`;
 }
 
 function webManifest() {
@@ -108,15 +113,15 @@ function pageFragment(html, { title, description, pathName = "/", article = fals
 function homePage(posts) {
   const featured = posts.find((post) => post.featured) || posts[0];
   const categories = [...new Set(posts.flatMap((post) => post.categories))];
-  const cards = posts.filter((post) => post !== featured).map((post) => `<a class="post-card" href="${href(`/posts/${post.slug}/`)}" data-post-card data-tags="${escapeHtml(post.categories.join("|"))}"><time class="post-date" datetime="${post.date}">${formatDate(post.date)}</time><div><h3>${escapeHtml(post.title)}</h3><p>${escapeHtml(post.summary)}</p></div><span class="post-arrow" aria-hidden="true">↗</span></a>`).join("");
-  const content = `<main><section class="container hero"><div><p class="eyebrow">${escapeHtml(config.tagline)}</p><h1>Notes for <em>curious</em> people.</h1></div><div class="hero-side"><p>${escapeHtml(config.intro)}</p><button class="search-trigger" type="button" data-search-open>${searchIcon}<span>Search the archive</span><kbd>⌘ K</kbd></button></div></section><section class="container featured" aria-label="Featured article"><div class="featured-art" aria-hidden="true"><span class="art-line"></span><span class="art-dot"></span></div><div class="featured-copy"><span class="meta">Featured · ${featured.readingTime} min read</span><h2>${escapeHtml(featured.title)}</h2><p>${escapeHtml(featured.summary)}</p><a class="read-link" href="${href(`/posts/${featured.slug}/`)}">Read the essay <span aria-hidden="true">→</span></a></div></section><section class="container post-section" id="writing"><div class="section-head"><div><p class="eyebrow">The archive</p><h2>Recent writing</h2></div><div class="tag-row" aria-label="Filter posts by category"><button class="tag-filter active" type="button" data-tag="All">All</button>${categories.map((category) => `<button class="tag-filter" type="button" data-tag="${escapeHtml(category)}">${escapeHtml(category)}</button>`).join("")}</div></div><div class="post-list" data-post-list>${cards}<p class="empty" data-filter-empty hidden>No posts in this category yet.</p></div></section></main>`;
+  const cards = posts.filter((post) => post !== featured).map((post) => `<a class="post-card" href="${href(`/posts/${post.slug}/`)}" data-post-card data-tags="${escapeHtml(post.categories.join("|"))}"><time class="post-date" datetime="${post.date}">${formatDate(post.date)}</time><div><h3>${escapeHtml(post.title)}</h3><p>${renderSummary(post.summary, { links: false })}</p></div><span class="post-arrow" aria-hidden="true">↗</span></a>`).join("");
+  const content = `<main><section class="container hero"><div><p class="eyebrow">${escapeHtml(config.tagline)}</p><h1>Notes for <em>curious</em> people.</h1></div><div class="hero-side"><p>${escapeHtml(config.intro)}</p><button class="search-trigger" type="button" data-search-open>${searchIcon}<span>Search the archive</span><kbd>⌘ K</kbd></button></div></section><section class="container featured" aria-label="Featured article"><div class="featured-art" aria-hidden="true"><span class="art-line"></span><span class="art-dot"></span></div><div class="featured-copy"><span class="meta">Featured · ${featured.readingTime} min read</span><h2>${escapeHtml(featured.title)}</h2><p>${renderSummary(featured.summary)}</p><a class="read-link" href="${href(`/posts/${featured.slug}/`)}">Read the essay <span aria-hidden="true">→</span></a></div></section><section class="container post-section" id="writing"><div class="section-head"><div><p class="eyebrow">The archive</p><h2>Recent writing</h2></div><div class="tag-row" aria-label="Filter posts by category"><button class="tag-filter active" type="button" data-tag="All">All</button>${categories.map((category) => `<button class="tag-filter" type="button" data-tag="${escapeHtml(category)}">${escapeHtml(category)}</button>`).join("")}</div></div><div class="post-list" data-post-list>${cards}<p class="empty" data-filter-empty hidden>No posts in this category yet.</p></div></section></main>`;
   return page({ content, pathName: "/" });
 }
 
 function postPage(post) {
   const toc = post.headings.map((heading) => `<a class="toc-level-${heading.level}" href="#${heading.id}">${escapeHtml(heading.text)}</a>`).join("");
   const tags = post.tags.map(escapeHtml).join(" · ");
-  const content = `<main><header class="container article-header"><a class="back-link" href="${href("/")}">← Back to all writing</a><h1>${escapeHtml(post.title)}</h1><p class="article-dek">${escapeHtml(post.summary)}</p><div class="article-meta"><time datetime="${post.date}">${formatLongDate(post.date)}</time><span>${post.readingTime} min read</span>${tags ? `<span>${tags}</span>` : ""}<a href="index.md" download>Download Markdown</a></div></header><div class="article-wrap"><aside class="toc"><div class="toc-head"><p>On this page</p><button class="toc-toggle" type="button" data-toc-toggle aria-expanded="false" aria-label="Toggle table of contents"><span class="toc-toggle-label">Table of contents</span><span class="toc-toggle-icon" aria-hidden="true"></span></button></div><nav class="toc-links" data-toc-links aria-label="Table of contents">${toc}</nav></aside><article class="prose">${post.html}</article></div></main>`;
+  const content = `<main><header class="container article-header"><a class="back-link" href="${href("/")}">← Back to all writing</a><h1>${escapeHtml(post.title)}</h1><p class="article-dek">${renderSummary(post.summary)}</p><div class="article-meta"><time datetime="${post.date}">${formatLongDate(post.date)}</time><span>${post.readingTime} min read</span>${tags ? `<span>${tags}</span>` : ""}<a href="index.md" download>Download Markdown</a></div></header><div class="article-wrap"><aside class="toc"><div class="toc-head"><p>On this page</p><button class="toc-toggle" type="button" data-toc-toggle aria-expanded="false" aria-label="Toggle table of contents"><span class="toc-toggle-label">Table of contents</span><span class="toc-toggle-icon" aria-hidden="true"></span></button></div><nav class="toc-links" data-toc-links aria-label="Table of contents">${toc}</nav></aside><article class="prose">${post.html}</article></div></main>`;
   return page({ title: post.title, description: post.summary, content, article: true, pathName: `/posts/${post.slug}/` });
 }
 
@@ -165,8 +170,10 @@ function serviceWorker(version) {
   return `const VERSION=${JSON.stringify(version)};
 const CACHE_NAME="freshmark-"+VERSION;
 const BASE_PATH=${JSON.stringify(basePath)};
+const ASSET_VERSION=${JSON.stringify(assetVersion)};
 const at=(path)=>BASE_PATH+path;
-const PRECACHE=["/","/404.html","/about/","/page.html","/about/page.html","/manifest.webmanifest","/favicon.svg","/icons/icon-192.png","/icons/icon-512.png","/icons/apple-touch-icon.png","/search-index.json","/assets/styles.css","/assets/app.js","/assets/katex.min.css","/assets/katex.min.js","/assets/mhchem.min.js","/assets/auto-render.min.js"].map(at);
+const versioned=(path)=>at(path)+"?v="+ASSET_VERSION;
+const PRECACHE=["/","/404.html","/about/","/page.html","/about/page.html","/manifest.webmanifest","/favicon.svg","/icons/icon-192.png","/icons/icon-512.png","/icons/apple-touch-icon.png","/search-index.json","/assets/katex.min.css","/assets/katex.min.js","/assets/mhchem.min.js","/assets/auto-render.min.js"].map(at).concat(["/assets/styles.css","/assets/app.js","/assets/markdown.js"].map(versioned));
 self.addEventListener("install",(event)=>event.waitUntil(caches.open(CACHE_NAME).then((cache)=>cache.addAll(PRECACHE)).then(()=>self.skipWaiting())));
 self.addEventListener("activate",(event)=>event.waitUntil(caches.keys().then((names)=>Promise.all(names.filter((name)=>name.startsWith("freshmark-")&&name!==CACHE_NAME).map((name)=>caches.delete(name)))).then(()=>self.clients.claim())));
 const cacheResponse=async(request,response)=>{if(response&&response.ok){const cache=await caches.open(CACHE_NAME);await cache.put(request,response.clone())}return response};
@@ -200,9 +207,14 @@ const browserBundles = await Promise.all(["app.js", "markdown.js"].map(async (fi
   const bundled = await bundle({ entryPoints: [path.join(themeDir, file)], bundle: true, format: "iife", platform: "browser", write: false });
   const minified = await minifyJavaScript(bundled.outputFiles[0].text, { compress: true, mangle: true });
   if (!minified.code) throw new Error(`${file} minification produced no output`);
-  return fs.writeFile(path.join(outputDir, "assets", file), minified.code);
+  return { file, code: minified.code };
 }));
-await Promise.all(browserBundles);
+assetVersion = createHash("sha256")
+  .update(styles.styles)
+  .update(browserBundles.map(({ file, code }) => `${file}\0${code}`).join("\0"))
+  .digest("hex")
+  .slice(0, 12);
+await Promise.all(browserBundles.map(({ file, code }) => fs.writeFile(path.join(outputDir, "assets", file), code)));
 await fs.cp(contentDir, path.join(outputDir, "posts"), {
   recursive: true,
   filter: (source) => !source.endsWith(".md") && !source.endsWith(".md.bak"),

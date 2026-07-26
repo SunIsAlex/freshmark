@@ -3,6 +3,7 @@ import PhotoSwipe from "photoswipe";
 (() => {
   const root = document.documentElement;
   const basePath = window.FRESHMARK?.basePath || "";
+  const assetVersion = window.FRESHMARK?.assetVersion || "";
   const modal = document.querySelector("[data-search-modal]");
   const input = document.querySelector("[data-search-input]");
   const results = document.querySelector("[data-search-results]");
@@ -25,7 +26,7 @@ import PhotoSwipe from "photoswipe";
     if (!markdownRenderer) markdownRenderer = new Promise((resolve, reject) => {
       const existing = document.querySelector("script[data-markdown-renderer]");
       const script = existing || Object.assign(document.createElement("script"), {
-        src: `${basePath}/assets/markdown.js`,
+        src: `${basePath}/assets/markdown.js${assetVersion ? `?v=${assetVersion}` : ""}`,
         async: true,
       });
       script.dataset.markdownRenderer = "";
@@ -287,7 +288,7 @@ import PhotoSwipe from "photoswipe";
   }
 
   async function articlePage(source, url) {
-    const { parseFrontmatter, renderMarkdown, summaryFromBody } = await loadMarkdownRenderer();
+    const { parseFrontmatter, renderMarkdown, renderSummary, summaryFromBody } = await loadMarkdownRenderer();
     const { data, body } = parseFrontmatter(source, url.pathname);
     const { html, headings } = renderMarkdown(body);
     const date = String(data.date).slice(0, 10);
@@ -298,7 +299,7 @@ import PhotoSwipe from "photoswipe";
     const formattedDate = new Intl.DateTimeFormat(window.FRESHMARK.language, { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(`${date}T00:00:00Z`));
     const toc = headings.map((heading) => `<a class="toc-level-${heading.level}" href="#${escape(heading.id)}">${escape(heading.text)}</a>`).join("");
     const tagText = tags.map(escape).join(" · ");
-    const main = `<main><header class="container article-header"><a class="back-link" href="${basePath || "/"}">← Back to all writing</a><h1>${escape(data.title)}</h1><p class="article-dek">${escape(summary)}</p><div class="article-meta"><time datetime="${date}">${formattedDate}</time><span>${readingTime} min read</span>${tagText ? `<span>${tagText}</span>` : ""}<a href="index.md" download>Download Markdown</a></div></header><div class="article-wrap"><aside class="toc"><div class="toc-head"><p>On this page</p><button class="toc-toggle" type="button" data-toc-toggle aria-expanded="false" aria-label="Toggle table of contents"><span class="toc-toggle-label">Table of contents</span><span class="toc-toggle-icon" aria-hidden="true"></span></button></div><nav class="toc-links" data-toc-links aria-label="Table of contents">${toc}</nav></aside><article class="prose">${html}</article></div></main>`;
+    const main = `<main><header class="container article-header"><a class="back-link" href="${basePath || "/"}">← Back to all writing</a><h1>${escape(data.title)}</h1><p class="article-dek">${renderSummary(summary)}</p><div class="article-meta"><time datetime="${date}">${formattedDate}</time><span>${readingTime} min read</span>${tagText ? `<span>${tagText}</span>` : ""}<a href="index.md" download>Download Markdown</a></div></header><div class="article-wrap"><aside class="toc"><div class="toc-head"><p>On this page</p><button class="toc-toggle" type="button" data-toc-toggle aria-expanded="false" aria-label="Toggle table of contents"><span class="toc-toggle-label">Table of contents</span><span class="toc-toggle-icon" aria-hidden="true"></span></button></div><nav class="toc-links" data-toc-links aria-label="Table of contents">${toc}</nav></aside><article class="prose">${html}</article></div></main>`;
     return {
       title: `${data.title} — ${window.FRESHMARK.title}`,
       description: summary,

@@ -48,6 +48,8 @@ button { color:inherit; }
 .meta { color:var(--ink-soft); font-size:.76rem; text-transform:uppercase; letter-spacing:.12em; font-weight:700; }
 .featured h2 { margin:20px 0 18px; font-family:var(--font-serif); font-size:clamp(2rem,4vw,3.6rem); font-weight:500; line-height:1.08; letter-spacing:-.045em; }
 .featured p { color:var(--ink-soft); line-height:1.75; margin:0 0 28px; max-width:590px; }
+.featured-copy p a,.article-dek a { text-decoration:underline; text-decoration-color:var(--accent); text-underline-offset:3px; }
+.featured-copy p code,.post-card p code,.article-dek code { padding:1px 4px; border:1px solid var(--line); border-radius:4px; background:var(--paper); font-family:ui-monospace,monospace; font-size:.88em; }
 .read-link { display:inline-flex; align-items:center; gap:11px; width:fit-content; font-weight:750; border-bottom:1px solid var(--ink); padding-bottom:4px; }
 .read-link:hover { gap:16px; }
 .post-section { padding:110px 0 100px; }
