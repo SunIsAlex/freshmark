@@ -41,17 +41,18 @@ async function loadPosts() {
   const files = (await findMarkdownFiles(contentDir)).sort();
   const posts = [];
   for (const file of files) {
-    const source = await fs.readFile(path.join(contentDir, file), "utf8");
-    const { data, body } = parseFrontmatter(source, file);
+    const sourceFile = file.split(path.sep).join("/");
+    const source = await fs.readFile(path.join(contentDir, sourceFile), "utf8");
+    const { data, body } = parseFrontmatter(source, sourceFile);
     if (data.draft === true && process.env.FRESHMARK_DRAFTS !== "true") continue;
-    for (const key of ["title", "date"]) if (!data[key]) throw new Error(`${file}: missing ${key} in frontmatter`);
+    for (const key of ["title", "date"]) if (!data[key]) throw new Error(`${sourceFile}: missing ${key} in frontmatter`);
     const date = String(data.date).slice(0, 10);
     const { html, headings } = renderMarkdown(body);
     const words = body.replace(/[#*`>\[\]()_-]/g, " ").split(/\s+/).filter(Boolean).length;
-    const relativeSlug = file.replace(/\.md$/, "").replace(/(^|\/)index$/, "");
+    const relativeSlug = sourceFile.replace(/\.md$/, "").replace(/(^|\/)index$/, "");
     const summary = data.summary || data.description || summaryFromBody(body);
     posts.push({
-      slug: relativeSlug, sourceFile: file, title: data.title, date, summary,
+      slug: relativeSlug, sourceFile, title: data.title, date, summary,
       tags: Array.isArray(data.tags) ? data.tags : [], categories: Array.isArray(data.categories) ? data.categories : [], featured: data.featured === true,
       readingTime: Math.max(1, Math.ceil(words / 220)), html, headings,
       searchText: body.replace(/[#*`>\[\]()_-]/g, " ").replace(/\s+/g, " ").trim(),
@@ -186,7 +187,8 @@ self.addEventListener("fetch",(event)=>{const request=event.request;if(request.m
 
 const posts = await loadPosts();
 if (!posts.length) throw new Error("No publishable Markdown posts found.");
-await fs.rm(outputDir, { recursive: true, force: true });
+await fs.mkdir(outputDir, { recursive: true });
+await Promise.all((await fs.readdir(outputDir)).map((entry) => fs.rm(path.join(outputDir, entry), { recursive: true, force: true })));
 await fs.mkdir(path.join(outputDir, "assets"), { recursive: true });
 const styles = new CleanCSS({ level: 2 }).minify([
   await fs.readFile(path.join(root, "node_modules", "photoswipe", "dist", "photoswipe.css"), "utf8"),

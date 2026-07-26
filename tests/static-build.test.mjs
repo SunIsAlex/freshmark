@@ -13,6 +13,8 @@ test("build emits portable static pages", async () => {
     "public/posts/chemistry/babychem/overview-of-stereochemistry/index.html",
     "public/posts/chemistry/babychem/overview-of-stereochemistry/index.md",
     "public/posts/chemistry/babychem/overview-of-stereochemistry/image.png",
+    "public/posts/chemistry/inorganic/manganese/index.html",
+    "public/posts/chemistry/inorganic/manganese/image.png",
     "public/search-index.json",
     "public/rss.xml",
     "public/sitemap.xml",
@@ -29,6 +31,7 @@ test("build emits portable static pages", async () => {
   for (const file of files) {
     assert.equal((await stat(new URL(file, root))).isFile(), true, file);
   }
+  await assert.rejects(stat(new URL("public/posts/chemistry/inorganic/manganese/index/index.html", root)), { code: "ENOENT" });
 });
 
 test("site is installable as a progressive web app", async () => {
