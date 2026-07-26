@@ -15,11 +15,13 @@ test("build emits portable static pages", async () => {
     "public/posts/chemistry/babychem/overview-of-stereochemistry/image.png",
     "public/posts/chemistry/inorganic/manganese/index.html",
     "public/posts/chemistry/inorganic/manganese/image.png",
+    "public/posts/chemistry/inorganic/manganese/2022-beijing-chlorine-manganese-apparatus.png",
     "public/en/index.html",
     "public/en/about/index.html",
     "public/en/posts/chemistry/inorganic/manganese/index.html",
     "public/en/posts/chemistry/inorganic/manganese/index.md",
     "public/en/posts/chemistry/inorganic/manganese/image.png",
+    "public/en/posts/chemistry/inorganic/manganese/2022-beijing-chlorine-manganese-apparatus.png",
     "public/en/search-index.json",
     "public/en/rss.xml",
     "public/en/manifest.webmanifest",
@@ -104,6 +106,8 @@ test("localized routes provide Chinese and English navigation", async () => {
   const englishProse = englishArticle.match(/<article class="prose">([\s\S]*?)<\/article>/)?.[1] || "";
   assert.match(englishProse, /Manganese ores occur mainly as/);
   assert.match(englishProse, /Industrial Applications of Manganese/);
+  assert.match(englishProse, /Preparation, Purification, and Yield of Potassium Permanganate/);
+  assert.doesNotMatch(englishProse, /Answers and analysis/);
   assert.doesNotMatch(englishProse, /\p{Script=Han}/u);
 
   const chineseIndex = JSON.parse(await read("public/search-index.json"));
@@ -131,8 +135,20 @@ test("typography uses Claude's font family and size scale", async () => {
 
 test("manganese color descriptions render with matching colors", async () => {
   const html = await read("public/posts/chemistry/inorganic/manganese/index.html");
+  const englishHtml = await read("public/en/posts/chemistry/inorganic/manganese/index.html");
   const css = await read("public/assets/styles.css");
-  assert.equal(html.match(/class="chemical-color"/g)?.length, 79);
+  assert.equal(html.match(/class="chemical-color"/g)?.length, 112);
+  assert.match(html, /溶液酸碱性对 \\\(\\ce\{Mn\(II\)\}\\\) 还原性的影响/);
+  assert.match(html, /高锰酸钾的制备、提纯与产率测定/);
+  assert.match(html, /2022-beijing-chlorine-manganese-apparatus\.png/);
+  assert.match(html, /<u class="answer-reveal">/);
+  assert.match(html, /饱和/);
+  assert.match(html, /5000a/);
+  assert.doesNotMatch(html, /参考答案与解析/);
+  assert.equal(html.match(/<u\b/g)?.length, html.match(/<u class="answer-reveal">/g)?.length);
+  assert.equal(englishHtml.match(/<u\b/g)?.length, englishHtml.match(/<u class="answer-reveal">/g)?.length);
+  assert.doesNotMatch(html, /\\underline/);
+  assert.doesNotMatch(englishHtml, /\\underline/);
   for (const color of [
     "black", "blue-violet", "brown", "brown-black", "brown-red", "brown-yellow",
     "colorless", "dark-green", "flesh", "gray", "green", "light-green",
@@ -142,6 +158,8 @@ test("manganese color descriptions render with matching colors", async () => {
   assert.match(css, /\.chemical-color\{[^}]*color:var\(--chemical-color\)/);
   assert.match(css, /\.chemical-color\[data-color=white\]\{[^}]*background:#667078/);
   assert.match(css, /\.chemical-color\[data-color=colorless\]\{[^}]*text-decoration:underline dotted/);
+  assert.match(css, /u\.answer-reveal:not\(\.is-revealed\)\{[^}]*color:transparent!important[^}]*background-color:var\(--ink\)/);
+  assert.match(css, /u\.answer-reveal:focus-visible\{[^}]*outline:2px solid var\(--accent\)/);
 });
 
 test("articles render math and colocated Markdown images", async () => {
@@ -205,8 +223,11 @@ test("standalone boxed formulas become scrollable display math", async () => {
   assert.doesNotMatch(html, /<p>\|字母\|含义\|/);
 
   const css = await read("public/assets/styles.css");
-  assert.match(css, /\.prose \.katex-display\{[^}]*overflow-x:auto/);
-  assert.match(css, /\.prose \.katex-display>\.katex\{min-width:max-content}/);
+  assert.match(css, /\.prose \.katex-display\{[^}]*width:100%[^}]*max-width:100%[^}]*overflow-x:auto/);
+  assert.match(css, /\.prose \.katex-display>\.katex\{[^}]*display:inline-block[^}]*min-width:max-content/);
+  assert.doesNotMatch(css, /\.prose :not\(\.katex-display\)>\.katex/);
+  assert.match(css, /\.prose \.katex-inline-overflow\{[^}]*display:inline-block[^}]*max-width:100%[^}]*overflow-x:auto/);
+  assert.match(css, /\.prose \.katex-display,\.prose \.katex-inline-overflow\{[^}]*scrollbar-width:thin/);
 });
 
 test("HTML underlines match KaTeX underline metrics", async () => {
@@ -282,6 +303,10 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /DOMParser/);
   assert.match(app, /renderMathInElement/);
   assert.match(app, /renderMath\(nextMain\)/);
+  assert.match(app, /updateInlineMathOverflow\(nextMain\)/);
+  assert.match(app, /formula\.classList\.remove\("katex-inline-overflow"\)/);
+  assert.match(app, /formula\.getBoundingClientRect\(\)\.width > line\.clientWidth \+ 1/);
+  assert.match(app, /document\.fonts\?\.ready/);
   assert.match(app, /index\.md/);
   assert.match(app, /currentMain\.replaceWith\(nextMain\)/);
   assert.match(app, /rebaseMainUrls\(nextMain, url\)/);
@@ -296,6 +321,9 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /window\.FRESHMARK\?\.assetVersion/);
   assert.match(app, /assets\/markdown\.js\$\{assetVersion \? `\?v=\$\{assetVersion\}` : ""\}/);
   assert.match(app, /prepareGallery\(nextMain\)/);
+  assert.match(app, /prepareAnswerReveals\(nextMain\)/);
+  assert.match(app, /answer\.setAttribute\("aria-expanded", String\(revealed\)\)/);
+  assert.match(app, /toggleAnswerReveal\(answerReveal\)/);
   assert.match(app, /function scrollToHash/);
   assert.match(app, /document\.getElementById\(id\)/);
   assert.match(app, /target\.scrollIntoView/);

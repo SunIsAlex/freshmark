@@ -22,7 +22,9 @@ import PhotoSwipe from "photoswipe";
   let markdownRenderer;
   let activePhotoSwipe;
   let galleryRequest = 0;
+  let mathOverflowFrame;
   const preparedGalleryImages = new WeakSet();
+  const preparedAnswerReveals = new WeakSet();
 
   const escape = (value) => String(value).replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[char]);
   const message = (key, values = {}) => String(messages[key] || key).replace(/\{(\w+)\}/g, (_, name) => values[name] ?? "");
@@ -80,6 +82,28 @@ import PhotoSwipe from "photoswipe";
         });
       }
     }
+  }
+
+  function setAnswerRevealState(answer, revealed) {
+    answer.classList.toggle("is-revealed", revealed);
+    answer.setAttribute("aria-expanded", String(revealed));
+    const answerText = answer.textContent.trim();
+    answer.setAttribute("aria-label", revealed && answerText ? `${message("hideAnswer")}: ${answerText}` : message("revealAnswer"));
+  }
+
+  function prepareAnswerReveals(scope = document) {
+    for (const answer of scope.querySelectorAll("u.answer-reveal")) {
+      answer.tabIndex = 0;
+      answer.setAttribute("role", "button");
+      if (!preparedAnswerReveals.has(answer)) {
+        preparedAnswerReveals.add(answer);
+        setAnswerRevealState(answer, false);
+      }
+    }
+  }
+
+  function toggleAnswerReveal(answer) {
+    setAnswerRevealState(answer, !answer.classList.contains("is-revealed"));
   }
 
   function gallerySource(image) {
@@ -196,6 +220,8 @@ import PhotoSwipe from "photoswipe";
     draw(!needle ? posts : posts.filter((post) => `${post.title} ${post.summary} ${(post.categories || []).join(" ")} ${post.tags.join(" ")} ${post.searchText}`.toLowerCase().includes(needle)));
   });
   addEventListener("keydown", (event) => {
+    const answerTrigger = event.target.closest?.("u.answer-reveal");
+    if (answerTrigger && ["Enter", " "].includes(event.key)) { event.preventDefault(); toggleAnswerReveal(answerTrigger); return; }
     const galleryTrigger = event.target.closest?.(".prose img[data-gallery-item]");
     if (galleryTrigger && ["Enter", " "].includes(event.key)) { event.preventDefault(); openGallery(galleryTrigger); return; }
     if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") { event.preventDefault(); openSearch(); }
@@ -238,6 +264,18 @@ import PhotoSwipe from "photoswipe";
       ],
       throwOnError: false,
       strict: "ignore",
+    });
+  }
+
+  function updateInlineMathOverflow(scope = document) {
+    cancelAnimationFrame(mathOverflowFrame);
+    mathOverflowFrame = requestAnimationFrame(() => {
+      for (const formula of scope.querySelectorAll(".prose .katex")) {
+        if (formula.parentElement?.classList.contains("katex-display")) continue;
+        formula.classList.remove("katex-inline-overflow");
+        const line = formula.closest("p, li, td, th, blockquote, figcaption") || formula.closest(".prose");
+        formula.classList.toggle("katex-inline-overflow", formula.getBoundingClientRect().width > line.clientWidth + 1);
+      }
     });
   }
 
@@ -407,6 +445,8 @@ import PhotoSwipe from "photoswipe";
       const swap = () => {
         currentMain.replaceWith(nextMain);
         renderMath(nextMain);
+        updateInlineMathOverflow(nextMain);
+        prepareAnswerReveals(nextMain);
         prepareGallery(nextMain);
         scheduleArticlePrefetch(nextMain);
         document.querySelector("[data-reading-progress]")?.remove();
@@ -443,6 +483,8 @@ import PhotoSwipe from "photoswipe";
   }
 
   document.addEventListener("click", (event) => {
+    const answerReveal = event.target.closest("u.answer-reveal");
+    if (answerReveal) { event.preventDefault(); toggleAnswerReveal(answerReveal); return; }
     const command = event.target.closest("[data-search-open], [data-theme-toggle], [data-tag], [data-toc-toggle]");
     if (command?.matches("[data-search-open]")) { event.preventDefault(); openSearch(); return; }
     if (command?.matches("[data-theme-toggle]")) { event.preventDefault(); setTheme(root.dataset.theme === "dark" ? "light" : "dark"); return; }
@@ -477,8 +519,12 @@ import PhotoSwipe from "photoswipe";
     navigate(url, { push: false, restoreScroll: event.state?.scrollY || 0 });
   });
   addEventListener("scroll", updateProgress, { passive: true });
+  addEventListener("resize", () => updateInlineMathOverflow(), { passive: true });
   (navigator.connection || navigator.mozConnection || navigator.webkitConnection)?.addEventListener("change", drainPrefetchQueue);
   renderMath();
+  updateInlineMathOverflow();
+  document.fonts?.ready.then(() => updateInlineMathOverflow());
+  prepareAnswerReveals();
   prepareGallery();
   updateProgress();
   scheduleArticlePrefetch();

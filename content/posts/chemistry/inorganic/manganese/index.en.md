@@ -324,6 +324,101 @@ Overall reaction $\quad 2\mathrm{K_2MnO_4}+2\mathrm{H_2O} \xlongequal{\text{elec
 
 # Exam Practice
 
+## Effect of Alkalinity on the Reducing Behavior of $\ce{Mn(II)}$
+
+**(2022 Beijing Gaokao Chemistry, Question 19; adapted from the original paper)**
+
+An experimental group investigated the reactions of chlorine with manganese(II) compounds under different conditions.
+
+**Information:**
+
+i. Under suitable conditions, $\ce{Mn^2+}$ can be oxidized by $\ce{Cl2}$ or $\ce{ClO^-}$ to $\ce{MnO2}$ (<span class="chemical-color" data-color="brown-black">brown-black</span>), $\ce{MnO4^2-}$ (<span class="chemical-color" data-color="green">green</span>), or $\ce{MnO4^-}$ (<span class="chemical-color" data-color="purple-red">purple</span>).
+
+ii. In strongly alkaline solution, $\ce{MnO4^-}$ can be reduced by $\ce{OH^-}$ to $\ce{MnO4^2-}$.
+
+iii. The oxidizing power of $\ce{Cl2}$ is independent of the acidity of the solution, whereas the oxidizing power of $\ce{NaClO}$ decreases as alkalinity increases.
+
+The apparatus is shown below (supports omitted):
+
+![Apparatus for the reaction of chlorine with manganese(II) compounds](2022-beijing-chlorine-manganese-apparatus.png "2022 Beijing Gaokao: chlorine reacting with manganese(II) compounds")
+
+Vessel C was charged with $10\ \mathrm{mL}$ of substance a and five drops of $0.1\ \mathrm{mol\cdot L^{-1}}$ $\ce{MnSO4}$. Chlorine generated in A and washed in B was then passed into C.
+
+| No. | Substance a | Before introducing $\ce{Cl2}$ | After introducing $\ce{Cl2}$ |
+| --- | --- | --- | --- |
+| I | Water | A <span class="chemical-color" data-color="colorless">colorless</span> solution | A <span class="chemical-color" data-color="brown-black">brown-black</span> precipitate formed and did not change on standing |
+| II | $5\%$ $\ce{NaOH}$ | A <span class="chemical-color" data-color="white">white</span> precipitate formed and slowly became <span class="chemical-color" data-color="brown-black">brown-black</span> in air | More <span class="chemical-color" data-color="brown-black">brown-black</span> precipitate formed; on standing, the solution became <span class="chemical-color" data-color="purple">purple</span> while solid remained |
+| III | $40\%$ $\ce{NaOH}$ | A <span class="chemical-color" data-color="white">white</span> precipitate formed and slowly became <span class="chemical-color" data-color="brown-black">brown-black</span> in air | More <span class="chemical-color" data-color="brown-black">brown-black</span> precipitate formed; on standing, the solution became <span class="chemical-color" data-color="purple">purple</span> while solid remained |
+
+(1) The reagent in vessel B is <u class="answer-reveal">saturated $\ce{NaCl}$ solution</u>.
+
+(2) Before chlorine was introduced, the equation for the conversion of the <span class="chemical-color" data-color="white">white</span> precipitate into a <span class="chemical-color" data-color="brown-black">brown-black</span> precipitate in experiments II and III is <u class="answer-reveal">$\ce{2Mn(OH)2 + O2 -> 2MnO2 + 2H2O}$</u>.
+
+(3) Comparing experiments I and II after chlorine was introduced shows that <u class="answer-reveal">manganese(II) compounds can be oxidized only to $\ce{MnO2}$ under neutral or weakly acidic conditions, but to higher oxidation states under alkaline conditions</u>.
+
+(4) According to information ii, experiment III should have produced a <span class="chemical-color" data-color="green">green</span> solution, but a <span class="chemical-color" data-color="purple">purple</span> solution was obtained. Two explanations were proposed:
+
+- introducing $\ce{Cl2}$ may have reduced the alkalinity;
+- excess oxidant may have oxidized $\ce{MnO4^2-}$ further to $\ce{MnO4^-}$.
+
+① The equation for the reaction that could reduce the alkalinity is <u class="answer-reveal">$\ce{2NaOH + Cl2 -> NaCl + NaClO + H2O}$</u>. Measurement showed that the alkalinity changed very little.
+
+② To $1\ \mathrm{mL}$ of the suspension from experiment III after standing, $4\ \mathrm{mL}$ of $40\%$ $\ce{NaOH}$ was added. The solution rapidly changed from <span class="chemical-color" data-color="purple">purple</span> to <span class="chemical-color" data-color="green">green</span>, after which the <span class="chemical-color" data-color="green">green</span> color slowly deepened. The ionic equation for the rapid color change is <u class="answer-reveal">$\ce{4MnO4^- + 4OH^- -> 4MnO4^2- + O2 ^ + 2H2O}$</u>; the <span class="chemical-color" data-color="green">green</span> color slowly deepened because $\ce{MnO2}$ was oxidized by <u class="answer-reveal">$\ce{NaClO}$</u>, proving that the oxidant was in excess.
+
+③ Another $1\ \mathrm{mL}$ portion of the suspension was diluted with $4\ \mathrm{mL}$ of water. The <span class="chemical-color" data-color="purple">purple</span> color slowly deepened. The reaction involved is <u class="answer-reveal">$\ce{2MnO2 + 3ClO^- + 2OH^- -> 2MnO4^- + 3Cl^- + H2O}$</u>.
+
+④ In terms of reaction rates, experiment III did not yield a <span class="chemical-color" data-color="green">green</span> solution because <u class="answer-reveal">under strongly alkaline conditions, $\ce{2MnO4^2- + ClO^- + H2O -> 2MnO4^- + Cl^- + 2OH^-}$ is faster than $\ce{4MnO4^- + 4OH^- -> 4MnO4^2- + O2 ^ + 2H2O}$</u>.
+
+## Preparation, Purification, and Yield of Potassium Permanganate
+
+**(2026 Beijing Gaokao Chemistry, Question 19; adapted from the original paper)**
+
+An experimental group prepared potassium permanganate.
+
+**Information:**
+
+i. $\ce{K2MnO4}$ is a <span class="chemical-color" data-color="dark-green">dark-green</span> solid. It is soluble in water, stable under strongly alkaline conditions, and disproportionates under suitable conditions:
+
+$$
+\ce{3MnO4^2- + 2H2O -> 2MnO4^- + MnO2 v + 4OH^-}
+$$
+
+ii. In strongly alkaline solution, $\ce{MnO4^-}$ can be reduced by $\ce{OH^-}$ to $\ce{MnO4^2-}$.
+
+iii. The solubility of $\ce{KMnO4}$ increases with temperature.
+
+(1) **Preparation of $\ce{KMnO4}$**
+
+| Step | Procedure |
+| --- | --- |
+| I. Prepare $\ce{K2MnO4}$ | Heat $0.015\ \mathrm{mol}$ $\ce{KClO3}$, $0.030\ \mathrm{mol}$ $\ce{MnO2}$, and $0.080\ \mathrm{mol}$ $\ce{KOH}$ together in the molten state until reaction is complete, obtaining <span class="chemical-color" data-color="dark-green">dark-green</span> solid X |
+| II. Prepare $\ce{KMnO4}$ | Dissolve X in water and add $3\ \mathrm{mol\cdot L^{-1}}$ $\ce{CH3COOH}$ until $\mathrm{pH}=10$ (about $20\ \mathrm{mL}$). When the solution changes from <span class="chemical-color" data-color="green">green</span> to <span class="chemical-color" data-color="purple-red">purple-red</span>, filter it to obtain about $100\ \mathrm{mL}$ of solution Y and a <span class="chemical-color" data-color="brown-black">brown-black</span> solid |
+| III. Purify $\ce{KMnO4}$ | Concentrate Y in an evaporating dish using a $90^\circ\mathrm{C}$ water bath, cool to crystallize, filter, wash, and dry, obtaining <span class="chemical-color" data-color="purple-red">purple-red</span> solid Z |
+
+① Complete the equation for the reaction in step I:
+
+<u class="answer-reveal">$\ce{KClO3 + 3MnO2 + 6KOH} \xlongequal{\text{molten}} \ce{KCl + 3K2MnO4 + 3H2O}$</u>
+
+② In step II, $\ce{K2MnO4}$ disproportionates as pH decreases. If the reducing power of $\ce{MnO4^2-}$ remains unchanged, its oxidizing power <u class="answer-reveal">increases</u>.
+
+③ When a small sample of Z was dissolved, a <span class="chemical-color" data-color="purple-red">purple-red</span> $\ce{KMnO4}$ solution and a small amount of <span class="chemical-color" data-color="brown-black">brown-black</span> $\ce{MnO2}$ were obtained.
+
+(2) **Investigating the source of $\ce{MnO2}$ in step III**
+
+① Student A proposed that $\ce{CH3COO^-}$ reduced $\ce{MnO4^-}$. In experiment i, Y was replaced with a solution containing $0.2\ \mathrm{mol\cdot L^{-1}}$ $\ce{KMnO4}$ and $0.6\ \mathrm{mol\cdot L^{-1}}$ $\ce{CH3COOK}$ at $\mathrm{pH}=10$. Repeating step III produced a solid containing $\ce{MnO2}$. Student B argued that this result alone did not prove that acetate reduced permanganate because <u class="answer-reveal">the experiment did not rule out interference from reduction of $\ce{MnO4^-}$ by $\ce{OH^-}$</u>.
+
+② In blank experiment ii, Y was replaced with <u class="answer-reveal">a solution containing $0.2\ \mathrm{mol\cdot L^{-1}}$ $\ce{KMnO4}$ and adjusted to $\mathrm{pH}=10$ with $\ce{KOH}$</u>. Repeating step III produced no $\ce{MnO2}$; experiments i and ii therefore supported Student A's proposal.
+
+③ Student C replaced $\ce{CH3COOK}$ with $0.15\ \mathrm{mol\cdot L^{-1}}$ $\ce{KCl}$ in experiment i. This confirmed that $\ce{Cl^-}$ in step III could not reduce $\ce{MnO4^-}$.
+
+(3) **Determination of $\ce{KMnO4}$ purity and yield**
+
+Product was prepared from the quantities used in step I using the optimized procedure. One quarter of the product was made up to $250\ \mathrm{mL}$ as the test solution. Under acidic conditions, the test solution was used to titrate a standard $\ce{H2C2O4}$ solution; $\ce{MnO4^-}$ was reduced to $\ce{Mn^2+}$. The measured concentration was $c(\ce{KMnO4})=a\ \mathrm{mol\cdot L^{-1}}$.
+
+① The ionic equation for the titration is <u class="answer-reveal">$\ce{2MnO4^- + 5H2C2O4 + 6H+ -> 2Mn^2+ + 10CO2 ^ + 8H2O}$</u>. Treat $\ce{H2C2O4}$ as a diprotic weak acid.
+
+② The yield of $\ce{KMnO4}$ is <u class="answer-reveal">$5000a\%$</u>. [$\text{Yield}=\dfrac{\text{actual yield}}{\text{theoretical yield}}\times100\%$]
+
 ## Reaction of $\ce{Na}$ with a $\ce{KMnO4}$ Solution
 
 (2023 Haidian Second Mock Exam, Question 9) A group of students investigated whether metallic sodium can reduce $\ce{MnO4^-}$ in solution.
@@ -370,35 +465,35 @@ iii. $2\mathrm{Mn(OH)_2}$ (<span class="chemical-color" data-color="white">white
 
 ![Experimental procedure for the reaction between Na2S and acidified KMnO4](na2s-kmno4-experiment.png)
 
-(1) Write the ionic equation that explains why a $\ce{Na2S}$ solution is alkaline: <u>$\underline{\ce{S^2- + H2O \xrightleftharpoons{}HS- + OH-}}$</u>.
+(1) Write the ionic equation that explains why a $\ce{Na2S}$ solution is alkaline: <u class="answer-reveal">$\ce{S^2- + H2O <=> HS^- + OH^-}$</u>.
 
 (2) Solid a was filtered, washed, and left in air. It became <span class="chemical-color" data-color="brown-black">brownish black</span>.
 
-① Student A believed that solid a contained $\ce{Mn(OH)2}$ in addition to $\ce{MnS}$. The supporting observation was that <u>solid a became <span class="chemical-color" data-color="brown-black">brownish black</span> after standing in air</u>.
+① Student A believed that solid a contained $\ce{Mn(OH)2}$ in addition to $\ce{MnS}$. The supporting observation was that <u class="answer-reveal">solid a became <span class="chemical-color" data-color="brown-black">brownish black</span> after standing in air</u>.
 
-② Student B argued that this observation alone did not prove that solid a contained $\ce{Mn(OH)2}$ and proposed a control experiment: <u>leave $\ce{MnS}$ in air and observe whether it becomes <span class="chemical-color" data-color="brown-black">brownish black</span> within the **same amount of time**</u>. The experiment confirmed that solid a contained $\ce{Mn(OH)2}$.
+② Student B argued that this observation alone did not prove that solid a contained $\ce{Mn(OH)2}$ and proposed a control experiment: <u class="answer-reveal">leave $\ce{MnS}$ in air and observe whether it becomes <span class="chemical-color" data-color="brown-black">brownish black</span> within the **same amount of time**</u>. The experiment confirmed that solid a contained $\ce{Mn(OH)2}$.
 
-(3) The main component of solid b was $\ce{S}$. Possible reasons for its formation are: <u>acidified $\underline{\ce{KMnO4}}$ oxidizes $\underline{\ce{S^2-}}$, $\underline{\ce{S_x^2-}}$, or $\underline{\ce{MnS}}$ to $\underline{\ce{S}}$; and $\ce{S_x^2-}$ converts to $\underline{\ce{S}}$ under acidic conditions</u>.
+(3) The main component of solid b was $\ce{S}$. Possible reasons for its formation are: <u class="answer-reveal">acidified $\ce{KMnO4}$ oxidizes $\ce{S^2-}$, $\ce{S_x^2-}$, or $\ce{MnS}$ to $\ce{S}$; and $\ce{S_x^2-}$ converts to $\ce{S}$ under acidic conditions</u>.
 
 (4) Testing showed that the main component of solid c was $\ce{MnO2}$.
 
-① One possible cause is oxidation of $\ce{Mn^2+}$ by $\ce{MnO4^-}$ under acidic conditions. The ionic equation is $\underline{\ce{2MnO4^- + 3Mn^2+ + 2H2O= 5MnO2 v + 4H+}}$.
+① One possible cause is oxidation of $\ce{Mn^2+}$ by $\ce{MnO4^-}$ under acidic conditions. The ionic equation is <u class="answer-reveal">$\ce{2MnO4^- + 3Mn^2+ + 2H2O -> 5MnO2 v + 4H+}$</u>.
 
 ② When more acidified $\ce{KMnO4}$ solution was added, the solution became <span class="chemical-color" data-color="purple-red">reddish purple</span> while the <span class="chemical-color" data-color="brown-black">brownish-black</span> solid remained.
 
 **Experiment II:** Experiment I was repeated using $\ce{KMnO4}$ that had not been acidified. When the <span class="chemical-color" data-color="brown-black">brownish-black</span> solid formed, the solution was <span class="chemical-color" data-color="green">green</span>.
 
-(5) To determine why no <span class="chemical-color" data-color="green">green</span> color was observed in Experiment I, a small amount of the <span class="chemical-color" data-color="green">green</span> solution from Experiment II was treated with sulfuric acid. The solution became <span class="chemical-color" data-color="purple-red">reddish purple</span>, and a <span class="chemical-color" data-color="brown-black">brownish-black</span> solid formed. Write the ionic equation: $\underline{\ce{}}$.
+(5) To determine why no <span class="chemical-color" data-color="green">green</span> color was observed in Experiment I, a small amount of the <span class="chemical-color" data-color="green">green</span> solution from Experiment II was treated with sulfuric acid. The solution became <span class="chemical-color" data-color="purple-red">reddish purple</span>, and a <span class="chemical-color" data-color="brown-black">brownish-black</span> solid formed. Write the ionic equation: <u class="answer-reveal">$\ce{3MnO4^2- + 4H+ -> 2MnO4^- + MnO2 v + 2H2O}$</u>.
 
 **Experiment III:** A small amount of $\ce{Na2S}$ was added to unacidified $\ce{KMnO4}$ solution. A <span class="chemical-color" data-color="brown-black">brownish-black</span> precipitate formed, and $\ce{SO4^2-}$ was detected.
 
-(6) A procedure for testing $\ce{SO4^2-}$ is: <u>take a small amount of the supernatant after the reaction and add $\ce{Ba(NO3)2}$ or $\ce{BaCl2}$ solution. A <span class="chemical-color" data-color="white">white</span> precipitate forms. **Filter** the mixture, then add excess hydrochloric acid to the precipitate; it does not dissolve</u>.
+(6) A procedure for testing $\ce{SO4^2-}$ is: <u class="answer-reveal">take a small amount of the supernatant after the reaction and add $\ce{Ba(NO3)2}$ or $\ce{BaCl2}$ solution. A <span class="chemical-color" data-color="white">white</span> precipitate forms. **Filter** the mixture, then add excess hydrochloric acid to the precipitate; it does not dissolve</u>.
 
 > TIP: Potassium permanganate + concentrated hydrochloric acid = chlorine.
 
 Note: Under the conditions of this experiment, $\ce{MnO4^-}$ does not react with $\ce{Ba^2+}$.
 
-(7) Taken together, the products of the reaction between $\ce{Na2S}$ and $\ce{KMnO4}$ depend on factors such as <u>the amounts of reactants, the order of addition, and the solution pH</u>. Any two factors are sufficient.
+(7) Taken together, the products of the reaction between $\ce{Na2S}$ and $\ce{KMnO4}$ depend on factors such as <u class="answer-reveal">the amounts of reactants, the order of addition, and the solution pH</u>. Any two factors are sufficient.
 
 ## Industrial Applications of Manganese and Its Compounds
 
@@ -406,9 +501,9 @@ Note: Under the conditions of this experiment, $\ce{MnO4^-}$ does not react with
 
 **I.** An ore containing $\ce{MnCO3}$ is dissolved in sulfuric acid to obtain a solution containing $\ce{Mn^2+}$. After a series of treatments, the solution is electrolyzed to produce metallic $\ce{Mn}$.
 
-(1) $\ce{Mn}$ is produced at the <u>cathode</u>.
+(1) $\ce{Mn}$ is produced at the <u class="answer-reveal">cathode</u>.
 
-(2) The anode sludge contains $\ce{MnO2}$. Write the electrode reaction that produces it: $\underline{\ce{Mn^2+ -2e- + 2H2O = MnO2 + 4H+}}$.
+(2) The anode sludge contains $\ce{MnO2}$. Write the electrode reaction that produces it: <u class="answer-reveal">$\ce{Mn^2+ - 2e^- + 2H2O -> MnO2 + 4H+}$</u>.
 
 **II.** The anode sludge contains both manganese and lead. The following process converts them separately into active $\ce{MnO2}$ and $\ce{PbO}$.
 
@@ -416,19 +511,19 @@ Note: Under the conditions of this experiment, $\ce{MnO4^-}$ does not react with
 
 Given: $\ce{(CH3COO)2Pb}$ dissociates only slightly in water.
 
-(3) Operation X is <u>filtration</u>.
+(3) Operation X is <u class="answer-reveal">filtration</u>.
 
-(4) The ionic equation for reaction ① is $\underline{\ce{PbO + 2CH3COO- + 2NH4+ = (CH3COO)2Pb + H2O + 2NH3}}$.
+(4) The ionic equation for reaction ① is <u class="answer-reveal">$\ce{PbO + 2CH3COO^- + 2NH4+ -> (CH3COO)2Pb + H2O + 2NH3}$</u>.
 
 > TIP: Account for the coupling between coordination and acid-base reactions.
 
-(5) Solution C can be recycled. The solute in solution B in step ② is $\underline{\ce{(NH4)2CO3}}$.
+(5) Solution C can be recycled. The solute in solution B in step ② is <u class="answer-reveal">$\ce{(NH4)2CO3}$</u>.
 
 (6)
 
-a. To convert all $\ce{Mn2O3}$ in step ③ into $\ce{MnO2}$, the theoretical mole ratio of $\ce{NaClO3}$ added in step ④ to $\ce{Mn2O3}$ is <u>$1:3$</u>. The reduction product of $\ce{NaClO3}$ is $\ce{NaCl}$.
+a. To convert all $\ce{Mn2O3}$ in step ③ into $\ce{MnO2}$, the theoretical mole ratio of $\ce{NaClO3}$ added in step ④ to $\ce{Mn2O3}$ is <u class="answer-reveal">$1:3$</u>. The reduction product of $\ce{NaClO3}$ is $\ce{NaCl}$.
 
-b. Before $\ce{NaClO3}$ is added, the solution pH must be raised to about 6. This <u>prevents sodium chlorate and manganese dioxide from oxidizing chloride ions to chlorine when the pH is too low</u>.
+b. Before $\ce{NaClO3}$ is added, the solution pH must be raised to about 6. This <u class="answer-reveal">prevents sodium chlorate and manganese dioxide from oxidizing chloride ions to chlorine when the pH is too low</u>.
 
 > TIP: Account for the Nernst equation in redox reactions.
 
@@ -450,7 +545,7 @@ $$
 2\mathrm{Mn^{2+}}+10\mathrm{CO_2}\uparrow+8\mathrm{H_2O}
 $$
 
-Determine the mass fraction of $\ce{MnO2}$ in the sample.
+The mass fraction of $\ce{MnO2}$ in the sample is <u class="answer-reveal">$\dfrac{87(0.2c_1V_1-0.5c_2V_2)}{2w}\%$</u>.
 
 [$M(\ce{MnO2})=87\ \mathrm{g\cdot mol^{-1}}$]
 
@@ -470,7 +565,7 @@ $$\begin{gathered}
 
 Reference information: A dilute $\ce{Mn^2+}$ solution is almost <span class="chemical-color" data-color="colorless">colorless</span>. In an acidic medium, $\ce{S2O8^2-}$ can oxidize $\ce{Mn^2+}$ to $\ce{MnO4^-}$.
 
-(1) The ionic equation for the detection reaction is $\underline{\ce{2Mn^2+ + 5S2O8^2- + 8H2O= 2MnO4- + 10SO4^2- + 16H+}}$.
+(1) The ionic equation for the detection reaction is <u class="answer-reveal">$\ce{2Mn^2+ + 5S2O8^2- + 8H2O -> 2MnO4^- + 10SO4^2- + 16H+}$</u>.
 
 Student A designed the following experiment.
 
@@ -486,16 +581,16 @@ Student A designed the following experiment.
 | III | Add 3 drops of $3\ \mathrm{mol\cdot L^{-1}}$ $\ce{H2SO4}$ solution to $1\ \mathrm{mL}$ of $0.002\ \mathrm{mol\cdot L^{-1}}$ $\ce{MnSO4}$ solution, add one rice-grain-sized crystal of $\ce{K2S2O8}$, then add 2 drops of $0.1\ \mathrm{mol\cdot L^{-1}}$ $\ce{AgNO3}$ solution | The solution becomes <span class="chemical-color" data-color="brown-yellow">brownish yellow</span>; <span class="chemical-color" data-color="purple-red">reddish purple</span> appears after $5\ \mathrm{min}$ |
 | IV | Add 3 drops of $3\ \mathrm{mol\cdot L^{-1}}$ $\ce{H2SO4}$ solution to $1\ \mathrm{mL}$ of $0.05\ \mathrm{mol\cdot L^{-1}}$ $\ce{MnSO4}$ solution, add one rice-grain-sized crystal of $\ce{K2S2O8}$, and heat to boiling | A <span class="chemical-color" data-color="brown-black">brownish-black</span> precipitate forms rapidly |
 
-① Comparing Experiments II and III suggests that no obvious change occurred in Experiment I because <u>the reaction rate was slow</u>.
+① Comparing Experiments II and III suggests that no obvious change occurred in Experiment I because <u class="answer-reveal">the reaction rate was slow</u>.
 
-② The solution became <span class="chemical-color" data-color="brown-yellow">brownish yellow</span> in Experiments II and III because <u>$\underline{\ce{S2O8^2-}}$ oxidizes $\underline{\ce{Mn^2+}}$ to $\underline{\ce{MnO4^-}}$, but the reaction is slow and the concentration of the $\underline{\ce{MnO4^-}}$ formed is relatively low. Boiling or adding $\underline{\ce{AgNO3}}$ increases the reaction rate</u>.
+② The solution became <span class="chemical-color" data-color="brown-yellow">brownish yellow</span> in Experiments II and III because <u class="answer-reveal">$\ce{S2O8^2-}$ oxidizes $\ce{Mn^2+}$ to $\ce{MnO4^-}$, but the reaction is slow and the concentration of the $\ce{MnO4^-}$ formed is relatively low. Boiling or adding $\ce{AgNO3}$ increases the reaction rate</u>.
 
-③ The <span class="chemical-color" data-color="brown-black">brownish-black</span> precipitate in Experiment IV forms according to $\underline{\ce{2MnO4^- + 3Mn^2+ + 2H2O= 5MnO2 v + 4H+}}$.
+③ The <span class="chemical-color" data-color="brown-black">brownish-black</span> precipitate in Experiment IV forms according to <u class="answer-reveal">$\ce{2MnO4^- + 3Mn^2+ + 2H2O -> 5MnO2 v + 4H+}$</u>.
 
 (3) Student B designed another experiment to complete the table.
 
 | No. | Procedure | Observation |
 | --- | --- | --- |
-| V | Add 3 drops of $3\ \mathrm{mol\cdot L^{-1}}$ $\ce{H2SO4}$ solution to $1\ \mathrm{mL}$ of $0.002\ \mathrm{mol\cdot L^{-1}}$ $\ce{MnSO4}$ solution, add one rice-grain-sized crystal of $\ce{K2S2O8}$ and <u>2 drops of $0.01\ \mathrm{mol\cdot L^{-1}}$ $\ce{AgNO3}$ solution</u>, then warm gently | <span class="chemical-color" data-color="purple-red">Reddish purple</span> appears after $1\ \mathrm{min}$ |
+| V | Add 3 drops of $3\ \mathrm{mol\cdot L^{-1}}$ $\ce{H2SO4}$ solution to $1\ \mathrm{mL}$ of $0.002\ \mathrm{mol\cdot L^{-1}}$ $\ce{MnSO4}$ solution, add one rice-grain-sized crystal of $\ce{K2S2O8}$ and <u class="answer-reveal">2 drops of $0.01\ \mathrm{mol\cdot L^{-1}}$ $\ce{AgNO3}$ solution</u>, then warm gently | <span class="chemical-color" data-color="purple-red">Reddish purple</span> appears after $1\ \mathrm{min}$ |
 
-(4) Conclusion: Factors that must be considered when developing a method for detecting $\ce{Mn^2+}$ include <u>temperature, catalyst, and $\ce{Mn(II)}$ concentration</u>.
+(4) Conclusion: Factors that must be considered when developing a method for detecting $\ce{Mn^2+}$ include <u class="answer-reveal">temperature, catalyst, and $\ce{Mn(II)}$ concentration</u>.

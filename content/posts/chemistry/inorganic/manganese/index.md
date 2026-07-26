@@ -293,6 +293,101 @@ $$2 \mathrm { M n O _ { 4 } ^ { 2 - } } + \mathrm { C l _ { 2 } } \xlongequal { 
 总反应 $\quad 2 \mathrm{~K}_{2} \mathrm{MnO}_{4}+2 \mathrm{H}_{2} \mathrm{O} \xlongequal { \text { 通电 } } 2 \mathrm{KMnO}_{4}+2 \mathrm{KOH}+\mathrm{H}_{2} \uparrow$
 
 # 真题操练
+## 溶液酸碱性对 $\ce{Mn(II)}$ 还原性的影响
+
+**（2022 北京化学高考第 19 题，根据真题整理）**
+
+某实验小组探究不同条件下氯气与二价锰化合物的反应。
+
+**资料：**
+
+i. $\ce{Mn^2+}$ 在一定条件下可被 $\ce{Cl2}$ 或 $\ce{ClO^-}$ 氧化为 $\ce{MnO2}$（<span class="chemical-color" data-color="brown-black">棕黑色</span>）、$\ce{MnO4^2-}$（<span class="chemical-color" data-color="green">绿色</span>）或 $\ce{MnO4^-}$（<span class="chemical-color" data-color="purple-red">紫色</span>）。
+
+ii. 浓碱性条件下，$\ce{MnO4^-}$ 可被 $\ce{OH^-}$ 还原为 $\ce{MnO4^2-}$。
+
+iii. $\ce{Cl2}$ 的氧化性与溶液的酸碱性无关；$\ce{NaClO}$ 的氧化性随碱性增强而减弱。
+
+实验装置如下（夹持装置略）：
+
+![氯气与二价锰化合物反应的实验装置](2022-beijing-chlorine-manganese-apparatus.png "2022 北京化学高考：氯气与二价锰化合物反应的实验装置")
+
+装置 C 中先加入 $10\ \mathrm{mL}$ 物质 a 和 5 滴 $0.1\ \mathrm{mol\cdot L^{-1}}$ $\ce{MnSO4}$ 溶液，再通入装置 A 制得并经 B 洗涤的 $\ce{Cl2}$。实验现象如下。
+
+| 序号 | 物质 a | 通入 $\ce{Cl2}$ 前 | 通入 $\ce{Cl2}$ 后 |
+| --- | --- | --- | --- |
+| Ⅰ | 水 | 得到<span class="chemical-color" data-color="colorless">无色</span>溶液 | 产生<span class="chemical-color" data-color="brown-black">棕黑色</span>沉淀，放置后不发生变化 |
+| Ⅱ | $5\%$ $\ce{NaOH}$ 溶液 | 产生<span class="chemical-color" data-color="white">白色</span>沉淀，在空气中缓慢变为<span class="chemical-color" data-color="brown-black">棕黑色</span> | <span class="chemical-color" data-color="brown-black">棕黑色</span>沉淀增多；放置后溶液变为<span class="chemical-color" data-color="purple">紫色</span>，仍有沉淀 |
+| Ⅲ | $40\%$ $\ce{NaOH}$ 溶液 | 产生<span class="chemical-color" data-color="white">白色</span>沉淀，在空气中缓慢变为<span class="chemical-color" data-color="brown-black">棕黑色</span> | <span class="chemical-color" data-color="brown-black">棕黑色</span>沉淀增多；放置后溶液变为<span class="chemical-color" data-color="purple">紫色</span>，仍有沉淀 |
+
+（1）装置 B 中的试剂是<u class="answer-reveal">饱和 $\ce{NaCl}$ 溶液</u>。
+
+（2）通入 $\ce{Cl2}$ 前，实验Ⅱ、Ⅲ中<span class="chemical-color" data-color="white">白色</span>沉淀在空气中变为<span class="chemical-color" data-color="brown-black">棕黑色</span>的化学方程式为<u class="answer-reveal">$\ce{2Mn(OH)2 + O2 -> 2MnO2 + 2H2O}$</u>。
+
+（3）对比实验Ⅰ、Ⅱ通入 $\ce{Cl2}$ 后的现象，对于二价锰化合物还原性的认识是<u class="answer-reveal">二价锰化合物在中性或弱酸性条件下只能被氧化到 $\ce{MnO2}$，在碱性条件下可以被氧化到更高价态</u>。
+
+（4）根据资料 ii，实验Ⅲ本应得到<span class="chemical-color" data-color="green">绿色</span>溶液，实际却得到<span class="chemical-color" data-color="purple">紫色</span>溶液。研究小组提出两种解释：
+
+- 原因一：通入 $\ce{Cl2}$ 使溶液碱性减弱；
+- 原因二：氧化剂过量，将 $\ce{MnO4^2-}$ 继续氧化为 $\ce{MnO4^-}$。
+
+① 可能导致溶液碱性减弱的化学方程式为<u class="answer-reveal">$\ce{2NaOH + Cl2 -> NaCl + NaClO + H2O}$</u>。实验测得溶液的碱性变化很小。
+
+② 取实验Ⅲ放置后的 $1\ \mathrm{mL}$ 悬浊液，加入 $4\ \mathrm{mL}$ $40\%$ $\ce{NaOH}$ 溶液，溶液<span class="chemical-color" data-color="purple">紫色</span>迅速变为<span class="chemical-color" data-color="green">绿色</span>，且<span class="chemical-color" data-color="green">绿色</span>缓慢加深。溶液<span class="chemical-color" data-color="purple">紫色</span>迅速变为<span class="chemical-color" data-color="green">绿色</span>的离子方程式为<u class="answer-reveal">$\ce{4MnO4^- + 4OH^- -> 4MnO4^2- + O2 ^ + 2H2O}$</u>；溶液<span class="chemical-color" data-color="green">绿色</span>缓慢加深，是因为 $\ce{MnO2}$ 被<u class="answer-reveal">$\ce{NaClO}$</u>氧化，可证明实验Ⅲ的悬浊液中氧化剂过量。
+
+③ 另取实验Ⅲ放置后的 $1\ \mathrm{mL}$ 悬浊液，加入 $4\ \mathrm{mL}$ 水，溶液<span class="chemical-color" data-color="purple">紫色</span>缓慢加深，发生的反应为<u class="answer-reveal">$\ce{2MnO2 + 3ClO^- + 2OH^- -> 2MnO4^- + 3Cl^- + H2O}$</u>。
+
+④ 从反应速率角度分析实验Ⅲ未得到<span class="chemical-color" data-color="green">绿色</span>溶液的可能原因：<u class="answer-reveal">浓碱性条件下，$\ce{2MnO4^2- + ClO^- + H2O -> 2MnO4^- + Cl^- + 2OH^-}$ 的反应速率快于 $\ce{4MnO4^- + 4OH^- -> 4MnO4^2- + O2 ^ + 2H2O}$</u>。
+
+## 高锰酸钾的制备、提纯与产率测定
+
+**（2026 北京化学高考第 19 题，根据真题整理）**
+
+实验小组制备高锰酸钾。
+
+**资料：**
+
+i. $\ce{K2MnO4}$ 为<span class="chemical-color" data-color="dark-green">墨绿色</span>固体，可溶于水，在强碱性条件下稳定；一定条件下发生歧化：
+
+$$
+\ce{3MnO4^2- + 2H2O -> 2MnO4^- + MnO2 v + 4OH^-}
+$$
+
+ii. 浓碱性条件下，$\ce{MnO4^-}$ 可被 $\ce{OH^-}$ 还原为 $\ce{MnO4^2-}$。
+
+iii. $\ce{KMnO4}$ 的溶解度随温度升高而增大。
+
+（1）**制备 $\ce{KMnO4}$**
+
+| 步骤 | 实验 |
+| --- | --- |
+| Ⅰ 制备 $\ce{K2MnO4}$ | 将 $0.015\ \mathrm{mol}$ $\ce{KClO3}$、$0.030\ \mathrm{mol}$ $\ce{MnO2}$ 和 $0.080\ \mathrm{mol}$ $\ce{KOH}$ 三种固体在熔融状态下充分反应，得到<span class="chemical-color" data-color="dark-green">墨绿色</span>固体 X |
+| Ⅱ 制备 $\ce{KMnO4}$ | 将 X 用水溶解，滴加 $3\ \mathrm{mol\cdot L^{-1}}$ $\ce{CH3COOH}$ 至 $\mathrm{pH}=10$（约 $20\ \mathrm{mL}$），溶液由<span class="chemical-color" data-color="green">绿色</span>变为<span class="chemical-color" data-color="purple-red">紫红色</span>后过滤，得到约 $100\ \mathrm{mL}$ 溶液 Y 和<span class="chemical-color" data-color="brown-black">棕黑色</span>固体 |
+| Ⅲ 提纯 $\ce{KMnO4}$ | 将 Y 转移至蒸发皿中，$90^\circ\mathrm{C}$ 水浴浓缩，冷却结晶、过滤、洗涤、干燥，得到<span class="chemical-color" data-color="purple-red">紫红色</span>固体 Z |
+
+① 补全步骤Ⅰ的化学方程式：
+
+<u class="answer-reveal">$\ce{KClO3 + 3MnO2 + 6KOH} \xlongequal{\text{熔融}} \ce{KCl + 3K2MnO4 + 3H2O}$</u>
+
+② 步骤Ⅱ中，$\ce{K2MnO4}$ 随 pH 降低而发生歧化。若 $\ce{MnO4^2-}$ 的还原性不变，则其氧化性<u class="answer-reveal">增强</u>。
+
+③ 取少量 Z 溶解，得到<span class="chemical-color" data-color="purple-red">紫红色</span> $\ce{KMnO4}$ 溶液和少量<span class="chemical-color" data-color="brown-black">棕黑色</span> $\ce{MnO2}$。
+
+（2）**探究步骤Ⅲ中 $\ce{MnO2}$ 的来源**
+
+① 甲同学认为 $\ce{CH3COO^-}$ 将 $\ce{MnO4^-}$ 还原。实验 i 用含 $0.2\ \mathrm{mol\cdot L^{-1}}$ $\ce{KMnO4}$ 和 $0.6\ \mathrm{mol\cdot L^{-1}}$ $\ce{CH3COOK}$、$\mathrm{pH}=10$ 的溶液代替 Y，重复步骤Ⅲ，所得固体中含 $\ce{MnO2}$。乙同学认为该现象不能证明 $\ce{CH3COO^-}$ 还原了 $\ce{MnO4^-}$，理由是<u class="answer-reveal">实验没有排除 $\ce{OH^-}$ 还原 $\ce{MnO4^-}$ 的干扰</u>。
+
+② 乙设计并实施实验 ii：用<u class="answer-reveal">含 $0.2\ \mathrm{mol\cdot L^{-1}}$ $\ce{KMnO4}$ 且用 $\ce{KOH}$ 调节至 $\mathrm{pH}=10$ 的溶液</u>代替 Y 重复步骤Ⅲ，所得固体不含 $\ce{MnO2}$；实验 i 和 ii 证实了甲的观点。
+
+③ 丙同学用 $0.15\ \mathrm{mol\cdot L^{-1}}$ $\ce{KCl}$ 代替 $\ce{CH3COOK}$ 重复实验 i，证实步骤Ⅲ中 $\ce{Cl^-}$ 不能还原 $\ce{MnO4^-}$。
+
+（3）**测定 $\ce{KMnO4}$ 纯度并计算产率**
+
+按步骤Ⅰ的投料量，经优化步骤制得产品。取产品的 $\frac14$ 配制成 $250\ \mathrm{mL}$ 待测液。在酸性条件下，用待测液滴定 $\ce{H2C2O4}$ 标准溶液，$\ce{MnO4^-}$ 被还原为 $\ce{Mn^2+}$。测得待测液中 $c(\ce{KMnO4})=a\ \mathrm{mol\cdot L^{-1}}$。
+
+① 滴定反应的离子方程式为<u class="answer-reveal">$\ce{2MnO4^- + 5H2C2O4 + 6H+ -> 2Mn^2+ + 10CO2 ^ + 8H2O}$</u>（$\ce{H2C2O4}$ 是二元弱酸）。
+
+② $\ce{KMnO4}$ 的产率为<u class="answer-reveal">$5000a\%$</u>。[产率 $=\dfrac{\text{实际产量}}{\text{理论产量}}\times100\%$]
+
 ## $\mathrm{Na}$ 与 $\mathrm{KMnO_4}$溶液的反应
 (2023海淀二模:9)某小组同学探究溶液中的 $\mathrm{MnO_4^-}$ 能否被金属钠还原，进行实验：
 
@@ -335,34 +430,34 @@ iii. $2\mathrm{Mn(OH)_2}$（<span class="chemical-color" data-color="white">白�
 
 ![Na2S 与酸性 KMnO4 溶液反应的实验流程](na2s-kmno4-experiment.png)
 
-（1）用离子方程式表示$\ce{Na2S}$溶液显碱性的原因：<u>$\underline{\ce{S^2- + H2O \xrightleftharpoons{}HS- + OH-}}$</u>。
+（1）用离子方程式表示$\ce{Na2S}$溶液显碱性的原因：<u class="answer-reveal">$\ce{S^2- + H2O <=> HS^- + OH^-}$</u>。
 
 （2）将固体 a 过滤、洗涤，放置在空气中，固体变为<span class="chemical-color" data-color="brown-black">棕黑色</span>。
 
-① 甲同学认为固体 a 中除了 $\mathrm{MnS}$ 外，还有 $\mathrm{Mn(OH)_2}$，依据的现象是<u>固体a放置在空气中变为<span class="chemical-color" data-color="brown-black">棕黑色</span></u>。
+① 甲同学认为固体 a 中除了 $\mathrm{MnS}$ 外，还有 $\mathrm{Mn(OH)_2}$，依据的现象是<u class="answer-reveal">固体a放置在空气中变为<span class="chemical-color" data-color="brown-black">棕黑色</span></u>。
 
-② 乙同学认为根据上述现象不能得出固体 a 中含有 $\mathrm{Mn(OH)_2}$，应补充对比实验：<u>将MnS放置在空气中,观察**相同时间内**是否变为<span class="chemical-color" data-color="brown-black">棕黑色</span></u>（填实验方案）。实验证实固体 a 中含有 $\mathrm{Mn(OH)_2}$。
+② 乙同学认为根据上述现象不能得出固体 a 中含有 $\mathrm{Mn(OH)_2}$，应补充对比实验：<u class="answer-reveal">将MnS放置在空气中,观察**相同时间内**是否变为<span class="chemical-color" data-color="brown-black">棕黑色</span></u>（填实验方案）。实验证实固体 a 中含有 $\mathrm{Mn(OH)_2}$。
 
-（3）固体 b 的主要成分是 $\mathrm{S}$。分析产生 $\mathrm{S}$ 的可能原因：<u>$\underline{\ce{S^2-,S_x^2-,MnS}}$被酸性$\underline{\ce{KMnO4}}$溶液氧化生成$\underline{\ce{S}}$;$\ce{S_x^2-}$在酸性条件下转化为$\underline{\ce{S}}$</u>。
+（3）固体 b 的主要成分是 $\mathrm{S}$。分析产生 $\mathrm{S}$ 的可能原因：<u class="answer-reveal">$\ce{S^2-}$、$\ce{S_x^2-}$、$\ce{MnS}$ 被酸性 $\ce{KMnO4}$ 溶液氧化生成 $\ce{S}$；$\ce{S_x^2-}$ 在酸性条件下转化为 $\ce{S}$</u>。
 
 （4）经检验，固体 c 的主要成分是 $\mathrm{MnO_2}$。
 
-① 分析产生 $\mathrm{MnO_2}$ 的可能原因：酸性条件下，$\mathrm{MnO_4^-}$ 将 $\mathrm{Mn^{2+}}$ 氧化。该反应的离子方程式是$\underline{\ce{2MnO4^- + 3Mn^2+ + 2H2O= 5MnO2 v + 4H+}}$。
+① 分析产生 $\mathrm{MnO_2}$ 的可能原因：酸性条件下，$\mathrm{MnO_4^-}$ 将 $\mathrm{Mn^{2+}}$ 氧化。该反应的离子方程式是<u class="answer-reveal">$\ce{2MnO4^- + 3Mn^2+ + 2H2O -> 5MnO2 v + 4H+}$</u>。
 
 ② 继续滴加酸性 $\mathrm{KMnO_4}$ 溶液，溶液变为<span class="chemical-color" data-color="purple-red">紫红色</span>，仍有<span class="chemical-color" data-color="brown-black">棕黑色</span>固体。
 
 **实验Ⅱ：** 改用未经酸化的 $\mathrm{KMnO_4}$ 溶液重复实验Ⅰ，产生<span class="chemical-color" data-color="brown-black">棕黑色</span>固体时溶液呈<span class="chemical-color" data-color="green">绿色</span>。
 
-（5）分析实验Ⅰ未见<span class="chemical-color" data-color="green">绿色</span>的原因：取少量实验Ⅱ的<span class="chemical-color" data-color="green">绿色</span>溶液，滴加硫酸，溶液变为<span class="chemical-color" data-color="purple-red">紫红色</span>，产生<span class="chemical-color" data-color="brown-black">棕黑色</span>固体。该反应的离子方程式是$\underline{\ce{}}$。
+（5）分析实验Ⅰ未见<span class="chemical-color" data-color="green">绿色</span>的原因：取少量实验Ⅱ的<span class="chemical-color" data-color="green">绿色</span>溶液，滴加硫酸，溶液变为<span class="chemical-color" data-color="purple-red">紫红色</span>，产生<span class="chemical-color" data-color="brown-black">棕黑色</span>固体。该反应的离子方程式是<u class="answer-reveal">$\ce{3MnO4^2- + 4H+ -> 2MnO4^- + MnO2 v + 2H2O}$</u>。
 
 **实验Ⅲ：** 向未经酸化的 $\mathrm{KMnO_4}$ 溶液中滴加少量 $\mathrm{Na_2S}$，产生<span class="chemical-color" data-color="brown-black">棕黑色</span>沉淀，并检测到 $\mathrm{SO_4^{2-}}$。
 
-（6）检验 $\mathrm{SO_4^{2-}}$ 的实验方案：<u>取少量反应后的上层溶液,加入$\ce{Ba(NO3)2}$(或$\ce{BaCl2}$)溶液,产生<span class="chemical-color" data-color="white">白色</span>沉淀,**过滤**,向沉淀中加入过量盐酸,沉淀不溶解</u>（填操作和现象）。
+（6）检验 $\mathrm{SO_4^{2-}}$ 的实验方案：<u class="answer-reveal">取少量反应后的上层溶液,加入$\ce{Ba(NO3)2}$(或$\ce{BaCl2}$)溶液,产生<span class="chemical-color" data-color="white">白色</span>沉淀,**过滤**,向沉淀中加入过量盐酸,沉淀不溶解</u>（填操作和现象）。
 > TIPS:高锰酸钾+浓盐酸=氯气
 
 注：该实验条件下，$\mathrm{MnO_4^-}$ 与 $\mathrm{Ba^{2+}}$ 不反应。
 
-（7）综合上述实验，$\mathrm{Na_2S}$ 与 $\mathrm{KMnO_4}$ 溶液反应的产物与<u>反应物用量,添加顺序,溶液pH</u>等因素有关（答出两点即可）。
+（7）综合上述实验，$\mathrm{Na_2S}$ 与 $\mathrm{KMnO_4}$ 溶液反应的产物与<u class="answer-reveal">反应物用量,添加顺序,溶液pH</u>等因素有关（答出两点即可）。
 
 ## 锰及其化合物的工业应用
 
@@ -370,9 +465,9 @@ iii. $2\mathrm{Mn(OH)_2}$（<span class="chemical-color" data-color="white">白�
 
 **Ⅰ.** 以含 $\mathrm{MnCO_3}$ 的矿石为原料，经硫酸溶解得到含 $\mathrm{Mn^{2+}}$ 的溶液，再经一系列处理后进行电解，获得金属 $\mathrm{Mn}$。
 
-（1）$\mathrm{Mn}$ 在<u>阴极</u>（填“阳极”或“阴极”）生成。
+（1）$\mathrm{Mn}$ 在<u class="answer-reveal">阴极</u>（填“阳极”或“阴极”）生成。
 
-（2）阳极泥中含有 $\mathrm{MnO_2}$，写出产生 $\mathrm{MnO_2}$ 的电极反应式：$\underline{\ce{Mn^2+ -2e- + 2H2O = MnO2 + 4H+}}$。
+（2）阳极泥中含有 $\mathrm{MnO_2}$，写出产生 $\mathrm{MnO_2}$ 的电极反应式：<u class="answer-reveal">$\ce{Mn^2+ - 2e^- + 2H2O -> MnO2 + 4H+}$</u>。
 
 **Ⅱ.** 阳极泥中除含锰元素外，还含有铅元素，采用如下方法可将它们分别转化为活性 $\mathrm{MnO_2}$ 和 $\mathrm{PbO}$。
 
@@ -380,19 +475,19 @@ iii. $2\mathrm{Mn(OH)_2}$（<span class="chemical-color" data-color="white">白�
 
 已知：$\mathrm{(CH_3COO)_2Pb}$ 在水中难解离。
 
-（3）操作 X 为<u>过滤</u>。
+（3）操作 X 为<u class="answer-reveal">过滤</u>。
 
-（4）①中反应的离子方程式为$\underline{\ce{PbO + 2CH3COO- + 2NH4+ = (CH3COO)2Pb + H2O + 2NH3}}$。
+（4）①中反应的离子方程式为<u class="answer-reveal">$\ce{PbO + 2CH3COO^- + 2NH4+ -> (CH3COO)2Pb + H2O + 2NH3}$</u>。
 
 > TIPS:注意配位反应和酸碱反应的耦合
 
-（5）溶液 C 能循环使用，②中溶液 B 的溶质为$\underline{\ce{(NH4)2CO3}}$。
+（5）溶液 C 能循环使用，②中溶液 B 的溶质为<u class="answer-reveal">$\ce{(NH4)2CO3}$</u>。
 
 （6）
 
-a. 为了将③中 $\mathrm{Mn_2O_3}$ 完全转化为 $\mathrm{MnO_2}$，理论上④中加入的 $\mathrm{NaClO_3}$ 与 $\mathrm{Mn_2O_3}$ 的物质的量之比为<u>1:3</u>（已知 $\mathrm{NaClO_3}$ 的还原产物为 $\mathrm{NaCl}$）。
+a. 为了将③中 $\mathrm{Mn_2O_3}$ 完全转化为 $\mathrm{MnO_2}$，理论上④中加入的 $\mathrm{NaClO_3}$ 与 $\mathrm{Mn_2O_3}$ 的物质的量之比为<u class="answer-reveal">1:3</u>（已知 $\mathrm{NaClO_3}$ 的还原产物为 $\mathrm{NaCl}$）。
 
-b. 加入 $\mathrm{NaClO_3}$ 前，需将溶液 pH 调大至 6 左右。调节 pH 的目的是<u>防止pH较低时氯酸钠和二氧化锰将氯离子氧化为氯气</u>。
+b. 加入 $\mathrm{NaClO_3}$ 前，需将溶液 pH 调大至 6 左右。调节 pH 的目的是<u class="answer-reveal">防止pH较低时氯酸钠和二氧化锰将氯离子氧化为氯气</u>。
 
 > TIPS:注意能斯特方程在氧化还原反应中的应用
 
@@ -414,7 +509,7 @@ $$
 2\mathrm{Mn^{2+}}+10\mathrm{CO_2}\uparrow+8\mathrm{H_2O}
 $$
 
-样品中 $\mathrm{MnO_2}$ 的质量分数为____________。
+样品中 $\mathrm{MnO_2}$ 的质量分数为<u class="answer-reveal">$\dfrac{87(0.2c_1V_1-0.5c_2V_2)}{2w}\%$</u>。
 
 [$M(\mathrm{MnO_2})=87\ \mathrm{g\cdot mol^{-1}}$]
 
@@ -434,7 +529,7 @@ $$\begin{gathered}
 
 查阅资料：$\mathrm{Mn^{2+}}$ 的稀溶液几乎<span class="chemical-color" data-color="colorless">无色</span>，在酸性介质中，$\mathrm{S_2O_8^{2-}}$ 能将 $\mathrm{Mn^{2+}}$ 氧化成 $\mathrm{MnO_4^-}$。
 
-（1）资料中检测 $\mathrm{Mn^{2+}}$ 方法的反应为$\underline{\ce{2Mn^2+ + 5S2O8^2- + 8H2O= 2MnO4- + 10SO4^2- + 16H+}}$（用离子方程式表示）。
+（1）资料中检测 $\mathrm{Mn^{2+}}$ 方法的反应为<u class="answer-reveal">$\ce{2Mn^2+ + 5S2O8^2- + 8H2O -> 2MnO4^- + 10SO4^2- + 16H+}$</u>（用离子方程式表示）。
 
 甲同学设计实验如下。
 
@@ -450,16 +545,16 @@ $$\begin{gathered}
 | Ⅲ | 向 $1\ \mathrm{mL}\ 0.002\ \mathrm{mol\cdot L^{-1}}$ $\mathrm{MnSO_4}$ 溶液中滴入 3 滴 $3\ \mathrm{mol\cdot L^{-1}}$ $\mathrm{H_2SO_4}$ 溶液，并加入一粒米大的 $\mathrm{K_2S_2O_8}$ 固体，再滴入 2 滴 $0.1\ \mathrm{mol\cdot L^{-1}}$ $\mathrm{AgNO_3}$ 溶液 | 溶液变成<span class="chemical-color" data-color="brown-yellow">棕黄色</span>，$5\ \mathrm{min}$ 后出现<span class="chemical-color" data-color="purple-red">紫红色</span> |
 | Ⅳ | 向 $1\ \mathrm{mL}\ 0.05\ \mathrm{mol\cdot L^{-1}}$ $\mathrm{MnSO_4}$ 溶液中滴入 3 滴 $3\ \mathrm{mol\cdot L^{-1}}$ $\mathrm{H_2SO_4}$ 溶液，并加入一粒米大的 $\mathrm{K_2S_2O_8}$ 固体，加热至沸腾 | 迅速生成<span class="chemical-color" data-color="brown-black">棕黑色</span>沉淀 |
 
-① 对比实验Ⅱ、Ⅲ，推测实验Ⅰ无明显现象的原因<u>反应速率较慢</u>。
+① 对比实验Ⅱ、Ⅲ，推测实验Ⅰ无明显现象的原因<u class="answer-reveal">反应速率较慢</u>。
 
-② 解释实验Ⅱ、Ⅲ中溶液变成<span class="chemical-color" data-color="brown-yellow">棕黄色</span>的原因<u>$\underline{\ce{S2O8^2-}}能将\underline{\ce{Mn^2+}}$氧化为$\underline{\ce{MnO4-}}$,但反应速度慢,生成的$\underline{\ce{MnO4-}}$浓度相对较小,加热煮沸或者加入$\underline{\ce{AgNO3}}$溶液,反应速率加快</u>。
+② 解释实验Ⅱ、Ⅲ中溶液变成<span class="chemical-color" data-color="brown-yellow">棕黄色</span>的原因<u class="answer-reveal">$\ce{S2O8^2-}$ 能将 $\ce{Mn^2+}$ 氧化为 $\ce{MnO4^-}$，但反应速度慢，生成的 $\ce{MnO4^-}$ 浓度相对较小；加热煮沸或者加入 $\ce{AgNO3}$ 溶液，反应速率加快</u>。
 
-③ 结合离子方程式解释实验Ⅳ中产生<span class="chemical-color" data-color="brown-black">棕黑色</span>沉淀的原因$\underline{\ce{2MnO4^- + 3Mn^2+ + 2H2O= 5MnO2 v + 4H+}}$。
+③ 结合离子方程式解释实验Ⅳ中产生<span class="chemical-color" data-color="brown-black">棕黑色</span>沉淀的原因<u class="answer-reveal">$\ce{2MnO4^- + 3Mn^2+ + 2H2O -> 5MnO2 v + 4H+}$</u>。
 
 （3）乙同学继续设计实验，完成表格中空白处。
 
 | 序号 | 实验操作 | 实验现象 |
 | --- | --- | --- |
-| Ⅴ | 向 $1\ \mathrm{mL}\ 0.002\ \mathrm{mol\cdot L^{-1}}$ $\mathrm{MnSO_4}$ 溶液中滴入 3 滴 $3\ \mathrm{mol\cdot L^{-1}}$ $\mathrm{H_2SO_4}$ 溶液，并加入一粒米大的 $\mathrm{K_2S_2O_8}$ 固体和<u>2滴$\ce{0.01mol.L^{-1} AgNO3}$溶液</u>，微热 | $1\ \mathrm{min}$ 后出现<span class="chemical-color" data-color="purple-red">紫红色</span> |
+| Ⅴ | 向 $1\ \mathrm{mL}\ 0.002\ \mathrm{mol\cdot L^{-1}}$ $\mathrm{MnSO_4}$ 溶液中滴入 3 滴 $3\ \mathrm{mol\cdot L^{-1}}$ $\mathrm{H_2SO_4}$ 溶液，并加入一粒米大的 $\mathrm{K_2S_2O_8}$ 固体和<u class="answer-reveal">2滴$\ce{0.01mol.L^{-1} AgNO3}$溶液</u>，微热 | $1\ \mathrm{min}$ 后出现<span class="chemical-color" data-color="purple-red">紫红色</span> |
 
-（4）总结：探究 $\mathrm{Mn^{2+}}$ 的检测方法需要考虑的因素有<u>温度,催化剂,Mn(II)离子浓度</u>。
+（4）总结：探究 $\mathrm{Mn^{2+}}$ 的检测方法需要考虑的因素有<u class="answer-reveal">温度,催化剂,Mn(II)离子浓度</u>。
