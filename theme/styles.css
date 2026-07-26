@@ -104,6 +104,8 @@ button { color:inherit; }
 .prose h3 { font-size:1.35rem; margin:2em 0 .65em; }
 .prose p { margin:0 0 1.45em; }
 .prose a { text-decoration:underline; text-decoration-color:var(--accent); text-decoration-thickness:2px; text-underline-offset:3px; }
+.prose u { padding-bottom:.12em; background-image:linear-gradient(currentColor,currentColor); background-position:0 100%; background-repeat:no-repeat; background-size:100% max(1px,.04em); -webkit-box-decoration-break:clone; box-decoration-break:clone; text-decoration:none; }
+.prose u .katex .underline-line { border-bottom-width:0!important; }
 .prose img,.prose video,.prose iframe { display:block; max-width:100%; height:auto; margin:2em auto; }
 .prose video,.prose iframe { border-radius:16px; }
 .prose-figure { margin:2em auto; }

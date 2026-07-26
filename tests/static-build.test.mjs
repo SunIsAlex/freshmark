@@ -126,6 +126,17 @@ test("standalone boxed formulas become scrollable display math", async () => {
   assert.match(css, /\.prose \.katex-display>\.katex\{min-width:max-content}/);
 });
 
+test("HTML underlines match KaTeX underline metrics", async () => {
+  const css = await read("public/assets/styles.css");
+  assert.match(css, /\.prose u\{[^}]*padding-bottom:.12em/);
+  assert.match(css, /\.prose u\{[^}]*background-image:linear-gradient\(currentColor,currentColor\)/);
+  assert.match(css, /\.prose u\{[^}]*background-position:0 100%/);
+  assert.match(css, /\.prose u\{[^}]*background-size:100% max\(1px,.04em\)/);
+  assert.match(css, /\.prose u\{[^}]*box-decoration-break:clone/);
+  assert.match(css, /\.prose u\{[^}]*text-decoration:none/);
+  assert.match(css, /\.prose u \.katex \.underline-line\{border-bottom-width:0!important}/);
+});
+
 test("articles pass through raw HTML, render level-one headings, and use the more excerpt", async () => {
   const html = await read("public/posts/chemistry/babychem/alcohol-to-halide-conversion-and-alcohol-elimination/index.html");
   assert.match(html, /<!--more-->/);
