@@ -107,9 +107,9 @@ $$
 \mathrm{Mn^{2+}} \xrightarrow{\mathrm{OH^-}} \mathrm{Mn(OH)_2} \text{ (white)} \xrightarrow{\mathrm{O_2}} \mathrm{MnO(OH)} \text{ (brown)} \xrightarrow{\mathrm{O_2}} \mathrm{MnO_2 \cdot nH_2O}
 $$
 
-Both aqueous ammonia and strong bases convert $\ce{Mn^2+}$ into basic, <span class="chemical-color" data-color="near-white">nearly white</span> $\ce{Mn(OH)2}$.
+Both aqueous ammonia and strong bases convert $\ce{Mn^2+}$ into basic, <span class="chemical-color" data-color="near-white">nearly white</span>$\ce{Mn(OH)2}$.
 
-$\ce{Mn(OH)2}$ is oxidized extremely readily. Even the small amount of dissolved oxygen in water can oxidize it to <span class="chemical-color" data-color="brown-black">brownish-black</span> $\ce{MnO(OH)2}$, also written as $\ce{MnO2.H2O}$ or $\ce{H2MnO3}$. This reaction can be used to determine dissolved oxygen.
+$\ce{Mn(OH)2}$ is oxidized extremely readily. Even the small amount of dissolved oxygen in water can oxidize it to <span class="chemical-color" data-color="brown-black">brownish-black</span>$\ce{MnO(OH)2}$, also written as $\ce{MnO2.H2O}$ or $\ce{H2MnO3}$. This reaction can be used to determine dissolved oxygen.
 
 When precipitates of $\ce{MnS}$, $\ce{MnCO3}$, or $\ce{MnC2O4}$ stand in air or are heated, atmospheric oxygen oxidizes them to $\ce{MnO(OH)2}$.
 
@@ -139,7 +139,7 @@ Strong oxidizing agents can oxidize $\ce{Mn^2+}$ to $\ce{MnO4^-}$:
 
 The first two reactions are commonly used to identify $\ce{Mn^2+}$.
 
-The concentration $c(\ce{Mn^2+})$ must not be too high, especially in the first reaction. Otherwise $\ce{Mn^2+}$ readily comproportionates with $\ce{MnO4^-}$ to form <span class="chemical-color" data-color="brown-black">brownish-black</span> $\ce{MnO2}$.
+The concentration $c(\ce{Mn^2+})$ must not be too high, especially in the first reaction. Otherwise $\ce{Mn^2+}$ readily comproportionates with $\ce{MnO4^-}$ to form <span class="chemical-color" data-color="brown-black">brownish-black</span>$\ce{MnO2}$.
 
 When a $\ce{Mn(II)}$ salt is heated and its anion is oxidizing, $\ce{Mn(II)}$ is oxidized:
 
@@ -161,11 +161,11 @@ The hydrated ion $\ce{[Mn(H2O)6]^2+}$ is <span class="chemical-color" data-color
 
 ### Weak-Field Ligands: High-Spin Tetrahedral Complexes
 
-In ethanol, $\ce{Mn^2+}$ forms <span class="chemical-color" data-color="yellow">yellow</span> $\ce{[MnX4]^2-}$, where $\ce{X=Cl,Br,I}$. Its electron arrangement is $(e)^2(t_2)^3$, and $CFSE=0$.
+In ethanol, $\ce{Mn^2+}$ forms <span class="chemical-color" data-color="yellow">yellow</span>$\ce{[MnX4]^2-}$, where $\ce{X=Cl,Br,I}$. Its electron arrangement is $(e)^2(t_2)^3$, and $CFSE=0$.
 
 ### Strong-Field Ligands: Low-Spin Octahedral Complexes
 
-Only $\ce{Mn(II)}$ with certain strong-field ligands forms colored, low-spin complexes. An example is <span class="chemical-color" data-color="blue-violet">blue-violet</span> $\ce{[Mn(CN)6]^4-}$, with electron arrangement $(e)^5(t_2)^0$ and $CFSE=(2\Delta-2P)$. In air, this compound is readily oxidized to <span class="chemical-color" data-color="brown-red">brownish-red</span> $\ce{[Mn(CN)6]^3-}$.
+Only $\ce{Mn(II)}$ with certain strong-field ligands forms colored, low-spin complexes. An example is <span class="chemical-color" data-color="blue-violet">blue-violet</span>$\ce{[Mn(CN)6]^4-}$, with electron arrangement $(e)^5(t_2)^0$ and $CFSE=(2\Delta-2P)$. In air, this compound is readily oxidized to <span class="chemical-color" data-color="brown-red">brownish-red</span>$\ce{[Mn(CN)6]^3-}$.
 
 # $\ce{Mn(III)}$ Compounds
 
@@ -401,7 +401,7 @@ iii. The solubility of $\ce{KMnO4}$ increases with temperature.
 
 ② In step II, $\ce{K2MnO4}$ disproportionates as pH decreases. If the reducing power of $\ce{MnO4^2-}$ remains unchanged, its oxidizing power <u class="answer-reveal">increases</u>.
 
-③ When a small sample of Z was dissolved, a <span class="chemical-color" data-color="purple-red">purple-red</span> $\ce{KMnO4}$ solution and a small amount of <span class="chemical-color" data-color="brown-black">brown-black</span> $\ce{MnO2}$ were obtained.
+③ When a small sample of Z was dissolved, a <span class="chemical-color" data-color="purple-red">purple-red</span>$\ce{KMnO4}$ solution and a small amount of <span class="chemical-color" data-color="brown-black">brown-black</span>$\ce{MnO2}$ were obtained.
 
 (2) **Investigating the source of $\ce{MnO2}$ in step III**
 

@@ -100,8 +100,10 @@ test("localized routes provide Chinese and English navigation", async () => {
   assert.match(englishArticle, /hreflang="zh-CN"/);
   assert.match(englishArticle, /Back to all writing/);
   assert.match(englishArticle, /On this page/);
-  const untranslatedArticle = await read("public/posts/physics/basic-calculus-02/index.html");
-  assert.doesNotMatch(untranslatedArticle, /rel="alternate" hreflang="en"/);
+  const translatedArticle = await read("public/posts/physics/basic-calculus-02/index.html");
+  const englishTranslatedArticle = await read("public/en/posts/physics/basic-calculus-02/index.html");
+  assert.match(translatedArticle, /rel="alternate" hreflang="en"/);
+  assert.match(englishTranslatedArticle, /Introduction to Basic Calculus: Elementary Integration/);
 
   const englishProse = englishArticle.match(/<article class="prose">([\s\S]*?)<\/article>/)?.[1] || "";
   assert.match(englishProse, /Manganese ores occur mainly as/);
@@ -113,11 +115,19 @@ test("localized routes provide Chinese and English navigation", async () => {
   const chineseIndex = JSON.parse(await read("public/search-index.json"));
   const englishIndex = JSON.parse(await read("public/en/search-index.json"));
   assert.equal(chineseIndex.length, 30);
-  assert.equal(englishIndex.length, 1);
-  assert.equal(englishIndex[0].url, "/en/posts/chemistry/inorganic/manganese/");
+  assert.equal(englishIndex.length, chineseIndex.length);
+  assert.deepEqual(
+    englishIndex.map(({ url }) => url.replace(/^\/en/, "")).sort(),
+    chineseIndex.map(({ url }) => url).sort(),
+  );
+  assert.doesNotMatch(
+    JSON.stringify(englishIndex.map(({ searchText, ...metadata }) => metadata)),
+    /\p{Script=Han}/u,
+  );
   const englishRss = await read("public/en/rss.xml");
   assert.match(englishRss, /<language>en<\/language>/);
   assert.match(englishRss, /https:\/\/next\.sunisalex\.org\/en\/posts\/chemistry\/inorganic\/manganese\//);
+  assert.match(englishRss, /https:\/\/next\.sunisalex\.org\/en\/posts\/physics\/basic-calculus-02\//);
 });
 
 test("typography uses Claude's font family and size scale", async () => {
@@ -270,6 +280,61 @@ test("adjacent inline math delimiters do not become display math", async () => {
 
   const displayHtml = await read("public/posts/math/2022-labour-day/5-01-01/index.html");
   assert.match(displayHtml, /得:\\\[/);
+});
+
+test("English prose separates inline math from surrounding words", async () => {
+  const englishIndex = JSON.parse(await read("public/en/search-index.json"));
+  for (const post of englishIndex) {
+    const sourcePath = `content${post.url.replace(/^\/en/, "")}index.en.md`;
+    const lines = (await read(sourcePath)).split("\n");
+    let fencedCode = false;
+    let displayMath = false;
+    for (const [lineIndex, line] of lines.entries()) {
+      if (/^\s*```/.test(line)) {
+        fencedCode = !fencedCode;
+        continue;
+      }
+      if (fencedCode) continue;
+      const displayDelimiters = (line.match(/\$\$/g) || []).length;
+      if (displayMath || displayDelimiters) {
+        if (displayDelimiters % 2 === 1) displayMath = !displayMath;
+        continue;
+      }
+      let inlineCode = false;
+      let inlineMath = false;
+      for (let index = 0; index < line.length; index += 1) {
+        if (line[index] === "`") {
+          inlineCode = !inlineCode;
+          continue;
+        }
+        if (inlineCode || line[index] !== "$" || line[index + 1] === "$") continue;
+        if (!inlineMath) {
+          assert.doesNotMatch(line[index - 1] || "", /[A-Za-z0-9)]/, `${sourcePath}:${lineIndex + 1}`);
+          inlineMath = true;
+        } else {
+          assert.doesNotMatch(line[index + 1] || "", /[A-Za-z0-9(]/, `${sourcePath}:${lineIndex + 1}`);
+          inlineMath = false;
+        }
+      }
+
+      inlineCode = false;
+      for (let index = 0; index < line.length - 1; index += 1) {
+        if (line[index] === "`") {
+          inlineCode = !inlineCode;
+          continue;
+        }
+        if (inlineCode) continue;
+        const delimiter = line.slice(index, index + 2);
+        if (delimiter === "\\(") {
+          assert.doesNotMatch(line[index - 1] || "", /[A-Za-z0-9)]/, `${sourcePath}:${lineIndex + 1}`);
+          index += 1;
+        } else if (delimiter === "\\)") {
+          assert.doesNotMatch(line[index + 2] || "", /[A-Za-z0-9(]/, `${sourcePath}:${lineIndex + 1}`);
+          index += 1;
+        }
+      }
+    }
+  }
 });
 
 test("frontmatter categories and tags are indexed and displayed", async () => {
