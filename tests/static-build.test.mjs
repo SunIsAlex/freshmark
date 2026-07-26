@@ -14,13 +14,15 @@ test("build emits portable static pages", async () => {
     "public/posts/chemistry/babychem/overview-of-stereochemistry/index.md",
     "public/posts/chemistry/babychem/overview-of-stereochemistry/image.png",
     "public/posts/chemistry/inorganic/manganese/index.html",
-    "public/posts/chemistry/inorganic/manganese/image.png",
+    "public/posts/chemistry/inorganic/manganese/latimer-group7-acidic.svg",
+    "public/posts/chemistry/inorganic/manganese/latimer-manganese-media.svg",
     "public/posts/chemistry/inorganic/manganese/2022-beijing-chlorine-manganese-apparatus.png",
     "public/en/index.html",
     "public/en/about/index.html",
     "public/en/posts/chemistry/inorganic/manganese/index.html",
     "public/en/posts/chemistry/inorganic/manganese/index.md",
-    "public/en/posts/chemistry/inorganic/manganese/image.png",
+    "public/en/posts/chemistry/inorganic/manganese/latimer-group7-acidic.svg",
+    "public/en/posts/chemistry/inorganic/manganese/latimer-manganese-media.svg",
     "public/en/posts/chemistry/inorganic/manganese/2022-beijing-chlorine-manganese-apparatus.png",
     "public/en/search-index.json",
     "public/en/rss.xml",
@@ -188,6 +190,17 @@ test("articles render math and colocated Markdown images", async () => {
   const titledImageHtml = await read("public/posts/chemistry/babychem/overview-of-stereochemistry/index.html");
   assert.match(titledImageHtml, /<img[^>]*src="image\.png"[^>]*title="关于电负性\/杂化的综合判断"[^>]*>/);
   assert.match(titledImageHtml, /<figure class="prose-figure"><img[^>]*src="image\.png"[^>]*><figcaption>关于电负性\/杂化的综合判断<\/figcaption><\/figure>/);
+
+  const manganeseHtml = await read("public/posts/chemistry/inorganic/manganese/index.html");
+  assert.match(manganeseHtml, /src="latimer-group7-acidic\.svg"/);
+  assert.match(manganeseHtml, /src="latimer-manganese-media\.svg"/);
+  assert.doesNotMatch(manganeseHtml, /dxhx-38-12-279-1b\.jpg|src="image\.png"/);
+  const groupSevenLatimer = await read("public/posts/chemistry/inorganic/manganese/latimer-group7-acidic.svg");
+  assert.match(groupSevenLatimer, /\+0\.74/);
+  assert.match(groupSevenLatimer, /\+0\.31/);
+  const manganeseLatimer = await read("public/posts/chemistry/inorganic/manganese/latimer-manganese-media.svg");
+  assert.ok(manganeseLatimer.indexOf("+0.10") < manganeseLatimer.indexOf("−0.20"));
+  assert.match(manganeseLatimer, /E°\(MnO₂\/Mn\(OH\)₂\) = −0\.05 V/);
 
   const spacedImageHtml = await read("public/posts/physics/celestial-movement/index.html");
   assert.match(spacedImageHtml, /<img[^>]*src="Screenshot%20From%202026-06-17%2020-47-25\.png"/);

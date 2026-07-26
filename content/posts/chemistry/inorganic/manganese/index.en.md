@@ -33,9 +33,9 @@ In summary, down the manganese group:
 - The stability of **high oxidation states** **increases**
 - The stability of **low oxidation states** **decreases**
 
-![Latimer diagrams for manganese-group elements](dxhx-38-12-279-1b.jpg "Latimer diagrams showing transformations among oxidation states of manganese, technetium, and rhenium.")
+![Latimer diagrams for Group 7 elements in acidic solution](latimer-group7-acidic.svg "Latimer diagrams for manganese, technetium, and rhenium in acidic solution, with potentials versus the standard hydrogen electrode. Data follow the official 2023 IChO problem; the omitted E°(TcO₄⁻/TcO₂)=+0.74 V and E°(ReO₂/Re)=+0.31 V entries are completed from the official solution.")
 
-![Latimer diagrams for manganese in acidic and alkaline media](image.png "Latimer diagrams for manganese in alkaline medium (top) and acidic medium (bottom); the values above the arrows are standard electrode potentials.")
+![Latimer diagrams for manganese in acidic and alkaline media](latimer-manganese-media.svg "Manganese Latimer diagrams at 25 °C in the acidic standard state (1 M H⁺) and alkaline standard state (1 M OH⁻), versus the standard hydrogen electrode and rounded to 0.01 V. Note that MnO₂/Mn(OH)₃ is +0.10 V and Mn(OH)₃/Mn(OH)₂ is −0.20 V.")
 
 With that context established, this opening article on the manganese group focuses on manganese itself.
 
@@ -304,8 +304,10 @@ $$4\mathrm{MnO_4^-} + 4\mathrm{H^+} \xlongequal{} 4\mathrm{MnO_2} \downarrow + 3
 
 $$4\mathrm{MnO_4^-} + 4\mathrm{OH^-} \xlongequal{} 4\mathrm{MnO_4^{2-}} + \mathrm{O_2} \uparrow + 2\mathrm{H_2O}$$
 
-## Image Sources and Licenses
+## Image and Data Sources
 
+- [Group 7 acidic Latimer data: official 55th IChO 2023 theory paper](https://olympiad.kchem.org/file/articleFile/general/792/TheoryExam_v27.pdf) and [mirror of the official solution](https://www.ttcho.com/_files/ugd/988b76_8ca8f064fc744e5fb933e27b7947dc85.pdf)
+- [Manganese Latimer data in acid and base: D. A. Stynes, York University](https://www.yorku.ca/stynes/Latimer09.pdf)
 - [Manganese metal, Jurii](https://commons.wikimedia.org/wiki/File:Manganese.jpg), CC BY 3.0
 - [Pyrolusite specimen, Andrew Silver / USGS Mineral Specimens](https://commons.wikimedia.org/wiki/File:Pyrolusite_-_USGS_Mineral_Specimens_854.jpg), public domain
 - [Rhodochrosite, James St. John](https://commons.wikimedia.org/wiki/File:Rhodochrosite_(%3D_pink).jpg), CC BY 2.0

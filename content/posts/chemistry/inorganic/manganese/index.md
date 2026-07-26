@@ -30,9 +30,9 @@ featured: false
 - **高氧化态**稳定性**递增**
 - **低氧化态**稳定性**递减**
 
-![锰副族元素的元素电势图](dxhx-38-12-279-1b.jpg "锰、锝、铼在不同氧化态之间转化的元素电势图。")
+![锰副族元素在酸性条件下的元素电势图](latimer-group7-acidic.svg "锰、锝、铼在酸性条件下的元素电势图，电势相对于标准氢电极。数据取自 2023 年第 55 届 IChO 官方题目；原题空缺的 E°(TcO₄⁻/TcO₂)=+0.74 V 和 E°(ReO₂/Re)=+0.31 V 按官方答案补全。")
 
-![锰在酸性和碱性介质中的元素电势图](image.png "锰在碱性条件（上）和酸性条件（下）中的元素电势图；箭头上方为相应电对的标准电极电势。")
+![锰在酸性和碱性介质中的元素电势图](latimer-manganese-media.svg "25 ℃时锰在酸性标准态（1 M H⁺）和碱性标准态（1 M OH⁻）中的元素电势图，电势相对于标准氢电极，数值取至 0.01 V。注意 MnO₂/Mn(OH)₃ 为 +0.10 V，Mn(OH)₃/Mn(OH)₂ 为 −0.20 V。")
 
 言归正传,本文是锰副族元素的开端,只研究锰元素.
 
@@ -274,8 +274,10 @@ $$4\mathrm{MnO_4^-} + 4\mathrm{H^+} \xlongequal{} 4\mathrm{MnO_2} \downarrow + 3
 
 $$4\mathrm{MnO_4^-} + 4\mathrm{OH^-} \xlongequal{} 4\mathrm{MnO_4^{2-}} + \mathrm{O_2} \uparrow + 2\mathrm{H_2O}$$
 
-## 图片来源与许可
+## 图片与数据来源
 
+- [锰副族酸性元素电势数据：第 55 届 IChO 2023 官方理论题](https://olympiad.kchem.org/file/articleFile/general/792/TheoryExam_v27.pdf)及[官方解答镜像](https://www.ttcho.com/_files/ugd/988b76_8ca8f064fc744e5fb933e27b7947dc85.pdf)
+- [锰在酸性、碱性条件下的元素电势数据：D. A. Stynes, York University](https://www.yorku.ca/stynes/Latimer09.pdf)
 - [锰金属，Jurii](https://commons.wikimedia.org/wiki/File:Manganese.jpg)，CC BY 3.0
 - [软锰矿标本，Andrew Silver / USGS Mineral Specimens](https://commons.wikimedia.org/wiki/File:Pyrolusite_-_USGS_Mineral_Specimens_854.jpg)，公有领域
 - [菱锰矿，James St. John](https://commons.wikimedia.org/wiki/File:Rhodochrosite_(%3D_pink).jpg)，CC BY 2.0
