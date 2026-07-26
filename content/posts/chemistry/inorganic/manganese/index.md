@@ -18,6 +18,10 @@ featured: false
 - 方锰矿$\ce{MnO}$
 - 菱锰矿$\ce{MnCO3}$
 
+![软锰矿标本，主要成分为二氧化锰](pyrolusite-usgs.jpg "软锰矿标本，主要成分为 MnO₂；铅笔尖用于表示比例。Andrew Silver / USGS Mineral Specimens，经 Wikimedia Commons，公有领域。")
+
+![菱锰矿中的粉红色碳酸锰晶体](rhodochrosite.jpg "菱锰矿是碳酸锰矿物 MnCO₃；图中粉红色晶体的视野宽约 5.9 cm。James St. John / Wikimedia Commons，CC BY 2.0。")
+
 锰副族元素基态原子的价层电子构型:$(n-1)d^5ns^2$,最高氧化态为$+7$. 该族元素中锰的氧化态最丰富多彩,且$+2$氧化态是最常见,最稳定的,其中$\ce{Mn^2+}$存在于固体,溶液和配位化合物中,$Mn(VII)$有强氧化性.
 
 不同于$Mn$的特点,$Tc,Re$的$+7$氧化态是最常见,最稳定的,仅显微弱的氧化性,而$+2$和更低氧化态不稳定且是强还原剂.
@@ -26,14 +30,16 @@ featured: false
 - **高氧化态**稳定性**递增**
 - **低氧化态**稳定性**递减**
 
-![alt text](dxhx-38-12-279-1b.jpg)
+![锰副族元素的元素电势图](dxhx-38-12-279-1b.jpg "锰、锝、铼在不同氧化态之间转化的元素电势图。")
 
-![alt text](image.png)
+![锰在酸性和碱性介质中的元素电势图](image.png "锰在碱性条件（上）和酸性条件（下）中的元素电势图；箭头上方为相应电对的标准电极电势。")
 
 言归正传,本文是锰副族元素的开端,只研究锰元素.
 
 # 单质
 金属锰呈<span class="chemical-color" data-color="silver-white">银白色</span>,暴露在空气中的锰,以及粉末状的锰都是<span class="chemical-color" data-color="gray">灰色</span>的.
+
+![锰金属碎片](manganese-metal.jpg "锰金属碎片；新鲜金属具有金属光泽，表面暴露于空气后会变暗。Jurii / Wikimedia Commons，CC BY 3.0。")
 
 铝热反应还原$\ce{MnO2/Mn3O4}$可以制备纯锰.
 
@@ -161,6 +167,8 @@ $\mathrm{MnO_2} \xrightarrow{+0.95\ \mathrm{V}} \mathrm{Mn^{3+}} \xrightarrow{+1
 # $Mn(IV)$的化合物
 $\ce{MnO2}$粉末呈<span class="chemical-color" data-color="black">黑色</span>,在溶液中生成的沉淀为<span class="chemical-color" data-color="brown-black">棕黑色</span>的水合物$\ce{MnO2.H2O}$.
 
+![二氧化锰粉末](manganese-dioxide.jpg "二氧化锰（MnO₂）粉末的典型黑色外观。Benjah-bmm27 / Wikimedia Commons，公有领域。")
+
 $\ce{MnO2}$在通常情况下很稳定,不溶于$\ce{H2O}$,稀酸和稀碱,且在酸和碱中不歧化. 但$\ce{MnO2}$是两性氧化物,可以与浓酸,浓碱缓慢反应.
 
 $\ce{MnO2}$与$\ce{NaOH}$隔绝空气共熔,生成亚锰酸盐$\ce{Na2MnO3}$.
@@ -197,6 +205,8 @@ $$
 # $Mn(VI)$的化合物
 Mn(Ⅵ)的化合物中，比较稳定的是锰酸钾（$\mathrm{K_2MnO_4}$），<span class="chemical-color" data-color="dark-green">深绿色</span>晶体，在190 ℃分解为亚锰酸钾($\ce{K2MnO3}$)和氧气，Mn(Ⅵ)在强碱溶液中较稳定。
 
+![锰酸根离子的深绿色溶液](potassium-manganate.jpg "热高锰酸钾溶液经氢氧化钠处理后形成的深绿色锰酸根（MnO₄²⁻）溶液。Choij / Wikimedia Commons，公有领域。")
+
 从图 21-6 所示的元素电势图看，$\mathrm{MnO_4^{2-}}$ 在碱性及酸性条件下均歧化：
 
 $$
@@ -215,6 +225,10 @@ $$
 # $Mn(VII)$的化合物
 
 最重要的 $\mathrm{Mn}(\mathrm{VII})$ 化合物是高锰酸钾 ($\mathrm{KMnO_4}$)，<span class="chemical-color" data-color="purple-black">紫黑色</span>晶体。其水溶液的颜色与浓度有关，按浓度由低到高依次呈<span class="chemical-color" data-color="pink">粉红色</span>、<span class="chemical-color" data-color="red">红色</span>、<span class="chemical-color" data-color="purple-red">紫红色</span>、<span class="chemical-color" data-color="purple">紫色</span>、<span class="chemical-color" data-color="purple-black">紫黑色</span>。高锰酸钠 ($\mathrm{NaMnO_4}$) 易潮解，也不易提纯。
+
+![高锰酸钾晶体](potassium-permanganate-crystals.jpg "高锰酸钾（KMnO₄）的深紫色至紫黑色晶体。Walkerma / Wikimedia Commons，公有领域。")
+
+![不同浓度的高锰酸钾溶液](potassium-permanganate-solutions.jpg "不同浓度的高锰酸钾溶液；从左到右为 5×10⁻⁶、1×10⁻⁵、2×10⁻⁵、5×10⁻⁵、1×10⁻⁴、2×10⁻⁴、2.5×10⁻⁴、5×10⁻⁴ mol·L⁻¹，浓度升高时紫红色逐渐加深。Leiem / Wikimedia Commons，CC BY-SA 4.0。")
 
 ## 强氧化性
 
@@ -248,6 +262,8 @@ $\mathrm{KMnO_4}$ 与 $\mathrm{Fe^{2+}}$ 定量反应，可用于测定 $\mathrm
 
 在容量分析中，$\mathrm{KMnO_4}$ 常用作氧化还原滴定剂。在酸性溶液中，$\mathrm{MnO_4^-}$ 被还原成 $\mathrm{Mn^{2+}}$。在滴定过程中 $\mathrm{MnO_4^-}$ 过量则溶液立即变<span class="chemical-color" data-color="red">红</span>，而稀的 $\mathrm{Mn^{2+}}$ 溶液基本是<span class="chemical-color" data-color="colorless">无色</span>的，不影响终点的判断。滴定剂自身起着指示剂的作用。
 
+![高锰酸钾滴定实验中的锥形瓶](permanganate-titration.jpg "高锰酸钾滴定的实验照片，溶液的紫色来自 MnO₄⁻。原图未注明被滴定物、浓度或滴定阶段，因此不能仅凭照片判断终点。Bhaiyaji Smile 123 / Wikimedia Commons，CC BY 4.0。")
+
 $\mathrm{KMnO_4}$ 作为一种氧化剂被应用于许多有机制备反应中，如糖精、抗坏血酸（维生素 C）和烟酸等的制备。它也可以用于消毒及处理饮用水和工业用水。
 
 ## 不稳定性
@@ -257,6 +273,17 @@ $\mathrm{KMnO_4}$ 作为一种氧化剂被应用于许多有机制备反应中�
 $$4\mathrm{MnO_4^-} + 4\mathrm{H^+} \xlongequal{} 4\mathrm{MnO_2} \downarrow + 3\mathrm{O_2} \uparrow + 2\mathrm{H_2O}$$
 
 $$4\mathrm{MnO_4^-} + 4\mathrm{OH^-} \xlongequal{} 4\mathrm{MnO_4^{2-}} + \mathrm{O_2} \uparrow + 2\mathrm{H_2O}$$
+
+## 图片来源与许可
+
+- [锰金属，Jurii](https://commons.wikimedia.org/wiki/File:Manganese.jpg)，CC BY 3.0
+- [软锰矿标本，Andrew Silver / USGS Mineral Specimens](https://commons.wikimedia.org/wiki/File:Pyrolusite_-_USGS_Mineral_Specimens_854.jpg)，公有领域
+- [菱锰矿，James St. John](https://commons.wikimedia.org/wiki/File:Rhodochrosite_(%3D_pink).jpg)，CC BY 2.0
+- [二氧化锰，Benjah-bmm27](https://commons.wikimedia.org/wiki/File:Manganese-dioxide-sample.jpg)，公有领域
+- [锰酸根溶液，Choij](https://commons.wikimedia.org/wiki/File:Manganate.jpg)，公有领域
+- [高锰酸钾晶体，Walkerma](https://commons.wikimedia.org/wiki/File:Potassium_permanganate.jpg)，公有领域
+- [不同浓度的高锰酸钾溶液，Leiem](https://commons.wikimedia.org/wiki/File:Potassium_permanganate_solutions_2.JPG)，CC BY-SA 4.0
+- [高锰酸钾滴定，Bhaiyaji Smile 123](https://commons.wikimedia.org/wiki/File:Titration_reaction_for_potassium_permanganate.jpg)，CC BY 4.0
 
 光对高锰酸钾分解起催化作用，因此高锰酸钾溶液应当储存在<span class="chemical-color" data-color="brown">棕色</span>瓶中。由于分解反应的存在，其浓度会随时间而变化，所以高锰酸钾标准溶液需在使用前重新标定。
 

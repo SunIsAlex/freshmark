@@ -20,6 +20,10 @@ Manganese ores occur mainly as **oxides**:
 - Manganosite, $\ce{MnO}$
 - Rhodochrosite, $\ce{MnCO3}$
 
+![Pyrolusite specimen, composed principally of manganese dioxide](pyrolusite-usgs.jpg "A pyrolusite specimen, composed principally of MnO₂; the pencil tip provides scale. Andrew Silver / USGS Mineral Specimens, via Wikimedia Commons, public domain.")
+
+![Pink manganese carbonate crystals in rhodochrosite](rhodochrosite.jpg "Rhodochrosite is the manganese carbonate mineral MnCO₃; the field of view across these pink crystals is about 5.9 cm. James St. John / Wikimedia Commons, CC BY 2.0.")
+
 The ground-state valence-electron configuration of the manganese-group elements is $(n-1)d^5ns^2$, and their highest oxidation state is $+7$. Manganese exhibits the widest range of oxidation states in the group. The $+2$ state is its most common and most stable state; $\ce{Mn^2+}$ occurs in solids, solutions, and coordination compounds, while $\ce{Mn(VII)}$ is strongly oxidizing.
 
 Unlike manganese, Tc and Re most commonly and stably adopt the $+7$ oxidation state, which is only weakly oxidizing. Their $+2$ and lower oxidation states are unstable and strongly reducing.
@@ -29,15 +33,17 @@ In summary, down the manganese group:
 - The stability of **high oxidation states** **increases**
 - The stability of **low oxidation states** **decreases**
 
-![Periodic-table position of the manganese group](dxhx-38-12-279-1b.jpg)
+![Latimer diagrams for manganese-group elements](dxhx-38-12-279-1b.jpg "Latimer diagrams showing transformations among oxidation states of manganese, technetium, and rhenium.")
 
-![Manganese and related compounds](image.png)
+![Latimer diagrams for manganese in acidic and alkaline media](image.png "Latimer diagrams for manganese in alkaline medium (top) and acidic medium (bottom); the values above the arrows are standard electrode potentials.")
 
 With that context established, this opening article on the manganese group focuses on manganese itself.
 
 # The Element
 
 Metallic manganese is <span class="chemical-color" data-color="silver-white">silvery white</span>. Manganese exposed to air, as well as powdered manganese, appears <span class="chemical-color" data-color="gray">gray</span>.
+
+![Pieces of manganese metal](manganese-metal.jpg "Pieces of manganese metal; fresh metal has a metallic luster, while exposure to air darkens the surface. Jurii / Wikimedia Commons, CC BY 3.0.")
 
 Pure manganese can be prepared by reducing $\ce{MnO2}$ or $\ce{Mn3O4}$ through an aluminothermic reaction.
 
@@ -188,6 +194,8 @@ Important $\ce{Mn(III)}$ coordination compounds include:
 
 $\ce{MnO2}$ powder is <span class="chemical-color" data-color="black">black</span>. The precipitate formed in solution is the <span class="chemical-color" data-color="brown-black">brownish-black</span> hydrate $\ce{MnO2.H2O}$.
 
+![Manganese dioxide powder](manganese-dioxide.jpg "The characteristic black appearance of manganese dioxide (MnO₂) powder. Benjah-bmm27 / Wikimedia Commons, public domain.")
+
 Under ordinary conditions, $\ce{MnO2}$ is very stable. It is insoluble in $\ce{H2O}$, dilute acids, and dilute bases, and does not disproportionate in acid or base. However, $\ce{MnO2}$ is amphoteric and reacts slowly with concentrated acids and bases.
 
 Fusion of $\ce{MnO2}$ with $\ce{NaOH}$ in the absence of air produces the manganite $\ce{Na2MnO3}$:
@@ -226,6 +234,8 @@ $$
 
 Among $\ce{Mn(VI)}$ compounds, potassium manganate, $\ce{K2MnO4}$, is relatively stable. It forms <span class="chemical-color" data-color="dark-green">deep-green</span> crystals and decomposes at $190\ ^\circ\mathrm{C}$ into potassium manganite, $\ce{K2MnO3}$, and oxygen. $\ce{Mn(VI)}$ is relatively stable in strongly alkaline solution.
 
+![Deep-green manganate solution](potassium-manganate.jpg "A deep-green manganate (MnO₄²⁻) solution formed by treating hot potassium permanganate solution with sodium hydroxide. Choij / Wikimedia Commons, public domain.")
+
 The Latimer diagram in Figure 21-6 shows that $\ce{MnO4^2-}$ disproportionates under both acidic and alkaline conditions:
 
 $$
@@ -245,6 +255,10 @@ Note that producing potassium permanganate by this route wastes one-third of the
 # $\ce{Mn(VII)}$ Compounds
 
 The most important $\ce{Mn(VII)}$ compound is potassium permanganate, $\ce{KMnO4}$, which forms <span class="chemical-color" data-color="purple-black">purple-black</span> crystals. The color of its aqueous solution depends on concentration. From low to high concentration, the solution appears <span class="chemical-color" data-color="pink">pink</span>, <span class="chemical-color" data-color="red">red</span>, <span class="chemical-color" data-color="purple-red">reddish purple</span>, <span class="chemical-color" data-color="purple">purple</span>, and finally <span class="chemical-color" data-color="purple-black">purple-black</span>. Sodium permanganate, $\ce{NaMnO4}$, is deliquescent and difficult to purify.
+
+![Potassium permanganate crystals](potassium-permanganate-crystals.jpg "Deep-purple to purple-black potassium permanganate (KMnO₄) crystals. Walkerma / Wikimedia Commons, public domain.")
+
+![Potassium permanganate solutions at different concentrations](potassium-permanganate-solutions.jpg "Potassium permanganate solutions at 5×10⁻⁶, 1×10⁻⁵, 2×10⁻⁵, 5×10⁻⁵, 1×10⁻⁴, 2×10⁻⁴, 2.5×10⁻⁴, and 5×10⁻⁴ mol·L⁻¹ from left to right; the purple color deepens as concentration increases. Leiem / Wikimedia Commons, CC BY-SA 4.0.")
 
 ## Strong Oxidizing Properties
 
@@ -278,6 +292,8 @@ $\ce{KMnO4}$ also reacts quantitatively with $\ce{Fe^2+}$ and can be used to det
 
 In volumetric analysis, $\ce{KMnO4}$ is commonly used as a redox titrant. In acidic solution, $\ce{MnO4^-}$ is reduced to $\ce{Mn^2+}$. A slight excess of $\ce{MnO4^-}$ immediately turns the solution <span class="chemical-color" data-color="red">red</span>, whereas a dilute $\ce{Mn^2+}$ solution is essentially <span class="chemical-color" data-color="colorless">colorless</span> and does not obscure the endpoint. The titrant therefore acts as its own indicator.
 
+![Conical flask during a potassium permanganate titration](permanganate-titration.jpg "A potassium permanganate titration; the purple color is due to MnO₄⁻. The original photograph does not identify the analyte, concentration, or stage of the titration, so the endpoint cannot be inferred from the image alone. Bhaiyaji Smile 123 / Wikimedia Commons, CC BY 4.0.")
+
 As an oxidizing agent, $\ce{KMnO4}$ is used in many organic syntheses, including the preparation of saccharin, ascorbic acid (vitamin C), and niacin. It is also used for disinfection and for treating drinking and industrial water.
 
 ## Instability
@@ -287,6 +303,17 @@ Permanganates are strongly oxidizing and unstable. They decompose appreciably in
 $$4\mathrm{MnO_4^-} + 4\mathrm{H^+} \xlongequal{} 4\mathrm{MnO_2} \downarrow + 3\mathrm{O_2} \uparrow + 2\mathrm{H_2O}$$
 
 $$4\mathrm{MnO_4^-} + 4\mathrm{OH^-} \xlongequal{} 4\mathrm{MnO_4^{2-}} + \mathrm{O_2} \uparrow + 2\mathrm{H_2O}$$
+
+## Image Sources and Licenses
+
+- [Manganese metal, Jurii](https://commons.wikimedia.org/wiki/File:Manganese.jpg), CC BY 3.0
+- [Pyrolusite specimen, Andrew Silver / USGS Mineral Specimens](https://commons.wikimedia.org/wiki/File:Pyrolusite_-_USGS_Mineral_Specimens_854.jpg), public domain
+- [Rhodochrosite, James St. John](https://commons.wikimedia.org/wiki/File:Rhodochrosite_(%3D_pink).jpg), CC BY 2.0
+- [Manganese dioxide, Benjah-bmm27](https://commons.wikimedia.org/wiki/File:Manganese-dioxide-sample.jpg), public domain
+- [Manganate solution, Choij](https://commons.wikimedia.org/wiki/File:Manganate.jpg), public domain
+- [Potassium permanganate crystals, Walkerma](https://commons.wikimedia.org/wiki/File:Potassium_permanganate.jpg), public domain
+- [Potassium permanganate concentration series, Leiem](https://commons.wikimedia.org/wiki/File:Potassium_permanganate_solutions_2.JPG), CC BY-SA 4.0
+- [Potassium permanganate titration, Bhaiyaji Smile 123](https://commons.wikimedia.org/wiki/File:Titration_reaction_for_potassium_permanganate.jpg), CC BY 4.0
 
 Light catalyzes the decomposition of potassium permanganate, so its solutions should be stored in <span class="chemical-color" data-color="brown">brown</span> bottles. Because decomposition causes the concentration to change over time, a standard potassium permanganate solution must be re-standardized before use.
 
