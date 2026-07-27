@@ -468,15 +468,21 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
   function updateInlineMathOverflow(scope = document) {
     cancelAnimationFrame(mathOverflowFrame);
     mathOverflowFrame = requestAnimationFrame(() => {
-    for (const formula of scope.querySelectorAll(".prose .math-inline")) {
-      formula.classList.remove("math-inline-overflow");
-      formula.classList.toggle(
-        "math-inline-overflow",
-        formula.scrollWidth > formula.clientWidth + 1,
-      );
-    }
-  });
-}
+      for (const formula of scope.querySelectorAll(".prose .math-inline")) {
+        formula.classList.remove("math-inline-overflow");
+        const line = formula.closest("p, li, td, th, blockquote, figcaption, h1, h2, h3, h4, h5, h6") || formula.closest(".prose");
+        if (!line) continue;
+        const lineStyle = getComputedStyle(line);
+        const availableWidth = line.clientWidth
+          - Number.parseFloat(lineStyle.paddingLeft || "0")
+          - Number.parseFloat(lineStyle.paddingRight || "0");
+        formula.classList.toggle(
+          "math-inline-overflow",
+          formula.scrollWidth > availableWidth + 2,
+        );
+      }
+    });
+  }
 
   function isSpaRoute(url) {
     const base = `${basePath}/`.replace(/\/+/g, "/");

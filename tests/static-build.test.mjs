@@ -432,7 +432,9 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /assets\/katex\.min\.css/);
   assert.match(app, /updateInlineMathOverflow\(nextMain\)/);
   assert.match(app, /formula\.classList\.remove\("math-inline-overflow"\)/);
-  assert.match(app, /formula\.scrollWidth > formula\.clientWidth \+ 1/);
+  assert.match(app, /formula\.closest\("p, li, td, th, blockquote, figcaption, h1, h2, h3, h4, h5, h6"\)/);
+  assert.match(app, /formula\.scrollWidth > availableWidth \+ 2/);
+  assert.doesNotMatch(app, /formula\.scrollWidth > formula\.clientWidth/);
   assert.match(app, /document\.fonts\?\.ready/);
   assert.match(app, /new URL\("page\.html", contentUrl\)/);
   assert.doesNotMatch(app, /new URL\("index\.md"|fetch\([^)]*index\.md/);
