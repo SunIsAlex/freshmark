@@ -26,7 +26,7 @@ const localeHref = (locale, value = "/") => href(localizedPath(locale, value));
 const localeAbsolute = (locale, value = "/") => absolute(localizedPath(locale, value));
 const criticalResult = new CleanCSS({ level: 2 }).minify(await fs.readFile(path.join(themeDir, "critical.css"), "utf8"));
 if (criticalResult.errors.length) throw new Error(`Critical CSS minification failed: ${criticalResult.errors.join(", ")}`);
-const criticalCss = criticalResult.styles;
+const criticalCss = criticalResult.styles.replace("__FRESHMARK_ANTHROPIC_FONT__", href("/assets/fonts/anthropic-sans-variable.woff2"));
 const brandIcon = (await fs.readFile(path.join(themeDir, "favicon.svg"), "utf8"))
   .replace("<svg ", '<svg class="brand-mark" width="28" height="28" aria-hidden="true" focusable="false" ');
 

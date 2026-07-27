@@ -90,11 +90,13 @@ test("generated HTML has no application framework runtime", async () => {
   const html = await read("public/index.html");
   assert.match(html, /搜索文章/);
   assert.match(html, /<style data-critical>[^<]*--paper:#f6f7f8/);
+  assert.match(html, /<style data-critical>@font-face\{[^}]*font-family:"Anthropic Sans"[^}]*url\("?\/assets\/fonts\/anthropic-sans-variable\.woff2"?\)[^}]*font-display:swap/);
   const stylesheetLinks = html.match(/<link[^>]+href="\/assets\/styles\.css\?v=[a-f0-9]{12}"[^>]*>/g);
   assert.equal(stylesheetLinks.length, 2);
   assert.match(stylesheetLinks[0], /\bas="style"/);
   assert.match(stylesheetLinks[0], /\brel="preload"/);
   assert.match(stylesheetLinks[1], /\brel="stylesheet"/);
+  assert.ok(html.indexOf("<style data-critical>") < html.indexOf(stylesheetLinks[0]));
   assert.match(html, /<script[^>]+src="\/assets\/app\.js\?v=[a-f0-9]{12}"/);
   assert.match(html, /assetVersion:"[a-f0-9]{12}"/);
   assert.match(html, /<link[^>]+href="\/assets\/fonts\/anthropic-sans-variable\.woff2"[^>]+rel="preload"/);
@@ -605,7 +607,7 @@ test("published posts retain raw Markdown and provide compact KaTeX SPA fragment
   assert.match(fragment, /data-article="true"/);
   assert.match(fragment, /<span class="math-expression math-display"[^>]+data-math-source="\\int f\(x\)dx=F\(x\)\+C"[^>]+data-math-display/);
   assert.doesNotMatch(fragment, /math-svg-definitions|<use href="#MJX-|class="katex|\\\[\\int f\(x\)dx/);
-  assert.doesNotMatch(fragment, /<!doctype html>|<html|<body/);
+  assert.doesNotMatch(fragment, /<!doctype html>|<html|<body|data-critical|rel="stylesheet"|as="style"/);
 
   const html = await read("public/posts/physics/basic-calculus-02/index.html");
   assert.match(html, /<svg[^>]+class="math-svg-definitions"[^>]*><defs><path/);

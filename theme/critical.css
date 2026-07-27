@@ -1,3 +1,10 @@
+@font-face {
+  font-family:"Anthropic Sans";
+  src:url("__FRESHMARK_ANTHROPIC_FONT__") format("woff2");
+  font-style:normal;
+  font-weight:300 800;
+  font-display:swap;
+}
 :root {
   --paper:#f6f7f8; --paper-raised:#fff; --ink:#0f1a1c; --ink-soft:#576f76;
   --line:#d6dadd; --accent:#ff4500; --accent-hover:#d93a00; --accent-soft:#ffede8;
