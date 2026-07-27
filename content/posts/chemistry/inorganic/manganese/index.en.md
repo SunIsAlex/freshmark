@@ -1,11 +1,14 @@
 ---
-title: "Manganese"
+title: "[Manganese] Colorful Black"
 date: "2026-07-25"
 summary: "A systematic overview of manganese chemistry, from the element and its coordination compounds to manganates, permanganates, laboratory reactions, and analytical applications."
 lang: "en"
 translationKey: "manganese"
 alternate: "/posts/chemistry/inorganic/manganese/"
-tags: []
+tags:
+  - Inorganic Chemistry
+  - Manganese
+  - Redox Reactions
 featured: false
 ---
 
@@ -363,8 +366,8 @@ Vessel C was charged with $10\ \mathrm{mL}$ of substance a and five drops of $0.
 | No. | Substance a | Before introducing $\ce{Cl2}$ | After introducing $\ce{Cl2}$ |
 | --- | --- | --- | --- |
 | I | Water | A <span class="chemical-color" data-color="colorless">colorless</span> solution | A <span class="chemical-color" data-color="brown-black">brown-black</span> precipitate formed and did not change on standing |
-| II | $5\%$ $\ce{NaOH}$ | A <span class="chemical-color" data-color="white">white</span> precipitate formed and slowly became <span class="chemical-color" data-color="brown-black">brown-black</span> in air | More <span class="chemical-color" data-color="brown-black">brown-black</span> precipitate formed; on standing, the solution became <span class="chemical-color" data-color="purple">purple</span> while solid remained |
-| III | $40\%$ $\ce{NaOH}$ | A <span class="chemical-color" data-color="white">white</span> precipitate formed and slowly became <span class="chemical-color" data-color="brown-black">brown-black</span> in air | More <span class="chemical-color" data-color="brown-black">brown-black</span> precipitate formed; on standing, the solution became <span class="chemical-color" data-color="purple">purple</span> while solid remained |
+| II | $5\%$ $\ce{NaOH}$ | A <span class="chemical-color" data-color="white">white</span> precipitate formed and slowly became <span class="chemical-color" data-color="brown-black">brown-black</span> in air | More <span class="chemical-color" data-color="brown-black">brown-black</span> precipitate formed; on standing, the solution became <span class="chemical-color" data-color="purple">purple</span> while **solid remained** |
+| III | $40\%$ $\ce{NaOH}$ | A <span class="chemical-color" data-color="white">white</span> precipitate formed and slowly became <span class="chemical-color" data-color="brown-black">brown-black</span> in air | More <span class="chemical-color" data-color="brown-black">brown-black</span> precipitate formed; on standing, the solution became <span class="chemical-color" data-color="purple">purple</span> while **solid remained** |
 
 (1) The reagent in vessel B is <u class="answer-reveal">saturated $\ce{NaCl}$ solution</u>.
 
@@ -383,7 +386,9 @@ Vessel C was charged with $10\ \mathrm{mL}$ of substance a and five drops of $0.
 
 ③ Another $1\ \mathrm{mL}$ portion of the suspension was diluted with $4\ \mathrm{mL}$ of water. The <span class="chemical-color" data-color="purple">purple</span> color slowly deepened. The reaction involved is <u class="answer-reveal">$\ce{2MnO2 + 3ClO^- + 2OH^- -> 2MnO4^- + 3Cl^- + H2O}$</u>.
 
-④ In terms of reaction rates, experiment III did not yield a <span class="chemical-color" data-color="green">green</span> solution because <u class="answer-reveal">under strongly alkaline conditions, $\ce{2MnO4^2- + ClO^- + H2O -> 2MnO4^- + Cl^- + 2OH^-}$ is faster than $\ce{4MnO4^- + 4OH^- -> 4MnO4^2- + O2 ^ + 2H2O}$</u>.
+④ In terms of **reaction rates**, experiment III did not yield a <span class="chemical-color" data-color="green">green</span> solution because <u class="answer-reveal">under strongly alkaline conditions, $\ce{2MnO4^2- + ClO^- + H2O -> 2MnO4^- + Cl^- + 2OH^-}$ is faster than $\ce{4MnO4^- + 4OH^- -> 4MnO4^2- + O2 ^ + 2H2O}$</u>.
+
+> Focus on the competition between green and purple implied by the second explanation: $\ce{MnO4^-}$ is formed rapidly and consumed slowly, whereas $\ce{MnO4^2-}$ is formed slowly and consumed rapidly. Part (4)② shows that the oxidation of $\ce{MnO2}$ by $\ce{ClO^-}$ is slow, so it is not the principal factor.
 
 ## Preparation, Purification, and Yield of Potassium Permanganate
 
@@ -541,7 +546,7 @@ a. To convert all $\ce{Mn2O3}$ in step ③ into $\ce{MnO2}$, the theoretical mol
 
 b. Before $\ce{NaClO3}$ is added, the solution pH must be raised to about 6. This <u class="answer-reveal">prevents sodium chlorate and manganese dioxide from oxidizing chloride ions to chlorine when the pH is too low</u>.
 
-> TIP: Account for the Nernst equation in redox reactions.
+> TIP: Note how acidity and alkalinity affect the oxidizing power of oxoanion oxidants.
 
 (7) Determination of the purity of active $\ce{MnO2}$:
 
@@ -622,11 +627,13 @@ Student A designed the following experiment.
 | ① | $2.0$ | $2.0$ | $0$ | $20\ ^\circ\mathrm{C}$ |
 | ② | $2.0$ | $1.0$ | $1.0$ | $20\ ^\circ\mathrm{C}$ |
 
-(1) The purpose of Experiments ① and ② is ________.
+(1) The purpose of Experiments ① and ② is <u class="answer-reveal">to investigate how oxalic acid concentration affects the reaction rate</u>.
 
-(2) Student A believes that the experiments should be conducted at the same $\mathrm{pH}$. Which reagent may be added? ________ (select one).
+(2) Student A believes that the experiments should be conducted at the same $\mathrm{pH}$. Which reagent may be added? <u class="answer-reveal">b</u> (select one).
 
 a. Hydrochloric acid　b. Sulfuric acid　c. Oxalic acid
+
+> Choose an acid whose anion is not reducing.
 
 ### Experiment
 
@@ -646,11 +653,11 @@ $$
 \ce{Mn^3+ + 2C2O4^2- <=> [Mn(C2O4)2]^-}
 $$
 
-to form a <span class="chemical-color" data-color="blue-green">bluish-green</span> complex with weaker oxidizing ability;
+to form a <span class="chemical-color" data-color="blue-green">bluish-green</span> complex with **weaker oxidizing ability**;
 
-c. $\ce{MnO4^2-}$ is <span class="chemical-color" data-color="green">green</span>. It is unstable under acidic conditions and rapidly decomposes to form $\ce{MnO4^-}$ and $\ce{MnO2}$.
+c. $\ce{MnO4^2-}$ is <span class="chemical-color" data-color="green">green</span>. It is unstable under **acidic conditions** and rapidly decomposes to form $\ce{MnO4^-}$ and $\ce{MnO2}$.
 
-(3) From a redox perspective, Student B proposes that $\ce{MnO4^2-}$ may be formed during stage i. Is this proposal reasonable? Explain your reasoning: ________.
+(3) From a redox perspective, Student B proposes that $\ce{MnO4^2-}$ may be formed during stage i. Is this proposal reasonable? Explain your reasoning: <u class="answer-reveal">No. $\ce{MnO4^2-}$ is unstable under acidic conditions and rapidly decomposes into $\ce{MnO4^-}$ and $\ce{MnO2}$, but no black $\ce{MnO2}$ precipitate was observed during stage i</u>.
 
 ### Further Investigation
 
@@ -658,17 +665,25 @@ Further experiments confirmed the presence of $\ce{[Mn(C2O4)2]^-}$ in the soluti
 
 ![Concentrations of permanganate and the bis-oxalatomanganese complex over time in Experiments ① and ②](2022-haidian-concentration-curves.png "Graph cropped from the original 2022 Haidian First Mock Exam: filled markers denote Experiment ① and open markers denote Experiment ②; square and circular markers denote permanganate and the bis-oxalatomanganese complex, respectively.")
 
-(4) $\ce{CO2}$ gas was detected during stage i. Write the ionic equation for the reaction: ________.
+(4) $\ce{CO2}$ gas was detected during stage i. The ionic equation is <u class="answer-reveal">$\ce{MnO4- + 4H2C2O4 = [Mn(C2O4)2]^- + 4CO2 ^ + 4H2O}$</u>.
 
-(5) The reaction rate in stage ii is greater in Experiment ②. One possible reason is ________.
+(5) The reaction rate in stage ii is greater in Experiment ②. One possible reason is <u class="answer-reveal">Experiment ② has a lower $c(\ce{H2C2O4})$ and therefore a lower $c(\ce{C2O4^2-})$ from ionization. The equilibrium $\ce{Mn^3+ + 2C2O4^2- <=> [Mn(C2O4)2]^-}$ shifts to the left, increasing $c(\ce{Mn^3+})$; because $\ce{Mn^3+}$ is strongly oxidizing, the reaction in Experiment ② is faster</u>.
 
-(6) Based on this result, if $c(\ce{H+})$ is adjusted to $0.2\ \mathrm{mol\cdot L^{-1}}$ during stage ii, the time required for the solution to become <span class="chemical-color" data-color="colorless">colorless</span> will ________ (choose “increase,” “decrease,” or “remain unchanged”).
+(6) Based on this result, if $c(\ce{H+})$ is adjusted to $0.2\ \mathrm{mol\cdot L^{-1}}$ during stage ii, the time required for the solution to become <span class="chemical-color" data-color="colorless">colorless</span> will <u class="answer-reveal">decrease</u> (choose “increase,” “decrease,” or “remain unchanged”).
+
+> Increasing the acidity suppresses the ionization of oxalic acid, producing the opposite effect to that described in (5).
 
 ### Conclusion and Reflection
 
-(7) In the reactions involved in these experiments, the role of oxalic acid is ________.
+(7) In the reactions involved in these experiments, oxalic acid <u class="answer-reveal">acts as a reducing agent, while the $\ce{C2O4^2-}$ produced by its ionization forms a complex with $\ce{Mn^3+}$</u>.
 
 Conclusion: The reaction may proceed in stages. Changing the oxalic acid concentration may affect the reaction rate differently in different stages.
+
+## Summary
+
+The chemistry of manganese is defined by its rich range of oxidation states and pronounced medium effects. $\ce{Mn^2+}$ is generally the most stable species, $\ce{MnO2}$ is a common intermediate-valence product, and $\ce{MnO4^-}$ is a powerful oxidant. Their interconversions depend not only on electrode potentials, but also on solution $\mathrm{pH}$, reactant amounts and order of addition, concentration, temperature, and catalysts. Accurately predicting the direction of a manganese reaction and its final products therefore requires considering redox behavior, acid-base equilibria, precipitation or complexation, and experimental observations together.
+
+TIP: First determine the oxidation state of manganese in the solution; the manganese-containing species can then usually be identified.
 
 ## Image and Data Sources
 

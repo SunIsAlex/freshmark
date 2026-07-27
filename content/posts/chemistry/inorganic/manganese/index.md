@@ -1,11 +1,14 @@
 ---
-title: "Manganese"
+title: "[锰]五彩斑斓的黑"
 date: "2026-07-25"
 summary: ""
 lang: "zh"
 translationKey: "manganese"
 alternate: "/en/posts/chemistry/inorganic/manganese/"
-tags: []
+tags:
+  - 无机化学
+  - 锰
+  - 氧化还原反应
 featured: false
 ---
 
@@ -333,8 +336,8 @@ iii. $\ce{Cl2}$ 的氧化性与溶液的酸碱性无关；$\ce{NaClO}$ 的氧化
 | 序号 | 物质 a | 通入 $\ce{Cl2}$ 前 | 通入 $\ce{Cl2}$ 后 |
 | --- | --- | --- | --- |
 | Ⅰ | 水 | 得到<span class="chemical-color" data-color="colorless">无色</span>溶液 | 产生<span class="chemical-color" data-color="brown-black">棕黑色</span>沉淀，放置后不发生变化 |
-| Ⅱ | $5\%$ $\ce{NaOH}$ 溶液 | 产生<span class="chemical-color" data-color="white">白色</span>沉淀，在空气中缓慢变为<span class="chemical-color" data-color="brown-black">棕黑色</span> | <span class="chemical-color" data-color="brown-black">棕黑色</span>沉淀增多；放置后溶液变为<span class="chemical-color" data-color="purple">紫色</span>，仍有沉淀 |
-| Ⅲ | $40\%$ $\ce{NaOH}$ 溶液 | 产生<span class="chemical-color" data-color="white">白色</span>沉淀，在空气中缓慢变为<span class="chemical-color" data-color="brown-black">棕黑色</span> | <span class="chemical-color" data-color="brown-black">棕黑色</span>沉淀增多；放置后溶液变为<span class="chemical-color" data-color="purple">紫色</span>，仍有沉淀 |
+| Ⅱ | $5\%$ $\ce{NaOH}$ 溶液 | 产生<span class="chemical-color" data-color="white">白色</span>沉淀，在空气中缓慢变为<span class="chemical-color" data-color="brown-black">棕黑色</span> | <span class="chemical-color" data-color="brown-black">棕黑色</span>沉淀增多；放置后溶液变为<span class="chemical-color" data-color="purple">紫色</span>，**仍有沉淀** |
+| Ⅲ | $40\%$ $\ce{NaOH}$ 溶液 | 产生<span class="chemical-color" data-color="white">白色</span>沉淀，在空气中缓慢变为<span class="chemical-color" data-color="brown-black">棕黑色</span> | <span class="chemical-color" data-color="brown-black">棕黑色</span>沉淀增多；放置后溶液变为<span class="chemical-color" data-color="purple">紫色</span>，**仍有沉淀** |
 
 （1）装置 B 中的试剂是<u class="answer-reveal">饱和 $\ce{NaCl}$ 溶液</u>。
 
@@ -353,8 +356,8 @@ iii. $\ce{Cl2}$ 的氧化性与溶液的酸碱性无关；$\ce{NaClO}$ 的氧化
 
 ③ 另取实验Ⅲ放置后的 $1\ \mathrm{mL}$ 悬浊液，加入 $4\ \mathrm{mL}$ 水，溶液<span class="chemical-color" data-color="purple">紫色</span>缓慢加深，发生的反应为<u class="answer-reveal">$\ce{2MnO2 + 3ClO^- + 2OH^- -> 2MnO4^- + 3Cl^- + H2O}$</u>。
 
-④ 从反应速率角度分析实验Ⅲ未得到<span class="chemical-color" data-color="green">绿色</span>溶液的可能原因：<u class="answer-reveal">浓碱性条件下，$\ce{2MnO4^2- + ClO^- + H2O -> 2MnO4^- + Cl^- + 2OH^-}$ 的反应速率快于 $\ce{4MnO4^- + 4OH^- -> 4MnO4^2- + O2 ^ + 2H2O}$</u>。
-
+④ 从**反应速率**角度分析实验Ⅲ未得到<span class="chemical-color" data-color="green">绿色</span>溶液的可能原因：<u class="answer-reveal">浓碱性条件下，$\ce{2MnO4^2- + ClO^- + H2O -> 2MnO4^- + Cl^- + 2OH^-}$ 的反应速率快于 $\ce{4MnO4^- + 4OH^- -> 4MnO4^2- + O2 ^ + 2H2O}$</u>。
+> 重点考虑"绿紫"之争背后的原因二:考虑$\ce{MnO4-}$产生的速率大,消耗的速率小,$\ce{MnO4^2-}$产生的速率小,消耗的速率大;由(4)②$\ce{MnO2}$被$\ce{ClO-}$氧化的速率较慢,故不是主要因素
 ## 高锰酸钾的制备、提纯与产率测定
 
 **（2026 北京化学高考第 19 题，根据真题整理）**
@@ -506,7 +509,7 @@ a. 为了将③中 $\mathrm{Mn_2O_3}$ 完全转化为 $\mathrm{MnO_2}$，理论�
 
 b. 加入 $\mathrm{NaClO_3}$ 前，需将溶液 pH 调大至 6 左右。调节 pH 的目的是<u class="answer-reveal">防止pH较低时氯酸钠和二氧化锰将氯离子氧化为氯气</u>。
 
-> TIPS:注意能斯特方程在氧化还原反应中的应用
+> TIPS:注意酸碱度对含氧氧化剂氧化性的影响.
 
 （7）活性 $\mathrm{MnO_2}$ 纯度的测定：
 
@@ -587,12 +590,13 @@ $$\begin{gathered}
 | ① | $2.0$ | $2.0$ | $0$ | $20\ ^\circ\mathrm{C}$ |
 | ② | $2.0$ | $1.0$ | $1.0$ | $20\ ^\circ\mathrm{C}$ |
 
-（1）实验①和②的目的是________。
+（1）实验①和②的目的是<u class="answer-reveal">探究草酸浓度对反应速率的影响</u>。
 
-（2）甲认为上述实验应控制 $\mathrm{pH}$ 相同，可加入的试剂是________（填序号）。
+（2）甲认为上述实验应控制 $\mathrm{pH}$ 相同，可加入的试剂是<u class="answer-reveal">b</u>（填序号）。
 
 a. 盐酸　b. 硫酸　c. 草酸
 
+> 应该选取阴离子无还原性的酸
 ### 实施实验
 
 小组同学将溶液 $\mathrm{pH}$ 调至 1 并进行实验①和②，发现<span class="chemical-color" data-color="purple">紫色</span>并未直接褪去，而是分成两个阶段：
@@ -611,11 +615,11 @@ $$
 \ce{Mn^3+ + 2C2O4^2- <=> [Mn(C2O4)2]^-}
 $$
 
-后形成<span class="chemical-color" data-color="blue-green">青绿色</span>配合物，氧化性减弱；
+后形成<span class="chemical-color" data-color="blue-green">青绿色</span>配合物，**氧化性减弱**；
 
-c. $\ce{MnO4^2-}$ 呈<span class="chemical-color" data-color="green">绿色</span>，在酸性条件下不稳定，迅速分解产生 $\ce{MnO4^-}$ 和 $\ce{MnO2}$。
+c. $\ce{MnO4^2-}$ 呈<span class="chemical-color" data-color="green">绿色</span>，在**酸性条件下不稳定**，迅速分解产生 $\ce{MnO4^-}$ 和 $\ce{MnO2}$。
 
-（3）乙同学从氧化还原角度推测阶段 i 中可能产生了 $\ce{MnO4^2-}$。你认为该观点是否合理，并说明理由：________。
+（3）乙同学从氧化还原角度推测阶段 i 中可能产生了 $\ce{MnO4^2-}$。你认为该观点是否合理，并说明理由：<u class="answer-reveal">不合理,酸性条件下$\ce{MnO4^2-}$不稳定,迅速分解产生 $\ce{MnO4^-}$ 和 $\ce{MnO2}$ ,但第i阶段未观察到溶液中产生黑色沉淀($\ce{MnO2}$)</u>。
 
 ### 深入探究
 
@@ -623,21 +627,23 @@ c. $\ce{MnO4^2-}$ 呈<span class="chemical-color" data-color="green">绿色</spa
 
 ![实验①和②中高锰酸根与二草酸合锰配离子浓度随时间的变化曲线](2022-haidian-concentration-curves.png "2022 海淀一模原题曲线图：实心标记表示实验①，空心标记表示实验②；方形和圆形标记分别表示高锰酸根与二草酸合锰配离子的浓度。")
 
-（4）第 i 阶段中检测到有 $\ce{CO2}$ 气体产生，反应的离子方程式为________。
+（4）第 i 阶段中检测到有 $\ce{CO2}$ 气体产生，反应的离子方程式为<u class="answer-reveal">$\ce{MnO4- + 4H2C2O4 = [Mn(C2O4)2]^- + 4CO2 ^ + 4H2O}$</u>。
 
-（5）实验②在第 ii 阶段的反应速率较大，可能的原因是________。
+（5）实验②在第 ii 阶段的反应速率较大，可能的原因是<u class="answer-reveal">实验②中$\ce{c(H2C2O4)}$小,电离产生的$\ce{c(C2O4^2-)}$小,$\ce{Mn^3+ + 2C2O4^2- <=> [Mn(C2O4)2]^-}$平衡逆移,$\ce{c(Mn^3+)}$增大,$\ce{c(Mn^3+)}$有强氧化性,故实验②反应速率更大</u>。
 
-（6）据此推测，若在第 ii 阶段将 $c(\ce{H+})$ 调节至 $0.2\ \mathrm{mol\cdot L^{-1}}$，溶液褪至<span class="chemical-color" data-color="colorless">无色</span>的时间会________（填“增加”“减少”或“不变”）。
-
+（6）据此推测，若在第 ii 阶段将 $c(\ce{H+})$ 调节至 $0.2\ \mathrm{mol\cdot L^{-1}}$，溶液褪至<span class="chemical-color" data-color="colorless">无色</span>的时间会<u class="answer-reveal">减少</u>（填“增加”“减少”或“不变”）。
+> 溶液酸度增加,草酸电离度减小,产生与(5)相反的效果
 ### 结论与反思
 
-（7）上述实验涉及的反应中，草酸的作用是________。
+（7）上述实验涉及的反应中，草酸的作用是<u class="answer-reveal">作还原剂,电离出的$\ce{C2O4^2-}$与$\ce{c(Mn^3+)}$形成配离子</u>。
 
 结论：反应可能是分阶段进行的。草酸浓度的改变对不同阶段反应速率的影响可能不同。
 
 ## 总结
 
 锰化学的核心在于丰富的氧化态及其显著的介质效应：$\ce{Mn^2+}$ 通常最稳定，$\ce{MnO2}$ 是常见的中间价态产物，而 $\ce{MnO4^-}$ 具有强氧化性；它们之间的转化不仅取决于元素电势，还受到溶液 $\mathrm{pH}$、反应物用量与加入顺序、浓度、温度和催化剂等因素共同影响。因此，分析锰及其化合物的反应时，应同时结合氧化还原规律、酸碱平衡、沉淀或配位反应以及实验现象，才能准确判断反应方向与最终产物。
+
+TIPS:先确定溶液中Mn元素的价态,然后含Mn物种便可基本确定.
 
 ## 图片与数据来源
 
