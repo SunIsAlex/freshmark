@@ -617,7 +617,10 @@ Student A designed the following experiment.
 
 ### Experimental Design
 
-![Volumes of potassium permanganate solution, oxalic acid solution, and water, and the reaction temperature in Experiments ① and ②](2022-haidian-experiment-design.png "Table cropped from the original 2022 Haidian First Mock Exam: both experiments use 2.0 mL of potassium permanganate solution at 20 °C, with different volumes of oxalic acid solution and water.")
+| No. | $V(\ce{KMnO4})/\mathrm{mL}$ | $V(\text{oxalic acid})/\mathrm{mL}$ | $V(\ce{H2O})/\mathrm{mL}$ | Temperature |
+| --- | ---: | ---: | ---: | ---: |
+| ① | $2.0$ | $2.0$ | $0$ | $20\ ^\circ\mathrm{C}$ |
+| ② | $2.0$ | $1.0$ | $1.0$ | $20\ ^\circ\mathrm{C}$ |
 
 (1) The purpose of Experiments ① and ② is ________.
 

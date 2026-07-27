@@ -170,10 +170,12 @@ test("manganese color descriptions render with matching colors", async () => {
   assert.match(html, /溶液酸碱性对 \\\(\\ce\{Mn\(II\)\}\\\) 还原性的影响/);
   assert.match(html, /高锰酸钾的制备、提纯与产率测定/);
   assert.match(html, /2022-beijing-chlorine-manganese-apparatus\.png/);
-  assert.match(html, /2022-haidian-experiment-design\.png/);
+  assert.match(html, /<th style="text-align:right">反应温度<\/th>/);
   assert.match(html, /2022-haidian-concentration-curves\.png/);
-  assert.match(englishHtml, /2022-haidian-experiment-design\.png/);
+  assert.match(englishHtml, /<th style="text-align:right">Temperature<\/th>/);
   assert.match(englishHtml, /2022-haidian-concentration-curves\.png/);
+  assert.doesNotMatch(html, /src="2022-haidian-experiment-design\.png"/);
+  assert.doesNotMatch(englishHtml, /src="2022-haidian-experiment-design\.png"/);
   assert.doesNotMatch(html, /src="2022-haidian-manganese-question\.png"/);
   assert.doesNotMatch(englishHtml, /src="2022-haidian-manganese-question\.png"/);
   assert.match(html, /<u class="answer-reveal">/);
@@ -444,6 +446,16 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /data-toc-toggle/);
   assert.match(app, /navigator\.serviceWorker\.register/);
   assert.match(app, /updateViaCache: "none"/);
+});
+
+test("article reading progress persists in the current heading anchor", async () => {
+  const app = await read("theme/app.js");
+  assert.match(app, /function syncReadingAnchor/);
+  assert.match(app, /\.prose h1\[id\].*\.prose h6\[id\]/);
+  assert.match(app, /nextUrl\.hash = heading\?\.id \|\| ""/);
+  assert.match(app, /history\.replaceState\(\{ \.\.\.\(history\.state \|\| \{\}\), spa: true, scrollY \}, "", `\$\{nextUrl\.pathname\}\$\{nextUrl\.search\}\$\{nextUrl\.hash\}`\)/);
+  assert.match(app, /addEventListener\("scroll", updateReadingState/);
+  assert.doesNotMatch(app, /history\.pushState\([^)]*heading/);
 });
 
 test("search results deep-link to and highlight matching article text", async () => {

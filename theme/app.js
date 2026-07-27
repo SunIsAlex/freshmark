@@ -24,6 +24,7 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
   let activePhotoSwipe;
   let galleryRequest = 0;
   let mathOverflowFrame;
+  let readingStateFrame;
   const preparedGalleryImages = new WeakSet();
   const preparedAnswerReveals = new WeakSet();
 
@@ -399,6 +400,29 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
     progress.style.width = `${total > 0 ? Math.min(100, scrollY / total * 100) : 0}%`;
   }
 
+  function syncReadingAnchor() {
+    if (!document.querySelector("[data-reading-progress]")) return;
+    const headings = document.querySelectorAll(".prose h1[id], .prose h2[id], .prose h3[id], .prose h4[id], .prose h5[id], .prose h6[id]");
+    const threshold = Math.min(160, innerHeight * 0.25);
+    let heading = null;
+    for (const candidate of headings) {
+      if (candidate.getBoundingClientRect().top > threshold) break;
+      heading = candidate;
+    }
+    const nextUrl = new URL(location.href);
+    nextUrl.hash = heading?.id || "";
+    if (nextUrl.href === location.href) return;
+    history.replaceState({ ...(history.state || {}), spa: true, scrollY }, "", `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`);
+  }
+
+  function updateReadingState() {
+    cancelAnimationFrame(readingStateFrame);
+    readingStateFrame = requestAnimationFrame(() => {
+      updateProgress();
+      syncReadingAnchor();
+    });
+  }
+
   function renderMath(scope = document) {
     if (typeof renderMathInElement !== "function") return;
     renderMathInElement(scope, {
@@ -596,7 +620,7 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
       else if (searchMatch) scrollToSearchHighlight(searchMatch);
       else if (url.hash) document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView();
       else scrollTo(0, 0);
-      updateProgress();
+      updateReadingState();
       const main = document.querySelector("main");
       main.setAttribute("tabindex", "-1");
       main.focus({ preventScroll: true });
@@ -652,8 +676,11 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
     }
     navigate(url, { push: false, restoreScroll: event.state?.scrollY || 0 });
   });
-  addEventListener("scroll", updateProgress, { passive: true });
-  addEventListener("resize", () => updateInlineMathOverflow(), { passive: true });
+  addEventListener("scroll", updateReadingState, { passive: true });
+  addEventListener("resize", () => {
+    updateInlineMathOverflow();
+    updateReadingState();
+  }, { passive: true });
   (navigator.connection || navigator.mozConnection || navigator.webkitConnection)?.addEventListener("change", drainPrefetchQueue);
   const initialUrl = new URL(location.href);
   if (document.querySelector("[data-reading-progress]")) applyArticleContentDiff(initialUrl);
@@ -664,6 +691,6 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
   prepareGallery();
   const initialSearchMatch = highlightSearchTerm(initialUrl);
   if (initialSearchMatch) requestAnimationFrame(() => scrollToSearchHighlight(initialSearchMatch));
-  updateProgress();
+  updateReadingState();
   scheduleArticlePrefetch();
 })();
