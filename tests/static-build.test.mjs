@@ -131,7 +131,7 @@ test("localized routes provide Chinese and English navigation", async () => {
 
   const chineseIndex = JSON.parse(await read("public/search-index.json"));
   const englishIndex = JSON.parse(await read("public/en/search-index.json"));
-  assert.equal(chineseIndex.length, 30);
+  assert.equal(chineseIndex.length, 31);
   assert.equal(englishIndex.length, chineseIndex.length);
   assert.deepEqual(
     englishIndex.map(({ url }) => url.replace(/^\/en/, "")).sort(),
