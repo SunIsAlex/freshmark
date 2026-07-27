@@ -9,7 +9,7 @@ The build produces ordinary HTML, CSS, JavaScript, XML, and JSON in `public/`.
 
 ## Requirements
 
-- Node.js 20 or newer
+- Node.js 20.9 or newer
 
 Install the build dependencies with `npm install`.
 
@@ -99,6 +99,12 @@ mouse wheel to zoom around the pointer. Images animate from their position in
 the article into the gallery, and swipe navigation keeps the neighboring image
 visible while dragging.
 
+During a production build, local PNG, JPEG, and WebP article images receive
+intrinsic dimensions plus responsive AVIF and WebP variants. The article uses
+the size best suited to the viewport, while the gallery continues to open the
+original full-resolution image. Generated variants are cached in
+`.freshmark-cache/` to keep later builds fast.
+
 ## Build the static site
 
 ```bash
@@ -135,7 +141,8 @@ basePath: "/my-blog",
 ```text
 content/posts/       Markdown articles
 theme/styles.css     Visual design
-lib/markdown.mjs     Shared server/browser Markdown pipeline
+lib/markdown.mjs     Build-time Markdown pipeline
+lib/responsive-images.mjs  Responsive image generation
 theme/app.js         SPA navigation, search, tags, and reading progress
 site.config.mjs      Site title, URL, author, and path settings
 scripts/build.mjs    Static generator
@@ -146,14 +153,14 @@ public/              Portable generated website
 
 ## Features
 
-- Shared `markdown-it` rendering on the server and in the browser
+- Build-time `markdown-it` rendering with client-side KaTeX enhancement
 - Pre-generated article and about pages
-- SPA article navigation using published raw Markdown
+- SPA article navigation using pre-rendered HTML fragments
 - Client-side full-text search from `search-index.json`
 - Tags and filters
 - Automatic table of contents and reading time
 - Dark mode and reading progress
-- Image captions and a PhotoSwipe keyboard/touch-friendly image gallery
+- Responsive AVIF/WebP images, captions, and a PhotoSwipe keyboard/touch-friendly gallery
 - RSS, sitemap, robots.txt, and 404 page
 - Draft support and configurable base paths
 - Raw Markdown downloads for every published article

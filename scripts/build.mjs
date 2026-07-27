@@ -8,6 +8,7 @@ import { minify as minifyJavaScript } from "terser";
 import config from "../site.config.mjs";
 import { defaultLocale, interpolate, locales, localizedPath } from "../lib/i18n.mjs";
 import { parseFrontmatter, renderMarkdown, renderSummary, summaryFromBody } from "../lib/markdown.mjs";
+import { enhanceResponsiveImages } from "../lib/responsive-images.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
 const contentDir = path.join(root, "content", "posts");
@@ -223,7 +224,7 @@ const ASSET_VERSION=${JSON.stringify(assetVersion)};
 const LOCALIZED_NOT_FOUND=${JSON.stringify(Object.keys(locales).filter((locale) => locale !== defaultLocale).map((locale) => [`/${locale}/`, localizedPath(locale, "/404.html")]))};
 const at=(path)=>BASE_PATH+path;
 const versioned=(path)=>at(path)+"?v="+ASSET_VERSION;
-  const PRECACHE=${JSON.stringify([...localizedPrecache, "/favicon.svg", "/icons/icon-192.png", "/icons/icon-512.png", "/icons/apple-touch-icon.png", "/assets/fonts/anthropic-sans-variable.ttf", "/assets/katex.min.css", "/assets/katex.min.js", "/assets/mhchem.min.js", "/assets/auto-render.min.js"])}.map(at).concat(["/assets/styles.css","/assets/app.js","/assets/markdown.js"].map(versioned));
+  const PRECACHE=${JSON.stringify([...localizedPrecache, "/favicon.svg", "/icons/icon-192.png", "/icons/icon-512.png", "/icons/apple-touch-icon.png", "/assets/fonts/anthropic-sans-variable.ttf", "/assets/katex.min.css", "/assets/katex.min.js", "/assets/mhchem.min.js", "/assets/auto-render.min.js"])}.map(at).concat(["/assets/styles.css","/assets/app.js"].map(versioned));
 self.addEventListener("install",(event)=>event.waitUntil(caches.open(CACHE_NAME).then((cache)=>cache.addAll(PRECACHE)).then(()=>self.skipWaiting())));
 self.addEventListener("activate",(event)=>event.waitUntil(caches.keys().then((names)=>Promise.all(names.filter((name)=>name.startsWith("freshmark-")&&name!==CACHE_NAME).map((name)=>caches.delete(name)))).then(()=>self.clients.claim())));
 const cacheResponse=async(request,response)=>{if(response&&response.ok){const cache=await caches.open(CACHE_NAME);await cache.put(request,response.clone())}return response};
@@ -255,7 +256,7 @@ await Promise.all([
   fs.copyFile(path.join(root, "node_modules", "katex", "dist", "contrib", "auto-render.min.js"), path.join(outputDir, "assets", "auto-render.min.js")),
   fs.cp(path.join(root, "node_modules", "katex", "dist", "fonts"), path.join(outputDir, "assets", "fonts"), { recursive: true }),
 ]);
-const browserBundles = await Promise.all(["app.js", "markdown.js"].map(async (file) => {
+const browserBundles = await Promise.all(["app.js"].map(async (file) => {
   const bundled = await bundle({ entryPoints: [path.join(themeDir, file)], bundle: true, format: "iife", platform: "browser", write: false });
   const minified = await minifyJavaScript(bundled.outputFiles[0].text, { compress: true, mangle: true });
   if (!minified.code) throw new Error(`${file} minification produced no output`);
@@ -271,8 +272,14 @@ await fs.cp(contentDir, path.join(outputDir, "posts"), {
   recursive: true,
   filter: (source) => !source.endsWith(".md") && !source.endsWith(".md.bak"),
 });
-const postsByLocale = Object.fromEntries(Object.keys(locales).map((locale) => [locale, posts.filter((post) => post.locale === locale)]));
 const localeOutput = (locale, relative) => `${locale === defaultLocale ? "" : `${locale}/`}${relative}`;
+await enhanceResponsiveImages(posts, {
+  contentDirectory: contentDir,
+  outputDirectory: outputDir,
+  cacheDirectory: path.join(root, ".freshmark-cache", "images"),
+  articleOutputDirectory: (post) => path.join(outputDir, localeOutput(post.locale, `posts/${post.slug}`)),
+});
+const postsByLocale = Object.fromEntries(Object.keys(locales).map((locale) => [locale, posts.filter((post) => post.locale === locale)]));
 for (const locale of Object.keys(locales)) {
   const messages = locales[locale];
   const localePosts = postsByLocale[locale];
@@ -300,6 +307,14 @@ for (const post of posts) {
   const html = postPage(post);
   const directory = localeOutput(post.locale, `posts/${post.slug}`);
   await write(`${directory}/index.html`, html);
+  await write(`${directory}/page.html`, pageFragment(html, {
+    locale: post.locale,
+    title: post.title,
+    description: post.summary,
+    pathName: localizedPath(post.locale, `/posts/${post.slug}/`),
+    article: true,
+    alternatePath: post.alternatePath,
+  }));
   await fs.copyFile(path.join(contentDir, post.sourceFile), path.join(outputDir, directory, "index.md"));
   if (post.locale !== defaultLocale) {
     const sourceDirectory = path.dirname(path.join(contentDir, post.sourceFile));

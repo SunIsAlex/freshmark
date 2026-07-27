@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile, stat } from "node:fs/promises";
+import { readFile, readdir, stat } from "node:fs/promises";
 import test from "node:test";
 import { changedCurrentIndexes } from "../lib/content-diff.mjs";
 import { locales } from "../lib/i18n.mjs";
@@ -13,6 +13,7 @@ test("build emits portable static pages", async () => {
     "public/index.html",
     "public/about/index.html",
     "public/posts/chemistry/babychem/overview-of-stereochemistry/index.html",
+    "public/posts/chemistry/babychem/overview-of-stereochemistry/page.html",
     "public/posts/chemistry/babychem/overview-of-stereochemistry/index.md",
     "public/posts/chemistry/babychem/overview-of-stereochemistry/image.png",
     "public/posts/chemistry/inorganic/manganese/index.html",
@@ -25,6 +26,7 @@ test("build emits portable static pages", async () => {
     "public/en/index.html",
     "public/en/about/index.html",
     "public/en/posts/chemistry/inorganic/manganese/index.html",
+    "public/en/posts/chemistry/inorganic/manganese/page.html",
     "public/en/posts/chemistry/inorganic/manganese/index.md",
     "public/en/posts/chemistry/inorganic/manganese/latimer-group7-acidic.svg",
     "public/en/posts/chemistry/inorganic/manganese/latimer-manganese-media.svg",
@@ -40,7 +42,6 @@ test("build emits portable static pages", async () => {
     "public/sitemap.xml",
     "public/assets/styles.css",
     "public/assets/app.js",
-    "public/assets/markdown.js",
     "public/assets/fonts/anthropic-sans-variable.ttf",
     "public/manifest.webmanifest",
     "public/icons/icon-192.png",
@@ -205,7 +206,10 @@ test("articles render math and colocated Markdown images", async () => {
   const html = await read("public/posts/physics/basic-calculus-02/index.html");
   assert.match(html, /\\\[\\int f\(x\)dx=F\(x\)\+C\\\]/);
   assert.doesNotMatch(html, /class="katex/);
-  assert.match(html, /<img[^>]*src="image\.png"[^>]*>/);
+  assert.match(html, /<picture class="responsive-picture">/);
+  assert.match(html, /<source[^>]*srcset="[^"]*freshmark-[a-f0-9]+-480w\.avif 480w[^"]*"[^>]*type="image\/avif"/);
+  assert.match(html, /<source[^>]*srcset="[^"]*freshmark-[a-f0-9]+-480w\.webp 480w[^"]*"[^>]*type="image\/webp"/);
+  assert.match(html, /<img[^>]*data-gallery-src="image\.png"[^>]*height="983"[^>]*src="image\.png"[^>]*width="640"[^>]*>/);
   assert.match(html, /<img[^>]*alt="alt text"[^>]*>/);
   assert.doesNotMatch(html, /!\[alt text\]\(image\.png\)/);
   assert.equal((await stat(new URL("public/assets/katex.min.css", root))).isFile(), true);
@@ -216,7 +220,14 @@ test("articles render math and colocated Markdown images", async () => {
 
   const titledImageHtml = await read("public/posts/chemistry/babychem/overview-of-stereochemistry/index.html");
   assert.match(titledImageHtml, /<img[^>]*src="image\.png"[^>]*title="关于电负性\/杂化的综合判断"[^>]*>/);
-  assert.match(titledImageHtml, /<figure class="prose-figure"><img[^>]*src="image\.png"[^>]*><figcaption>关于电负性\/杂化的综合判断<\/figcaption><\/figure>/);
+  assert.match(titledImageHtml, /<figure class="prose-figure"><picture class="responsive-picture">[\s\S]*?<img[^>]*src="image\.png"[^>]*><\/picture><figcaption>关于电负性\/杂化的综合判断<\/figcaption><\/figure>/);
+
+  const generated = await readdir(new URL("public/posts/physics/basic-calculus-02/", root));
+  assert.ok(generated.some((file) => /^image\.freshmark-[a-f0-9]+-480w\.avif$/.test(file)));
+  assert.ok(generated.some((file) => /^image\.freshmark-[a-f0-9]+-640w\.webp$/.test(file)));
+  const devServer = await read("scripts/dev.mjs");
+  assert.match(devServer, /"\.avif": "image\/avif"/);
+  assert.match(devServer, /"\.webp": "image\/webp"/);
 
   const manganeseHtml = await read("public/posts/chemistry/inorganic/manganese/index.html");
   assert.match(manganeseHtml, /src="latimer-group7-acidic\.svg"/);
@@ -395,14 +406,12 @@ test("frontmatter categories and tags are indexed and displayed", async () => {
 test("client enhances internal links with SPA navigation", async () => {
   const app = await read("theme/app.js");
   const bundle = await read("public/assets/app.js");
-  const markdownBundle = await read("public/assets/markdown.js");
-  assert.ok(bundle.length < markdownBundle.length);
   assert.doesNotMatch(bundle, /MarkdownIt/);
-  assert.match(app, /assets\/markdown\.js/);
+  await assert.rejects(stat(new URL("public/assets/markdown.js", root)), { code: "ENOENT" });
   assert.match(app, /searchIndexPath/);
   assert.match(app, /postsRoot/);
   assert.match(app, /data-no-spa/);
-  assert.match(app, /loadMarkdownRenderer/);
+  assert.doesNotMatch(app, /loadMarkdownRenderer|articlePage|assets\/markdown\.js/);
   assert.match(app, /history\.pushState/);
   assert.match(app, /addEventListener\("popstate"/);
   assert.match(app, /DOMParser/);
@@ -412,7 +421,8 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /formula\.classList\.remove\("katex-inline-overflow"\)/);
   assert.match(app, /formula\.getBoundingClientRect\(\)\.width > line\.clientWidth \+ 1/);
   assert.match(app, /document\.fonts\?\.ready/);
-  assert.match(app, /index\.md/);
+  assert.match(app, /new URL\("page\.html", contentUrl\)/);
+  assert.doesNotMatch(app, /new URL\("index\.md"|fetch\([^)]*index\.md/);
   assert.match(app, /currentMain\.replaceWith\(nextMain\)/);
   assert.match(app, /rebaseMainUrls\(nextMain, url\)/);
   assert.match(app, /new URL\(value, pageUrl\)\.href/);
@@ -422,9 +432,6 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /\["slow-2g", "2g", "3g"\]/);
   assert.match(app, /requestIdleCallback/);
   assert.match(app, /scheduleArticlePrefetch\(nextMain\)/);
-  assert.match(app, /renderSummary\(summary\)/);
-  assert.match(app, /window\.FRESHMARK\?\.assetVersion/);
-  assert.match(app, /assets\/markdown\.js\$\{assetVersion \? `\?v=\$\{assetVersion\}` : ""\}/);
   assert.match(app, /prepareGallery\(nextMain\)/);
   assert.match(app, /prepareAnswerReveals\(nextMain\)/);
   assert.match(app, /answer\.setAttribute\("aria-expanded", String\(revealed\)\)/);
@@ -435,7 +442,6 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /=== renderedRoute/);
   assert.match(app, /function toggleToc/);
   assert.match(app, /data-toc-toggle/);
-  assert.match(app, /toc-level-\$\{heading\.level\}/);
   assert.match(app, /navigator\.serviceWorker\.register/);
   assert.match(app, /updateViaCache: "none"/);
 });
@@ -487,6 +493,8 @@ test("article images open in a PhotoSwipe keyboard and touch-friendly gallery", 
   assert.doesNotMatch(html, /data-image-gallery/);
   assert.match(app, /import PhotoSwipe from "photoswipe"/);
   assert.match(app, /new PhotoSwipe/);
+  assert.match(app, /image\.dataset\.gallerySrc \|\| image\.currentSrc/);
+  assert.match(app, /msrc: galleryThumbnailSource\(item\)/);
   assert.doesNotMatch(app, /addEventListener\("dblclick"/);
   assert.match(app, /image\.addEventListener\("click"/);
   assert.match(app, /openGallery\(image\)/);
@@ -519,17 +527,22 @@ test("service worker versions and persists generated resources", async () => {
   assert.match(worker, /en\/search-index\.json/);
   assert.match(worker, /en\/404\.html/);
   assert.match(worker, /icon-512\.png/);
-  assert.match(worker, /assets\/markdown\.js/);
+  assert.doesNotMatch(worker, /assets\/markdown\.js/);
   assert.match(worker, /\?v=/);
   assert.match(worker, /"navigate"===/);
 });
 
-test("published posts retain raw Markdown for downloads and SPA navigation", async () => {
+test("published posts retain raw Markdown for downloads and provide pre-rendered SPA fragments", async () => {
   const source = await read("content/posts/physics/basic-calculus-02/index.md");
   const published = await read("public/posts/physics/basic-calculus-02/index.md");
   assert.equal(published, source);
 
-  await assert.rejects(stat(new URL("public/posts/physics/basic-calculus-02/page.html", root)), { code: "ENOENT" });
+  const fragment = await read("public/posts/physics/basic-calculus-02/page.html");
+  assert.match(fragment, /data-freshmark-page/);
+  assert.match(fragment, /data-article="true"/);
+  assert.match(fragment, /\\\[\\int f\(x\)dx=F\(x\)\+C\\\]/);
+  assert.doesNotMatch(fragment, /class="katex/);
+  assert.doesNotMatch(fragment, /<!doctype html>|<html|<body/);
 
   const html = await read("public/posts/physics/basic-calculus-02/index.html");
   assert.match(html, /<a href="index\.md" download>下载 Markdown<\/a>/);

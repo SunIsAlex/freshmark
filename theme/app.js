@@ -4,7 +4,6 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
 (() => {
   const root = document.documentElement;
   const basePath = window.FRESHMARK?.basePath || "";
-  const assetVersion = window.FRESHMARK?.assetVersion || "";
   const messages = window.FRESHMARK?.messages || {};
   const localeRoot = window.FRESHMARK?.localeRoot || basePath || "/";
   const alternateRoot = window.FRESHMARK?.alternateRoot || basePath || "/";
@@ -22,7 +21,6 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
   let prefetching = false;
   let renderedRoute = `${location.pathname}${location.search}`;
   let index;
-  let markdownRenderer;
   let activePhotoSwipe;
   let galleryRequest = 0;
   let mathOverflowFrame;
@@ -32,25 +30,6 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
   const escape = (value) => String(value).replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[char]);
   const message = (key, values = {}) => String(messages[key] || key).replace(/\{(\w+)\}/g, (_, name) => values[name] ?? "");
   const setTheme = (theme) => { root.dataset.theme = theme; try { localStorage.setItem("freshmark-theme", theme); } catch {} };
-
-  function loadMarkdownRenderer() {
-    if (!markdownRenderer) markdownRenderer = new Promise((resolve, reject) => {
-      const existing = document.querySelector("script[data-markdown-renderer]");
-      const script = existing || Object.assign(document.createElement("script"), {
-        src: `${basePath}/assets/markdown.js${assetVersion ? `?v=${assetVersion}` : ""}`,
-        async: true,
-      });
-      script.dataset.markdownRenderer = "";
-      const ready = () => window.FRESHMARK_MARKDOWN ? resolve(window.FRESHMARK_MARKDOWN) : reject(new Error("Markdown renderer did not initialize"));
-      if (window.FRESHMARK_MARKDOWN) ready();
-      else {
-        script.addEventListener("load", ready, { once: true });
-        script.addEventListener("error", () => reject(new Error("Could not load Markdown renderer")), { once: true });
-        if (!existing) document.head.append(script);
-      }
-    });
-    return markdownRenderer;
-  }
 
   async function loadIndex() {
     if (!index) index = await fetch(searchIndexPath).then((response) => response.json());
@@ -266,16 +245,20 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
   }
 
   function gallerySource(image) {
+    return image.dataset.gallerySrc || image.currentSrc || image.src;
+  }
+
+  function galleryThumbnailSource(image) {
     return image.currentSrc || image.src;
   }
 
   function galleryImageSize(image) {
     const bounds = image.getBoundingClientRect();
     const ratio = bounds.width && bounds.height ? bounds.width / bounds.height : 4 / 3;
-    const width = image.naturalWidth || Number(image.getAttribute("width")) || 1600;
+    const width = Number(image.dataset.galleryWidth) || image.naturalWidth || Number(image.getAttribute("width")) || 1600;
     return {
       width,
-      height: image.naturalHeight || Number(image.getAttribute("height")) || Math.round(width / ratio),
+      height: Number(image.dataset.galleryHeight) || image.naturalHeight || Number(image.getAttribute("height")) || Math.round(width / ratio),
     };
   }
 
@@ -290,7 +273,7 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
       const figureCaption = item.closest("figure")?.querySelector("figcaption")?.textContent.trim();
       return {
         src: gallerySource(item),
-        msrc: gallerySource(item),
+        msrc: galleryThumbnailSource(item),
         width: sizes[itemIndex].width,
         height: sizes[itemIndex].height,
         alt: item.alt || "",
@@ -331,7 +314,7 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
     pswp.addFilter("thumbEl", (thumbnail, _itemData, itemIndex) => images[itemIndex] || thumbnail);
     pswp.addFilter("placeholderSrc", (placeholder, content) => {
       const thumbnail = images[content.index];
-      return thumbnail ? gallerySource(thumbnail) : placeholder;
+      return thumbnail ? galleryThumbnailSource(thumbnail) : placeholder;
     });
     pswp.on("uiRegister", () => {
       pswp.ui.registerElement({
@@ -466,12 +449,7 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
     const key = `${contentUrl.pathname}${contentUrl.search}`;
     if (!pageCache.has(key)) {
       let page;
-      const postsBase = new URL(postsRoot, location.origin).pathname;
-      if (contentUrl.pathname.startsWith(postsBase) && contentUrl.pathname.endsWith("/")) {
-        const markdownUrl = new URL("index.md", contentUrl);
-        const response = await fetch(`${markdownUrl.pathname}${markdownUrl.search}`, { headers: { "X-Freshmark-Navigation": "spa" } });
-        if (response.ok) page = await articlePage(await response.text(), contentUrl);
-      } else if (contentUrl.pathname.endsWith("/")) {
+      if (contentUrl.pathname.endsWith("/")) {
         const fragmentUrl = new URL("page.html", contentUrl);
         const response = await fetch(`${fragmentUrl.pathname}${fragmentUrl.search}`, { headers: { "X-Freshmark-Navigation": "spa" } });
         if (response.ok && response.headers.get("content-type")?.includes("text/html")) {
@@ -504,29 +482,6 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
       pageCache.set(key, page);
     }
     return pageCache.get(key);
-  }
-
-  async function articlePage(source, url) {
-    const { parseFrontmatter, renderMarkdown, renderSummary, summaryFromBody } = await loadMarkdownRenderer();
-    const { data, body } = parseFrontmatter(source, url.pathname);
-    const { html, headings } = renderMarkdown(body);
-    const date = String(data.date).slice(0, 10);
-    const summary = data.summary || data.description || summaryFromBody(body);
-    const tags = Array.isArray(data.tags) ? data.tags : [];
-    const words = body.replace(/[#*`>\[\]()_-]/g, " ").split(/\s+/).filter(Boolean).length;
-    const readingTime = Math.max(1, Math.ceil(words / 220));
-    const formattedDate = new Intl.DateTimeFormat(window.FRESHMARK.language, { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(`${date}T00:00:00Z`));
-    const toc = headings.map((heading) => `<a class="toc-level-${heading.level}" href="#${escape(heading.id)}">${escape(heading.text)}</a>`).join("");
-    const tagText = tags.map(escape).join(" · ");
-    const main = `<main><header class="container article-header"><a class="back-link" href="${localeRoot}">${escape(message("backToWriting"))}</a><h1>${escape(data.title)}</h1><p class="article-dek">${renderSummary(summary)}</p><div class="article-meta"><time datetime="${date}">${formattedDate}</time><span>${escape(message("minuteRead", { minutes: readingTime }))}</span>${tagText ? `<span>${tagText}</span>` : ""}<a href="index.md" download>${escape(message("downloadMarkdown"))}</a></div></header><div class="article-wrap"><aside class="toc"><div class="toc-head"><p>${escape(message("onThisPage"))}</p><button class="toc-toggle" type="button" data-toc-toggle aria-expanded="false" aria-label="${escape(message("toggleToc"))}"><span class="toc-toggle-label">${escape(message("tableOfContents"))}</span><span class="toc-toggle-icon" aria-hidden="true"></span></button></div><nav class="toc-links" data-toc-links aria-label="${escape(message("tableOfContents"))}">${toc}</nav></aside><article class="prose">${html}</article></div></main>`;
-    return {
-      title: `${data.title} — ${window.FRESHMARK.title}`,
-      description: summary,
-      canonical: url.href,
-      alternate: data.alternate ? new URL(`${basePath}${data.alternate}`, location.origin).href : alternateRoot,
-      article: true,
-      html: main,
-    };
   }
 
   function canPrefetch() {

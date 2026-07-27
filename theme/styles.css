@@ -154,6 +154,8 @@ button { color:inherit; }
 .chemical-color[data-color="brown-yellow"] { --chemical-color:#80601c; --chemical-color-dark:#d5ad59; }
 .chemical-color[data-color="colorless"] { --chemical-color:var(--ink-soft); --chemical-color-dark:var(--ink-soft); text-decoration:underline dotted; text-underline-offset:.18em; }
 .prose img,.prose video,.prose iframe { display:block; max-width:100%; height:auto; margin:2em auto; }
+.prose .responsive-picture { display:block; max-width:100%; }
+.prose .responsive-picture img { width:auto; max-width:100%; height:auto; }
 .prose video,.prose iframe { border-radius:16px; }
 .prose-figure { margin:2em auto; }
 .prose .prose-figure img { margin:0 auto; }
