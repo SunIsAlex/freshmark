@@ -8,6 +8,7 @@ import { minify as minifyJavaScript } from "terser";
 import config from "../site.config.mjs";
 import { defaultLocale, interpolate, locales, localizedPath } from "../lib/i18n.mjs";
 import { parseFrontmatter, renderMarkdown, renderSummary, summaryFromBody } from "../lib/markdown.mjs";
+import { closeMathSvgRenderer, injectMathSvgDefinitions } from "../lib/math-svg.mjs";
 import { enhanceResponsiveImages } from "../lib/responsive-images.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
@@ -17,6 +18,7 @@ const outputDir = path.join(root, "public");
 const currentYear = new Date().getUTCFullYear();
 const basePath = `/${String(config.basePath || "").replace(/^\/+|\/+$/g, "")}`.replace(/^\/$/, "");
 let assetVersion = "";
+let browserAssets = [];
 const href = (value = "/") => `${basePath}${value.startsWith("/") ? value : `/${value}`}` || "/";
 const assetHref = (value) => `${href(value)}${assetVersion ? `?v=${assetVersion}` : ""}`;
 const absolute = (value) => new URL(href(value), config.baseUrl).href;
@@ -57,14 +59,15 @@ async function loadPosts() {
     const locale = locales[requestedLocale] ? requestedLocale : defaultLocale;
     const suffix = localizedFile && locales[localizedFile[1]] ? `.${localizedFile[1]}.md` : ".md";
     const date = String(data.date).slice(0, 10);
-    const { html, headings } = renderMarkdown(body);
+    const { html, headings } = await renderMarkdown(body);
+    const { html: spaHtml, headings: spaHeadings } = await renderMarkdown(body, { mathOutput: "source" });
     const words = body.replace(/[#*`>\[\]()_-]/g, " ").split(/\s+/).filter(Boolean).length;
     const relativeSlug = sourceFile.slice(0, -suffix.length).replace(/(^|\/)index$/, "");
     const summary = data.summary || data.description || summaryFromBody(body);
     posts.push({
       slug: relativeSlug, sourceFile, locale, translationKey: data.translationKey || relativeSlug, alternate: data.alternate || "", title: data.title, date, summary,
       tags: Array.isArray(data.tags) ? data.tags : [], categories: Array.isArray(data.categories) ? data.categories : [], featured: data.featured === true,
-      readingTime: Math.max(1, Math.ceil(words / 220)), html, headings,
+      readingTime: Math.max(1, Math.ceil(words / 220)), html, headings, spaHtml, spaHeadings,
       searchText: body.replace(/[#*`>\[\]()_-]/g, " ").replace(/\s+/g, " ").trim(),
     });
   }
@@ -108,13 +111,11 @@ function page({ locale = defaultLocale, title, description, content, article = f
   const alternate = locales[alternateLocale];
   const pageDescription = description || messages.siteDescription;
   const fullTitle = title ? `${escapeHtml(title)} — ${escapeHtml(config.title)}` : `${escapeHtml(config.title)} — ${escapeHtml(messages.siteDescription)}`;
-  const deferredStyles = ["/assets/styles.css", "/assets/katex.min.css"].map((file) => {
-    const url = file === "/assets/styles.css" ? assetHref(file) : href(file);
-    return `<link rel="preload" href="${url}" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="${url}"></noscript>`;
-  }).join("");
+  const stylesUrl = assetHref("/assets/styles.css");
+  const deferredStyles = `<link rel="preload" href="${stylesUrl}" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="${stylesUrl}"></noscript>`;
   const defaultPath = locale === defaultLocale ? pathName : alternatePath;
   const alternateLink = hasAlternate ? `<link rel="alternate" hreflang="${alternate.language}" href="${absolute(alternatePath)}">` : "";
-  return `<!doctype html><html lang="${escapeHtml(messages.language)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="${escapeHtml(config.themeColor)}"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="${escapeHtml(config.title)}"><meta name="codex-preview" content="development"><title>${fullTitle}</title><meta name="description" content="${escapeHtml(pageDescription)}"><link rel="canonical" href="${absolute(pathName)}"><link rel="alternate" hreflang="${messages.language}" href="${absolute(pathName)}">${alternateLink}<link rel="alternate" hreflang="x-default" href="${absolute(defaultPath)}"><link rel="manifest" href="${localeHref(locale, "/manifest.webmanifest")}"><link rel="icon" href="${href("/favicon.svg")}" type="image/svg+xml"><link rel="apple-touch-icon" href="${href("/icons/apple-touch-icon.png")}"><link rel="alternate" type="application/rss+xml" title="${escapeHtml(config.title)} RSS" href="${localeHref(locale, "/rss.xml")}"><link rel="preload" href="${href("/assets/fonts/anthropic-sans-variable.ttf")}" as="font" type="font/ttf" crossorigin><script>try{document.documentElement.dataset.theme=localStorage.getItem('freshmark-theme')||''}catch(e){}</script><style data-critical>${criticalCss}</style>${deferredStyles}</head><body><div class="site-shell"><div class="ambient"></div>${article ? '<div class="reading-progress" data-reading-progress></div>' : ""}${header(locale, alternatePath)}${content}${footer(locale)}${searchModal(locale)}</div><script>window.FRESHMARK={basePath:${JSON.stringify(basePath)},title:${JSON.stringify(config.title)},locale:${JSON.stringify(locale)},language:${JSON.stringify(messages.language)},messages:${JSON.stringify(messages)},localeRoot:${JSON.stringify(localeHref(locale, "/"))},alternateRoot:${JSON.stringify(localeHref(alternateLocale, "/"))},postsRoot:${JSON.stringify(localeHref(locale, "/posts/"))},searchIndexPath:${JSON.stringify(localeHref(locale, "/search-index.json"))},assetVersion:${JSON.stringify(assetVersion)}};</script><script src="${href("/assets/katex.min.js")}" defer></script><script src="${href("/assets/mhchem.min.js")}" defer></script><script src="${href("/assets/auto-render.min.js")}" defer></script><script src="${assetHref("/assets/app.js")}" defer></script></body></html>`;
+  return injectMathSvgDefinitions(`<!doctype html><html lang="${escapeHtml(messages.language)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="${escapeHtml(config.themeColor)}"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="${escapeHtml(config.title)}"><meta name="codex-preview" content="development"><title>${fullTitle}</title><meta name="description" content="${escapeHtml(pageDescription)}"><link rel="canonical" href="${absolute(pathName)}"><link rel="alternate" hreflang="${messages.language}" href="${absolute(pathName)}">${alternateLink}<link rel="alternate" hreflang="x-default" href="${absolute(defaultPath)}"><link rel="manifest" href="${localeHref(locale, "/manifest.webmanifest")}"><link rel="icon" href="${href("/favicon.svg")}" type="image/svg+xml"><link rel="apple-touch-icon" href="${href("/icons/apple-touch-icon.png")}"><link rel="alternate" type="application/rss+xml" title="${escapeHtml(config.title)} RSS" href="${localeHref(locale, "/rss.xml")}"><link rel="preload" href="${href("/assets/fonts/anthropic-sans-variable.woff2")}" as="font" type="font/woff2" crossorigin><script>try{document.documentElement.dataset.theme=localStorage.getItem('freshmark-theme')||''}catch(e){}</script><style data-critical>${criticalCss}</style>${deferredStyles}</head><body><div class="site-shell"><div class="ambient"></div>${article ? '<div class="reading-progress" data-reading-progress></div>' : ""}${header(locale, alternatePath)}${content}${footer(locale)}${searchModal(locale)}</div><script>window.FRESHMARK={basePath:${JSON.stringify(basePath)},title:${JSON.stringify(config.title)},locale:${JSON.stringify(locale)},language:${JSON.stringify(messages.language)},messages:${JSON.stringify(messages)},localeRoot:${JSON.stringify(localeHref(locale, "/"))},alternateRoot:${JSON.stringify(localeHref(alternateLocale, "/"))},postsRoot:${JSON.stringify(localeHref(locale, "/posts/"))},searchIndexPath:${JSON.stringify(localeHref(locale, "/search-index.json"))},assetVersion:${JSON.stringify(assetVersion)}};</script><script type="module" src="${assetHref("/assets/app.js")}"></script></body></html>`);
 }
 
 function webManifest(locale = defaultLocale) {
@@ -144,21 +145,26 @@ function pageFragment(html, { locale = defaultLocale, title, description, pathNa
   return `<meta data-freshmark-page data-title="${escapeHtml(pageTitle)}" data-description="${escapeHtml(description || locales[locale].siteDescription)}" data-canonical="${absolute(pathName)}" data-alternate="${absolute(alternatePath)}" data-article="${article}">${content}`;
 }
 
-function homePage(locale, posts) {
+async function homePage(locale, posts, { mathOutput = "svg", fragment = false } = {}) {
   const messages = locales[locale];
   const featured = posts.find((post) => post.featured) || posts[0];
   const categories = [...new Set(posts.flatMap((post) => post.categories))];
-  const cards = posts.filter((post) => post !== featured).map((post) => `<a class="post-card" href="${localeHref(locale, `/posts/${post.slug}/`)}" data-post-card data-tags="${escapeHtml(post.categories.join("|"))}"><time class="post-date" datetime="${post.date}">${formatDate(locale, post.date)}</time><div><h3>${escapeHtml(post.title)}</h3><p>${renderSummary(post.summary, { links: false })}</p></div><span class="post-arrow" aria-hidden="true">↗</span></a>`).join("");
-  const content = `<main><section class="container hero"><div><p class="eyebrow">${escapeHtml(messages.tagline)}</p><h1>${escapeHtml(messages.heroLead)} <em>${escapeHtml(messages.heroEmphasis)}</em></h1></div><div class="hero-side"><p>${escapeHtml(messages.intro)}</p><button class="search-trigger" type="button" data-search-open>${searchIcon}<span>${escapeHtml(messages.searchArchive)}</span><kbd>⌘ K</kbd></button></div></section><section class="container featured" aria-label="${escapeHtml(messages.featuredArticle)}"><div class="featured-art" aria-hidden="true"><span class="art-line"></span><span class="art-dot"></span></div><div class="featured-copy"><span class="meta">${escapeHtml(messages.featured)} · ${escapeHtml(interpolate(messages.minuteRead, { minutes: featured.readingTime }))}</span><h2>${escapeHtml(featured.title)}</h2><p>${renderSummary(featured.summary)}</p><a class="read-link" href="${localeHref(locale, `/posts/${featured.slug}/`)}">${escapeHtml(messages.readEssay)} <span aria-hidden="true">→</span></a></div></section><section class="container post-section" id="writing"><div class="section-head"><div><p class="eyebrow">${escapeHtml(messages.archive)}</p><h2>${escapeHtml(messages.recentWriting)}</h2></div><div class="tag-row" aria-label="${escapeHtml(messages.filterByCategory)}"><button class="tag-filter active" type="button" data-tag="__all__">${escapeHtml(messages.all)}</button>${categories.map((category) => `<button class="tag-filter" type="button" data-tag="${escapeHtml(category)}">${escapeHtml(category)}</button>`).join("")}</div></div><div class="post-list" data-post-list>${cards}<p class="empty" data-filter-empty hidden>${escapeHtml(messages.emptyCategory)}</p></div></section></main>`;
+  const cards = (await Promise.all(posts.filter((post) => post !== featured).map(async (post) => `<a class="post-card" href="${localeHref(locale, `/posts/${post.slug}/`)}" data-post-card data-tags="${escapeHtml(post.categories.join("|"))}"><time class="post-date" datetime="${post.date}">${formatDate(locale, post.date)}</time><div><h3>${escapeHtml(post.title)}</h3><p>${await renderSummary(post.summary, { links: false, mathOutput })}</p></div><span class="post-arrow" aria-hidden="true">↗</span></a>`))).join("");
+  const featuredSummary = await renderSummary(featured.summary, { mathOutput });
+  const content = `<main><section class="container hero"><div><p class="eyebrow">${escapeHtml(messages.tagline)}</p><h1>${escapeHtml(messages.heroLead)} <em>${escapeHtml(messages.heroEmphasis)}</em></h1></div><div class="hero-side"><p>${escapeHtml(messages.intro)}</p><button class="search-trigger" type="button" data-search-open>${searchIcon}<span>${escapeHtml(messages.searchArchive)}</span><kbd>⌘ K</kbd></button></div></section><section class="container featured" aria-label="${escapeHtml(messages.featuredArticle)}"><div class="featured-art" aria-hidden="true"><span class="art-line"></span><span class="art-dot"></span></div><div class="featured-copy"><span class="meta">${escapeHtml(messages.featured)} · ${escapeHtml(interpolate(messages.minuteRead, { minutes: featured.readingTime }))}</span><h2>${escapeHtml(featured.title)}</h2><p>${featuredSummary}</p><a class="read-link" href="${localeHref(locale, `/posts/${featured.slug}/`)}">${escapeHtml(messages.readEssay)} <span aria-hidden="true">→</span></a></div></section><section class="container post-section" id="writing"><div class="section-head"><div><p class="eyebrow">${escapeHtml(messages.archive)}</p><h2>${escapeHtml(messages.recentWriting)}</h2></div><div class="tag-row" aria-label="${escapeHtml(messages.filterByCategory)}"><button class="tag-filter active" type="button" data-tag="__all__">${escapeHtml(messages.all)}</button>${categories.map((category) => `<button class="tag-filter" type="button" data-tag="${escapeHtml(category)}">${escapeHtml(category)}</button>`).join("")}</div></div><div class="post-list" data-post-list>${cards}<p class="empty" data-filter-empty hidden>${escapeHtml(messages.emptyCategory)}</p></div></section></main>`;
+  if (fragment) return content;
   const pathName = localizedPath(locale, "/");
   return page({ locale, content, pathName, alternatePath: localizedPath(messages.alternate, "/") });
 }
 
-function postPage(post) {
+async function postPage(post, { mathOutput = "svg", fragment = false } = {}) {
   const messages = locales[post.locale];
-  const toc = post.headings.map((heading) => `<a class="toc-level-${heading.level}" href="#${heading.id}">${escapeHtml(heading.text)}</a>`).join("");
+  const headings = mathOutput === "source" ? post.spaHeadings : post.headings;
+  const articleHtml = mathOutput === "source" ? post.spaHtml : post.html;
+  const toc = headings.map((heading) => `<a class="toc-level-${heading.level}" href="#${heading.id}">${heading.html || escapeHtml(heading.text)}</a>`).join("");
   const tags = post.tags.map(escapeHtml).join(" · ");
-  const content = `<main><header class="container article-header"><a class="back-link" href="${localeHref(post.locale, "/")}">${escapeHtml(messages.backToWriting)}</a><h1>${escapeHtml(post.title)}</h1><p class="article-dek">${renderSummary(post.summary)}</p><div class="article-meta"><time datetime="${post.date}">${formatLongDate(post.locale, post.date)}</time><span>${escapeHtml(interpolate(messages.minuteRead, { minutes: post.readingTime }))}</span>${tags ? `<span>${tags}</span>` : ""}<a href="index.md" download>${escapeHtml(messages.downloadMarkdown)}</a></div></header><div class="article-wrap"><aside class="toc"><div class="toc-head"><p>${escapeHtml(messages.onThisPage)}</p><button class="toc-toggle" type="button" data-toc-toggle aria-expanded="false" aria-label="${escapeHtml(messages.toggleToc)}"><span class="toc-toggle-label">${escapeHtml(messages.tableOfContents)}</span><span class="toc-toggle-icon" aria-hidden="true"></span></button></div><nav class="toc-links" data-toc-links aria-label="${escapeHtml(messages.tableOfContents)}">${toc}</nav></aside><article class="prose">${post.html}</article></div></main>`;
+  const content = `<main><header class="container article-header"><a class="back-link" href="${localeHref(post.locale, "/")}">${escapeHtml(messages.backToWriting)}</a><h1>${escapeHtml(post.title)}</h1><p class="article-dek">${await renderSummary(post.summary, { mathOutput })}</p><div class="article-meta"><time datetime="${post.date}">${formatLongDate(post.locale, post.date)}</time><span>${escapeHtml(interpolate(messages.minuteRead, { minutes: post.readingTime }))}</span>${tags ? `<span>${tags}</span>` : ""}<a href="index.md" download>${escapeHtml(messages.downloadMarkdown)}</a></div></header><div class="article-wrap"><aside class="toc"><div class="toc-head"><p>${escapeHtml(messages.onThisPage)}</p><button class="toc-toggle" type="button" data-toc-toggle aria-expanded="false" aria-label="${escapeHtml(messages.toggleToc)}"><span class="toc-toggle-label">${escapeHtml(messages.tableOfContents)}</span><span class="toc-toggle-icon" aria-hidden="true"></span></button></div><nav class="toc-links" data-toc-links aria-label="${escapeHtml(messages.tableOfContents)}">${toc}</nav></aside><article class="prose">${articleHtml}</article></div></main>`;
+  if (fragment) return content;
   const pathName = localizedPath(post.locale, `/posts/${post.slug}/`);
   return page({ locale: post.locale, title: post.title, description: post.summary, content, article: true, pathName, alternatePath: post.alternatePath, hasAlternate: post.hasTranslation });
 }
@@ -224,7 +230,7 @@ const ASSET_VERSION=${JSON.stringify(assetVersion)};
 const LOCALIZED_NOT_FOUND=${JSON.stringify(Object.keys(locales).filter((locale) => locale !== defaultLocale).map((locale) => [`/${locale}/`, localizedPath(locale, "/404.html")]))};
 const at=(path)=>BASE_PATH+path;
 const versioned=(path)=>at(path)+"?v="+ASSET_VERSION;
-  const PRECACHE=${JSON.stringify([...localizedPrecache, "/favicon.svg", "/icons/icon-192.png", "/icons/icon-512.png", "/icons/apple-touch-icon.png", "/assets/fonts/anthropic-sans-variable.ttf", "/assets/katex.min.css", "/assets/katex.min.js", "/assets/mhchem.min.js", "/assets/auto-render.min.js"])}.map(at).concat(["/assets/styles.css","/assets/app.js"].map(versioned));
+  const PRECACHE=${JSON.stringify([...localizedPrecache, "/favicon.svg", "/icons/icon-192.png", "/icons/icon-512.png", "/icons/apple-touch-icon.png", "/assets/fonts/anthropic-sans-variable.woff2"])}.map(at).concat([versioned("/assets/styles.css"),versioned("/assets/app.js")],${JSON.stringify(browserAssets.filter((file) => file !== "app.js").map((file) => `/assets/${file}`))}.map(at));
 self.addEventListener("install",(event)=>event.waitUntil(caches.open(CACHE_NAME).then((cache)=>cache.addAll(PRECACHE)).then(()=>self.skipWaiting())));
 self.addEventListener("activate",(event)=>event.waitUntil(caches.keys().then((names)=>Promise.all(names.filter((name)=>name.startsWith("freshmark-")&&name!==CACHE_NAME).map((name)=>caches.delete(name)))).then(()=>self.clients.claim())));
 const cacheResponse=async(request,response)=>{if(response&&response.ok){const cache=await caches.open(CACHE_NAME);await cache.put(request,response.clone())}return response};
@@ -244,30 +250,44 @@ const styles = new CleanCSS({ level: 2 }).minify([
   await fs.readFile(path.join(root, "node_modules", "photoswipe", "dist", "photoswipe.css"), "utf8"),
   await fs.readFile(path.join(themeDir, "styles.css"), "utf8"),
 ].join("\n"));
+const katexStyles = await fs.readFile(path.join(root, "node_modules", "katex", "dist", "katex.min.css"));
+const katexFontDirectory = path.join(root, "node_modules", "katex", "dist", "fonts");
+const katexFonts = (await fs.readdir(katexFontDirectory)).filter((file) => file.endsWith(".woff2"));
 if (styles.errors.length) throw new Error(`CSS minification failed: ${styles.errors.join(", ")}`);
 await Promise.all([
   fs.writeFile(path.join(outputDir, "assets", "styles.css"), styles.styles),
+  fs.writeFile(path.join(outputDir, "assets", "katex.min.css"), katexStyles),
   fs.copyFile(path.join(themeDir, "favicon.svg"), path.join(outputDir, "favicon.svg")),
   fs.cp(path.join(themeDir, "icons"), path.join(outputDir, "icons"), { recursive: true }),
-  fs.copyFile(path.join(themeDir, "fonts", "anthropic-sans-variable.ttf"), path.join(outputDir, "assets", "fonts", "anthropic-sans-variable.ttf")),
-  fs.copyFile(path.join(root, "node_modules", "katex", "dist", "katex.min.css"), path.join(outputDir, "assets", "katex.min.css")),
-  fs.copyFile(path.join(root, "node_modules", "katex", "dist", "katex.min.js"), path.join(outputDir, "assets", "katex.min.js")),
-  fs.copyFile(path.join(root, "node_modules", "katex", "dist", "contrib", "mhchem.min.js"), path.join(outputDir, "assets", "mhchem.min.js")),
-  fs.copyFile(path.join(root, "node_modules", "katex", "dist", "contrib", "auto-render.min.js"), path.join(outputDir, "assets", "auto-render.min.js")),
-  fs.cp(path.join(root, "node_modules", "katex", "dist", "fonts"), path.join(outputDir, "assets", "fonts"), { recursive: true }),
+  fs.copyFile(path.join(themeDir, "fonts", "anthropic-sans-variable.woff2"), path.join(outputDir, "assets", "fonts", "anthropic-sans-variable.woff2")),
+  ...katexFonts.map((file) => fs.copyFile(path.join(katexFontDirectory, file), path.join(outputDir, "assets", "fonts", file))),
 ]);
-const browserBundles = await Promise.all(["app.js"].map(async (file) => {
-  const bundled = await bundle({ entryPoints: [path.join(themeDir, file)], bundle: true, format: "iife", platform: "browser", write: false });
-  const minified = await minifyJavaScript(bundled.outputFiles[0].text, { compress: true, mangle: true });
-  if (!minified.code) throw new Error(`${file} minification produced no output`);
-  return { file, code: minified.code };
+const bundled = await bundle({
+  entryPoints: [path.join(themeDir, "app.js")],
+  bundle: true,
+  chunkNames: "chunks/[name]-[hash]",
+  entryNames: "[name]",
+  format: "esm",
+  minify: true,
+  outdir: path.join(outputDir, "assets"),
+  platform: "browser",
+  splitting: true,
+  target: ["es2020"],
+  write: false,
+});
+const browserBundles = bundled.outputFiles.map((file) => ({
+  file: path.relative(path.join(outputDir, "assets"), file.path).split(path.sep).join("/"),
+  code: file.contents,
 }));
-assetVersion = createHash("sha256")
-  .update(styles.styles)
-  .update(browserBundles.map(({ file, code }) => `${file}\0${code}`).join("\0"))
-  .digest("hex")
-  .slice(0, 12);
-await Promise.all(browserBundles.map(({ file, code }) => fs.writeFile(path.join(outputDir, "assets", file), code)));
+browserAssets = browserBundles.map(({ file }) => file);
+const assetHash = createHash("sha256").update(styles.styles).update(katexStyles);
+for (const { file, code } of browserBundles) assetHash.update(file).update("\0").update(code).update("\0");
+assetVersion = assetHash.digest("hex").slice(0, 12);
+await Promise.all(browserBundles.map(async ({ file, code }) => {
+  const target = path.join(outputDir, "assets", file);
+  await fs.mkdir(path.dirname(target), { recursive: true });
+  await fs.writeFile(target, code);
+}));
 await fs.cp(contentDir, path.join(outputDir, "posts"), {
   recursive: true,
   filter: (source) => !source.endsWith(".md") && !source.endsWith(".md.bak"),
@@ -284,12 +304,13 @@ for (const locale of Object.keys(locales)) {
   const messages = locales[locale];
   const localePosts = postsByLocale[locale];
   if (!localePosts.length) throw new Error(`No publishable Markdown posts found for locale ${locale}.`);
-  const homeHtml = homePage(locale, localePosts);
+  const homeHtml = await homePage(locale, localePosts);
+  const homeSpaHtml = await homePage(locale, localePosts, { mathOutput: "source", fragment: true });
   const aboutHtml = aboutPage(locale);
   const homePath = localizedPath(locale, "/");
   const aboutPath = localizedPath(locale, "/about/");
   await write(localeOutput(locale, "index.html"), homeHtml);
-  await write(localeOutput(locale, "page.html"), pageFragment(homeHtml, { locale, pathName: homePath, alternatePath: localizedPath(messages.alternate, "/") }));
+  await write(localeOutput(locale, "page.html"), pageFragment(homeSpaHtml, { locale, pathName: homePath, alternatePath: localizedPath(messages.alternate, "/") }));
   await write(localeOutput(locale, "about/index.html"), aboutHtml);
   await write(localeOutput(locale, "about/page.html"), pageFragment(aboutHtml, { locale, title: messages.about, description: messages.aboutDek, pathName: aboutPath, alternatePath: localizedPath(messages.alternate, "/about/") }));
   const notFoundPath = localizedPath(locale, "/404.html");
@@ -304,10 +325,11 @@ for (const locale of Object.keys(locales)) {
 }
 
 for (const post of posts) {
-  const html = postPage(post);
+  const html = await postPage(post);
+  const spaHtml = await postPage(post, { mathOutput: "source", fragment: true });
   const directory = localeOutput(post.locale, `posts/${post.slug}`);
   await write(`${directory}/index.html`, html);
-  await write(`${directory}/page.html`, pageFragment(html, {
+  await write(`${directory}/page.html`, pageFragment(spaHtml, {
     locale: post.locale,
     title: post.title,
     description: post.summary,
@@ -333,4 +355,5 @@ await write("version.json", JSON.stringify({ version }));
 const minifiedWorker = await minifyJavaScript(serviceWorker(version), { compress: true, mangle: true });
 if (!minifiedWorker.code) throw new Error("Service worker minification produced no output");
 await write("sw.js", minifiedWorker.code);
+await closeMathSvgRenderer();
 console.log(`Freshmark built ${posts.length} posts to public/`);

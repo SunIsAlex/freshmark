@@ -41,8 +41,10 @@ test("build emits portable static pages", async () => {
     "public/rss.xml",
     "public/sitemap.xml",
     "public/assets/styles.css",
+    "public/assets/katex.min.css",
     "public/assets/app.js",
-    "public/assets/fonts/anthropic-sans-variable.ttf",
+    "public/assets/fonts/KaTeX_Main-Regular.woff2",
+    "public/assets/fonts/anthropic-sans-variable.woff2",
     "public/manifest.webmanifest",
     "public/icons/icon-192.png",
     "public/icons/icon-512.png",
@@ -53,6 +55,7 @@ test("build emits portable static pages", async () => {
   for (const file of files) {
     assert.equal((await stat(new URL(file, root))).isFile(), true, file);
   }
+  await assert.rejects(stat(new URL("public/assets/fonts/anthropic-sans-variable.ttf", root)), { code: "ENOENT" });
   await assert.rejects(stat(new URL("public/posts/chemistry/inorganic/manganese/index/index.html", root)), { code: "ENOENT" });
 });
 
@@ -94,7 +97,9 @@ test("generated HTML has no application framework runtime", async () => {
   assert.match(stylesheetLinks[1], /\brel="stylesheet"/);
   assert.match(html, /<script[^>]+src="\/assets\/app\.js\?v=[a-f0-9]{12}"/);
   assert.match(html, /assetVersion:"[a-f0-9]{12}"/);
-  assert.match(html, /<link[^>]+href="\/assets\/fonts\/anthropic-sans-variable\.ttf"[^>]+rel="preload"/);
+  assert.match(html, /<link[^>]+href="\/assets\/fonts\/anthropic-sans-variable\.woff2"[^>]+rel="preload"/);
+  assert.match(html, /<script[^>]+src="\/assets\/app\.js\?v=[a-f0-9]{12}"[^>]+type="module"/);
+  assert.doesNotMatch(html, /katex|min\.js|auto-render/);
   assert.doesNotMatch(html, /\b(?:_next|__next|react(?:\.production)?\.min|vinext)\b/i);
 });
 
@@ -149,7 +154,7 @@ test("localized routes provide Chinese and English navigation", async () => {
 
 test("typography uses Claude's font family and size scale", async () => {
   const css = await read("public/assets/styles.css");
-  assert.match(css, /@font-face\{[^}]*font-family:"Anthropic Sans"[^}]*anthropic-sans-variable\.ttf/);
+  assert.match(css, /@font-face\{[^}]*font-family:"Anthropic Sans"[^}]*anthropic-sans-variable\.woff2[^}]*format\("woff2"\)/);
   assert.match(css, /--text-xs:12px;--text-sm:14px;--text-md:16px;--text-lg:20px/);
   assert.match(css, /--heading-lg:20px;--heading-xl:24px;--heading-2xl:28px;--heading-3xl:36px/);
   assert.match(css, /body\{[^}]*font-size:var\(--text-md\)[^}]*line-height:1\.4/);
@@ -167,7 +172,7 @@ test("manganese color descriptions render with matching colors", async () => {
   const englishSource = await read("content/posts/chemistry/inorganic/manganese/index.en.md");
   const css = await read("public/assets/styles.css");
   assert.equal(html.match(/class="chemical-color"/g)?.length, 122);
-  assert.match(html, /溶液酸碱性对 \\\(\\ce\{Mn\(II\)\}\\\) 还原性的影响/);
+  assert.match(html, /溶液酸碱性对 <span[^>]+aria-label="\\ce\{Mn\(II\)\}"[^>]*>/);
   assert.match(html, /高锰酸钾的制备、提纯与产率测定/);
   assert.match(html, /2022-beijing-chlorine-manganese-apparatus\.png/);
   assert.match(html, /<th style="text-align:right">反应温度<\/th>/);
@@ -206,19 +211,20 @@ test("manganese color descriptions render with matching colors", async () => {
 
 test("articles render math and colocated Markdown images", async () => {
   const html = await read("public/posts/physics/basic-calculus-02/index.html");
-  assert.match(html, /\\\[\\int f\(x\)dx=F\(x\)\+C\\\]/);
-  assert.doesNotMatch(html, /class="katex/);
+  assert.match(html, /<span class="math-expression math-display"[^>]+aria-label="\\int f\(x\)dx=F\(x\)\+C"/);
+  assert.match(html, /<svg[^>]+class="math-svg-definitions"[^>]*><defs><path/);
+  assert.ok(html.indexOf("<h1>") < html.indexOf('class="math-svg-definitions"'));
+  assert.match(html, /<use href="#MJX-/);
+  assert.doesNotMatch(html, /class="katex|\\\[\\int f\(x\)dx/);
   assert.match(html, /<picture class="responsive-picture">/);
   assert.match(html, /<source[^>]*srcset="[^"]*freshmark-[a-f0-9]+-480w\.avif 480w[^"]*"[^>]*type="image\/avif"/);
   assert.match(html, /<source[^>]*srcset="[^"]*freshmark-[a-f0-9]+-480w\.webp 480w[^"]*"[^>]*type="image\/webp"/);
   assert.match(html, /<img[^>]*data-gallery-src="image\.png"[^>]*height="983"[^>]*src="image\.png"[^>]*width="640"[^>]*>/);
   assert.match(html, /<img[^>]*alt="alt text"[^>]*>/);
   assert.doesNotMatch(html, /!\[alt text\]\(image\.png\)/);
-  assert.equal((await stat(new URL("public/assets/katex.min.css", root))).isFile(), true);
-  assert.equal((await stat(new URL("public/assets/katex.min.js", root))).isFile(), true);
-  assert.equal((await stat(new URL("public/assets/mhchem.min.js", root))).isFile(), true);
-  assert.equal((await stat(new URL("public/assets/auto-render.min.js", root))).isFile(), true);
-  assert.equal((await stat(new URL("public/assets/fonts/KaTeX_Main-Regular.woff2", root))).isFile(), true);
+  for (const asset of ["katex.min.js", "mhchem.min.js", "auto-render.min.js"]) {
+    await assert.rejects(stat(new URL(`public/assets/${asset}`, root)), { code: "ENOENT" });
+  }
 
   const titledImageHtml = await read("public/posts/chemistry/babychem/overview-of-stereochemistry/index.html");
   assert.match(titledImageHtml, /<img[^>]*src="image\.png"[^>]*title="关于电负性\/杂化的综合判断"[^>]*>/);
@@ -247,13 +253,12 @@ test("articles render math and colocated Markdown images", async () => {
   assert.doesNotMatch(spacedImageHtml, /src="&lt;Screenshot/);
 });
 
-test("summaries render inline Markdown and preserve LaTeX for KaTeX", async () => {
+test("summaries render inline Markdown and pre-render math as SVG", async () => {
+  const renderedSummary = await renderSummary("Use **AM-GM** for $a_4$ and `code`.");
+  assert.match(renderedSummary, /^Use <strong>AM-GM<\/strong> for <span class="math-expression math-inline"[^>]+aria-label="a_4"/);
+  assert.match(renderedSummary, /<svg[^>]+aria-hidden="true"[\s\S]*<\/svg><\/span> and <code>code<\/code>\.$/);
   assert.equal(
-    renderSummary("Use **AM-GM** for $a_4$ and `code`."),
-    "Use <strong>AM-GM</strong> for \\(a_4\\) and <code>code</code>.",
-  );
-  assert.equal(
-    renderSummary("[Reference](https://example.com) with *emphasis*", { links: false }),
+    await renderSummary("[Reference](https://example.com) with *emphasis*", { links: false }),
     "Reference with <em>emphasis</em>",
   );
   assert.equal(
@@ -264,10 +269,14 @@ test("summaries render inline Markdown and preserve LaTeX for KaTeX", async () =
   assert.equal(longFormulaSummary, `${"a".repeat(175)} $\\frac{a_1+a_2+a_3}{b_1+b_2+b_3}$`);
   assert.equal(summaryFromBody('黑<span class="chemical-color">色</span>文本'), "黑色文本");
   assert.equal(summaryFromBody("<p>First</p><p>Second</p>"), "First Second");
-  assert.match(renderSummary(longFormulaSummary), /\\\(\\frac\{a_1\+a_2\+a_3\}\{b_1\+b_2\+b_3\}\\\)$/);
+  assert.match(await renderSummary(longFormulaSummary), /<span class="math-expression math-inline"[^>]+aria-label="\\frac\{a_1\+a_2\+a_3\}\{b_1\+b_2\+b_3\}"/);
   assert.doesNotMatch(longFormulaSummary, /FRESHMARKMATH/);
+  assert.equal(
+    await renderSummary("Use $a_4$ and \\[b_5\\].", { mathOutput: "source" }),
+    'Use <span class="math-expression math-inline" data-math-source="a_4"></span> and <span class="math-expression math-display" data-math-source="b_5" data-math-display></span>.',
+  );
   const html = await read("public/posts/math/max-minus-min-sequence/index.html");
-  assert.match(html, /<p class="article-dek">第\(I\)问枚举 \\\(a_4\\\)/);
+  assert.match(html, /<p class="article-dek">第\(I\)问枚举 <span class="math-expression math-inline"[^>]+aria-label="a_4"/);
   const foldedHtml = await read("public/posts/physics/application-of-the-law-of-gravitation/index.html");
   assert.match(foldedHtml, /<p class="article-dek">以轨道力学为主线/);
   assert.doesNotMatch(foldedHtml, /<p class="article-dek">&gt;<\/p>/);
@@ -279,21 +288,20 @@ test("summaries render inline Markdown and preserve LaTeX for KaTeX", async () =
 
 test("standalone boxed formulas become scrollable display math", async () => {
   const html = await read("public/posts/math/focal-chord-length-formula/index.html");
-  assert.match(html, /\\\[\\boxed\{\\frac\{2ab\^2\}/);
-  assert.doesNotMatch(html, /\\\(\\boxed\{\\frac\{2ab\^2\}/);
+  assert.match(html, /<span class="math-expression math-display"[^>]+aria-label="\\boxed\{\\frac\{2ab\^2\}/);
+  assert.doesNotMatch(html, /<span class="math-expression math-inline"[^>]+aria-label="\\boxed\{\\frac\{2ab\^2\}/);
   assert.match(html, /<table>[\s\S]*<thead>[\s\S]*<th>字母<\/th>[\s\S]*<th>含义<\/th>[\s\S]*<tbody>/);
-  assert.match(html, /<td>\\\(\\theta\\\)<\/td>[\s\S]*<td>直线的倾斜角<\/td>/);
+  assert.match(html, /<td><span class="math-expression math-inline"[^>]+aria-label="\\theta"[\s\S]*<\/span><\/td>[\s\S]*<td>直线的倾斜角<\/td>/);
   assert.doesNotMatch(html, /<p>\|字母\|含义\|/);
 
   const css = await read("public/assets/styles.css");
-  assert.match(css, /\.prose \.katex-display\{[^}]*width:100%[^}]*max-width:100%[^}]*overflow-x:auto/);
-  assert.match(css, /\.prose \.katex-display>\.katex\{[^}]*display:inline-block[^}]*min-width:max-content/);
-  assert.doesNotMatch(css, /\.prose :not\(\.katex-display\)>\.katex/);
-  assert.match(css, /\.prose \.katex-inline-overflow\{[^}]*display:inline-block[^}]*max-width:100%[^}]*overflow-x:auto/);
-  assert.match(css, /\.prose \.katex-display,\.prose \.katex-inline-overflow\{[^}]*scrollbar-width:thin/);
+  assert.match(css, /\.math-display\{[^}]*width:100%[^}]*max-width:100%[^}]*overflow-x:auto/);
+  assert.match(css, /\.math-display>svg\{[^}]*display:inline-block[^}]*min-width:max-content/);
+  assert.match(css, /\.math-inline-overflow\{[^}]*display:inline-block[^}]*max-width:100%[^}]*overflow-x:auto/);
+  assert.match(css, /\.math-display,\.math-inline-overflow\{[^}]*scrollbar-width:thin/);
 });
 
-test("HTML underlines match KaTeX underline metrics", async () => {
+test("HTML underlines do not duplicate SVG math underlines", async () => {
   const css = await read("public/assets/styles.css");
   assert.match(css, /\.prose u\{[^}]*padding-bottom:.12em/);
   assert.match(css, /\.prose u\{[^}]*background-image:linear-gradient\(currentColor,currentColor\)/);
@@ -301,7 +309,7 @@ test("HTML underlines match KaTeX underline metrics", async () => {
   assert.match(css, /\.prose u\{[^}]*background-size:100% max\(1px,.04em\)/);
   assert.match(css, /\.prose u\{[^}]*box-decoration-break:clone/);
   assert.match(css, /\.prose u\{[^}]*text-decoration:none/);
-  assert.match(css, /\.prose u \.katex \.underline-line\{border-bottom-width:0!important}/);
+  assert.match(css, /\.prose u:has\(\.math-expression\)\{background-image:none}/);
 });
 
 test("articles pass through raw HTML, render level-one headings, and use the more excerpt", async () => {
@@ -309,7 +317,7 @@ test("articles pass through raw HTML, render level-one headings, and use the mor
   assert.match(html, /<!--more-->/);
   assert.doesNotMatch(html, /&lt;!--more--&gt;/);
   assert.match(html, /<h1 id="parti醇的取代">PartI:醇的取代<\/h1>/);
-  assert.match(html, /<li>消除成烯烃\\\(\\begin\{cases\}/);
+  assert.match(html, /<li>消除成烯烃<span class="math-expression math-inline"[^>]+aria-label="\\begin\{cases\}/);
   assert.doesNotMatch(html, /<p>\\text\{立体选择性\}/);
 
   const index = JSON.parse(await read("public/search-index.json"));
@@ -327,12 +335,12 @@ test("math placeholders never leak into heading links", async () => {
 
 test("adjacent inline math delimiters do not become display math", async () => {
   const html = await read("public/posts/math/2022-labour-day/5-01-02/index.html");
-  assert.match(html, /即\\\(x=2k\\pi\\\)或\\\(x=\\frac\{\\pi\}\{3\}\+2k\\pi\\\)/);
-  assert.match(html, /\\\(\(k\\in\\Z\)\\\)/);
-  assert.doesNotMatch(html, /\$\$\(k\\in\\Z\)/);
+  assert.match(html, /即<span class="math-expression math-inline"[^>]+aria-label="x=2k\\pi"[\s\S]*或<span class="math-expression math-inline"[^>]+aria-label="x=\\frac\{\\pi\}\{3\}\+2k\\pi"/);
+  assert.match(html, /<span class="math-expression math-inline"[^>]+aria-label="\(k\\in\\Z\)"/);
+  assert.doesNotMatch(html, /<span class="math-expression math-display"[^>]+aria-label="\(k\\in\\Z\)"/);
 
   const displayHtml = await read("public/posts/math/2022-labour-day/5-01-01/index.html");
-  assert.match(displayHtml, /得:\\\[/);
+  assert.match(displayHtml, /得:<span class="math-expression math-display"/);
 });
 
 test("English prose separates inline math from surrounding words", async () => {
@@ -417,11 +425,14 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /history\.pushState/);
   assert.match(app, /addEventListener\("popstate"/);
   assert.match(app, /DOMParser/);
-  assert.match(app, /renderMathInElement/);
-  assert.match(app, /renderMath\(nextMain\)/);
+  assert.doesNotMatch(app, /renderMathInElement/);
+  assert.match(app, /import\("\.\/katex\.js"\)/);
+  assert.match(app, /await renderSpaMath\(nextMain\)/);
+  assert.ok(app.indexOf("await renderSpaMath(nextMain)") < app.indexOf("currentMain.replaceWith(nextMain)"));
+  assert.match(app, /assets\/katex\.min\.css/);
   assert.match(app, /updateInlineMathOverflow\(nextMain\)/);
-  assert.match(app, /formula\.classList\.remove\("katex-inline-overflow"\)/);
-  assert.match(app, /formula\.getBoundingClientRect\(\)\.width > line\.clientWidth \+ 1/);
+  assert.match(app, /formula\.classList\.remove\("math-inline-overflow"\)/);
+  assert.match(app, /formula\.scrollWidth > formula\.clientWidth \+ 1/);
   assert.match(app, /document\.fonts\?\.ready/);
   assert.match(app, /new URL\("page\.html", contentUrl\)/);
   assert.doesNotMatch(app, /new URL\("index\.md"|fetch\([^)]*index\.md/);
@@ -476,8 +487,10 @@ test("search results deep-link to and highlight matching article text", async ()
 test("articles highlight content changed since the previous local visit", async () => {
   const app = await read("theme/app.js");
   const css = await read("theme/styles.css");
-  assert.match(app, /const contentSnapshotPrefix = "freshmark-content-v1:"/);
+  assert.match(app, /const contentSnapshotPrefix = "freshmark-content-v2:"/);
   assert.match(app, /function applyArticleContentDiff/);
+  assert.match(app, /formula\.getAttribute\("aria-label"\) \|\| formula\.dataset\.mathSource/);
+  assert.match(app, /return `MATH:\$\{mathSource\}`/);
   assert.match(app, /localStorage\.getItem\(storageKey\)/);
   assert.match(app, /localStorage\.setItem\(storageKey/);
   assert.match(app, /changedCurrentIndexes\(previous, snapshot\)/);
@@ -501,10 +514,19 @@ test("ordered content diff does not confuse repeated blocks", () => {
 test("article images open in a PhotoSwipe keyboard and touch-friendly gallery", async () => {
   const html = await read("public/posts/physics/basic-calculus-02/index.html");
   const app = await read("theme/app.js");
+  const bundle = await read("public/assets/app.js");
   const css = await read("public/assets/styles.css");
+  const chunks = await readdir(new URL("public/assets/chunks/", root));
   assert.doesNotMatch(html, /data-image-gallery/);
-  assert.match(app, /import PhotoSwipe from "photoswipe"/);
+  assert.match(app, /import\("photoswipe"\)/);
+  assert.match(app, /function loadPhotoSwipe/);
+  assert.match(app, /const PhotoSwipe = await loadPhotoSwipe\(\)/);
+  assert.match(app, /function preloadPhotoSwipe/);
+  assert.match(app, /preloadPhotoSwipe\(nextMain\)/);
+  assert.match(app, /addEventListener\("load", \(\) => preloadPhotoSwipe\(\)/);
   assert.match(app, /new PhotoSwipe/);
+  assert.ok(chunks.some((file) => /^photoswipe\.esm-[A-Z0-9]+\.js$/.test(file)));
+  assert.ok(Buffer.byteLength(bundle) < 30_000);
   assert.match(app, /image\.dataset\.gallerySrc \|\| image\.currentSrc/);
   assert.match(app, /msrc: galleryThumbnailSource\(item\)/);
   assert.doesNotMatch(app, /addEventListener\("dblclick"/);
@@ -539,12 +561,15 @@ test("service worker versions and persists generated resources", async () => {
   assert.match(worker, /en\/search-index\.json/);
   assert.match(worker, /en\/404\.html/);
   assert.match(worker, /icon-512\.png/);
+  assert.match(worker, /photoswipe\.esm-[A-Z0-9]+\.js/);
+  assert.match(worker, /katex-[A-Z0-9]+\.js/);
   assert.doesNotMatch(worker, /assets\/markdown\.js/);
+  assert.doesNotMatch(worker, /katex\.min\.js|mhchem\.min\.js|auto-render\.min\.js|anthropic-sans-variable\.ttf/);
   assert.match(worker, /\?v=/);
   assert.match(worker, /"navigate"===/);
 });
 
-test("published posts retain raw Markdown for downloads and provide pre-rendered SPA fragments", async () => {
+test("published posts retain raw Markdown and provide compact KaTeX SPA fragments", async () => {
   const source = await read("content/posts/physics/basic-calculus-02/index.md");
   const published = await read("public/posts/physics/basic-calculus-02/index.md");
   assert.equal(published, source);
@@ -552,12 +577,20 @@ test("published posts retain raw Markdown for downloads and provide pre-rendered
   const fragment = await read("public/posts/physics/basic-calculus-02/page.html");
   assert.match(fragment, /data-freshmark-page/);
   assert.match(fragment, /data-article="true"/);
-  assert.match(fragment, /\\\[\\int f\(x\)dx=F\(x\)\+C\\\]/);
-  assert.doesNotMatch(fragment, /class="katex/);
+  assert.match(fragment, /<span class="math-expression math-display"[^>]+data-math-source="\\int f\(x\)dx=F\(x\)\+C"[^>]+data-math-display/);
+  assert.doesNotMatch(fragment, /math-svg-definitions|<use href="#MJX-|class="katex|\\\[\\int f\(x\)dx/);
   assert.doesNotMatch(fragment, /<!doctype html>|<html|<body/);
 
   const html = await read("public/posts/physics/basic-calculus-02/index.html");
+  assert.match(html, /<svg[^>]+class="math-svg-definitions"[^>]*><defs><path/);
+  assert.doesNotMatch(html, /data-math-source/);
+  assert.ok(Buffer.byteLength(fragment) < Buffer.byteLength(html) / 2);
   assert.match(html, /<a href="index\.md" download>下载 Markdown<\/a>/);
+
+  assert.equal((await stat(new URL("public/assets/katex.min.css", root))).isFile(), true);
+  assert.equal((await stat(new URL("public/assets/fonts/KaTeX_Main-Regular.woff2", root))).isFile(), true);
+  const chunks = await readdir(new URL("public/assets/chunks/", root));
+  assert.ok(chunks.some((file) => /^katex-[A-Z0-9]+\.js$/.test(file)));
 
   const englishSource = await read("content/posts/chemistry/inorganic/manganese/index.en.md");
   const englishPublished = await read("public/en/posts/chemistry/inorganic/manganese/index.md");

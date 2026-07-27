@@ -1,4 +1,3 @@
-import PhotoSwipe from "photoswipe";
 import { changedCurrentIndexes } from "../lib/content-diff.mjs";
 
 (() => {
@@ -9,8 +8,9 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
   const alternateRoot = window.FRESHMARK?.alternateRoot || basePath || "/";
   const postsRoot = window.FRESHMARK?.postsRoot || `${basePath}/posts/`;
   const searchIndexPath = window.FRESHMARK?.searchIndexPath || `${basePath}/search-index.json`;
+  const assetVersion = window.FRESHMARK?.assetVersion || "";
   const searchQueryParam = "q";
-  const contentSnapshotPrefix = "freshmark-content-v1:";
+  const contentSnapshotPrefix = "freshmark-content-v2:";
   const modal = document.querySelector("[data-search-modal]");
   const input = document.querySelector("[data-search-input]");
   const results = document.querySelector("[data-search-results]");
@@ -22,11 +22,37 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
   let renderedRoute = `${location.pathname}${location.search}`;
   let index;
   let activePhotoSwipe;
+  let photoSwipeModule;
   let galleryRequest = 0;
+  let katexRequest;
   let mathOverflowFrame;
   let readingStateFrame;
   const preparedGalleryImages = new WeakSet();
   const preparedAnswerReveals = new WeakSet();
+
+  function loadKaTeXStyles() {
+    const existing = document.querySelector("link[data-katex-styles]");
+    if (existing?.sheet) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const stylesheet = existing || document.createElement("link");
+      stylesheet.rel = "stylesheet";
+      stylesheet.dataset.katexStyles = "";
+      stylesheet.href = `${basePath}/assets/katex.min.css${assetVersion ? `?v=${assetVersion}` : ""}`;
+      stylesheet.addEventListener("load", resolve, { once: true });
+      stylesheet.addEventListener("error", reject, { once: true });
+      if (!existing) document.head.append(stylesheet);
+    });
+  }
+
+  async function renderSpaMath(scope) {
+    if (!scope.querySelector("[data-math-source]")) return;
+    katexRequest ||= Promise.all([
+      import("./katex.js"),
+      loadKaTeXStyles(),
+    ]);
+    const [katex] = await katexRequest;
+    katex.renderMath(scope);
+  }
 
   const escape = (value) => String(value).replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[char]);
   const message = (key, values = {}) => String(messages[key] || key).replace(/\{(\w+)\}/g, (_, name) => values[name] ?? "");
@@ -79,7 +105,7 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
 
     const nodes = [];
     const roots = scope.querySelectorAll(".article-header h1, .article-dek, .article-meta > span, .prose");
-    const ignored = "script, style, noscript, template, code, pre, svg, math, .katex, .content-diff-notice, [aria-hidden='true'], u.answer-reveal:not(.is-revealed)";
+    const ignored = "script, style, noscript, template, code, pre, svg, math, .math-expression, .content-diff-notice, [aria-hidden='true'], u.answer-reveal:not(.is-revealed)";
     for (const contentRoot of roots) {
       const walker = document.createTreeWalker(contentRoot, NodeFilter.SHOW_TEXT, {
         acceptNode(node) {
@@ -155,9 +181,15 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
   }
 
   function articleUnitSignature(element, pageUrl) {
-    const text = element.textContent.replace(/\s+/g, " ").trim();
-    const resources = [element, ...element.querySelectorAll("a[href], img[src], video[src], source[src], iframe[src]")]
+    const textCopy = element.cloneNode(true);
+    for (const formula of textCopy.querySelectorAll(".math-expression")) {
+      formula.replaceWith(document.createTextNode(` ${formula.getAttribute("aria-label") || formula.dataset.mathSource || ""} `));
+    }
+    const text = textCopy.textContent.replace(/\s+/g, " ").trim();
+    const resources = [element, ...element.querySelectorAll("a[href], img[src], video[src], source[src], iframe[src], .math-expression[aria-label], .math-expression[data-math-source]")]
       .map((item) => {
+        const mathSource = item.getAttribute("aria-label") || item.dataset.mathSource;
+        if (item.matches(".math-expression") && mathSource) return `MATH:${mathSource}`;
         const source = item.getAttribute("href") || item.getAttribute("src");
         if (!source) return "";
         return [
@@ -184,7 +216,7 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
     let previous = null;
     try {
       const stored = JSON.parse(localStorage.getItem(storageKey));
-      if (stored?.version === 1 && Array.isArray(stored.units)) previous = stored.units;
+      if (stored?.version === 2 && Array.isArray(stored.units)) previous = stored.units;
     } catch {}
 
     let changed = 0;
@@ -195,7 +227,7 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
     }
 
     try {
-      localStorage.setItem(storageKey, JSON.stringify({ version: 1, units: snapshot }));
+      localStorage.setItem(storageKey, JSON.stringify({ version: 2, units: snapshot }));
     } catch {}
     if (changed) {
       const notice = document.createElement("div");
@@ -263,11 +295,21 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
     };
   }
 
-  function openGallery(image) {
+  function loadPhotoSwipe() {
+    if (!photoSwipeModule) photoSwipeModule = import("photoswipe").then(({ default: PhotoSwipe }) => PhotoSwipe);
+    return photoSwipeModule;
+  }
+
+  function preloadPhotoSwipe(scope = document) {
+    if (scope.querySelector(".prose img")) idle(() => loadPhotoSwipe().catch(() => {}));
+  }
+
+  async function openGallery(image) {
     const request = ++galleryRequest;
     const images = [...document.querySelectorAll("main .prose img")];
     const nextIndex = images.indexOf(image);
     if (nextIndex < 0) return;
+    const PhotoSwipe = await loadPhotoSwipe();
     const sizes = images.map(galleryImageSize);
     if (request !== galleryRequest || !image.isConnected) return;
     const dataSource = images.map((item, itemIndex) => {
@@ -423,29 +465,18 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
     });
   }
 
-  function renderMath(scope = document) {
-    if (typeof renderMathInElement !== "function") return;
-    renderMathInElement(scope, {
-      delimiters: [
-        { left: "\\[", right: "\\]", display: true },
-        { left: "\\(", right: "\\)", display: false },
-      ],
-      throwOnError: false,
-      strict: "ignore",
-    });
-  }
-
   function updateInlineMathOverflow(scope = document) {
     cancelAnimationFrame(mathOverflowFrame);
     mathOverflowFrame = requestAnimationFrame(() => {
-      for (const formula of scope.querySelectorAll(".prose .katex")) {
-        if (formula.parentElement?.classList.contains("katex-display")) continue;
-        formula.classList.remove("katex-inline-overflow");
-        const line = formula.closest("p, li, td, th, blockquote, figcaption") || formula.closest(".prose");
-        formula.classList.toggle("katex-inline-overflow", formula.getBoundingClientRect().width > line.clientWidth + 1);
-      }
-    });
-  }
+    for (const formula of scope.querySelectorAll(".prose .math-inline")) {
+      formula.classList.remove("math-inline-overflow");
+      formula.classList.toggle(
+        "math-inline-overflow",
+        formula.scrollWidth > formula.clientWidth + 1,
+      );
+    }
+  });
+}
 
   function isSpaRoute(url) {
     const base = `${basePath}/`.replace(/\/+/g, "/");
@@ -588,14 +619,16 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
       const currentMain = document.querySelector("main");
       if (!nextMain || !currentMain) throw new Error("Page has no main content");
       rebaseMainUrls(nextMain, url);
+      await renderSpaMath(nextMain);
 
       const swap = () => {
         currentMain.replaceWith(nextMain);
         if (nextPage.article) applyArticleContentDiff(url, nextMain);
-        renderMath(nextMain);
         updateInlineMathOverflow(nextMain);
+        document.fonts?.ready.then(() => updateInlineMathOverflow(nextMain));
         prepareAnswerReveals(nextMain);
         prepareGallery(nextMain);
+        preloadPhotoSwipe(nextMain);
         scheduleArticlePrefetch(nextMain);
         document.querySelector("[data-reading-progress]")?.remove();
         if (nextPage.article) {
@@ -668,6 +701,7 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
   if ("serviceWorker" in navigator) {
     addEventListener("load", () => navigator.serviceWorker.register(`${basePath}/sw.js`, { scope: `${basePath}/`, updateViaCache: "none" }).catch(() => {}));
   }
+  addEventListener("load", () => preloadPhotoSwipe(), { once: true });
   addEventListener("popstate", (event) => {
     const url = new URL(location.href);
     if (`${url.pathname}${url.search}` === renderedRoute) {
@@ -684,7 +718,6 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
   (navigator.connection || navigator.mozConnection || navigator.webkitConnection)?.addEventListener("change", drainPrefetchQueue);
   const initialUrl = new URL(location.href);
   if (document.querySelector("[data-reading-progress]")) applyArticleContentDiff(initialUrl);
-  renderMath();
   updateInlineMathOverflow();
   document.fonts?.ready.then(() => updateInlineMathOverflow());
   prepareAnswerReveals();
