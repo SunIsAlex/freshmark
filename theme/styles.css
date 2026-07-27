@@ -32,8 +32,7 @@ button { color:inherit; }
 .container { width:min(1160px,calc(100% - 40px)); margin-inline:auto; }
 .header { display:flex; align-items:center; justify-content:space-between; height:88px; border-bottom:1px solid var(--line); }
 .brand { display:inline-flex; align-items:center; gap:10px; font-weight:750; letter-spacing:-.03em; font-size:var(--text-md); }
-.brand-mark { width:28px; height:28px; display:grid; place-items:center; background:var(--accent); border-radius:50% 50% 44% 56%; transform:rotate(-8deg); color:#fff; }
-.brand-mark span { transform:rotate(8deg); font-size:.7rem; }
+.brand-mark { display:block; flex:0 0 auto; width:28px; height:28px; }
 .nav { display:flex; align-items:center; gap:26px; color:var(--ink-soft); font-size:var(--text-sm); font-weight:600; }
 .nav a:hover { color:var(--ink); }
 .language-switch { min-width:34px; padding:5px 8px; border:1px solid var(--line); border-radius:999px; color:var(--ink); text-align:center; }
@@ -96,6 +95,10 @@ button { color:inherit; }
 .article-header h1 { margin:32px 0 24px; font-family:var(--font-serif); font-size:var(--heading-3xl); line-height:1; font-weight:500; letter-spacing:normal; }
 .article-dek { color:var(--ink-soft); font-size:var(--text-lg); line-height:1.25; max-width:720px; }
 .article-meta { display:flex; gap:18px; flex-wrap:wrap; margin-top:25px; color:var(--ink-soft); font-size:var(--text-sm); }
+.search-highlight { color:inherit; background:color-mix(in srgb,var(--accent) 24%,#ffd54f); border-radius:2px; -webkit-box-decoration-break:clone; box-decoration-break:clone; }
+.search-highlight-current { background:color-mix(in srgb,var(--accent) 42%,#ffd54f); box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 28%,transparent); scroll-margin-block:20vh; }
+[data-theme="dark"] .search-highlight { background:color-mix(in srgb,var(--accent) 42%,#775800); }
+[data-theme="dark"] .search-highlight-current { background:color-mix(in srgb,var(--accent) 58%,#9b7200); }
 .article-wrap { width:min(1160px,calc(100% - 40px)); margin:0 auto 100px; display:grid; grid-template-columns:190px minmax(0,720px); gap:70px; justify-content:center; }
 .toc { position:sticky; top:30px; align-self:start; border-left:1px solid var(--line); padding-left:20px; }
 .toc-head { display:flex; align-items:center; justify-content:space-between; gap:12px; }

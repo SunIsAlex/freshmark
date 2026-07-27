@@ -49,9 +49,15 @@ test("build emits portable static pages", async () => {
 
 test("site is installable as a progressive web app", async () => {
   const html = await read("public/index.html");
+  const favicon = await read("public/favicon.svg");
   assert.match(html, /<link[^>]+href="\/manifest\.webmanifest"[^>]+rel="manifest"/);
   assert.match(html, /<meta[^>]+content="#ff4500"[^>]+name="theme-color"/);
   assert.match(html, /<link[^>]+href="\/icons\/apple-touch-icon\.png"[^>]+rel="apple-touch-icon"/);
+  assert.match(html, /<svg[^>]+class="brand-mark"[^>]*>/);
+  assert.match(html, /M18 13h31v9H29v8h16v9H29v14l-5\.5-5-5\.5 5V13Z/);
+  assert.doesNotMatch(html, /✦/);
+  assert.match(favicon, /<rect width="64" height="64" rx="18" fill="#ff4500"\/>/);
+  assert.match(favicon, /M18 13h31v9H29v8h16v9H29v14l-5\.5-5-5\.5 5V13Z/);
 
   const manifest = JSON.parse(await read("public/manifest.webmanifest"));
   assert.equal(manifest.name, "Freshmark");
@@ -411,6 +417,21 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /toc-level-\$\{heading\.level\}/);
   assert.match(app, /navigator\.serviceWorker\.register/);
   assert.match(app, /updateViaCache: "none"/);
+});
+
+test("search results deep-link to and highlight matching article text", async () => {
+  const app = await read("theme/app.js");
+  const css = await read("theme/styles.css");
+  assert.match(app, /url\.searchParams\.set\(searchQueryParam, term\)/);
+  assert.match(app, /function highlightSearchTerm/);
+  assert.match(app, /document\.createTreeWalker\(contentRoot, NodeFilter\.SHOW_TEXT/);
+  assert.match(app, /mark\.dataset\.searchHighlight/);
+  assert.match(app, /scrollToSearchHighlight\(searchMatch\)/);
+  assert.match(app, /block: "center"/);
+  assert.match(app, /contentUrl\.searchParams\.delete\(searchQueryParam\)/);
+  assert.match(app, /const initialSearchMatch = highlightSearchTerm\(new URL\(location\.href\)\)/);
+  assert.match(css, /\.search-highlight \{/);
+  assert.match(css, /\.search-highlight-current \{/);
 });
 
 test("article images open in a PhotoSwipe keyboard and touch-friendly gallery", async () => {

@@ -21,8 +21,7 @@ button { color:inherit; }
 .container { width:min(1160px,calc(100% - 40px)); margin-inline:auto; }
 .header { display:flex; align-items:center; justify-content:space-between; height:88px; border-bottom:1px solid var(--line); }
 .brand { display:inline-flex; align-items:center; gap:10px; font-weight:750; letter-spacing:-.03em; font-size:var(--text-md); }
-.brand-mark { width:28px; height:28px; display:grid; place-items:center; background:var(--accent); border-radius:50% 50% 44% 56%; transform:rotate(-8deg); color:#fff; }
-.brand-mark span { transform:rotate(8deg); font-size:.7rem; }
+.brand-mark { display:block; flex:0 0 auto; width:28px; height:28px; }
 .nav { display:flex; align-items:center; gap:26px; color:var(--ink-soft); font-size:var(--text-sm); font-weight:600; }
 .language-switch { min-width:34px; padding:5px 8px; border:1px solid var(--line); border-radius:999px; color:var(--ink); text-align:center; }
 .icon-btn { border:1px solid var(--line); background:color-mix(in srgb,var(--paper-raised) 70%,transparent); width:42px; height:42px; border-radius:50%; display:grid; place-items:center; }

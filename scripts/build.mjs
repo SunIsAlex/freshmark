@@ -24,6 +24,8 @@ const localeAbsolute = (locale, value = "/") => absolute(localizedPath(locale, v
 const criticalResult = new CleanCSS({ level: 2 }).minify(await fs.readFile(path.join(themeDir, "critical.css"), "utf8"));
 if (criticalResult.errors.length) throw new Error(`Critical CSS minification failed: ${criticalResult.errors.join(", ")}`);
 const criticalCss = criticalResult.styles;
+const brandIcon = (await fs.readFile(path.join(themeDir, "favicon.svg"), "utf8"))
+  .replace("<svg ", '<svg class="brand-mark" width="28" height="28" aria-hidden="true" focusable="false" ');
 
 const escapeHtml = (text = "") => String(text).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
 const formatDate = (locale, value) => new Intl.DateTimeFormat(locales[locale].language, { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(`${value}T00:00:00Z`));
@@ -86,7 +88,7 @@ const moonIcon = '<svg data-theme-icon width="18" height="18" viewBox="0 0 24 24
 function header(locale, alternatePath = localizedPath(locales[locale].alternate, "/")) {
   const messages = locales[locale];
   const alternate = locales[messages.alternate];
-  return `<header class="container header"><a class="brand" href="${localeHref(locale, "/")}" aria-label="${escapeHtml(config.title)}"><span class="brand-mark"><span>✦</span></span>${escapeHtml(config.title)}</a><nav class="nav" aria-label="${escapeHtml(messages.mainNavigation)}"><a href="${localeHref(locale, "/#writing")}">${escapeHtml(messages.writing)}</a><a href="${localeHref(locale, "/about/")}">${escapeHtml(messages.about)}</a><a href="${localeHref(locale, "/rss.xml")}">RSS</a><a class="language-switch" href="${href(alternatePath)}" hreflang="${alternate.language}" lang="${alternate.language}" data-no-spa>${escapeHtml(messages.switchLabel)}</a><button class="icon-btn" type="button" data-search-open aria-label="${escapeHtml(messages.openSearch)}">${searchIcon}</button><button class="icon-btn" type="button" data-theme-toggle aria-label="${escapeHtml(messages.switchTheme)}">${moonIcon}</button></nav></header>`;
+  return `<header class="container header"><a class="brand" href="${localeHref(locale, "/")}" aria-label="${escapeHtml(config.title)}">${brandIcon}${escapeHtml(config.title)}</a><nav class="nav" aria-label="${escapeHtml(messages.mainNavigation)}"><a href="${localeHref(locale, "/#writing")}">${escapeHtml(messages.writing)}</a><a href="${localeHref(locale, "/about/")}">${escapeHtml(messages.about)}</a><a href="${localeHref(locale, "/rss.xml")}">RSS</a><a class="language-switch" href="${href(alternatePath)}" hreflang="${alternate.language}" lang="${alternate.language}" data-no-spa>${escapeHtml(messages.switchLabel)}</a><button class="icon-btn" type="button" data-search-open aria-label="${escapeHtml(messages.openSearch)}">${searchIcon}</button><button class="icon-btn" type="button" data-theme-toggle aria-label="${escapeHtml(messages.switchTheme)}">${moonIcon}</button></nav></header>`;
 }
 
 function footer(locale) {

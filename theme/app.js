@@ -9,6 +9,7 @@ import PhotoSwipe from "photoswipe";
   const alternateRoot = window.FRESHMARK?.alternateRoot || basePath || "/";
   const postsRoot = window.FRESHMARK?.postsRoot || `${basePath}/posts/`;
   const searchIndexPath = window.FRESHMARK?.searchIndexPath || `${basePath}/search-index.json`;
+  const searchQueryParam = "q";
   const modal = document.querySelector("[data-search-modal]");
   const input = document.querySelector("[data-search-input]");
   const results = document.querySelector("[data-search-results]");
@@ -54,11 +55,18 @@ import PhotoSwipe from "photoswipe";
     return index;
   }
 
-  function draw(items) {
+  function searchResultHref(value, term) {
+    const url = new URL(value, location.origin);
+    if (term) url.searchParams.set(searchQueryParam, term);
+    else url.searchParams.delete(searchQueryParam);
+    return `${url.pathname}${url.search}${url.hash}`;
+  }
+
+  function draw(items, term = "") {
     if (!items.length) { results.innerHTML = `<p class="search-hint">${escape(message("noResults"))}</p>`; return; }
     results.innerHTML = items.slice(0, 8).map((post) => {
       const metadata = [...(post.categories || []), ...(post.tags || [])].join(" · ");
-      return `<a class="search-result" href="${escape(post.url)}"><strong>${escape(post.title)}</strong><span>${metadata ? `${escape(metadata)} · ` : ""}${escape(message("minuteRead", { minutes: post.readingTime }))}</span></a>`;
+      return `<a class="search-result" href="${escape(searchResultHref(post.url, term))}"><strong>${escape(post.title)}</strong><span>${metadata ? `${escape(metadata)} · ` : ""}${escape(message("minuteRead", { minutes: post.readingTime }))}</span></a>`;
     }).join("");
   }
 
@@ -67,6 +75,78 @@ import PhotoSwipe from "photoswipe";
     try { draw(await loadIndex()); } catch { results.innerHTML = `<p class="search-hint">${escape(message("searchFailed"))}</p>`; }
   }
   function closeSearch() { modal.hidden = true; document.body.style.overflow = ""; input.value = ""; }
+
+  function searchTerm(url = new URL(location.href)) {
+    return url.searchParams.get(searchQueryParam)?.trim() || "";
+  }
+
+  function clearSearchHighlights(scope = document) {
+    const parents = new Set();
+    for (const mark of scope.querySelectorAll("mark[data-search-highlight]")) {
+      const parent = mark.parentNode;
+      parents.add(parent);
+      mark.replaceWith(document.createTextNode(mark.textContent));
+    }
+    parents.forEach((parent) => parent?.normalize());
+  }
+
+  function highlightSearchTerm(url, scope = document) {
+    clearSearchHighlights(scope);
+    const term = searchTerm(url);
+    if (!term) return null;
+
+    const nodes = [];
+    const roots = scope.querySelectorAll(".article-header h1, .article-dek, .article-meta > span, .prose");
+    const ignored = "script, style, noscript, template, code, pre, svg, math, .katex, [aria-hidden='true'], u.answer-reveal:not(.is-revealed)";
+    for (const contentRoot of roots) {
+      const walker = document.createTreeWalker(contentRoot, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          return node.nodeValue.trim() && !node.parentElement?.closest(ignored)
+            ? NodeFilter.FILTER_ACCEPT
+            : NodeFilter.FILTER_REJECT;
+        },
+      });
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+    }
+
+    const needle = term.toLowerCase();
+    const matches = [];
+    for (const node of nodes) {
+      const value = node.nodeValue;
+      const normalized = value.toLowerCase();
+      let cursor = 0;
+      let matchAt = normalized.indexOf(needle);
+      if (matchAt < 0) continue;
+
+      const fragment = document.createDocumentFragment();
+      while (matchAt >= 0) {
+        fragment.append(document.createTextNode(value.slice(cursor, matchAt)));
+        const mark = document.createElement("mark");
+        mark.className = "search-highlight";
+        mark.dataset.searchHighlight = "";
+        mark.textContent = value.slice(matchAt, matchAt + term.length);
+        fragment.append(mark);
+        matches.push(mark);
+        cursor = matchAt + term.length;
+        matchAt = normalized.indexOf(needle, cursor);
+      }
+      fragment.append(document.createTextNode(value.slice(cursor)));
+      node.replaceWith(fragment);
+    }
+
+    const first = matches[0] || null;
+    first?.classList.add("search-highlight-current");
+    return first;
+  }
+
+  function scrollToSearchHighlight(target) {
+    if (!target) return false;
+    target.scrollIntoView({
+      block: "center",
+      behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+    });
+    return true;
+  }
 
   function prepareGallery(scope = document) {
     for (const image of scope.querySelectorAll(".prose img")) {
@@ -216,8 +296,10 @@ import PhotoSwipe from "photoswipe";
   document.querySelector("[data-search-close]")?.addEventListener("click", closeSearch);
   modal?.addEventListener("click", (event) => { if (event.target === modal) closeSearch(); });
   input?.addEventListener("input", async () => {
-    const needle = input.value.toLowerCase().trim(); const posts = await loadIndex();
-    draw(!needle ? posts : posts.filter((post) => `${post.title} ${post.summary} ${(post.categories || []).join(" ")} ${post.tags.join(" ")} ${post.searchText}`.toLowerCase().includes(needle)));
+    const term = input.value.trim();
+    const needle = term.toLowerCase();
+    const posts = await loadIndex();
+    draw(!needle ? posts : posts.filter((post) => `${post.title} ${post.summary} ${(post.categories || []).join(" ")} ${post.tags.join(" ")} ${post.searchText}`.toLowerCase().includes(needle)), term);
   });
   addEventListener("keydown", (event) => {
     const answerTrigger = event.target.closest?.("u.answer-reveal");
@@ -294,17 +376,24 @@ import PhotoSwipe from "photoswipe";
     if (languageSwitch) languageSwitch.href = page.alternate || alternateRoot;
   }
 
+  function pageContentUrl(url) {
+    const contentUrl = new URL(url);
+    contentUrl.searchParams.delete(searchQueryParam);
+    return contentUrl;
+  }
+
   async function getPage(url) {
-    const key = `${url.pathname}${url.search}`;
+    const contentUrl = pageContentUrl(url);
+    const key = `${contentUrl.pathname}${contentUrl.search}`;
     if (!pageCache.has(key)) {
       let page;
       const postsBase = new URL(postsRoot, location.origin).pathname;
-      if (url.pathname.startsWith(postsBase) && url.pathname.endsWith("/")) {
-        const markdownUrl = new URL("index.md", url);
+      if (contentUrl.pathname.startsWith(postsBase) && contentUrl.pathname.endsWith("/")) {
+        const markdownUrl = new URL("index.md", contentUrl);
         const response = await fetch(`${markdownUrl.pathname}${markdownUrl.search}`, { headers: { "X-Freshmark-Navigation": "spa" } });
-        if (response.ok) page = await articlePage(await response.text(), url);
-      } else if (url.pathname.endsWith("/")) {
-        const fragmentUrl = new URL("page.html", url);
+        if (response.ok) page = await articlePage(await response.text(), contentUrl);
+      } else if (contentUrl.pathname.endsWith("/")) {
+        const fragmentUrl = new URL("page.html", contentUrl);
         const response = await fetch(`${fragmentUrl.pathname}${fragmentUrl.search}`, { headers: { "X-Freshmark-Navigation": "spa" } });
         if (response.ok && response.headers.get("content-type")?.includes("text/html")) {
           const fragmentDocument = new DOMParser().parseFromString(await response.text(), "text/html");
@@ -312,7 +401,7 @@ import PhotoSwipe from "photoswipe";
           page = {
             title: metadata?.dataset.title || "",
             description: metadata?.dataset.description || "",
-            canonical: metadata?.dataset.canonical || url.href,
+            canonical: metadata?.dataset.canonical || contentUrl.href,
             alternate: metadata?.dataset.alternate || alternateRoot,
             article: metadata?.dataset.article === "true",
             html: fragmentDocument.querySelector("main")?.outerHTML,
@@ -326,7 +415,7 @@ import PhotoSwipe from "photoswipe";
         page = {
           title: nextDocument.title,
           description: nextDocument.head.querySelector('meta[name="description"]')?.content || "",
-          canonical: nextDocument.head.querySelector('link[rel="canonical"]')?.href || url.href,
+          canonical: nextDocument.head.querySelector('link[rel="canonical"]')?.href || contentUrl.href,
           alternate: [...nextDocument.head.querySelectorAll('link[rel="alternate"][hreflang]')].find((link) => ![window.FRESHMARK.language, "x-default"].includes(link.hreflang))?.href || alternateRoot,
           article: Boolean(nextDocument.querySelector("[data-reading-progress]")),
           html: nextDocument.querySelector("main")?.outerHTML,
@@ -390,7 +479,7 @@ import PhotoSwipe from "photoswipe";
   function scheduleArticlePrefetch(scope = document) {
     const postsBase = new URL(postsRoot, location.origin).pathname;
     for (const anchor of scope.querySelectorAll("a[href]")) {
-      const url = new URL(anchor.href, location.href);
+      const url = pageContentUrl(new URL(anchor.href, location.href));
       const key = `${url.pathname}${url.search}`;
       if (url.origin !== location.origin || !url.pathname.startsWith(postsBase) || !url.pathname.endsWith("/") || pageCache.has(key) || queuedPrefetches.has(key)) continue;
       queuedPrefetches.add(key);
@@ -460,6 +549,7 @@ import PhotoSwipe from "photoswipe";
       };
       if (document.startViewTransition) await document.startViewTransition(swap).finished;
       else swap();
+      const searchMatch = highlightSearchTerm(url, nextMain);
 
       if (push) {
         history.replaceState({ ...(history.state || {}), scrollY }, "", location.href);
@@ -468,6 +558,7 @@ import PhotoSwipe from "photoswipe";
       renderedRoute = `${url.pathname}${url.search}`;
       closeSearch();
       if (restoreScroll !== null) scrollTo(0, restoreScroll);
+      else if (searchMatch) scrollToSearchHighlight(searchMatch);
       else if (url.hash) document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView();
       else scrollTo(0, 0);
       updateProgress();
@@ -494,6 +585,13 @@ import PhotoSwipe from "photoswipe";
     const anchor = event.target.closest("a[href]");
     if (!anchor || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || anchor.target || anchor.hasAttribute("download") || anchor.hasAttribute("data-no-spa")) return;
     const url = new URL(anchor.href, location.href);
+    const isSearchResult = anchor.matches(".search-result");
+    if (isSearchResult && url.pathname === location.pathname && url.search === location.search) {
+      event.preventDefault();
+      closeSearch();
+      scrollToSearchHighlight(highlightSearchTerm(url));
+      return;
+    }
     if (url.pathname === location.pathname && url.search === location.search && (url.hash || anchor.getAttribute("href") === "#")) {
       if (scrollToHash(url)) {
         event.preventDefault();
@@ -503,6 +601,7 @@ import PhotoSwipe from "photoswipe";
     }
     if (!isSpaRoute(url) || (url.pathname === location.pathname && url.search === location.search)) return;
     event.preventDefault();
+    if (isSearchResult) closeSearch();
     navigate(url);
   });
 
@@ -526,6 +625,8 @@ import PhotoSwipe from "photoswipe";
   document.fonts?.ready.then(() => updateInlineMathOverflow());
   prepareAnswerReveals();
   prepareGallery();
+  const initialSearchMatch = highlightSearchTerm(new URL(location.href));
+  if (initialSearchMatch) requestAnimationFrame(() => scrollToSearchHighlight(initialSearchMatch));
   updateProgress();
   scheduleArticlePrefetch();
 })();
