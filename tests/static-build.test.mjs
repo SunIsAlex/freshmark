@@ -209,6 +209,30 @@ test("manganese color descriptions render with matching colors", async () => {
   assert.match(css, /u\.answer-reveal:focus-visible\{[^}]*outline:2px solid var\(--accent\)/);
 });
 
+test("permanganate medium reactions render as display math in both delivery paths", async () => {
+  const html = await read("public/posts/chemistry/inorganic/manganese/index.html");
+  const fragment = await read("public/posts/chemistry/inorganic/manganese/page.html");
+  const englishHtml = await read("public/en/posts/chemistry/inorganic/manganese/index.html");
+
+  for (const [label, equationStart] of [
+    ["酸性：", "2\\\\mathrm\\{MnO_4\\^-\\} \\+ 5\\\\mathrm\\{H_2SO_3\\}"],
+    ["中性：", "2\\\\mathrm\\{MnO_4\\^-\\} \\+ \\\\mathrm\\{H_2O\\}"],
+    ["碱性：", "2\\\\mathrm\\{MnO_4\\^-\\} \\+ 2\\\\mathrm\\{OH\\^-\\}"],
+  ]) {
+    assert.match(html, new RegExp(`<p>${label}</p><p><span class="math-expression math-display"[^>]+aria-label="${equationStart}`));
+  }
+  for (const equationStart of [
+    "2\\\\mathrm\\{MnO_4\\^-\\} \\+ 5\\\\mathrm\\{H_2SO_3\\}",
+    "2\\\\mathrm\\{MnO_4\\^-\\} \\+ \\\\mathrm\\{H_2O\\}",
+    "2\\\\mathrm\\{MnO_4\\^-\\} \\+ 2\\\\mathrm\\{OH\\^-\\}",
+  ]) {
+    assert.match(fragment, new RegExp(`class="math-expression math-display"[^>]+data-math-source="${equationStart}`));
+  }
+  assert.match(englishHtml, /<p>Acidic:<\/p><p><span class="math-expression math-display"/);
+  assert.match(englishHtml, /<p>Neutral:<\/p><p><span class="math-expression math-display"/);
+  assert.match(englishHtml, /<p>Alkaline:<\/p><p><span class="math-expression math-display"/);
+});
+
 test("articles render math and colocated Markdown images", async () => {
   const html = await read("public/posts/physics/basic-calculus-02/index.html");
   assert.match(html, /<span class="math-expression math-display"[^>]+aria-label="\\int f\(x\)dx=F\(x\)\+C"/);

@@ -238,11 +238,23 @@ $$
 
 $\mathrm{KMnO_4}$ 是最重要和最常用的氧化剂之一，它的氧化能力和还原产物因介质的酸碱性不同而不同：在强酸性溶液中被还原成 $\mathrm{Mn^{2+}}$，在强碱性溶液中被还原成 $\mathrm{MnO_4^{2-}}$，在近中性溶液中则被还原成 $\mathrm{MnO_2}$，因为这些产物在相应的介质中稳定。如 $\mathrm{KMnO_4}$ 与 $\mathrm{S}(\mathrm{IV})$ 的反应：
 
-酸性 $\quad 2\mathrm{MnO_4^-} + 5\mathrm{H_2SO_3} \xlongequal{} 2\mathrm{Mn^{2+}} + 5\mathrm{SO_4^{2-}} + 4\mathrm{H^+} + 3\mathrm{H_2O}$
+酸性：
 
-中性 $\quad 2\mathrm{MnO_4^-} + \mathrm{H_2O} + 3\mathrm{SO_3^{2-}} \xlongequal{} 2\mathrm{MnO_2} \downarrow + 3\mathrm{SO_4^{2-}} + 2\mathrm{OH^-}$
+$$
+2\mathrm{MnO_4^-} + 5\mathrm{H_2SO_3} \xlongequal{} 2\mathrm{Mn^{2+}} + 5\mathrm{SO_4^{2-}} + 4\mathrm{H^+} + 3\mathrm{H_2O}
+$$
 
-碱性 $\quad 2\mathrm{MnO_4^-} + 2\mathrm{OH^-} + \mathrm{SO_3^{2-}} \xlongequal{} 2\mathrm{MnO_4^{2-}} + \mathrm{SO_4^{2-}} + \mathrm{H_2O}$
+中性：
+
+$$
+2\mathrm{MnO_4^-} + \mathrm{H_2O} + 3\mathrm{SO_3^{2-}} \xlongequal{} 2\mathrm{MnO_2} \downarrow + 3\mathrm{SO_4^{2-}} + 2\mathrm{OH^-}
+$$
+
+碱性：
+
+$$
+2\mathrm{MnO_4^-} + 2\mathrm{OH^-} + \mathrm{SO_3^{2-}} \xlongequal{} 2\mathrm{MnO_4^{2-}} + \mathrm{SO_4^{2-}} + \mathrm{H_2O}
+$$
 
 在酸性溶液中，$\mathrm{KMnO_4}$ 是很强的氧化剂：
 

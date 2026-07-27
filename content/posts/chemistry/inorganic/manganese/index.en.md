@@ -267,11 +267,23 @@ The most important $\ce{Mn(VII)}$ compound is potassium permanganate, $\ce{KMnO4
 
 $\ce{KMnO4}$ is one of the most important and widely used oxidizing agents. Its oxidizing power and reduction product depend on the acidity of the medium. It is reduced to $\ce{Mn^2+}$ in strongly acidic solution, to $\ce{MnO4^2-}$ in strongly alkaline solution, and to $\ce{MnO2}$ in nearly neutral solution because these products are stable in their respective media. Its reactions with $\ce{S(IV)}$ illustrate this behavior:
 
-Acidic $\quad 2\mathrm{MnO_4^-} + 5\mathrm{H_2SO_3} \xlongequal{} 2\mathrm{Mn^{2+}} + 5\mathrm{SO_4^{2-}} + 4\mathrm{H^+} + 3\mathrm{H_2O}$
+Acidic:
 
-Neutral $\quad 2\mathrm{MnO_4^-} + \mathrm{H_2O} + 3\mathrm{SO_3^{2-}} \xlongequal{} 2\mathrm{MnO_2} \downarrow + 3\mathrm{SO_4^{2-}} + 2\mathrm{OH^-}$
+$$
+2\mathrm{MnO_4^-} + 5\mathrm{H_2SO_3} \xlongequal{} 2\mathrm{Mn^{2+}} + 5\mathrm{SO_4^{2-}} + 4\mathrm{H^+} + 3\mathrm{H_2O}
+$$
 
-Alkaline $\quad 2\mathrm{MnO_4^-} + 2\mathrm{OH^-} + \mathrm{SO_3^{2-}} \xlongequal{} 2\mathrm{MnO_4^{2-}} + \mathrm{SO_4^{2-}} + \mathrm{H_2O}$
+Neutral:
+
+$$
+2\mathrm{MnO_4^-} + \mathrm{H_2O} + 3\mathrm{SO_3^{2-}} \xlongequal{} 2\mathrm{MnO_2} \downarrow + 3\mathrm{SO_4^{2-}} + 2\mathrm{OH^-}
+$$
+
+Alkaline:
+
+$$
+2\mathrm{MnO_4^-} + 2\mathrm{OH^-} + \mathrm{SO_3^{2-}} \xlongequal{} 2\mathrm{MnO_4^{2-}} + \mathrm{SO_4^{2-}} + \mathrm{H_2O}
+$$
 
 In acidic solution, $\ce{KMnO4}$ is a very strong oxidizing agent:
 
