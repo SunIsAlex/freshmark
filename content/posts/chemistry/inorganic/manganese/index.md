@@ -207,16 +207,17 @@ Mn(Ⅵ)的化合物中，比较稳定的是锰酸钾（$\mathrm{K_2MnO_4}$），
 
 ![锰酸根离子的深绿色溶液](potassium-manganate.jpg "热高锰酸钾溶液经氢氧化钠处理后形成的深绿色锰酸根（MnO₄²⁻）溶液。Choij / Wikimedia Commons，公有领域。")
 
-从图 21-6 所示的元素电势图看，$\mathrm{MnO_4^{2-}}$ 在碱性及酸性条件下均歧化：
+$\ce{MnO4^2-}$ 只在浓强碱中较稳定；酸化或降低碱度时会发生歧化。该反应按酸性介质和水溶液形式可分别写为：
 
 $$
-3\mathrm{MnO_4^{2-}} + 4\mathrm{H^+} \xlongequal 2\mathrm{MnO_4^-} + \mathrm{MnO_2} \downarrow + 2\mathrm{H_2O}
-$$
-$$
-3\mathrm{MnO_4^{2-}} + 2\mathrm{H_2O} \xlongequal 2\mathrm{MnO_4^-} + \mathrm{MnO_2} \downarrow + 4\mathrm{OH^-}
+\ce{3MnO4^2- + 4H+ -> 2MnO4^- + MnO2 v + 2H2O}
 $$
 
-只有在浓度较大的强碱中（pH>14）锰酸钾才稳定。
+$$
+\ce{3MnO4^2- + 2H2O -> 2MnO4^- + MnO2 v + 4OH^-}
+$$
+
+后一式生成 $\ce{OH^-}$，因此提高碱度会使平衡向左移动；只有在浓度较大的强碱中（$\mathrm{pH}>14$）锰酸钾才稳定。
 
 将 $\mathrm{MnO_2}$ 与 $\mathrm{KClO_3}$、$\mathrm{KOH}$ 混合后放入干燥试管中加热共熔，得到<span class="chemical-color" data-color="green">绿色</span>产物，冷却至室温后加入少量水得<span class="chemical-color" data-color="green">绿色</span>溶液，说明生成了锰酸钾；再加入大量水则溶液立即变<span class="chemical-color" data-color="purple-red">紫红色</span>并有<span class="chemical-color" data-color="brown">棕色</span>沉淀生成，说明加入大量水时碱的浓度降低，锰酸钾发生了歧化反应生成 $\mathrm{MnO_4^-}$ 和 $\mathrm{MnO_2}$。
 
@@ -273,19 +274,6 @@ $\mathrm{KMnO_4}$ 作为一种氧化剂被应用于许多有机制备反应中�
 $$4\mathrm{MnO_4^-} + 4\mathrm{H^+} \xlongequal{} 4\mathrm{MnO_2} \downarrow + 3\mathrm{O_2} \uparrow + 2\mathrm{H_2O}$$
 
 $$4\mathrm{MnO_4^-} + 4\mathrm{OH^-} \xlongequal{} 4\mathrm{MnO_4^{2-}} + \mathrm{O_2} \uparrow + 2\mathrm{H_2O}$$
-
-## 图片与数据来源
-
-- [锰副族酸性元素电势数据：第 55 届 IChO 2023 官方理论题](https://olympiad.kchem.org/file/articleFile/general/792/TheoryExam_v27.pdf)及[官方解答镜像](https://www.ttcho.com/_files/ugd/988b76_8ca8f064fc744e5fb933e27b7947dc85.pdf)
-- [锰在酸性、碱性条件下的元素电势数据：D. A. Stynes, York University](https://www.yorku.ca/stynes/Latimer09.pdf)
-- [锰金属，Jurii](https://commons.wikimedia.org/wiki/File:Manganese.jpg)，CC BY 3.0
-- [软锰矿标本，Andrew Silver / USGS Mineral Specimens](https://commons.wikimedia.org/wiki/File:Pyrolusite_-_USGS_Mineral_Specimens_854.jpg)，公有领域
-- [菱锰矿，James St. John](https://commons.wikimedia.org/wiki/File:Rhodochrosite_(%3D_pink).jpg)，CC BY 2.0
-- [二氧化锰，Benjah-bmm27](https://commons.wikimedia.org/wiki/File:Manganese-dioxide-sample.jpg)，公有领域
-- [锰酸根溶液，Choij](https://commons.wikimedia.org/wiki/File:Manganate.jpg)，公有领域
-- [高锰酸钾晶体，Walkerma](https://commons.wikimedia.org/wiki/File:Potassium_permanganate.jpg)，公有领域
-- [不同浓度的高锰酸钾溶液，Leiem](https://commons.wikimedia.org/wiki/File:Potassium_permanganate_solutions_2.JPG)，CC BY-SA 4.0
-- [高锰酸钾滴定，Bhaiyaji Smile 123](https://commons.wikimedia.org/wiki/File:Titration_reaction_for_potassium_permanganate.jpg)，CC BY 4.0
 
 光对高锰酸钾分解起催化作用，因此高锰酸钾溶液应当储存在<span class="chemical-color" data-color="brown">棕色</span>瓶中。由于分解反应的存在，其浓度会随时间而变化，所以高锰酸钾标准溶液需在使用前重新标定。
 
@@ -587,3 +575,77 @@ $$\begin{gathered}
 | Ⅴ | 向 $1\ \mathrm{mL}\ 0.002\ \mathrm{mol\cdot L^{-1}}$ $\mathrm{MnSO_4}$ 溶液中滴入 3 滴 $3\ \mathrm{mol\cdot L^{-1}}$ $\mathrm{H_2SO_4}$ 溶液，并加入一粒米大的 $\mathrm{K_2S_2O_8}$ 固体和<u class="answer-reveal">2滴$\ce{0.01mol.L^{-1} AgNO3}$溶液</u>，微热 | $1\ \mathrm{min}$ 后出现<span class="chemical-color" data-color="purple-red">紫红色</span> |
 
 （4）总结：探究 $\mathrm{Mn^{2+}}$ 的检测方法需要考虑的因素有<u class="answer-reveal">温度,催化剂,Mn(II)离子浓度</u>。
+
+## 草酸浓度对 $\ce{KMnO4}$ 反应速率的影响
+
+(2022 海淀一模)某兴趣小组同学探究 $\ce{KMnO4}$ 溶液与草酸（$\ce{H2C2O4}$）溶液反应速率的影响因素。配制 $1.0\times10^{-3}\ \mathrm{mol\cdot L^{-1}}$ $\ce{KMnO4}$ 溶液、$0.40\ \mathrm{mol\cdot L^{-1}}$ 草酸溶液。将 $\ce{KMnO4}$ 溶液与草酸溶液按如下比例混合。
+
+### 设计实验
+
+![实验①和②中高锰酸钾溶液、草酸溶液与水的体积及反应温度](2022-haidian-experiment-design.png "2022 海淀一模原题实验设计表：两组实验均取 2.0 mL 高锰酸钾溶液并在 20 ℃下反应，所取草酸溶液和水的体积不同。")
+
+（1）实验①和②的目的是________。
+
+（2）甲认为上述实验应控制 $\mathrm{pH}$ 相同，可加入的试剂是________（填序号）。
+
+a. 盐酸　b. 硫酸　c. 草酸
+
+### 实施实验
+
+小组同学将溶液 $\mathrm{pH}$ 调至 1 并进行实验①和②，发现<span class="chemical-color" data-color="purple">紫色</span>并未直接褪去，而是分成两个阶段：
+
+i. <span class="chemical-color" data-color="purple">紫色</span>溶液变为<span class="chemical-color" data-color="cyan">青色</span>溶液；
+
+ii. <span class="chemical-color" data-color="cyan">青色</span>溶液逐渐褪至<span class="chemical-color" data-color="colorless">无色</span>溶液。
+
+资料：
+
+a. $\ce{Mn^2+}$ 在溶液中<span class="chemical-color" data-color="colorless">无色</span>，在草酸中不能形成配合物；
+
+b. $\ce{Mn^3+}$ <span class="chemical-color" data-color="colorless">无色</span>，有强氧化性，发生反应
+
+$$
+\ce{Mn^3+ + 2C2O4^2- <=> [Mn(C2O4)2]^-}
+$$
+
+后形成<span class="chemical-color" data-color="blue-green">青绿色</span>配合物，氧化性减弱；
+
+c. $\ce{MnO4^2-}$ 呈<span class="chemical-color" data-color="green">绿色</span>，在酸性条件下不稳定，迅速分解产生 $\ce{MnO4^-}$ 和 $\ce{MnO2}$。
+
+（3）乙同学从氧化还原角度推测阶段 i 中可能产生了 $\ce{MnO4^2-}$。你认为该观点是否合理，并说明理由：________。
+
+### 深入探究
+
+进一步实验证明溶液中含有 $\ce{[Mn(C2O4)2]^-}$，反应过程中 $\ce{MnO4^-}$ 和 $\ce{[Mn(C2O4)2]^-}$ 浓度随时间的变化如图。
+
+![实验①和②中高锰酸根与二草酸合锰配离子浓度随时间的变化曲线](2022-haidian-concentration-curves.png "2022 海淀一模原题曲线图：实心标记表示实验①，空心标记表示实验②；方形和圆形标记分别表示高锰酸根与二草酸合锰配离子的浓度。")
+
+（4）第 i 阶段中检测到有 $\ce{CO2}$ 气体产生，反应的离子方程式为________。
+
+（5）实验②在第 ii 阶段的反应速率较大，可能的原因是________。
+
+（6）据此推测，若在第 ii 阶段将 $c(\ce{H+})$ 调节至 $0.2\ \mathrm{mol\cdot L^{-1}}$，溶液褪至<span class="chemical-color" data-color="colorless">无色</span>的时间会________（填“增加”“减少”或“不变”）。
+
+### 结论与反思
+
+（7）上述实验涉及的反应中，草酸的作用是________。
+
+结论：反应可能是分阶段进行的。草酸浓度的改变对不同阶段反应速率的影响可能不同。
+
+## 总结
+
+锰化学的核心在于丰富的氧化态及其显著的介质效应：$\ce{Mn^2+}$ 通常最稳定，$\ce{MnO2}$ 是常见的中间价态产物，而 $\ce{MnO4^-}$ 具有强氧化性；它们之间的转化不仅取决于元素电势，还受到溶液 $\mathrm{pH}$、反应物用量与加入顺序、浓度、温度和催化剂等因素共同影响。因此，分析锰及其化合物的反应时，应同时结合氧化还原规律、酸碱平衡、沉淀或配位反应以及实验现象，才能准确判断反应方向与最终产物。
+
+## 图片与数据来源
+
+- [锰副族酸性元素电势数据：第 55 届 IChO 2023 官方理论题](https://olympiad.kchem.org/file/articleFile/general/792/TheoryExam_v27.pdf)及[官方解答镜像](https://www.ttcho.com/_files/ugd/988b76_8ca8f064fc744e5fb933e27b7947dc85.pdf)
+- [锰在酸性、碱性条件下的元素电势数据：D. A. Stynes, York University](https://www.yorku.ca/stynes/Latimer09.pdf)
+- [锰金属，Jurii](https://commons.wikimedia.org/wiki/File:Manganese.jpg)，CC BY 3.0
+- [软锰矿标本，Andrew Silver / USGS Mineral Specimens](https://commons.wikimedia.org/wiki/File:Pyrolusite_-_USGS_Mineral_Specimens_854.jpg)，公有领域
+- [菱锰矿，James St. John](https://commons.wikimedia.org/wiki/File:Rhodochrosite_(%3D_pink).jpg)，CC BY 2.0
+- [二氧化锰，Benjah-bmm27](https://commons.wikimedia.org/wiki/File:Manganese-dioxide-sample.jpg)，公有领域
+- [锰酸根溶液，Choij](https://commons.wikimedia.org/wiki/File:Manganate.jpg)，公有领域
+- [高锰酸钾晶体，Walkerma](https://commons.wikimedia.org/wiki/File:Potassium_permanganate.jpg)，公有领域
+- [不同浓度的高锰酸钾溶液，Leiem](https://commons.wikimedia.org/wiki/File:Potassium_permanganate_solutions_2.JPG)，CC BY-SA 4.0
+- [高锰酸钾滴定，Bhaiyaji Smile 123](https://commons.wikimedia.org/wiki/File:Titration_reaction_for_potassium_permanganate.jpg)，CC BY 4.0
+- [2022 海淀一模化学实验探究题原题截图](https://img.zuoyebang.cc/zyb_308df87f4964e8ae232156752f9da4eb.jpg)

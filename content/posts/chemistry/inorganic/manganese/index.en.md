@@ -236,17 +236,17 @@ Among $\ce{Mn(VI)}$ compounds, potassium manganate, $\ce{K2MnO4}$, is relatively
 
 ![Deep-green manganate solution](potassium-manganate.jpg "A deep-green manganate (MnO₄²⁻) solution formed by treating hot potassium permanganate solution with sodium hydroxide. Choij / Wikimedia Commons, public domain.")
 
-The Latimer diagram in Figure 21-6 shows that $\ce{MnO4^2-}$ disproportionates under both acidic and alkaline conditions:
+$\ce{MnO4^2-}$ is stable only in concentrated strong base; acidification or a decrease in alkalinity causes disproportionation. The same reaction can be written in acidic-medium and aqueous forms as follows:
 
 $$
-3\mathrm{MnO_4^{2-}} + 4\mathrm{H^+} \xlongequal{} 2\mathrm{MnO_4^-} + \mathrm{MnO_2} \downarrow + 2\mathrm{H_2O}
+\ce{3MnO4^2- + 4H+ -> 2MnO4^- + MnO2 v + 2H2O}
 $$
 
 $$
-3\mathrm{MnO_4^{2-}} + 2\mathrm{H_2O} \xlongequal{} 2\mathrm{MnO_4^-} + \mathrm{MnO_2} \downarrow + 4\mathrm{OH^-}
+\ce{3MnO4^2- + 2H2O -> 2MnO4^- + MnO2 v + 4OH^-}
 $$
 
-Potassium manganate is stable only in a concentrated strong base, at $\mathrm{pH}>14$.
+Because the latter form produces $\ce{OH^-}$, increasing alkalinity shifts the equilibrium to the left. Potassium manganate is stable only in a concentrated strong base, at $\mathrm{pH}>14$.
 
 Heat a mixture of $\ce{MnO2}$, $\ce{KClO3}$, and $\ce{KOH}$ to fusion in a dry test tube. A <span class="chemical-color" data-color="green">green</span> product forms. After cooling to room temperature, adding a small amount of water gives a <span class="chemical-color" data-color="green">green</span> solution, showing that potassium manganate has formed. Adding a large amount of water immediately turns the solution <span class="chemical-color" data-color="purple-red">reddish purple</span> and produces a <span class="chemical-color" data-color="brown">brown</span> precipitate. Dilution lowers the base concentration, allowing manganate to disproportionate into $\ce{MnO4^-}$ and $\ce{MnO2}$.
 
@@ -303,19 +303,6 @@ Permanganates are strongly oxidizing and unstable. They decompose appreciably in
 $$4\mathrm{MnO_4^-} + 4\mathrm{H^+} \xlongequal{} 4\mathrm{MnO_2} \downarrow + 3\mathrm{O_2} \uparrow + 2\mathrm{H_2O}$$
 
 $$4\mathrm{MnO_4^-} + 4\mathrm{OH^-} \xlongequal{} 4\mathrm{MnO_4^{2-}} + \mathrm{O_2} \uparrow + 2\mathrm{H_2O}$$
-
-## Image and Data Sources
-
-- [Group 7 acidic Latimer data: official 55th IChO 2023 theory paper](https://olympiad.kchem.org/file/articleFile/general/792/TheoryExam_v27.pdf) and [mirror of the official solution](https://www.ttcho.com/_files/ugd/988b76_8ca8f064fc744e5fb933e27b7947dc85.pdf)
-- [Manganese Latimer data in acid and base: D. A. Stynes, York University](https://www.yorku.ca/stynes/Latimer09.pdf)
-- [Manganese metal, Jurii](https://commons.wikimedia.org/wiki/File:Manganese.jpg), CC BY 3.0
-- [Pyrolusite specimen, Andrew Silver / USGS Mineral Specimens](https://commons.wikimedia.org/wiki/File:Pyrolusite_-_USGS_Mineral_Specimens_854.jpg), public domain
-- [Rhodochrosite, James St. John](https://commons.wikimedia.org/wiki/File:Rhodochrosite_(%3D_pink).jpg), CC BY 2.0
-- [Manganese dioxide, Benjah-bmm27](https://commons.wikimedia.org/wiki/File:Manganese-dioxide-sample.jpg), public domain
-- [Manganate solution, Choij](https://commons.wikimedia.org/wiki/File:Manganate.jpg), public domain
-- [Potassium permanganate crystals, Walkerma](https://commons.wikimedia.org/wiki/File:Potassium_permanganate.jpg), public domain
-- [Potassium permanganate concentration series, Leiem](https://commons.wikimedia.org/wiki/File:Potassium_permanganate_solutions_2.JPG), CC BY-SA 4.0
-- [Potassium permanganate titration, Bhaiyaji Smile 123](https://commons.wikimedia.org/wiki/File:Titration_reaction_for_potassium_permanganate.jpg), CC BY 4.0
 
 Light catalyzes the decomposition of potassium permanganate, so its solutions should be stored in <span class="chemical-color" data-color="brown">brown</span> bottles. Because decomposition causes the concentration to change over time, a standard potassium permanganate solution must be re-standardized before use.
 
@@ -623,3 +610,73 @@ Student A designed the following experiment.
 | V | Add 3 drops of $3\ \mathrm{mol\cdot L^{-1}}$ $\ce{H2SO4}$ solution to $1\ \mathrm{mL}$ of $0.002\ \mathrm{mol\cdot L^{-1}}$ $\ce{MnSO4}$ solution, add one rice-grain-sized crystal of $\ce{K2S2O8}$ and <u class="answer-reveal">2 drops of $0.01\ \mathrm{mol\cdot L^{-1}}$ $\ce{AgNO3}$ solution</u>, then warm gently | <span class="chemical-color" data-color="purple-red">Reddish purple</span> appears after $1\ \mathrm{min}$ |
 
 (4) Conclusion: Factors that must be considered when developing a method for detecting $\ce{Mn^2+}$ include <u class="answer-reveal">temperature, catalyst, and $\ce{Mn(II)}$ concentration</u>.
+
+## Effect of Oxalic Acid Concentration on the Reaction Rate of $\ce{KMnO4}$
+
+(2022 Haidian First Mock Exam) A student group investigated factors affecting the reaction rate between $\ce{KMnO4}$ solution and oxalic acid, $\ce{H2C2O4}$, solution. They prepared $1.0\times10^{-3}\ \mathrm{mol\cdot L^{-1}}$ $\ce{KMnO4}$ solution and $0.40\ \mathrm{mol\cdot L^{-1}}$ oxalic acid solution, then mixed them in the proportions shown below.
+
+### Experimental Design
+
+![Volumes of potassium permanganate solution, oxalic acid solution, and water, and the reaction temperature in Experiments ① and ②](2022-haidian-experiment-design.png "Table cropped from the original 2022 Haidian First Mock Exam: both experiments use 2.0 mL of potassium permanganate solution at 20 °C, with different volumes of oxalic acid solution and water.")
+
+(1) The purpose of Experiments ① and ② is ________.
+
+(2) Student A believes that the experiments should be conducted at the same $\mathrm{pH}$. Which reagent may be added? ________ (select one).
+
+a. Hydrochloric acid　b. Sulfuric acid　c. Oxalic acid
+
+### Experiment
+
+The group adjusted the solution to $\mathrm{pH}=1$ and performed Experiments ① and ②. The <span class="chemical-color" data-color="purple">purple</span> color did not fade directly; instead, the change occurred in two stages:
+
+i. The <span class="chemical-color" data-color="purple">purple</span> solution became <span class="chemical-color" data-color="cyan">cyan</span>;
+
+ii. The <span class="chemical-color" data-color="cyan">cyan</span> solution gradually faded to a <span class="chemical-color" data-color="colorless">colorless</span> solution.
+
+Reference information:
+
+a. $\ce{Mn^2+}$ is <span class="chemical-color" data-color="colorless">colorless</span> in solution and does not form a complex with oxalic acid;
+
+b. $\ce{Mn^3+}$ is <span class="chemical-color" data-color="colorless">colorless</span> and strongly oxidizing. It undergoes the reaction
+
+$$
+\ce{Mn^3+ + 2C2O4^2- <=> [Mn(C2O4)2]^-}
+$$
+
+to form a <span class="chemical-color" data-color="blue-green">bluish-green</span> complex with weaker oxidizing ability;
+
+c. $\ce{MnO4^2-}$ is <span class="chemical-color" data-color="green">green</span>. It is unstable under acidic conditions and rapidly decomposes to form $\ce{MnO4^-}$ and $\ce{MnO2}$.
+
+(3) From a redox perspective, Student B proposes that $\ce{MnO4^2-}$ may be formed during stage i. Is this proposal reasonable? Explain your reasoning: ________.
+
+### Further Investigation
+
+Further experiments confirmed the presence of $\ce{[Mn(C2O4)2]^-}$ in the solution. The concentrations of $\ce{MnO4^-}$ and $\ce{[Mn(C2O4)2]^-}$ over time are shown below.
+
+![Concentrations of permanganate and the bis-oxalatomanganese complex over time in Experiments ① and ②](2022-haidian-concentration-curves.png "Graph cropped from the original 2022 Haidian First Mock Exam: filled markers denote Experiment ① and open markers denote Experiment ②; square and circular markers denote permanganate and the bis-oxalatomanganese complex, respectively.")
+
+(4) $\ce{CO2}$ gas was detected during stage i. Write the ionic equation for the reaction: ________.
+
+(5) The reaction rate in stage ii is greater in Experiment ②. One possible reason is ________.
+
+(6) Based on this result, if $c(\ce{H+})$ is adjusted to $0.2\ \mathrm{mol\cdot L^{-1}}$ during stage ii, the time required for the solution to become <span class="chemical-color" data-color="colorless">colorless</span> will ________ (choose “increase,” “decrease,” or “remain unchanged”).
+
+### Conclusion and Reflection
+
+(7) In the reactions involved in these experiments, the role of oxalic acid is ________.
+
+Conclusion: The reaction may proceed in stages. Changing the oxalic acid concentration may affect the reaction rate differently in different stages.
+
+## Image and Data Sources
+
+- [Group 7 acidic Latimer data: official 55th IChO 2023 theory paper](https://olympiad.kchem.org/file/articleFile/general/792/TheoryExam_v27.pdf) and [mirror of the official solution](https://www.ttcho.com/_files/ugd/988b76_8ca8f064fc744e5fb933e27b7947dc85.pdf)
+- [Manganese Latimer data in acid and base: D. A. Stynes, York University](https://www.yorku.ca/stynes/Latimer09.pdf)
+- [Manganese metal, Jurii](https://commons.wikimedia.org/wiki/File:Manganese.jpg), CC BY 3.0
+- [Pyrolusite specimen, Andrew Silver / USGS Mineral Specimens](https://commons.wikimedia.org/wiki/File:Pyrolusite_-_USGS_Mineral_Specimens_854.jpg), public domain
+- [Rhodochrosite, James St. John](https://commons.wikimedia.org/wiki/File:Rhodochrosite_(%3D_pink).jpg), CC BY 2.0
+- [Manganese dioxide, Benjah-bmm27](https://commons.wikimedia.org/wiki/File:Manganese-dioxide-sample.jpg), public domain
+- [Manganate solution, Choij](https://commons.wikimedia.org/wiki/File:Manganate.jpg), public domain
+- [Potassium permanganate crystals, Walkerma](https://commons.wikimedia.org/wiki/File:Potassium_permanganate.jpg), public domain
+- [Potassium permanganate concentration series, Leiem](https://commons.wikimedia.org/wiki/File:Potassium_permanganate_solutions_2.JPG), CC BY-SA 4.0
+- [Potassium permanganate titration, Bhaiyaji Smile 123](https://commons.wikimedia.org/wiki/File:Titration_reaction_for_potassium_permanganate.jpg), CC BY 4.0
+- [Original 2022 Haidian First Mock chemistry inquiry question](https://img.zuoyebang.cc/zyb_308df87f4964e8ae232156752f9da4eb.jpg)

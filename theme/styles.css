@@ -136,6 +136,8 @@ button { color:inherit; }
 .chemical-color[data-color="rose"] { --chemical-color:#ad365f; --chemical-color-dark:#ee88aa; }
 .chemical-color[data-color="near-white"],.chemical-color[data-color="white"] { --chemical-color:#fff; --chemical-color-dark:#fff; padding:0 .2em; border-radius:3px; background:#667078; }
 .chemical-color[data-color="green"] { --chemical-color:#18794e; --chemical-color-dark:#67c98f; }
+.chemical-color[data-color="cyan"] { --chemical-color:#087e8b; --chemical-color-dark:#70d4dc; }
+.chemical-color[data-color="blue-green"] { --chemical-color:#0f766e; --chemical-color-dark:#5eead4; }
 .chemical-color[data-color="dark-green"] { --chemical-color:#0b5d3b; --chemical-color-dark:#50b982; }
 .chemical-color[data-color="light-green"] { --chemical-color:#4f7f28; --chemical-color-dark:#a6d66d; }
 .chemical-color[data-color="yellow"] { --chemical-color:#896500; --chemical-color-dark:#f0c75e; }
@@ -171,6 +173,9 @@ button { color:inherit; }
 .prose table { display:block; width:max-content; max-width:100%; overflow-x:auto; border-collapse:collapse; margin:0 0 1.5em; }
 .prose th,.prose td { padding:.6em .85em; border:1px solid var(--line); text-align:left; vertical-align:top; }
 .prose th { background:var(--paper-raised); font-family:var(--font-sans); font-size:.875em; }
+.content-diff-notice { margin:0 0 2em; padding:10px 13px; border:1px solid color-mix(in srgb,#2da44e 42%,var(--line)); border-radius:8px; background:color-mix(in srgb,#2da44e 10%,var(--paper-raised)); color:var(--ink-soft); font-family:var(--font-sans); font-size:var(--text-sm); line-height:1.4; }
+.prose [data-content-diff="changed"] { background:linear-gradient(90deg,color-mix(in srgb,#2da44e 17%,transparent),color-mix(in srgb,#2da44e 7%,transparent)); box-shadow:-4px 0 0 #2da44e; }
+.prose tr[data-content-diff="changed"] > * { background:color-mix(in srgb,#2da44e 14%,var(--paper-raised)); }
 .reading-progress { position:fixed; inset:0 auto auto 0; z-index:30; width:0; height:3px; background:var(--accent); transition:width .1s linear; }
 .freshmark-pswp { --pswp-bg:#050a0c; }
 .freshmark-pswp .pswp__button--arrow--prev,.freshmark-pswp .pswp__button--arrow--next { display:none; }

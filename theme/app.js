@@ -1,4 +1,5 @@
 import PhotoSwipe from "photoswipe";
+import { changedCurrentIndexes } from "../lib/content-diff.mjs";
 
 (() => {
   const root = document.documentElement;
@@ -10,6 +11,7 @@ import PhotoSwipe from "photoswipe";
   const postsRoot = window.FRESHMARK?.postsRoot || `${basePath}/posts/`;
   const searchIndexPath = window.FRESHMARK?.searchIndexPath || `${basePath}/search-index.json`;
   const searchQueryParam = "q";
+  const contentSnapshotPrefix = "freshmark-content-v1:";
   const modal = document.querySelector("[data-search-modal]");
   const input = document.querySelector("[data-search-input]");
   const results = document.querySelector("[data-search-results]");
@@ -97,7 +99,7 @@ import PhotoSwipe from "photoswipe";
 
     const nodes = [];
     const roots = scope.querySelectorAll(".article-header h1, .article-dek, .article-meta > span, .prose");
-    const ignored = "script, style, noscript, template, code, pre, svg, math, .katex, [aria-hidden='true'], u.answer-reveal:not(.is-revealed)";
+    const ignored = "script, style, noscript, template, code, pre, svg, math, .katex, .content-diff-notice, [aria-hidden='true'], u.answer-reveal:not(.is-revealed)";
     for (const contentRoot of roots) {
       const walker = document.createTreeWalker(contentRoot, NodeFilter.SHOW_TEXT, {
         acceptNode(node) {
@@ -146,6 +148,83 @@ import PhotoSwipe from "photoswipe";
       behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
     });
     return true;
+  }
+
+  function articleContentUnits(prose) {
+    const units = [];
+    for (const child of prose.children) {
+      if (["UL", "OL"].includes(child.tagName)) {
+        units.push(...child.querySelectorAll(":scope > li"));
+      } else if (child.tagName === "TABLE") {
+        const rows = child.querySelectorAll("tr");
+        units.push(...(rows.length ? rows : [child]));
+      } else {
+        units.push(child);
+      }
+    }
+    return units;
+  }
+
+  function normalizedContentUrl(value, pageUrl) {
+    try {
+      const url = new URL(value, pageUrl);
+      return url.origin === location.origin ? `${url.pathname}${url.search}${url.hash}` : url.href;
+    } catch {
+      return value;
+    }
+  }
+
+  function articleUnitSignature(element, pageUrl) {
+    const text = element.textContent.replace(/\s+/g, " ").trim();
+    const resources = [element, ...element.querySelectorAll("a[href], img[src], video[src], source[src], iframe[src]")]
+      .map((item) => {
+        const source = item.getAttribute("href") || item.getAttribute("src");
+        if (!source) return "";
+        return [
+          item.tagName,
+          normalizedContentUrl(source, pageUrl),
+          item.getAttribute("alt") || "",
+          item.getAttribute("title") || "",
+        ].join(":");
+      })
+      .filter(Boolean);
+    return `${element.tagName}\u0000${text}\u0000${resources.join("\u0001")}`;
+  }
+
+  function applyArticleContentDiff(url, scope = document) {
+    const prose = scope.querySelector(".prose");
+    if (!prose) return 0;
+    prose.querySelector(":scope > .content-diff-notice")?.remove();
+    for (const element of prose.querySelectorAll("[data-content-diff]")) delete element.dataset.contentDiff;
+
+    const pageUrl = pageContentUrl(url);
+    const storageKey = `${contentSnapshotPrefix}${pageUrl.pathname}`;
+    const units = articleContentUnits(prose);
+    const snapshot = units.map((element) => articleUnitSignature(element, pageUrl));
+    let previous = null;
+    try {
+      const stored = JSON.parse(localStorage.getItem(storageKey));
+      if (stored?.version === 1 && Array.isArray(stored.units)) previous = stored.units;
+    } catch {}
+
+    let changed = 0;
+    if (previous) {
+      const changedIndexes = changedCurrentIndexes(previous, snapshot);
+      for (const index of changedIndexes) units[index].dataset.contentDiff = "changed";
+      changed = changedIndexes.length;
+    }
+
+    try {
+      localStorage.setItem(storageKey, JSON.stringify({ version: 1, units: snapshot }));
+    } catch {}
+    if (changed) {
+      const notice = document.createElement("div");
+      notice.className = "content-diff-notice";
+      notice.setAttribute("role", "status");
+      notice.textContent = message("contentDiffNotice", { count: changed });
+      prose.prepend(notice);
+    }
+    return changed;
   }
 
   function prepareGallery(scope = document) {
@@ -533,6 +612,7 @@ import PhotoSwipe from "photoswipe";
 
       const swap = () => {
         currentMain.replaceWith(nextMain);
+        if (nextPage.article) applyArticleContentDiff(url, nextMain);
         renderMath(nextMain);
         updateInlineMathOverflow(nextMain);
         prepareAnswerReveals(nextMain);
@@ -620,12 +700,14 @@ import PhotoSwipe from "photoswipe";
   addEventListener("scroll", updateProgress, { passive: true });
   addEventListener("resize", () => updateInlineMathOverflow(), { passive: true });
   (navigator.connection || navigator.mozConnection || navigator.webkitConnection)?.addEventListener("change", drainPrefetchQueue);
+  const initialUrl = new URL(location.href);
+  if (document.querySelector("[data-reading-progress]")) applyArticleContentDiff(initialUrl);
   renderMath();
   updateInlineMathOverflow();
   document.fonts?.ready.then(() => updateInlineMathOverflow());
   prepareAnswerReveals();
   prepareGallery();
-  const initialSearchMatch = highlightSearchTerm(new URL(location.href));
+  const initialSearchMatch = highlightSearchTerm(initialUrl);
   if (initialSearchMatch) requestAnimationFrame(() => scrollToSearchHighlight(initialSearchMatch));
   updateProgress();
   scheduleArticlePrefetch();

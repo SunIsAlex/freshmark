@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { readFile, stat } from "node:fs/promises";
 import test from "node:test";
+import { changedCurrentIndexes } from "../lib/content-diff.mjs";
+import { locales } from "../lib/i18n.mjs";
 import { parseFrontmatter, renderSummary, summaryFromBody } from "../lib/markdown.mjs";
 
 const root = new URL("../", import.meta.url);
@@ -17,6 +19,9 @@ test("build emits portable static pages", async () => {
     "public/posts/chemistry/inorganic/manganese/latimer-group7-acidic.svg",
     "public/posts/chemistry/inorganic/manganese/latimer-manganese-media.svg",
     "public/posts/chemistry/inorganic/manganese/2022-beijing-chlorine-manganese-apparatus.png",
+    "public/posts/chemistry/inorganic/manganese/2022-haidian-manganese-question.png",
+    "public/posts/chemistry/inorganic/manganese/2022-haidian-experiment-design.png",
+    "public/posts/chemistry/inorganic/manganese/2022-haidian-concentration-curves.png",
     "public/en/index.html",
     "public/en/about/index.html",
     "public/en/posts/chemistry/inorganic/manganese/index.html",
@@ -24,6 +29,9 @@ test("build emits portable static pages", async () => {
     "public/en/posts/chemistry/inorganic/manganese/latimer-group7-acidic.svg",
     "public/en/posts/chemistry/inorganic/manganese/latimer-manganese-media.svg",
     "public/en/posts/chemistry/inorganic/manganese/2022-beijing-chlorine-manganese-apparatus.png",
+    "public/en/posts/chemistry/inorganic/manganese/2022-haidian-manganese-question.png",
+    "public/en/posts/chemistry/inorganic/manganese/2022-haidian-experiment-design.png",
+    "public/en/posts/chemistry/inorganic/manganese/2022-haidian-concentration-curves.png",
     "public/en/search-index.json",
     "public/en/rss.xml",
     "public/en/manifest.webmanifest",
@@ -154,22 +162,35 @@ test("typography uses Claude's font family and size scale", async () => {
 test("manganese color descriptions render with matching colors", async () => {
   const html = await read("public/posts/chemistry/inorganic/manganese/index.html");
   const englishHtml = await read("public/en/posts/chemistry/inorganic/manganese/index.html");
+  const source = await read("content/posts/chemistry/inorganic/manganese/index.md");
+  const englishSource = await read("content/posts/chemistry/inorganic/manganese/index.en.md");
   const css = await read("public/assets/styles.css");
-  assert.equal(html.match(/class="chemical-color"/g)?.length, 112);
+  assert.equal(html.match(/class="chemical-color"/g)?.length, 122);
   assert.match(html, /溶液酸碱性对 \\\(\\ce\{Mn\(II\)\}\\\) 还原性的影响/);
   assert.match(html, /高锰酸钾的制备、提纯与产率测定/);
   assert.match(html, /2022-beijing-chlorine-manganese-apparatus\.png/);
+  assert.match(html, /2022-haidian-experiment-design\.png/);
+  assert.match(html, /2022-haidian-concentration-curves\.png/);
+  assert.match(englishHtml, /2022-haidian-experiment-design\.png/);
+  assert.match(englishHtml, /2022-haidian-concentration-curves\.png/);
+  assert.doesNotMatch(html, /src="2022-haidian-manganese-question\.png"/);
+  assert.doesNotMatch(englishHtml, /src="2022-haidian-manganese-question\.png"/);
   assert.match(html, /<u class="answer-reveal">/);
   assert.match(html, /饱和/);
   assert.match(html, /5000a/);
   assert.doesNotMatch(html, /参考答案与解析/);
+  assert.match(source, /\\ce\{3MnO4\^2- \+ 4H\+ -> 2MnO4\^- \+ MnO2 v \+ 2H2O\}/);
+  assert.match(source, /\\ce\{3MnO4\^2- \+ 2H2O -> 2MnO4\^- \+ MnO2 v \+ 4OH\^-\}/);
+  assert.doesNotMatch(source, /\\xlongequal\s+2\\mathrm\{MnO_4\^-\}/);
+  assert.match(source, /## 图片与数据来源[\s\S]*zyb_308df87f4964e8ae232156752f9da4eb\.jpg\)\s*$/);
+  assert.match(englishSource, /## Image and Data Sources[\s\S]*zyb_308df87f4964e8ae232156752f9da4eb\.jpg\)\s*$/);
   assert.equal(html.match(/<u\b/g)?.length, html.match(/<u class="answer-reveal">/g)?.length);
   assert.equal(englishHtml.match(/<u\b/g)?.length, englishHtml.match(/<u class="answer-reveal">/g)?.length);
   assert.doesNotMatch(html, /\\underline/);
   assert.doesNotMatch(englishHtml, /\\underline/);
   for (const color of [
-    "black", "blue-violet", "brown", "brown-black", "brown-red", "brown-yellow",
-    "colorless", "dark-green", "flesh", "gray", "green", "light-green",
+    "black", "blue-green", "blue-violet", "brown", "brown-black", "brown-red", "brown-yellow",
+    "colorless", "cyan", "dark-green", "flesh", "gray", "green", "light-green",
     "near-white", "pale-pink", "pink", "purple", "purple-black", "purple-red",
     "red", "rose", "silver-white", "white", "yellow",
   ]) assert.match(html, new RegExp(`data-color="${color}"`));
@@ -429,9 +450,34 @@ test("search results deep-link to and highlight matching article text", async ()
   assert.match(app, /scrollToSearchHighlight\(searchMatch\)/);
   assert.match(app, /block: "center"/);
   assert.match(app, /contentUrl\.searchParams\.delete\(searchQueryParam\)/);
-  assert.match(app, /const initialSearchMatch = highlightSearchTerm\(new URL\(location\.href\)\)/);
+  assert.match(app, /const initialSearchMatch = highlightSearchTerm\(initialUrl\)/);
   assert.match(css, /\.search-highlight \{/);
   assert.match(css, /\.search-highlight-current \{/);
+});
+
+test("articles highlight content changed since the previous local visit", async () => {
+  const app = await read("theme/app.js");
+  const css = await read("theme/styles.css");
+  assert.match(app, /const contentSnapshotPrefix = "freshmark-content-v1:"/);
+  assert.match(app, /function applyArticleContentDiff/);
+  assert.match(app, /localStorage\.getItem\(storageKey\)/);
+  assert.match(app, /localStorage\.setItem\(storageKey/);
+  assert.match(app, /changedCurrentIndexes\(previous, snapshot\)/);
+  assert.match(app, /units\[index\]\.dataset\.contentDiff = "changed"/);
+  assert.match(app, /if \(nextPage\.article\) applyArticleContentDiff\(url, nextMain\)/);
+  assert.match(app, /if \(document\.querySelector\("\[data-reading-progress\]"\)\) applyArticleContentDiff\(initialUrl\)/);
+  assert.match(css, /\.prose \[data-content-diff="changed"\]/);
+  assert.match(css, /\.content-diff-notice/);
+  assert.match(locales.zh.contentDiffNotice, /高亮/);
+  assert.match(locales.en.contentDiffNotice, /highlighted/);
+});
+
+test("ordered content diff does not confuse repeated blocks", () => {
+  const equation = String.raw`\ce{3MnO4^2- + 2H2O -> 2MnO4^- + MnO2 v + 4OH^-}`;
+  const previous = ["introduction", "old equation", "explanation", "exercise", equation, "ending"];
+  const current = ["introduction", equation, "explanation", "exercise", equation, "ending"];
+  assert.deepEqual(changedCurrentIndexes(previous, current), [1]);
+  assert.deepEqual(changedCurrentIndexes(current, current), []);
 });
 
 test("article images open in a PhotoSwipe keyboard and touch-friendly gallery", async () => {
