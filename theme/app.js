@@ -30,6 +30,13 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
   const preparedGalleryImages = new WeakSet();
   const preparedAnswerReveals = new WeakSet();
 
+  function afterFirstPaint(task) {
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if ("requestIdleCallback" in window) requestIdleCallback(task, { timeout: 1200 });
+      else setTimeout(task, 0);
+    }));
+  }
+
   function loadKaTeXStyles() {
     const existing = document.querySelector("link[data-katex-styles]");
     if (existing?.sheet) return Promise.resolve();
@@ -704,9 +711,6 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
   });
 
   history.replaceState({ ...(history.state || {}), spa: true, scrollY }, "", location.href);
-  if ("serviceWorker" in navigator) {
-    addEventListener("load", () => navigator.serviceWorker.register(`${basePath}/sw.js`, { scope: `${basePath}/`, updateViaCache: "none" }).catch(() => {}));
-  }
   addEventListener("load", () => preloadPhotoSwipe(), { once: true });
   addEventListener("popstate", (event) => {
     const url = new URL(location.href);
@@ -723,13 +727,18 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
   }, { passive: true });
   (navigator.connection || navigator.mozConnection || navigator.webkitConnection)?.addEventListener("change", drainPrefetchQueue);
   const initialUrl = new URL(location.href);
-  if (document.querySelector("[data-reading-progress]")) applyArticleContentDiff(initialUrl);
-  updateInlineMathOverflow();
-  document.fonts?.ready.then(() => updateInlineMathOverflow());
-  prepareAnswerReveals();
-  prepareGallery();
-  const initialSearchMatch = highlightSearchTerm(initialUrl);
-  if (initialSearchMatch) requestAnimationFrame(() => scrollToSearchHighlight(initialSearchMatch));
-  updateReadingState();
-  scheduleArticlePrefetch();
+  afterFirstPaint(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register(`${basePath}/sw.js`, { scope: `${basePath}/`, updateViaCache: "none" }).catch(() => {});
+    }
+    if (document.querySelector("[data-reading-progress]")) applyArticleContentDiff(initialUrl);
+    updateInlineMathOverflow();
+    document.fonts?.ready.then(() => updateInlineMathOverflow());
+    prepareAnswerReveals();
+    prepareGallery();
+    const initialSearchMatch = highlightSearchTerm(initialUrl);
+    if (initialSearchMatch) requestAnimationFrame(() => scrollToSearchHighlight(initialSearchMatch));
+    updateReadingState();
+    scheduleArticlePrefetch();
+  });
 })();

@@ -99,7 +99,7 @@ test("generated HTML has no application framework runtime", async () => {
   assert.ok(html.indexOf("<style data-critical>") < html.indexOf(stylesheetLinks[0]));
   assert.match(html, /<script[^>]+src="\/assets\/app\.js\?v=[a-f0-9]{12}"/);
   assert.match(html, /assetVersion:"[a-f0-9]{12}"/);
-  assert.match(html, /<link[^>]+href="\/assets\/fonts\/anthropic-sans-variable\.woff2"[^>]+rel="preload"/);
+  assert.doesNotMatch(html, /<link[^>]+href="\/assets\/fonts\/anthropic-sans-variable\.woff2"[^>]+rel="preload"/);
   assert.match(html, /<script[^>]+src="\/assets\/app\.js\?v=[a-f0-9]{12}"[^>]+type="module"/);
   assert.match(html, /<link[^>]+href="\/assets\/katex\.min\.css\?v=[a-f0-9]{12}"[^>]+data-katex-styles/);
   assert.match(html, /class="katex"/);
@@ -167,6 +167,15 @@ test("typography uses Claude's font family and size scale", async () => {
   assert.match(css, /\.featured h2,\.section-head h2\{font-size:var\(--heading-xl\);line-height:1\.25\}/);
   assert.match(css, /\.prose h2\{font-size:var\(--heading-xl\);line-height:1\.25\}/);
   assert.doesNotMatch(css, /Iowan Old Style|Baskerville|Times New Roman/);
+});
+
+test("cold pages skip rendering content below the initial viewport", async () => {
+  const html = await read("public/index.html");
+  const css = await read("public/assets/styles.css");
+  assert.match(html, /<style data-critical>[^<]*\.post-card\{content-visibility:auto/);
+  assert.match(html, /<style data-critical>[^<]*\.prose>:nth-child\(n\+8\)\{content-visibility:auto/);
+  assert.match(css, /\.post-card\{[^}]*content-visibility:auto[^}]*contain-intrinsic-size:auto 130px/);
+  assert.match(css, /\.prose>:nth-child\(n\+8\)\{content-visibility:auto;contain-intrinsic-size:auto 72px\}/);
 });
 
 test("manganese color descriptions render with matching colors", async () => {
@@ -501,6 +510,9 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /data-toc-toggle/);
   assert.match(app, /navigator\.serviceWorker\.register/);
   assert.match(app, /updateViaCache: "none"/);
+  assert.doesNotMatch(app, /addEventListener\("load", \(\) => navigator\.serviceWorker\.register/);
+  assert.match(app, /function afterFirstPaint/);
+  assert.match(app, /afterFirstPaint\(\(\) => \{/);
 });
 
 test("article reading progress persists in the current heading anchor", async () => {
@@ -611,6 +623,7 @@ test("service worker versions and persists generated resources", async () => {
   assert.doesNotMatch(worker, /katex\.min\.js|mhchem\.min\.js|auto-render\.min\.js|anthropic-sans-variable\.ttf/);
   assert.match(worker, /\?v=/);
   assert.match(worker, /"navigate"===/);
+  assert.match(worker, /navigationResponse/);
 });
 
 test("published posts retain raw Markdown and provide compact KaTeX SPA fragments", async () => {

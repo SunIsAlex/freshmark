@@ -71,6 +71,7 @@ button { color:inherit; }
 .tag-filter.active,.tag-filter:hover { color:var(--ink); border-color:var(--accent); }
 .post-list { border-top:1px solid var(--line); }
 .post-card { display:grid; grid-template-columns:120px 1fr auto; gap:34px; align-items:center; padding:34px 0; border-bottom:1px solid var(--line); transition:padding .2s; }
+.post-card { content-visibility:auto; contain-intrinsic-size:auto 130px; }
 .post-card:hover { padding-left:10px; }
 .post-date { color:var(--ink-soft); font-size:var(--text-sm); }
 .post-card h3 { margin:0 0 9px; font-family:var(--font-serif); font-size:var(--heading-lg); font-weight:500; line-height:1.25; letter-spacing:normal; }
@@ -114,6 +115,7 @@ button { color:inherit; }
 .toc .toc-level-4,.toc .toc-level-5,.toc .toc-level-6 { margin-left:24px; font-size:var(--text-xs); }
 .toc a:hover { color:var(--ink); }
 .prose { min-width:0; max-width:100%; overflow-wrap:anywhere; font-family:var(--font-serif); font-size:var(--text-md); line-height:1.4; }
+.prose > :nth-child(n+8) { content-visibility:auto; contain-intrinsic-size:auto 72px; }
 .prose h1,.prose h2,.prose h3,.prose h4 { scroll-margin-top:32px; font-family:var(--font-sans); font-weight:600; letter-spacing:normal; }
 .prose h1 { font-size:var(--heading-3xl); line-height:1; }
 .prose h2 { font-size:var(--heading-2xl); line-height:1.1; margin:2.5em 0 .75em; }
