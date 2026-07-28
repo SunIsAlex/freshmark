@@ -564,12 +564,22 @@ test("search results deep-link to and highlight matching article text", async ()
   assert.match(app, /function highlightSearchTerm/);
   assert.match(app, /document\.createTreeWalker\(contentRoot, NodeFilter\.SHOW_TEXT/);
   assert.match(app, /mark\.dataset\.searchHighlight/);
+  assert.match(app, /\.math-expression\[aria-label\], \.math-expression\[data-math-source\]/);
+  assert.match(app, /formula\.classList\.add\("search-highlight", "search-highlight-formula"\)/);
+  assert.match(app, /bareFormulaNeedle/);
+  assert.match(app, /Node\.DOCUMENT_POSITION_FOLLOWING/);
   assert.match(app, /scrollToSearchHighlight\(searchMatch\)/);
   assert.match(app, /block: "center"/);
+  assert.match(app, /block\.dataset\.searchReveal = ""/);
+  assert.match(app, /addEventListener\("scrollend", settle/);
+  assert.match(app, /scrollBy\(\{ top: offset, behavior: "instant" \}\)/);
+  assert.match(app, /document\.fonts\?\.ready\.then/);
   assert.match(app, /contentUrl\.searchParams\.delete\(searchQueryParam\)/);
   assert.match(app, /const initialSearchMatch = highlightSearchTerm\(initialUrl\)/);
   assert.match(css, /\.search-highlight \{/);
   assert.match(css, /\.search-highlight-current \{/);
+  assert.match(css, /\.math-expression\.search-highlight-formula\s*\{/);
+  assert.match(css, /\.prose > \[data-search-reveal\]\s*\{\s*content-visibility:visible/);
 });
 
 test("articles highlight content changed since the previous local visit", async () => {

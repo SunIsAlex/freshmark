@@ -28,6 +28,7 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
   let mathOverflowFrame;
   let inlineMathObserver;
   let readingStateFrame;
+  let searchScrollRequest = 0;
   const preparedGalleryImages = new WeakSet();
   const preparedAnswerReveals = new WeakSet();
   const observedInlineMath = new WeakSet();
@@ -109,6 +110,11 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
 
   function clearSearchHighlights(scope = document) {
     const parents = new Set();
+    for (const block of scope.querySelectorAll("[data-search-reveal]")) delete block.dataset.searchReveal;
+    for (const formula of scope.querySelectorAll(".math-expression[data-search-highlight]")) {
+      delete formula.dataset.searchHighlight;
+      formula.classList.remove("search-highlight", "search-highlight-current", "search-highlight-formula");
+    }
     for (const mark of scope.querySelectorAll("mark[data-search-highlight]")) {
       const parent = mark.parentNode;
       parents.add(parent);
@@ -138,6 +144,17 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
 
     const needle = term.toLowerCase();
     const matches = [];
+    const bareFormulaNeedle = needle
+      .replace(/^(?:\${1,2}|\\\(|\\\[)\s*/, "")
+      .replace(/\s*(?:\${1,2}|\\\)|\\\])$/, "");
+    const formulaNeedles = [...new Set([needle, bareFormulaNeedle].filter(Boolean))];
+    for (const formula of scope.querySelectorAll(".math-expression[aria-label], .math-expression[data-math-source]")) {
+      const source = (formula.getAttribute("aria-label") || formula.dataset.mathSource || "").toLowerCase();
+      if (!formulaNeedles.some((candidate) => source.includes(candidate))) continue;
+      formula.dataset.searchHighlight = "";
+      formula.classList.add("search-highlight", "search-highlight-formula");
+      matches.push(formula);
+    }
     for (const node of nodes) {
       const value = node.nodeValue;
       const normalized = value.toLowerCase();
@@ -161,6 +178,10 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
       node.replaceWith(fragment);
     }
 
+    matches.sort((left, right) => {
+      if (left === right) return 0;
+      return left.compareDocumentPosition(right) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
+    });
     const first = matches[0] || null;
     first?.classList.add("search-highlight-current");
     return first;
@@ -168,9 +189,34 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
 
   function scrollToSearchHighlight(target) {
     if (!target) return false;
+    const request = ++searchScrollRequest;
+    const prose = target.closest(".prose");
+    let block = target;
+    while (prose && block.parentElement && block.parentElement !== prose) block = block.parentElement;
+    if (prose && block.parentElement === prose) block.dataset.searchReveal = "";
+
+    let settled = false;
+    const correctPosition = (remainingFrames = 3) => {
+      if (request !== searchScrollRequest || !target.isConnected) return;
+      const bounds = target.getBoundingClientRect();
+      const offset = bounds.top + bounds.height / 2 - innerHeight / 2;
+      if (Math.abs(offset) > 2) scrollBy({ top: offset, behavior: "instant" });
+      if (remainingFrames > 1) requestAnimationFrame(() => correctPosition(remainingFrames - 1));
+    };
+    const settle = () => {
+      if (settled) return;
+      settled = true;
+      removeEventListener("scrollend", settle);
+      requestAnimationFrame(() => correctPosition());
+    };
+    addEventListener("scrollend", settle, { once: true });
+    setTimeout(settle, 700);
     target.scrollIntoView({
       block: "center",
       behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+    });
+    document.fonts?.ready.then(() => {
+      if (settled) correctPosition();
     });
     return true;
   }
