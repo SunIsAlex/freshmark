@@ -61,13 +61,13 @@ Digging deeper into (1), we guess that if $a_1\pm 2\in\{1,2,3,...,n\}$, a contra
 When $3\le n\le n-2$:
 
 Note $B=\{a_1-2,a_1-4,a_1-6,...,t\}$, where $t=\begin{cases}
-1,a_1\text{is an odd number}\\
-2,a_1\text{is an even number}
+1, & a_1\text{is an odd number}\\
+2, & a_1\text{is an even number}
 \end{cases} $
 
 $C=\{a_1+2,a_1+4,a_1+6,...,s\}$, where $s=\begin{cases}
-n,a_1\text{Same as n parity}\\
-n-1,a_1\text{different from n parity}
+n, & a_1\text{Same as n parity}\\
+n-1, & a_1\text{different from n parity}
 \end{cases} $
 
 According to 2, $a_1$ can continuously generate items in $B,C$, then the last two items of $A_n$ must be numbers in $B,C$, with the same parity as $a_1$.

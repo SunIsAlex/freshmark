@@ -3,7 +3,7 @@ import { readFile, readdir, stat } from "node:fs/promises";
 import test from "node:test";
 import { changedCurrentIndexes } from "../lib/content-diff.mjs";
 import { locales } from "../lib/i18n.mjs";
-import { parseFrontmatter, renderSummary, summaryFromBody } from "../lib/markdown.mjs";
+import { parseFrontmatter, renderMarkdown, renderSummary, summaryFromBody } from "../lib/markdown.mjs";
 import { resolveBaseUrl } from "../lib/site-config.mjs";
 
 const root = new URL("../", import.meta.url);
@@ -264,6 +264,17 @@ test("cold-load KaTeX HTML keeps complete inline formulae around break operators
   assert.match(html, /aria-label="CFSE=\(2\\Delta-2P\)"[\s\S]{0,500}<mo>=<\/mo><mo stretchy="false">\(.*?<mi mathvariant="normal">Δ<\/mi><mo>−<\/mo><mn>2<\/mn><mi>P<\/mi>/);
   assert.match(html, /<annotation encoding="application\/x-tex">CFSE=\(2\\Delta-2P\)<\/annotation>/);
   assert.doesNotMatch(html, /math-svg-definitions|<use href="#MJX-/);
+});
+
+test("multiline inline environments render when an expression precedes begin", async () => {
+  const source = String.raw`其中 $t=\begin{cases}
+1, & a_1\text{为奇数}\\
+2, & a_1\text{为偶数}
+\end{cases}$`;
+  const { html } = await renderMarkdown(source);
+  assert.match(html, /class="math-expression math-inline"[^>]+aria-label="t=\\begin\{cases\} 1, &amp; a_1\\text\{为奇数\}\\\\ 2, &amp; a_1\\text\{为偶数\} \\end\{cases\}"/);
+  assert.match(html, /class="katex"/);
+  assert.doesNotMatch(html, /\$t=\\begin\{cases\}/);
 });
 
 test("articles render math and colocated Markdown images", async () => {
