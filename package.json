@@ -11,7 +11,7 @@
     "build": "node scripts/build.mjs",
     "new": "node scripts/new.mjs",
     "test": "npm run build && node --test tests/*.test.mjs",
-    "lint": "node --check scripts/build.mjs && node --check scripts/build-worker.mjs && node --check scripts/dev.mjs && node --check scripts/new.mjs && node --check lib/build-worker-pool.mjs && node --check lib/content-diff.mjs && node --check lib/i18n.mjs && node --check lib/markdown.mjs && node --check lib/math-config.mjs && node --check lib/math-html.mjs && node --check lib/responsive-images.mjs && node --check lib/site-config.mjs && node --check lib/templates.mjs && node --check theme/app.js && node --check theme/katex.js"
+    "lint": "node --check scripts/build.mjs && node --check scripts/build-worker.mjs && node --check scripts/dev.mjs && node --check scripts/new.mjs && node --check lib/build-worker-pool.mjs && node --check lib/content-diff.mjs && node --check lib/i18n.mjs && node --check lib/markdown.mjs && node --check lib/math-config.mjs && node --check lib/math-html.mjs && node --check lib/responsive-images.mjs && node --check lib/search-text.mjs && node --check lib/site-config.mjs && node --check lib/templates.mjs && node --check theme/app.js && node --check theme/katex.js"
   },
   "dependencies": {
     "diff": "^9.0.0",

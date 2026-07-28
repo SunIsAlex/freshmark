@@ -1,4 +1,5 @@
 import { changedCurrentIndexes } from "../lib/content-diff.mjs";
+import { searchableLatexText } from "../lib/search-text.mjs";
 
 (() => {
   const root = document.documentElement;
@@ -90,11 +91,42 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
     return `${url.pathname}${url.search}${url.hash}`;
   }
 
+  function searchNeedle(term) {
+    return searchableLatexText(term).replace(/[#*`>~]+/g, " ").replace(/\s+/g, " ").trim().toLowerCase();
+  }
+
+  function highlightedResultText(value, needle) {
+    const text = String(value || "");
+    if (!needle) return escape(text);
+    const normalized = text.toLowerCase();
+    let cursor = 0;
+    let matchAt = normalized.indexOf(needle);
+    if (matchAt < 0) return escape(text);
+    let html = "";
+    while (matchAt >= 0) {
+      html += escape(text.slice(cursor, matchAt));
+      html += `<mark class="search-result-highlight">${escape(text.slice(matchAt, matchAt + needle.length))}</mark>`;
+      cursor = matchAt + needle.length;
+      matchAt = normalized.indexOf(needle, cursor);
+    }
+    return html + escape(text.slice(cursor));
+  }
+
+  function searchResultSnippet(post, needle) {
+    const candidates = [post.summary, post.searchText].map((value) => String(value || "")).filter(Boolean);
+    const source = candidates.find((value) => needle && value.toLowerCase().includes(needle)) || candidates[0] || "";
+    const matchAt = needle ? source.toLowerCase().indexOf(needle) : -1;
+    const start = matchAt < 0 ? 0 : Math.max(0, matchAt - 72);
+    const end = Math.min(source.length, matchAt < 0 ? 170 : matchAt + needle.length + 96);
+    return `${start ? "…" : ""}${highlightedResultText(source.slice(start, end), needle)}${end < source.length ? "…" : ""}`;
+  }
+
   function draw(items, term = "") {
     if (!items.length) { results.innerHTML = `<p class="search-hint">${escape(message("noResults"))}</p>`; return; }
-    results.innerHTML = items.slice(0, 8).map((post) => {
+    const needle = searchNeedle(term);
+    results.innerHTML = items.map((post) => {
       const metadata = [...(post.categories || []), ...(post.tags || [])].join(" · ");
-      return `<a class="search-result" href="${escape(searchResultHref(post.url, term))}"><strong>${escape(post.title)}</strong><span>${metadata ? `${escape(metadata)} · ` : ""}${escape(message("minuteRead", { minutes: post.readingTime }))}</span></a>`;
+      return `<a class="search-result" href="${escape(searchResultHref(post.url, term))}"><div class="search-result-heading"><strong>${highlightedResultText(post.title, needle)}</strong><span>${metadata ? `${escape(metadata)} · ` : ""}${escape(message("minuteRead", { minutes: post.readingTime }))}</span></div><p class="search-result-context">${searchResultSnippet(post, needle)}</p></a>`;
     }).join("");
   }
 
@@ -147,9 +179,9 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
     const bareFormulaNeedle = needle
       .replace(/^(?:\${1,2}|\\\(|\\\[)\s*/, "")
       .replace(/\s*(?:\${1,2}|\\\)|\\\])$/, "");
-    const formulaNeedles = [...new Set([needle, bareFormulaNeedle].filter(Boolean))];
+    const formulaNeedles = [...new Set([needle, bareFormulaNeedle].map(searchableLatexText).filter(Boolean))];
     for (const formula of scope.querySelectorAll(".math-expression[aria-label], .math-expression[data-math-source]")) {
-      const source = (formula.getAttribute("aria-label") || formula.dataset.mathSource || "").toLowerCase();
+      const source = searchableLatexText(formula.getAttribute("aria-label") || formula.dataset.mathSource).toLowerCase();
       if (!formulaNeedles.some((candidate) => source.includes(candidate))) continue;
       formula.dataset.searchHighlight = "";
       formula.classList.add("search-highlight", "search-highlight-formula");
@@ -467,9 +499,9 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
   modal?.addEventListener("click", (event) => { if (event.target === modal) closeSearch(); });
   input?.addEventListener("input", async () => {
     const term = input.value.trim();
-    const needle = term.toLowerCase();
+    const needle = searchNeedle(term);
     const posts = await loadIndex();
-    draw(!needle ? posts : posts.filter((post) => `${post.title} ${post.summary} ${(post.categories || []).join(" ")} ${post.tags.join(" ")} ${post.searchText}`.toLowerCase().includes(needle)), term);
+    draw(!needle ? (term ? [] : posts) : posts.filter((post) => `${post.title} ${post.summary} ${(post.categories || []).join(" ")} ${(post.tags || []).join(" ")} ${post.searchText}`.toLowerCase().includes(needle)), term);
   });
   addEventListener("keydown", (event) => {
     const answerTrigger = event.target.closest?.("u.answer-reveal");

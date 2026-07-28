@@ -4,6 +4,7 @@ import test from "node:test";
 import { changedCurrentIndexes } from "../lib/content-diff.mjs";
 import { locales } from "../lib/i18n.mjs";
 import { parseFrontmatter, renderMarkdown, renderSummary, searchTextFromMarkdown, summaryFromBody } from "../lib/markdown.mjs";
+import { searchableLatexText } from "../lib/search-text.mjs";
 import { resolveBaseUrl } from "../lib/site-config.mjs";
 
 const root = new URL("../", import.meta.url);
@@ -26,11 +27,28 @@ test("search index text excludes Markdown and LaTeX syntax", () => {
     "$t=\\begin{cases}1,a_1\\text{为奇数}\\\\2,a_1\\text{为偶数}\\end{cases}$",
     "",
     "Malformed **emphasis marker ** and escaped $\\\\begin{aligned}x\\\\end{aligned}$",
+    "",
+    "$\\begin{case}y\\end{case}$ $\\begin{align*}z\\end{align*}$",
   ].join("\n"));
   assert.match(text, /^xxx and linked text /);
   assert.match(text, /t= 1,a 1 为奇数 2,a 1 为偶数/);
-  assert.match(text, /Malformed emphasis marker and escaped x$/);
+  assert.match(text, /Malformed emphasis marker and escaped x y z$/);
   assert.doesNotMatch(text, /[#*[\]`]|\bhttps?:|\\(?:begin|end|text)\b/);
+  assert.doesNotMatch(text, /\b(?:case|cases|aligned|align)\b/);
+});
+
+test("formula highlighting ignores LaTeX commands and environment names", () => {
+  const formula = searchableLatexText("\\begin{cases}1,a_1\\text{为奇数}\\\\2,a_1\\text{为偶数}\\end{cases}").toLowerCase();
+  assert.equal(formula.includes(searchableLatexText("case").toLowerCase()), false);
+  assert.equal(formula.includes(searchableLatexText("cases").toLowerCase()), false);
+  assert.equal(formula.includes(searchableLatexText("为奇数").toLowerCase()), true);
+});
+
+test("search index and formula highlighting retain Greek letter names", () => {
+  const formula = searchableLatexText("\\alpha-MnS, \\beta-MnS, \\Gamma");
+  assert.equal(formula, "alpha-MnS, beta-MnS, Gamma");
+  assert.equal(formula.toLowerCase().includes("alpha"), true);
+  assert.equal(searchTextFromMarkdown("$\\alpha$-MnS"), "alpha -MnS");
 });
 
 test("build emits portable static pages", async () => {
@@ -580,6 +598,11 @@ test("search results deep-link to and highlight matching article text", async ()
   assert.match(app, /document\.createTreeWalker\(contentRoot, NodeFilter\.SHOW_TEXT/);
   assert.match(app, /mark\.dataset\.searchHighlight/);
   assert.match(app, /\.math-expression\[aria-label\], \.math-expression\[data-math-source\]/);
+  assert.match(app, /map\(searchableLatexText\)\.filter\(Boolean\)/);
+  assert.match(app, /const source = searchableLatexText\(formula\.getAttribute\("aria-label"\) \|\| formula\.dataset\.mathSource\)/);
+  assert.match(app, /function searchResultSnippet/);
+  assert.match(app, /class="search-result-highlight"/);
+  assert.match(app, /class="search-result-context"/);
   assert.match(app, /formula\.classList\.add\("search-highlight", "search-highlight-formula"\)/);
   assert.match(app, /bareFormulaNeedle/);
   assert.match(app, /Node\.DOCUMENT_POSITION_FOLLOWING/);
@@ -594,6 +617,10 @@ test("search results deep-link to and highlight matching article text", async ()
   assert.match(css, /\.search-highlight \{/);
   assert.match(css, /\.search-highlight-current \{/);
   assert.match(css, /\.math-expression\.search-highlight-formula\s*\{/);
+  assert.match(css, /\.search-modal\s*\{[^}]*inset:0[^}]*background:var\(--paper-raised\)/);
+  assert.match(css, /\.search-panel\s*\{[^}]*min-height:100dvh/);
+  assert.match(css, /\.search-result-highlight\s*\{[^}]*background:#dbeafe/);
+  assert.match(css, /\.search-highlight\s*\{[^}]*background:#dbeafe/);
   assert.match(css, /\.prose > \[data-search-reveal\]\s*\{\s*content-visibility:visible/);
 });
 
