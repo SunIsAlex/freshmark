@@ -3,7 +3,7 @@ import { readFile, readdir, stat } from "node:fs/promises";
 import test from "node:test";
 import { changedCurrentIndexes } from "../lib/content-diff.mjs";
 import { locales } from "../lib/i18n.mjs";
-import { parseFrontmatter, renderMarkdown, renderSummary, summaryFromBody } from "../lib/markdown.mjs";
+import { parseFrontmatter, renderMarkdown, renderSummary, searchTextFromMarkdown, summaryFromBody } from "../lib/markdown.mjs";
 import { resolveBaseUrl } from "../lib/site-config.mjs";
 
 const root = new URL("../", import.meta.url);
@@ -17,6 +17,20 @@ test("base URL prefers the environment and falls back to site config", () => {
     resolveBaseUrl("https://config.example", { FRESHMARK_BASE_URL: " https://preview.example " }),
     "https://preview.example",
   );
+});
+
+test("search index text excludes Markdown and LaTeX syntax", () => {
+  const text = searchTextFromMarkdown([
+    "# **xxx** and [linked text](https://example.com)",
+    "",
+    "$t=\\begin{cases}1,a_1\\text{为奇数}\\\\2,a_1\\text{为偶数}\\end{cases}$",
+    "",
+    "Malformed **emphasis marker ** and escaped $\\\\begin{aligned}x\\\\end{aligned}$",
+  ].join("\n"));
+  assert.match(text, /^xxx and linked text /);
+  assert.match(text, /t= 1,a 1 为奇数 2,a 1 为偶数/);
+  assert.match(text, /Malformed emphasis marker and escaped x$/);
+  assert.doesNotMatch(text, /[#*[\]`]|\bhttps?:|\\(?:begin|end|text)\b/);
 });
 
 test("build emits portable static pages", async () => {
@@ -395,6 +409,7 @@ test("articles pass through raw HTML, render level-one headings, and use the mor
   const post = index.find(({ url }) => url.endsWith("/alcohol-to-halide-conversion-and-alcohol-elimination/"));
   assert.equal(post.summary, "本文是【基础有机化学 L9-3 补充你的知识盲区，你真的理解醇的取代和消除反应吗？】的学习笔记");
   assert.equal("summaryHtml" in post, false);
+  assert.doesNotMatch(post.searchText, /(?:^|\s)#{1,6}\s|\*\*|\\(?:begin|end)\b/);
 });
 
 test("math placeholders never leak into heading links", async () => {

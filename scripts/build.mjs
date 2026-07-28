@@ -7,7 +7,7 @@ import { minify as minifyJavaScript } from "terser";
 import config from "../site.config.mjs";
 import { BuildWorkerPool } from "../lib/build-worker-pool.mjs";
 import { defaultLocale, interpolate, locales, localizedPath } from "../lib/i18n.mjs";
-import { parseFrontmatter, renderSummary, summaryFromBody } from "../lib/markdown.mjs";
+import { parseFrontmatter, renderSummary, searchTextFromMarkdown, summaryFromBody } from "../lib/markdown.mjs";
 import { enhanceResponsiveImages } from "../lib/responsive-images.mjs";
 import { resolveBaseUrl } from "../lib/site-config.mjs";
 
@@ -68,7 +68,7 @@ async function loadPosts() {
       slug: relativeSlug, sourceFile, locale, translationKey: data.translationKey || relativeSlug, alternate: data.alternate || "", title: data.title, date, summary,
       tags: Array.isArray(data.tags) ? data.tags : [], categories: Array.isArray(data.categories) ? data.categories : [], featured: data.featured === true,
       readingTime: Math.max(1, Math.ceil(words / 220)), html, headings, spaHtml, spaHeadings,
-      searchText: body.replace(/[#*`>\[\]()_-]/g, " ").replace(/\s+/g, " ").trim(),
+      searchText: searchTextFromMarkdown(body),
     };
   }));
   const posts = loadedPosts.filter(Boolean);
@@ -309,7 +309,15 @@ await Promise.all(Object.keys(locales).map(async (locale) => {
   const aboutPath = localizedPath(locale, "/about/");
   const notFoundPath = localizedPath(locale, "/404.html");
   const notFound = `<main class="container article-header"><p class="eyebrow">404</p><h1>${escapeHtml(messages.notFoundTitle)}</h1><p class="article-dek"><a class="read-link" href="${localeHref(locale, "/")}">${escapeHtml(messages.returnToWriting)}</a></p></main>`;
-  const searchIndex = localePosts.map(({ slug, title, summary, tags, categories, readingTime, searchText }) => ({ title, summary, tags, categories, readingTime, searchText, url: localeHref(locale, `/posts/${slug}/`) }));
+  const searchIndex = localePosts.map(({ slug, title, summary, tags, categories, readingTime, searchText }) => ({
+    title,
+    summary: searchTextFromMarkdown(summary),
+    tags,
+    categories,
+    readingTime,
+    searchText,
+    url: localeHref(locale, `/posts/${slug}/`),
+  }));
   const rss = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>${escapeHtml(config.title)}</title><link>${localeAbsolute(locale, "/")}</link><description>${escapeHtml(messages.siteDescription)}</description><language>${escapeHtml(messages.language)}</language>${localePosts.map((post) => `<item><title>${escapeHtml(post.title)}</title><link>${localeAbsolute(locale, `/posts/${post.slug}/`)}</link><guid>${localeAbsolute(locale, `/posts/${post.slug}/`)}</guid><pubDate>${new Date(`${post.date}T12:00:00Z`).toUTCString()}</pubDate><description>${escapeHtml(post.summary)}</description></item>`).join("")}</channel></rss>`;
   await Promise.all([
     write(localeOutput(locale, "index.html"), homeHtml),
