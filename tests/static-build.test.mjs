@@ -151,11 +151,12 @@ test("localized routes provide Chinese and English navigation", async () => {
 
   const chineseIndex = JSON.parse(await read("public/search-index.json"));
   const englishIndex = JSON.parse(await read("public/en/search-index.json"));
-  assert.equal(chineseIndex.length, 31);
-  assert.equal(englishIndex.length, chineseIndex.length);
+  assert.equal(chineseIndex.length, 32);
+  assert.equal(englishIndex.length, 31);
+  const englishUrls = new Set(englishIndex.map(({ url }) => url.replace(/^\/en/, "")));
   assert.deepEqual(
-    englishIndex.map(({ url }) => url.replace(/^\/en/, "")).sort(),
-    chineseIndex.map(({ url }) => url).sort(),
+    chineseIndex.filter(({ url }) => !englishUrls.has(url)).map(({ url }) => url),
+    ["/posts/math/2027-strong-foundation-plan/07-trigonometric-functions/"],
   );
   assert.doesNotMatch(
     JSON.stringify(englishIndex.map(({ searchText, ...metadata }) => metadata)),
