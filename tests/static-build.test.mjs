@@ -479,6 +479,12 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.ok(app.indexOf("await renderSpaMath(nextMain)") < app.indexOf("currentMain.replaceWith(nextMain)"));
   assert.match(app, /assets\/katex\.min\.css/);
   assert.match(app, /updateInlineMathOverflow\(nextMain\)/);
+  assert.match(app, /function observeInlineMath/);
+  assert.match(app, /new IntersectionObserver/);
+  assert.match(app, /rootMargin: "100% 0px"/);
+  assert.match(app, /observeInlineMath\(nextMain\)/);
+  assert.match(app, /observeInlineMath\(\);\s+updateInlineMathOverflow\(\)/);
+  assert.match(app, /const nearbyInlineMath = new Set\(\)/);
   const katex = await read("theme/katex.js");
   assert.match(katex, /import \{ katexOptions \} from "\.\.\/lib\/math-config\.mjs"/);
   assert.match(katex, /formula\.setAttribute\("aria-label", source\)/);

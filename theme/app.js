@@ -26,9 +26,12 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
   let galleryRequest = 0;
   let katexRequest;
   let mathOverflowFrame;
+  let inlineMathObserver;
   let readingStateFrame;
   const preparedGalleryImages = new WeakSet();
   const preparedAnswerReveals = new WeakSet();
+  const observedInlineMath = new WeakSet();
+  const nearbyInlineMath = new Set();
 
   function afterFirstPaint(task) {
     requestAnimationFrame(() => requestAnimationFrame(() => {
@@ -481,21 +484,49 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
     });
   }
 
+  function measureInlineMathOverflow(formula) {
+    formula.classList.remove("math-inline-overflow");
+    const line = formula.closest("p, li, td, th, blockquote, figcaption, h1, h2, h3, h4, h5, h6") || formula.closest(".prose");
+    if (!line) return;
+    const lineStyle = getComputedStyle(line);
+    const availableWidth = line.clientWidth
+      - Number.parseFloat(lineStyle.paddingLeft || "0")
+      - Number.parseFloat(lineStyle.paddingRight || "0");
+    formula.classList.toggle(
+      "math-inline-overflow",
+      formula.scrollWidth > availableWidth + 2,
+    );
+  }
+
+  function observeInlineMath(scope = document) {
+    if (!("IntersectionObserver" in window)) return;
+    inlineMathObserver ||= new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) nearbyInlineMath.add(entry.target);
+        else nearbyInlineMath.delete(entry.target);
+      }
+      updateInlineMathOverflow();
+    }, { rootMargin: "100% 0px" });
+    for (const formula of scope.querySelectorAll(".prose .math-inline")) {
+      if (observedInlineMath.has(formula)) continue;
+      observedInlineMath.add(formula);
+      inlineMathObserver.observe(formula);
+    }
+  }
+
   function updateInlineMathOverflow(scope = document) {
     cancelAnimationFrame(mathOverflowFrame);
     mathOverflowFrame = requestAnimationFrame(() => {
-      for (const formula of scope.querySelectorAll(".prose .math-inline")) {
-        formula.classList.remove("math-inline-overflow");
-        const line = formula.closest("p, li, td, th, blockquote, figcaption, h1, h2, h3, h4, h5, h6") || formula.closest(".prose");
-        if (!line) continue;
-        const lineStyle = getComputedStyle(line);
-        const availableWidth = line.clientWidth
-          - Number.parseFloat(lineStyle.paddingLeft || "0")
-          - Number.parseFloat(lineStyle.paddingRight || "0");
-        formula.classList.toggle(
-          "math-inline-overflow",
-          formula.scrollWidth > availableWidth + 2,
-        );
+      const formulas = inlineMathObserver
+        ? [...nearbyInlineMath]
+        : [...scope.querySelectorAll(".prose .math-inline")];
+      for (const formula of formulas) {
+        if (!formula.isConnected) {
+          nearbyInlineMath.delete(formula);
+          continue;
+        }
+        if (scope !== document && !scope.contains(formula)) continue;
+        measureInlineMathOverflow(formula);
       }
     });
   }
@@ -646,6 +677,7 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
       const swap = () => {
         currentMain.replaceWith(nextMain);
         if (nextPage.article) applyArticleContentDiff(url, nextMain);
+        observeInlineMath(nextMain);
         updateInlineMathOverflow(nextMain);
         document.fonts?.ready.then(() => updateInlineMathOverflow(nextMain));
         prepareAnswerReveals(nextMain);
@@ -744,6 +776,7 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
       navigator.serviceWorker.register(`${basePath}/sw.js`, { scope: `${basePath}/`, updateViaCache: "none" }).catch(() => {});
     }
     if (document.querySelector("[data-reading-progress]")) applyArticleContentDiff(initialUrl);
+    observeInlineMath();
     updateInlineMathOverflow();
     document.fonts?.ready.then(() => updateInlineMathOverflow());
     prepareAnswerReveals();
