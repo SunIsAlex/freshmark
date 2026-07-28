@@ -296,7 +296,7 @@ $$\begin{gathered}
     AB=\frac{1}{2^5}\sin\frac{2\pi}{11}\sin\frac{4\pi}{11}\sin\frac{6\pi}{11}\sin\frac{8\pi}{11}\sin\frac{10\pi}{11}\\
     =\frac{1}{2^5}\sin\frac{2\pi}{11}\sin\frac{4\pi}{11}\sin\frac{5\pi}{11}\sin\frac{3\pi}{11}\sin\frac{1\pi}{11}=\frac{1}{2^5}B\\
     \Longrightarrow A=\frac{1}{2^5}\\
-    \cos\frac{\pi}{11}\cdot\cos\frac{2\pi}{11}\cdots\cos\frac{10\pi}{11}=-A^2=-\frac{1}{2^10}=-\frac{1}{1024}
+    \cos\frac{\pi}{11}\cdot\cos\frac{2\pi}{11}\cdots\cos\frac{10\pi}{11}=-A^2=-\frac{1}{2^{10}}=-\frac{1}{1024}
 \end{gathered}$$
 # 例4.12
 求 $\cos\frac{\pi}{7} - \cos\frac{2\pi}{7} + \cos\frac{3\pi}{7}$ 的值。
