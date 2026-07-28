@@ -51,6 +51,19 @@ test("search index and formula highlighting retain Greek letter names", () => {
   assert.equal(searchTextFromMarkdown("$\\alpha$-MnS"), "alpha -MnS");
 });
 
+test("search index text excludes Markdown images", () => {
+  const text = searchTextFromMarkdown([
+    "before",
+    "![throwaway alt](image.png \"throwaway title\")",
+    "middle ![reference alt][diagram] after",
+    "<img src=\"raw-image.png\" alt=\"raw alt\">",
+    "",
+    "[diagram]: diagram.svg \"reference title\"",
+  ].join("\n"));
+  assert.equal(text, "before middle after");
+  assert.doesNotMatch(text, /throwaway|reference|diagram|image|raw alt/i);
+});
+
 test("build emits portable static pages", async () => {
   const files = [
     "public/index.html",
