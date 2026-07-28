@@ -148,6 +148,14 @@ baseUrl: "https://name.github.io/my-blog",
 basePath: "/my-blog",
 ```
 
+Set `FRESHMARK_BASE_URL` to override `baseUrl` for a specific build without
+editing the config file. An unset or blank value falls back to
+`site.config.mjs`:
+
+```bash
+FRESHMARK_BASE_URL=https://preview.example.com npm run build
+```
+
 ## Project map
 
 ```text

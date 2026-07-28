@@ -4,9 +4,20 @@ import test from "node:test";
 import { changedCurrentIndexes } from "../lib/content-diff.mjs";
 import { locales } from "../lib/i18n.mjs";
 import { parseFrontmatter, renderSummary, summaryFromBody } from "../lib/markdown.mjs";
+import { resolveBaseUrl } from "../lib/site-config.mjs";
 
 const root = new URL("../", import.meta.url);
 const read = (file) => readFile(new URL(file, root), "utf8");
+
+test("base URL prefers the environment and falls back to site config", () => {
+  assert.equal(resolveBaseUrl("https://config.example", {}), "https://config.example");
+  assert.equal(resolveBaseUrl("https://config.example", { FRESHMARK_BASE_URL: "" }), "https://config.example");
+  assert.equal(resolveBaseUrl("https://config.example", { FRESHMARK_BASE_URL: "  " }), "https://config.example");
+  assert.equal(
+    resolveBaseUrl("https://config.example", { FRESHMARK_BASE_URL: " https://preview.example " }),
+    "https://preview.example",
+  );
+});
 
 test("build emits portable static pages", async () => {
   const files = [
