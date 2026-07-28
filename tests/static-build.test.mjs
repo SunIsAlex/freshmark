@@ -487,6 +487,9 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /formula\.scrollWidth > availableWidth \+ 2/);
   assert.doesNotMatch(app, /formula\.scrollWidth > formula\.clientWidth/);
   assert.match(app, /document\.fonts\?\.ready/);
+  assert.match(app, /function preloadKaTeX/);
+  assert.match(app, /idle\(preloadKaTeX\)/);
+  assert.match(app, /if \(!canPrefetch\(\)\) return/);
   assert.match(app, /new URL\("page\.html", contentUrl\)/);
   assert.doesNotMatch(app, /new URL\("index\.md"|fetch\([^)]*index\.md/);
   assert.match(app, /currentMain\.replaceWith\(nextMain\)/);
@@ -579,7 +582,7 @@ test("article images open in a PhotoSwipe keyboard and touch-friendly gallery", 
   assert.match(app, /const PhotoSwipe = await loadPhotoSwipe\(\)/);
   assert.match(app, /function preloadPhotoSwipe/);
   assert.match(app, /preloadPhotoSwipe\(nextMain\)/);
-  assert.match(app, /addEventListener\("load", \(\) => preloadPhotoSwipe\(\)/);
+  assert.match(app, /addEventListener\("load", \(\) => \{\s+preloadPhotoSwipe\(\);\s+idle\(preloadKaTeX\);/);
   assert.match(app, /new PhotoSwipe/);
   assert.ok(chunks.some((file) => /^photoswipe\.esm-[A-Z0-9]+\.js$/.test(file)));
   assert.ok(Buffer.byteLength(bundle) < 30_000);
@@ -607,6 +610,7 @@ test("article images open in a PhotoSwipe keyboard and touch-friendly gallery", 
 test("service worker versions and persists generated resources", async () => {
   const { version } = JSON.parse(await read("public/version.json"));
   const worker = await read("public/sw.js");
+  const build = await read("scripts/build.mjs");
   assert.match(version, /^[a-f0-9]{16}$/);
   assert.match(worker, new RegExp(`const VERSION="${version}"`));
   assert.match(worker, /\.startsWith\("freshmark-"\)/);
@@ -624,6 +628,9 @@ test("service worker versions and persists generated resources", async () => {
   assert.match(worker, /\?v=/);
   assert.match(worker, /"navigate"===/);
   assert.match(worker, /navigationResponse/);
+  assert.match(build, /const navigationResponse=\(request,event\)=>\{const cached=caches\.match\(request\);const network=fetch\(request\)/);
+  assert.match(build, /event\.waitUntil\(cacheUpdate\)/);
+  assert.doesNotMatch(build, /const navigationResponse=.*fetch\(request\)\.then\(\(response\)=>cacheResponse\(request,response\)\)/);
 });
 
 test("published posts retain raw Markdown and provide compact KaTeX SPA fragments", async () => {

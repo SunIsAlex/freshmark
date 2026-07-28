@@ -61,6 +61,15 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
     katex.renderMath(scope);
   }
 
+  function preloadKaTeX() {
+    if (!canPrefetch()) return;
+    katexRequest ||= Promise.all([
+      import("./katex.js"),
+      loadKaTeXStyles(),
+    ]);
+    katexRequest.catch(() => { katexRequest = undefined; });
+  }
+
   const escape = (value) => String(value).replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[char]);
   const message = (key, values = {}) => String(messages[key] || key).replace(/\{(\w+)\}/g, (_, name) => values[name] ?? "");
   const setTheme = (theme) => { root.dataset.theme = theme; try { localStorage.setItem("freshmark-theme", theme); } catch {} };
@@ -711,7 +720,10 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
   });
 
   history.replaceState({ ...(history.state || {}), spa: true, scrollY }, "", location.href);
-  addEventListener("load", () => preloadPhotoSwipe(), { once: true });
+  addEventListener("load", () => {
+    preloadPhotoSwipe();
+    idle(preloadKaTeX);
+  }, { once: true });
   addEventListener("popstate", (event) => {
     const url = new URL(location.href);
     if (`${url.pathname}${url.search}` === renderedRoute) {
