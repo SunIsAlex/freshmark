@@ -8,7 +8,6 @@ import { minify as minifyJavaScript } from "terser";
 import config from "../site.config.mjs";
 import { defaultLocale, interpolate, locales, localizedPath } from "../lib/i18n.mjs";
 import { parseFrontmatter, renderMarkdown, renderSummary, summaryFromBody } from "../lib/markdown.mjs";
-import { closeMathSvgRenderer, injectMathSvgDefinitions } from "../lib/math-svg.mjs";
 import { enhanceResponsiveImages } from "../lib/responsive-images.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
@@ -113,9 +112,10 @@ function page({ locale = defaultLocale, title, description, content, article = f
   const fullTitle = title ? `${escapeHtml(title)} — ${escapeHtml(config.title)}` : `${escapeHtml(config.title)} — ${escapeHtml(messages.siteDescription)}`;
   const stylesUrl = assetHref("/assets/styles.css");
   const deferredStyles = `<link rel="preload" href="${stylesUrl}" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="${stylesUrl}"></noscript>`;
+  const mathStyles = content.includes('class="katex"') ? `<link rel="stylesheet" href="${assetHref("/assets/katex.min.css")}" data-katex-styles>` : "";
   const defaultPath = locale === defaultLocale ? pathName : alternatePath;
   const alternateLink = hasAlternate ? `<link rel="alternate" hreflang="${alternate.language}" href="${absolute(alternatePath)}">` : "";
-  return injectMathSvgDefinitions(`<!doctype html><html lang="${escapeHtml(messages.language)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="${escapeHtml(config.themeColor)}"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="${escapeHtml(config.title)}"><meta name="codex-preview" content="development"><title>${fullTitle}</title><meta name="description" content="${escapeHtml(pageDescription)}"><link rel="canonical" href="${absolute(pathName)}"><link rel="alternate" hreflang="${messages.language}" href="${absolute(pathName)}">${alternateLink}<link rel="alternate" hreflang="x-default" href="${absolute(defaultPath)}"><link rel="manifest" href="${localeHref(locale, "/manifest.webmanifest")}"><link rel="icon" href="${href("/favicon.svg")}" type="image/svg+xml"><link rel="apple-touch-icon" href="${href("/icons/apple-touch-icon.png")}"><link rel="alternate" type="application/rss+xml" title="${escapeHtml(config.title)} RSS" href="${localeHref(locale, "/rss.xml")}"><link rel="preload" href="${href("/assets/fonts/anthropic-sans-variable.woff2")}" as="font" type="font/woff2" crossorigin><script>try{document.documentElement.dataset.theme=localStorage.getItem('freshmark-theme')||''}catch(e){}</script><style data-critical>${criticalCss}</style>${deferredStyles}</head><body><div class="site-shell"><div class="ambient"></div>${article ? '<div class="reading-progress" data-reading-progress></div>' : ""}${header(locale, alternatePath)}${content}${footer(locale)}${searchModal(locale)}</div><script>window.FRESHMARK={basePath:${JSON.stringify(basePath)},title:${JSON.stringify(config.title)},locale:${JSON.stringify(locale)},language:${JSON.stringify(messages.language)},messages:${JSON.stringify(messages)},localeRoot:${JSON.stringify(localeHref(locale, "/"))},alternateRoot:${JSON.stringify(localeHref(alternateLocale, "/"))},postsRoot:${JSON.stringify(localeHref(locale, "/posts/"))},searchIndexPath:${JSON.stringify(localeHref(locale, "/search-index.json"))},assetVersion:${JSON.stringify(assetVersion)}};</script><script type="module" src="${assetHref("/assets/app.js")}"></script></body></html>`);
+  return `<!doctype html><html lang="${escapeHtml(messages.language)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="${escapeHtml(config.themeColor)}"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="${escapeHtml(config.title)}"><meta name="codex-preview" content="development"><title>${fullTitle}</title><meta name="description" content="${escapeHtml(pageDescription)}"><link rel="canonical" href="${absolute(pathName)}"><link rel="alternate" hreflang="${messages.language}" href="${absolute(pathName)}">${alternateLink}<link rel="alternate" hreflang="x-default" href="${absolute(defaultPath)}"><link rel="manifest" href="${localeHref(locale, "/manifest.webmanifest")}"><link rel="icon" href="${href("/favicon.svg")}" type="image/svg+xml"><link rel="apple-touch-icon" href="${href("/icons/apple-touch-icon.png")}"><link rel="alternate" type="application/rss+xml" title="${escapeHtml(config.title)} RSS" href="${localeHref(locale, "/rss.xml")}"><link rel="preload" href="${href("/assets/fonts/anthropic-sans-variable.woff2")}" as="font" type="font/woff2" crossorigin><script>try{document.documentElement.dataset.theme=localStorage.getItem('freshmark-theme')||''}catch(e){}</script><style data-critical>${criticalCss}</style>${mathStyles}${deferredStyles}</head><body><div class="site-shell"><div class="ambient"></div>${article ? '<div class="reading-progress" data-reading-progress></div>' : ""}${header(locale, alternatePath)}${content}${footer(locale)}${searchModal(locale)}</div><script>window.FRESHMARK={basePath:${JSON.stringify(basePath)},title:${JSON.stringify(config.title)},locale:${JSON.stringify(locale)},language:${JSON.stringify(messages.language)},messages:${JSON.stringify(messages)},localeRoot:${JSON.stringify(localeHref(locale, "/"))},alternateRoot:${JSON.stringify(localeHref(alternateLocale, "/"))},postsRoot:${JSON.stringify(localeHref(locale, "/posts/"))},searchIndexPath:${JSON.stringify(localeHref(locale, "/search-index.json"))},assetVersion:${JSON.stringify(assetVersion)}};</script><script type="module" src="${assetHref("/assets/app.js")}"></script></body></html>`;
 }
 
 function webManifest(locale = defaultLocale) {
@@ -145,7 +145,7 @@ function pageFragment(html, { locale = defaultLocale, title, description, pathNa
   return `<meta data-freshmark-page data-title="${escapeHtml(pageTitle)}" data-description="${escapeHtml(description || locales[locale].siteDescription)}" data-canonical="${absolute(pathName)}" data-alternate="${absolute(alternatePath)}" data-article="${article}">${content}`;
 }
 
-async function homePage(locale, posts, { mathOutput = "svg", fragment = false } = {}) {
+async function homePage(locale, posts, { mathOutput = "html", fragment = false } = {}) {
   const messages = locales[locale];
   const featured = posts.find((post) => post.featured) || posts[0];
   const categories = [...new Set(posts.flatMap((post) => post.categories))];
@@ -157,7 +157,7 @@ async function homePage(locale, posts, { mathOutput = "svg", fragment = false } 
   return page({ locale, content, pathName, alternatePath: localizedPath(messages.alternate, "/") });
 }
 
-async function postPage(post, { mathOutput = "svg", fragment = false } = {}) {
+async function postPage(post, { mathOutput = "html", fragment = false } = {}) {
   const messages = locales[post.locale];
   const headings = mathOutput === "source" ? post.spaHeadings : post.headings;
   const articleHtml = mathOutput === "source" ? post.spaHtml : post.html;
@@ -355,5 +355,4 @@ await write("version.json", JSON.stringify({ version }));
 const minifiedWorker = await minifyJavaScript(serviceWorker(version), { compress: true, mangle: true });
 if (!minifiedWorker.code) throw new Error("Service worker minification produced no output");
 await write("sw.js", minifiedWorker.code);
-await closeMathSvgRenderer();
 console.log(`Freshmark built ${posts.length} posts to public/`);

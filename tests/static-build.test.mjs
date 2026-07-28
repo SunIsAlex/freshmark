@@ -101,7 +101,9 @@ test("generated HTML has no application framework runtime", async () => {
   assert.match(html, /assetVersion:"[a-f0-9]{12}"/);
   assert.match(html, /<link[^>]+href="\/assets\/fonts\/anthropic-sans-variable\.woff2"[^>]+rel="preload"/);
   assert.match(html, /<script[^>]+src="\/assets\/app\.js\?v=[a-f0-9]{12}"[^>]+type="module"/);
-  assert.doesNotMatch(html, /katex|min\.js|auto-render/);
+  assert.match(html, /<link[^>]+href="\/assets\/katex\.min\.css\?v=[a-f0-9]{12}"[^>]+data-katex-styles/);
+  assert.match(html, /class="katex"/);
+  assert.doesNotMatch(html, /katex\.min\.js|mhchem\.min\.js|auto-render/);
   assert.doesNotMatch(html, /\b(?:_next|__next|react(?:\.production)?\.min|vinext)\b/i);
 });
 
@@ -235,13 +237,21 @@ test("permanganate medium reactions render as display math in both delivery path
   assert.match(englishHtml, /<p>Alkaline:<\/p><p><span class="math-expression math-display"/);
 });
 
+test("cold-load KaTeX HTML keeps complete inline formulae around break operators", async () => {
+  const html = await read("public/posts/chemistry/inorganic/manganese/index.html");
+  assert.match(html, /aria-label="CFSE=0"[\s\S]{0,400}<mo>=<\/mo><mn>0<\/mn>/);
+  assert.match(html, /aria-label="CFSE=\(2\\Delta-2P\)"[\s\S]{0,500}<mo>=<\/mo><mo stretchy="false">\(.*?<mi mathvariant="normal">Δ<\/mi><mo>−<\/mo><mn>2<\/mn><mi>P<\/mi>/);
+  assert.match(html, /<annotation encoding="application\/x-tex">CFSE=\(2\\Delta-2P\)<\/annotation>/);
+  assert.doesNotMatch(html, /math-svg-definitions|<use href="#MJX-/);
+});
+
 test("articles render math and colocated Markdown images", async () => {
   const html = await read("public/posts/physics/basic-calculus-02/index.html");
   assert.match(html, /<span class="math-expression math-display"[^>]+aria-label="\\int f\(x\)dx=F\(x\)\+C"/);
-  assert.match(html, /<svg[^>]+class="math-svg-definitions"[^>]*><defs><path/);
-  assert.ok(html.indexOf("<h1>") < html.indexOf('class="math-svg-definitions"'));
-  assert.match(html, /<use href="#MJX-/);
-  assert.doesNotMatch(html, /class="katex|\\\[\\int f\(x\)dx/);
+  assert.match(html, /class="katex"/);
+  assert.match(html, /class="katex-mathml"><math/);
+  assert.match(html, /<link[^>]+href="\/assets\/katex\.min\.css\?v=[a-f0-9]{12}"[^>]+data-katex-styles/);
+  assert.doesNotMatch(html, /math-svg-definitions|<use href="#MJX-|\\\[\\int f\(x\)dx/);
   assert.match(html, /<picture class="responsive-picture">/);
   assert.match(html, /<source[^>]*srcset="[^"]*freshmark-[a-f0-9]+-480w\.avif 480w[^"]*"[^>]*type="image\/avif"/);
   assert.match(html, /<source[^>]*srcset="[^"]*freshmark-[a-f0-9]+-480w\.webp 480w[^"]*"[^>]*type="image\/webp"/);
@@ -279,10 +289,11 @@ test("articles render math and colocated Markdown images", async () => {
   assert.doesNotMatch(spacedImageHtml, /src="&lt;Screenshot/);
 });
 
-test("summaries render inline Markdown and pre-render math as SVG", async () => {
+test("summaries render inline Markdown and pre-render math as KaTeX HTML", async () => {
   const renderedSummary = await renderSummary("Use **AM-GM** for $a_4$ and `code`.");
   assert.match(renderedSummary, /^Use <strong>AM-GM<\/strong> for <span class="math-expression math-inline"[^>]+aria-label="a_4"/);
-  assert.match(renderedSummary, /<svg[^>]+aria-hidden="true"[\s\S]*<\/svg><\/span> and <code>code<\/code>\.$/);
+  assert.match(renderedSummary, /class="katex-mathml"><math[\s\S]*<annotation encoding="application\/x-tex">a_4<\/annotation>/);
+  assert.match(renderedSummary, /class="katex-html" aria-hidden="true"[\s\S]*<\/span><\/span><\/span> and <code>code<\/code>\.$/);
   assert.equal(
     await renderSummary("[Reference](https://example.com) with *emphasis*", { links: false }),
     "Reference with <em>emphasis</em>",
@@ -322,20 +333,22 @@ test("standalone boxed formulas become scrollable display math", async () => {
 
   const css = await read("public/assets/styles.css");
   assert.match(css, /\.math-display\{[^}]*width:100%[^}]*max-width:100%[^}]*overflow-x:auto/);
-  assert.match(css, /\.math-display>svg\{[^}]*display:inline-block[^}]*min-width:max-content/);
+  assert.match(css, /\.math-display>\.katex-display\{[^}]*min-width:max-content[^}]*margin:0/);
   assert.match(css, /\.math-inline-overflow\{[^}]*display:inline-block[^}]*max-width:100%[^}]*overflow-x:auto/);
   assert.match(css, /\.math-display,\.math-inline-overflow\{[^}]*scrollbar-width:thin/);
 });
 
-test("HTML underlines do not duplicate SVG math underlines", async () => {
+test("HTML underlines continue through KaTeX formulae", async () => {
   const css = await read("public/assets/styles.css");
+  const html = await read("public/posts/chemistry/inorganic/manganese/index.html");
   assert.match(css, /\.prose u\{[^}]*padding-bottom:.12em/);
   assert.match(css, /\.prose u\{[^}]*background-image:linear-gradient\(currentColor,currentColor\)/);
   assert.match(css, /\.prose u\{[^}]*background-position:0 100%/);
   assert.match(css, /\.prose u\{[^}]*background-size:100% max\(1px,.04em\)/);
   assert.match(css, /\.prose u\{[^}]*box-decoration-break:clone/);
   assert.match(css, /\.prose u\{[^}]*text-decoration:none/);
-  assert.match(css, /\.prose u:has\(\.math-expression\)\{background-image:none}/);
+  assert.doesNotMatch(css, /\.prose u:has\(\.math-expression\)/);
+  assert.match(html, /<u class="answer-reveal"><span class="math-expression math-inline"[^>]+aria-label="\\ce\{/);
 });
 
 test("articles pass through raw HTML, render level-one headings, and use the more excerpt", async () => {
@@ -457,6 +470,9 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.ok(app.indexOf("await renderSpaMath(nextMain)") < app.indexOf("currentMain.replaceWith(nextMain)"));
   assert.match(app, /assets\/katex\.min\.css/);
   assert.match(app, /updateInlineMathOverflow\(nextMain\)/);
+  const katex = await read("theme/katex.js");
+  assert.match(katex, /import \{ katexOptions \} from "\.\.\/lib\/math-config\.mjs"/);
+  assert.match(katex, /formula\.setAttribute\("aria-label", source\)/);
   assert.match(app, /formula\.classList\.remove\("math-inline-overflow"\)/);
   assert.match(app, /formula\.closest\("p, li, td, th, blockquote, figcaption, h1, h2, h3, h4, h5, h6"\)/);
   assert.match(app, /formula\.scrollWidth > availableWidth \+ 2/);
@@ -610,7 +626,9 @@ test("published posts retain raw Markdown and provide compact KaTeX SPA fragment
   assert.doesNotMatch(fragment, /<!doctype html>|<html|<body|data-critical|rel="stylesheet"|as="style"/);
 
   const html = await read("public/posts/physics/basic-calculus-02/index.html");
-  assert.match(html, /<svg[^>]+class="math-svg-definitions"[^>]*><defs><path/);
+  assert.match(html, /class="katex"/);
+  assert.match(html, /class="katex-mathml"><math/);
+  assert.doesNotMatch(html, /math-svg-definitions|<use href="#MJX-/);
   assert.doesNotMatch(html, /data-math-source/);
   assert.ok(Buffer.byteLength(fragment) < Buffer.byteLength(html) / 2);
   assert.match(html, /<a href="index\.md" download>下载 Markdown<\/a>/);

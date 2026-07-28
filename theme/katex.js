@@ -1,24 +1,14 @@
 import katex from "katex";
 import "katex/contrib/mhchem";
-
-const macros = {
-  "\\degree": "^{\\circ}",
-  "\\R": "\\mathbb{R}",
-  "\\N": "\\mathbb{N}",
-  "\\Z": "\\mathbb{Z}",
-  "\\E": "\\mathrm{e}",
-  "\\Hoffmann": "\\operatorname{Hoffmann}",
-};
+import { katexOptions } from "../lib/math-config.mjs";
 
 export function renderMath(scope) {
   for (const formula of scope.querySelectorAll("[data-math-source]")) {
-    katex.render(formula.dataset.mathSource, formula, {
+    const source = formula.dataset.mathSource;
+    formula.setAttribute("aria-label", source);
+    katex.render(source, formula, {
+      ...katexOptions,
       displayMode: formula.hasAttribute("data-math-display"),
-      macros,
-      output: "htmlAndMathml",
-      strict: "ignore",
-      throwOnError: false,
-      trust: false,
     });
     formula.removeAttribute("data-math-display");
   }
