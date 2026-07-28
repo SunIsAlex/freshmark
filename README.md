@@ -111,6 +111,18 @@ original full-resolution image. Generated variants are cached in
 npm run build
 ```
 
+The build uses up to four worker threads for Markdown/KaTeX rendering and HTML
+minification. Override the worker count with `FRESHMARK_WORKERS` when tuning for
+the available CPU and memory:
+
+```bash
+# macOS or Linux
+FRESHMARK_WORKERS=2 npm run build
+
+# PowerShell
+$env:FRESHMARK_WORKERS=2; npm run build
+```
+
 Upload the resulting `public/` directory to any static host, including GitHub
 Pages, Cloudflare Pages, Netlify, Vercel, S3, or a basic web server. No Node.js
 process is needed after the build.
@@ -146,6 +158,7 @@ lib/responsive-images.mjs  Responsive image generation
 theme/app.js         SPA navigation, search, tags, and reading progress
 site.config.mjs      Site title, URL, author, and path settings
 scripts/build.mjs    Static generator
+scripts/build-worker.mjs  Parallel rendering and minification worker
 scripts/new.mjs      Markdown template generator
 templates/           Reusable Markdown templates
 public/              Portable generated website

@@ -3,17 +3,18 @@ import path from "node:path";
 import { createHash } from "node:crypto";
 import { build as bundle } from "esbuild";
 import CleanCSS from "clean-css";
-import { minify as minifyHtml } from "html-minifier-terser";
 import { minify as minifyJavaScript } from "terser";
 import config from "../site.config.mjs";
+import { BuildWorkerPool } from "../lib/build-worker-pool.mjs";
 import { defaultLocale, interpolate, locales, localizedPath } from "../lib/i18n.mjs";
-import { parseFrontmatter, renderMarkdown, renderSummary, summaryFromBody } from "../lib/markdown.mjs";
+import { parseFrontmatter, renderSummary, summaryFromBody } from "../lib/markdown.mjs";
 import { enhanceResponsiveImages } from "../lib/responsive-images.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
 const contentDir = path.join(root, "content", "posts");
 const themeDir = path.join(root, "theme");
 const outputDir = path.join(root, "public");
+let buildWorkers;
 const currentYear = new Date().getUTCFullYear();
 const basePath = `/${String(config.basePath || "").replace(/^\/+|\/+$/g, "")}`.replace(/^\/$/, "");
 let assetVersion = "";
@@ -46,30 +47,29 @@ async function findMarkdownFiles(directory, relative = "") {
 
 async function loadPosts() {
   const files = (await findMarkdownFiles(contentDir)).sort();
-  const posts = [];
-  for (const file of files) {
+  const loadedPosts = await Promise.all(files.map(async (file) => {
     const sourceFile = file.split(path.sep).join("/");
     const source = await fs.readFile(path.join(contentDir, sourceFile), "utf8");
     const { data, body } = parseFrontmatter(source, sourceFile);
-    if (data.draft === true && process.env.FRESHMARK_DRAFTS !== "true") continue;
+    if (data.draft === true && process.env.FRESHMARK_DRAFTS !== "true") return null;
     for (const key of ["title", "date"]) if (!data[key]) throw new Error(`${sourceFile}: missing ${key} in frontmatter`);
     const localizedFile = sourceFile.match(/\.([a-z]{2})\.md$/);
     const requestedLocale = String(data.lang || localizedFile?.[1] || defaultLocale).split("-")[0];
     const locale = locales[requestedLocale] ? requestedLocale : defaultLocale;
     const suffix = localizedFile && locales[localizedFile[1]] ? `.${localizedFile[1]}.md` : ".md";
     const date = String(data.date).slice(0, 10);
-    const { html, headings } = await renderMarkdown(body);
-    const { html: spaHtml, headings: spaHeadings } = await renderMarkdown(body, { mathOutput: "source" });
+    const { html, headings, spaHtml, spaHeadings } = await buildWorkers.run("render-markdown", { body, sourceFile });
     const words = body.replace(/[#*`>\[\]()_-]/g, " ").split(/\s+/).filter(Boolean).length;
     const relativeSlug = sourceFile.slice(0, -suffix.length).replace(/(^|\/)index$/, "");
     const summary = data.summary || data.description || summaryFromBody(body);
-    posts.push({
+    return {
       slug: relativeSlug, sourceFile, locale, translationKey: data.translationKey || relativeSlug, alternate: data.alternate || "", title: data.title, date, summary,
       tags: Array.isArray(data.tags) ? data.tags : [], categories: Array.isArray(data.categories) ? data.categories : [], featured: data.featured === true,
       readingTime: Math.max(1, Math.ceil(words / 220)), html, headings, spaHtml, spaHeadings,
       searchText: body.replace(/[#*`>\[\]()_-]/g, " ").replace(/\s+/g, " ").trim(),
-    });
-  }
+    };
+  }));
+  const posts = loadedPosts.filter(Boolean);
   const groups = new Map();
   for (const post of posts) {
     if (!groups.has(post.translationKey)) groups.set(post.translationKey, new Map());
@@ -179,16 +179,7 @@ function aboutPage(locale) {
 async function write(relative, content) {
   const target = path.join(outputDir, relative);
   await fs.mkdir(path.dirname(target), { recursive: true });
-  if (relative.endsWith(".html")) content = await minifyHtml(content, {
-    collapseBooleanAttributes: true,
-    collapseWhitespace: true,
-    minifyCSS: true,
-    minifyJS: true,
-    removeComments: false,
-    removeRedundantAttributes: true,
-    sortAttributes: true,
-    sortClassName: true,
-  });
+  if (relative.endsWith(".html")) content = await buildWorkers.run("minify-html", { html: content });
   await fs.writeFile(target, content);
 }
 
@@ -242,6 +233,10 @@ self.addEventListener("fetch",(event)=>{const request=event.request;if(request.m
 `;
 }
 
+buildWorkers = new BuildWorkerPool({
+  workerUrl: new URL("./build-worker.mjs", import.meta.url),
+});
+try {
 const posts = await loadPosts();
 if (!posts.length) throw new Error("No publishable Markdown posts found.");
 await fs.mkdir(outputDir, { recursive: true });
@@ -301,7 +296,7 @@ await enhanceResponsiveImages(posts, {
   articleOutputDirectory: (post) => path.join(outputDir, localeOutput(post.locale, `posts/${post.slug}`)),
 });
 const postsByLocale = Object.fromEntries(Object.keys(locales).map((locale) => [locale, posts.filter((post) => post.locale === locale)]));
-for (const locale of Object.keys(locales)) {
+await Promise.all(Object.keys(locales).map(async (locale) => {
   const messages = locales[locale];
   const localePosts = postsByLocale[locale];
   if (!localePosts.length) throw new Error(`No publishable Markdown posts found for locale ${locale}.`);
@@ -310,43 +305,48 @@ for (const locale of Object.keys(locales)) {
   const aboutHtml = aboutPage(locale);
   const homePath = localizedPath(locale, "/");
   const aboutPath = localizedPath(locale, "/about/");
-  await write(localeOutput(locale, "index.html"), homeHtml);
-  await write(localeOutput(locale, "page.html"), pageFragment(homeSpaHtml, { locale, pathName: homePath, alternatePath: localizedPath(messages.alternate, "/") }));
-  await write(localeOutput(locale, "about/index.html"), aboutHtml);
-  await write(localeOutput(locale, "about/page.html"), pageFragment(aboutHtml, { locale, title: messages.about, description: messages.aboutDek, pathName: aboutPath, alternatePath: localizedPath(messages.alternate, "/about/") }));
   const notFoundPath = localizedPath(locale, "/404.html");
   const notFound = `<main class="container article-header"><p class="eyebrow">404</p><h1>${escapeHtml(messages.notFoundTitle)}</h1><p class="article-dek"><a class="read-link" href="${localeHref(locale, "/")}">${escapeHtml(messages.returnToWriting)}</a></p></main>`;
-  await write(localeOutput(locale, "404.html"), page({ locale, title: "404", description: messages.notFoundDescription, content: notFound, pathName: notFoundPath, alternatePath: localizedPath(messages.alternate, "/404.html") }));
-
   const searchIndex = localePosts.map(({ slug, title, summary, tags, categories, readingTime, searchText }) => ({ title, summary, tags, categories, readingTime, searchText, url: localeHref(locale, `/posts/${slug}/`) }));
-  await write(localeOutput(locale, "search-index.json"), JSON.stringify(searchIndex));
-  await write(localeOutput(locale, "manifest.webmanifest"), webManifest(locale));
   const rss = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>${escapeHtml(config.title)}</title><link>${localeAbsolute(locale, "/")}</link><description>${escapeHtml(messages.siteDescription)}</description><language>${escapeHtml(messages.language)}</language>${localePosts.map((post) => `<item><title>${escapeHtml(post.title)}</title><link>${localeAbsolute(locale, `/posts/${post.slug}/`)}</link><guid>${localeAbsolute(locale, `/posts/${post.slug}/`)}</guid><pubDate>${new Date(`${post.date}T12:00:00Z`).toUTCString()}</pubDate><description>${escapeHtml(post.summary)}</description></item>`).join("")}</channel></rss>`;
-  await write(localeOutput(locale, "rss.xml"), rss);
-}
+  await Promise.all([
+    write(localeOutput(locale, "index.html"), homeHtml),
+    write(localeOutput(locale, "page.html"), pageFragment(homeSpaHtml, { locale, pathName: homePath, alternatePath: localizedPath(messages.alternate, "/") })),
+    write(localeOutput(locale, "about/index.html"), aboutHtml),
+    write(localeOutput(locale, "about/page.html"), pageFragment(aboutHtml, { locale, title: messages.about, description: messages.aboutDek, pathName: aboutPath, alternatePath: localizedPath(messages.alternate, "/about/") })),
+    write(localeOutput(locale, "404.html"), page({ locale, title: "404", description: messages.notFoundDescription, content: notFound, pathName: notFoundPath, alternatePath: localizedPath(messages.alternate, "/404.html") })),
+    write(localeOutput(locale, "search-index.json"), JSON.stringify(searchIndex)),
+    write(localeOutput(locale, "manifest.webmanifest"), webManifest(locale)),
+    write(localeOutput(locale, "rss.xml"), rss),
+  ]);
+}));
 
-for (const post of posts) {
+await Promise.all(posts.map(async (post) => {
   const html = await postPage(post);
   const spaHtml = await postPage(post, { mathOutput: "source", fragment: true });
   const directory = localeOutput(post.locale, `posts/${post.slug}`);
-  await write(`${directory}/index.html`, html);
-  await write(`${directory}/page.html`, pageFragment(spaHtml, {
-    locale: post.locale,
-    title: post.title,
-    description: post.summary,
-    pathName: localizedPath(post.locale, `/posts/${post.slug}/`),
-    article: true,
-    alternatePath: post.alternatePath,
-  }));
-  await fs.copyFile(path.join(contentDir, post.sourceFile), path.join(outputDir, directory, "index.md"));
+  await fs.mkdir(path.join(outputDir, directory), { recursive: true });
+  const writes = [
+    write(`${directory}/index.html`, html),
+    write(`${directory}/page.html`, pageFragment(spaHtml, {
+      locale: post.locale,
+      title: post.title,
+      description: post.summary,
+      pathName: localizedPath(post.locale, `/posts/${post.slug}/`),
+      article: true,
+      alternatePath: post.alternatePath,
+    })),
+    fs.copyFile(path.join(contentDir, post.sourceFile), path.join(outputDir, directory, "index.md")),
+  ];
   if (post.locale !== defaultLocale) {
     const sourceDirectory = path.dirname(path.join(contentDir, post.sourceFile));
-    await fs.cp(sourceDirectory, path.join(outputDir, directory), {
+    writes.push(fs.cp(sourceDirectory, path.join(outputDir, directory), {
       recursive: true,
       filter: (source) => source === sourceDirectory || (!source.endsWith(".md") && !source.endsWith(".md.bak")),
-    });
+    }));
   }
-}
+  await Promise.all(writes);
+}));
 
 const sitemapPages = Object.keys(locales).flatMap((locale) => [localizedPath(locale, "/"), localizedPath(locale, "/about/")]);
 await write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${sitemapPages.map((pathName) => `<url><loc>${absolute(pathName)}</loc></url>`).join("")}${posts.map((post) => `<url><loc>${localeAbsolute(post.locale, `/posts/${post.slug}/`)}</loc><lastmod>${post.date}</lastmod></url>`).join("")}</urlset>`);
@@ -357,3 +357,6 @@ const minifiedWorker = await minifyJavaScript(serviceWorker(version), { compress
 if (!minifiedWorker.code) throw new Error("Service worker minification produced no output");
 await write("sw.js", minifiedWorker.code);
 console.log(`Freshmark built ${posts.length} posts to public/`);
+} finally {
+  await buildWorkers.close();
+}
