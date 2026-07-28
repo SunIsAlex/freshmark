@@ -10,7 +10,6 @@ author:
   avatar:
 description: 2026 年北京大学强基计划数学试题，共 20 题。
 keywords:
-  - 北京大学
   - 强基计划
   - 数学试题
 comment: false
