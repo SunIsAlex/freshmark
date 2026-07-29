@@ -251,12 +251,13 @@ test("localized routes provide Chinese and English navigation", async () => {
 
   const chineseIndex = JSON.parse(await read("public/search-index.json"));
   const englishIndex = JSON.parse(await read("public/en/search-index.json"));
-  assert.equal(chineseIndex.length, 33);
+  assert.equal(chineseIndex.length, 34);
   assert.equal(englishIndex.length, 31);
   const englishUrls = new Set(englishIndex.map(({ url }) => url.replace(/^\/en/, "")));
   assert.deepEqual(
     chineseIndex.filter(({ url }) => !englishUrls.has(url)).map(({ url }) => url),
     [
+      "/posts/math/2027-strong-foundation-plan/08-trigonometric-functions/",
       "/posts/technology/self-hosted-email-verification/",
       "/posts/math/2027-strong-foundation-plan/07-trigonometric-functions/",
     ],
@@ -689,10 +690,16 @@ test("search results deep-link to and highlight matching article text", async ()
   assert.match(app, /document\.fonts\?\.ready\.then/);
   assert.match(app, /contentUrl\.searchParams\.delete\(searchQueryParam\)/);
   assert.match(app, /const initialSearchMatch = highlightSearchTerm\(initialUrl\)/);
+  assert.match(app, /root\.classList\.add\("search-open"\)/);
+  assert.match(app, /input\.focus\(\{ preventScroll: true \}\)/);
+  assert.match(app, /modal\.contains\(document\.activeElement\).*document\.activeElement\.blur\(\)/);
+  assert.match(app, /root\.classList\.remove\("search-open"\)/);
+  assert.doesNotMatch(app, /document\.body\.style\.overflow/);
+  assert.match(css, /html\.search-open,html\.search-open body\s*\{[^}]*overflow:hidden[^}]*overscroll-behavior:none/);
   assert.match(css, /\.search-highlight \{/);
   assert.match(css, /\.search-highlight-current \{/);
   assert.match(css, /\.math-expression\.search-highlight-formula\s*\{/);
-  assert.match(css, /\.search-modal\s*\{[^}]*inset:0[^}]*background:var\(--paper-raised\)/);
+  assert.match(css, /\.search-modal\s*\{[^}]*inset:0[^}]*overscroll-behavior:contain[^}]*-webkit-overflow-scrolling:touch[^}]*background:var\(--paper-raised\)/);
   assert.match(css, /\.search-panel\s*\{[^}]*min-height:100dvh/);
   assert.match(css, /\.search-result-highlight\s*\{[^}]*background:#dbeafe/);
   assert.match(css, /\.search-highlight\s*\{[^}]*background:#dbeafe/);

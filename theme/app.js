@@ -269,10 +269,20 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   }
 
   async function openSearch() {
-    modal.hidden = false; document.body.style.overflow = "hidden"; input.focus();
+    if (!modal?.hidden) return;
+    root.classList.add("search-open");
+    modal.hidden = false;
+    modal.scrollTop = 0;
+    input.focus({ preventScroll: true });
     try { draw(await loadIndex()); } catch { results.innerHTML = `<p class="search-hint">${escape(message("searchFailed"))}</p>`; }
   }
-  function closeSearch() { modal.hidden = true; document.body.style.overflow = ""; input.value = ""; }
+  function closeSearch() {
+    if (!modal || modal.hidden) return;
+    if (modal.contains(document.activeElement)) document.activeElement.blur();
+    modal.hidden = true;
+    root.classList.remove("search-open");
+    input.value = "";
+  }
 
   function searchTerm(url = new URL(location.href)) {
     return url.searchParams.get(searchQueryParam)?.trim() || "";
