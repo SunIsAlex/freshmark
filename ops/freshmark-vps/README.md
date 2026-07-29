@@ -15,6 +15,9 @@ Runtime layout:
 /etc/nginx/conf.d/freshmark-rate-limits.conf
 ```
 
+Install `nginx-site.conf` after issuing the Let's Encrypt certificate. The
+site uses HTTP/2 over TLS and redirects plain HTTP requests to HTTPS.
+
 Required environment:
 
 ```text
