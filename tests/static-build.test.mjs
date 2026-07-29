@@ -82,6 +82,14 @@ test("search index and formula highlighting retain Greek letter names", () => {
   assert.equal(formula, "alpha-MnS, beta-MnS, Gamma");
   assert.equal(formula.toLowerCase().includes("alpha"), true);
   assert.equal(searchTextFromMarkdown("$\\alpha$-MnS"), "alpha -MnS");
+  assert.equal(searchableLatexText("\\theta_1"), "theta 1");
+});
+
+test("search index and formula highlighting retain named mathematical operators", () => {
+  const formula = searchableLatexText("\\sin x + \\cos x + \\tan x + \\ln x + \\lim_{x \\to 0} x");
+  assert.equal(formula, "sin x + cos x + tan x + ln x + lim x 0 x");
+  assert.equal(searchTextFromMarkdown("$\\sin x$ and $\\arccos y$"), "sin x and arccos y");
+  assert.equal(searchableLatexText("\\frac{1}{\\sqrt{x}}"), "1 x");
 });
 
 test("search index text excludes Markdown images", () => {
