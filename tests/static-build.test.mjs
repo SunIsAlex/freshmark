@@ -157,7 +157,9 @@ test("generated HTML has no application framework runtime", async () => {
   assert.match(html, /assetVersion:"[a-f0-9]{12}"/);
   assert.doesNotMatch(html, /<link[^>]+href="\/assets\/fonts\/anthropic-sans-variable\.woff2"[^>]+rel="preload"/);
   assert.match(html, /<script[^>]+src="\/assets\/app\.js\?v=[a-f0-9]{12}"[^>]+type="module"/);
-  assert.match(html, /<link[^>]+href="\/assets\/katex\.min\.css\?v=[a-f0-9]{12}"[^>]+data-katex-styles/);
+  const katexStylesheet = html.match(/<link[^>]+href="\/assets\/katex\.min\.css\?v=[a-f0-9]{12}"[^>]+data-katex-styles[^>]*>/)?.[0];
+  assert.match(katexStylesheet, /\brel="preload"/);
+  assert.match(katexStylesheet, /\bas="style"/);
   assert.match(html, /class="katex"/);
   assert.doesNotMatch(html, /katex\.min\.js|mhchem\.min\.js|auto-render/);
   assert.doesNotMatch(html, /\b(?:_next|__next|react(?:\.production)?\.min|vinext)\b/i);
@@ -223,6 +225,7 @@ test("typography uses Claude's font family and size scale", async () => {
   assert.match(css, /\.article-header h1,\.hero h1\{font-size:var\(--heading-2xl\);line-height:1\.1\}/);
   assert.match(css, /\.featured h2,\.section-head h2\{font-size:var\(--heading-xl\);line-height:1\.25\}/);
   assert.match(css, /\.prose h2\{font-size:var\(--heading-xl\);line-height:1\.25\}/);
+  assert.doesNotMatch(await read("theme/styles.css"), /\.post-card p\s*\{\s*display:none/);
   assert.doesNotMatch(css, /Iowan Old Style|Baskerville|Times New Roman/);
 });
 
@@ -335,6 +338,9 @@ test("articles render math and colocated Markdown images", async () => {
   assert.match(html, /<img[^>]*data-gallery-src="image\.png"[^>]*height="983"[^>]*src="image\.png"[^>]*width="640"[^>]*>/);
   assert.match(html, /<img[^>]*alt="alt text"[^>]*>/);
   assert.doesNotMatch(html, /!\[alt text\]\(image\.png\)/);
+  const katexCss = await read("public/assets/katex.min.css");
+  assert.doesNotMatch(katexCss, /font-display:block/);
+  assert.match(katexCss, /font-display:swap/);
   for (const asset of ["katex.min.js", "mhchem.min.js", "auto-render.min.js"]) {
     await assert.rejects(stat(new URL(`public/assets/${asset}`, root)), { code: "ENOENT" });
   }
@@ -562,9 +568,7 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /formula\.scrollWidth > availableWidth \+ 2/);
   assert.doesNotMatch(app, /formula\.scrollWidth > formula\.clientWidth/);
   assert.match(app, /document\.fonts\?\.ready/);
-  assert.match(app, /function preloadKaTeX/);
-  assert.match(app, /idle\(preloadKaTeX\)/);
-  assert.match(app, /if \(!canPrefetch\(\)\) return/);
+  assert.doesNotMatch(app, /function preloadKaTeX|idle\(preloadKaTeX\)/);
   assert.match(app, /new URL\("page\.html", contentUrl\)/);
   assert.doesNotMatch(app, /new URL\("index\.md"|fetch\([^)]*index\.md/);
   assert.match(app, /currentMain\.replaceWith\(nextMain\)/);
@@ -575,6 +579,8 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /!connection\?\.saveData/);
   assert.match(app, /\["slow-2g", "2g", "3g"\]/);
   assert.match(app, /requestIdleCallback/);
+  assert.match(app, /anchor\.addEventListener\("pointerenter", \(\) => queueArticlePrefetch\(anchor\)/);
+  assert.match(app, /anchor\.addEventListener\("focus", \(\) => queueArticlePrefetch\(anchor\)/);
   assert.match(app, /scheduleArticlePrefetch\(nextMain\)/);
   assert.match(app, /prepareGallery\(nextMain\)/);
   assert.match(app, /prepareAnswerReveals\(nextMain\)/);
@@ -676,7 +682,7 @@ test("article images open in a PhotoSwipe keyboard and touch-friendly gallery", 
   assert.match(app, /const PhotoSwipe = await loadPhotoSwipe\(\)/);
   assert.match(app, /function preloadPhotoSwipe/);
   assert.match(app, /preloadPhotoSwipe\(nextMain\)/);
-  assert.match(app, /addEventListener\("load", \(\) => \{\s+preloadPhotoSwipe\(\);\s+idle\(preloadKaTeX\);/);
+  assert.match(app, /addEventListener\("load", \(\) => \{\s+preloadPhotoSwipe\(\);/);
   assert.match(app, /new PhotoSwipe/);
   assert.ok(chunks.some((file) => /^photoswipe\.esm-[A-Z0-9]+\.js$/.test(file)));
   assert.ok(Buffer.byteLength(bundle) < 30_000);
@@ -712,11 +718,16 @@ test("service worker versions and persists generated resources", async () => {
   assert.match(worker, /\.startsWith\("\/assets\/"\)/);
   assert.match(worker, /manifest\.webmanifest/);
   assert.match(worker, /en\/manifest\.webmanifest/);
-  assert.match(worker, /en\/search-index\.json/);
+  assert.doesNotMatch(worker, /en\/search-index\.json/);
+  assert.match(worker, /networkOnly=\w+=>fetch\(\w+,\{cache:"no-store"\}\)/);
+  assert.match(worker, /\.endsWith\("\/search-index\.json"\)/);
+  assert.match(worker, /\.respondWith\(networkOnly\(\w+\)\)/);
+  assert.match(worker, /removeCachedSearchIndexes=async/);
+  assert.match(worker, /\.then\(removeCachedSearchIndexes\)/);
   assert.match(worker, /en\/404\.html/);
   assert.match(worker, /icon-512\.png/);
-  assert.match(worker, /photoswipe\.esm-[A-Z0-9]+\.js/);
-  assert.match(worker, /katex-[A-Z0-9]+\.js/);
+  assert.doesNotMatch(worker, /photoswipe\.esm-[A-Z0-9]+\.js/);
+  assert.doesNotMatch(worker, /katex-[A-Z0-9]+\.js/);
   assert.doesNotMatch(worker, /assets\/markdown\.js/);
   assert.doesNotMatch(worker, /katex\.min\.js|mhchem\.min\.js|auto-render\.min\.js|anthropic-sans-variable\.ttf/);
   assert.match(worker, /\?v=/);

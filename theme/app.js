@@ -19,6 +19,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   const pageCache = new Map();
   const prefetchQueue = [];
   const queuedPrefetches = new Set();
+  const preparedPrefetchLinks = new WeakSet();
   let prefetching = false;
   let renderedRoute = `${location.pathname}${location.search}`;
   let index;
@@ -64,15 +65,6 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     ]);
     const [katex] = await katexRequest;
     katex.renderMath(scope);
-  }
-
-  function preloadKaTeX() {
-    if (!canPrefetch()) return;
-    katexRequest ||= Promise.all([
-      import("./katex.js"),
-      loadKaTeXStyles(),
-    ]);
-    katexRequest.catch(() => { katexRequest = undefined; });
   }
 
   const escape = (value) => String(value).replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[char]);
@@ -696,16 +688,23 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     });
   }
 
-  function scheduleArticlePrefetch(scope = document) {
+  function queueArticlePrefetch(anchor) {
     const postsBase = new URL(postsRoot, location.origin).pathname;
-    for (const anchor of scope.querySelectorAll("a[href]")) {
-      const url = pageContentUrl(new URL(anchor.href, location.href));
-      const key = `${url.pathname}${url.search}`;
-      if (url.origin !== location.origin || !url.pathname.startsWith(postsBase) || !url.pathname.endsWith("/") || pageCache.has(key) || queuedPrefetches.has(key)) continue;
-      queuedPrefetches.add(key);
-      prefetchQueue.push(url);
-    }
+    const url = pageContentUrl(new URL(anchor.href, location.href));
+    const key = `${url.pathname}${url.search}`;
+    if (url.origin !== location.origin || !url.pathname.startsWith(postsBase) || !url.pathname.endsWith("/") || pageCache.has(key) || queuedPrefetches.has(key)) return;
+    queuedPrefetches.add(key);
+    prefetchQueue.push(url);
     drainPrefetchQueue();
+  }
+
+  function scheduleArticlePrefetch(scope = document) {
+    for (const anchor of scope.querySelectorAll("a[href]")) {
+      if (preparedPrefetchLinks.has(anchor)) continue;
+      preparedPrefetchLinks.add(anchor);
+      anchor.addEventListener("pointerenter", () => queueArticlePrefetch(anchor), { once: true, passive: true });
+      anchor.addEventListener("focus", () => queueArticlePrefetch(anchor), { once: true });
+    }
   }
 
   function rebaseMainUrls(main, pageUrl) {
@@ -832,7 +831,6 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   history.replaceState({ ...(history.state || {}), spa: true, scrollY }, "", location.href);
   addEventListener("load", () => {
     preloadPhotoSwipe();
-    idle(preloadKaTeX);
   }, { once: true });
   addEventListener("popstate", (event) => {
     const url = new URL(location.href);

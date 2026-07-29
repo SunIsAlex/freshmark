@@ -20,7 +20,6 @@ const currentYear = new Date().getUTCFullYear();
 const basePath = `/${String(config.basePath || "").replace(/^\/+|\/+$/g, "")}`.replace(/^\/$/, "");
 const baseUrl = resolveBaseUrl(config.baseUrl);
 let assetVersion = "";
-let browserAssets = [];
 const href = (value = "/") => `${basePath}${value.startsWith("/") ? value : `/${value}`}` || "/";
 const assetHref = (value) => `${href(value)}${assetVersion ? `?v=${assetVersion}` : ""}`;
 const absolute = (value) => new URL(href(value), baseUrl).href;
@@ -114,7 +113,7 @@ function page({ locale = defaultLocale, title, description, content, article = f
   const fullTitle = title ? `${escapeHtml(title)} — ${escapeHtml(config.title)}` : `${escapeHtml(config.title)} — ${escapeHtml(messages.siteDescription)}`;
   const stylesUrl = assetHref("/assets/styles.css");
   const deferredStyles = `<link rel="preload" href="${stylesUrl}" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="${stylesUrl}"></noscript>`;
-  const mathStyles = content.includes('class="katex"') ? `<link rel="stylesheet" href="${assetHref("/assets/katex.min.css")}" data-katex-styles>` : "";
+  const mathStyles = content.includes('class="katex"') ? `<link rel="preload" href="${assetHref("/assets/katex.min.css")}" as="style" data-katex-styles onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="${assetHref("/assets/katex.min.css")}"></noscript>` : "";
   const defaultPath = locale === defaultLocale ? pathName : alternatePath;
   const alternateLink = hasAlternate ? `<link rel="alternate" hreflang="${alternate.language}" href="${absolute(alternatePath)}">` : "";
   return `<!doctype html><html lang="${escapeHtml(messages.language)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="${escapeHtml(config.themeColor)}"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="${escapeHtml(config.title)}"><meta name="codex-preview" content="development"><title>${fullTitle}</title><meta name="description" content="${escapeHtml(pageDescription)}"><link rel="canonical" href="${absolute(pathName)}"><link rel="alternate" hreflang="${messages.language}" href="${absolute(pathName)}">${alternateLink}<link rel="alternate" hreflang="x-default" href="${absolute(defaultPath)}"><link rel="manifest" href="${localeHref(locale, "/manifest.webmanifest")}"><link rel="icon" href="${href("/favicon.svg")}" type="image/svg+xml"><link rel="apple-touch-icon" href="${href("/icons/apple-touch-icon.png")}"><link rel="alternate" type="application/rss+xml" title="${escapeHtml(config.title)} RSS" href="${localeHref(locale, "/rss.xml")}"><script>try{document.documentElement.dataset.theme=localStorage.getItem('freshmark-theme')||''}catch(e){}</script><style data-critical>${criticalCss}</style>${mathStyles}${deferredStyles}</head><body><div class="site-shell"><div class="ambient"></div>${article ? '<div class="reading-progress" data-reading-progress></div>' : ""}${header(locale, alternatePath)}${content}${footer(locale)}${searchModal(locale)}</div><script>window.FRESHMARK={basePath:${JSON.stringify(basePath)},title:${JSON.stringify(config.title)},locale:${JSON.stringify(locale)},language:${JSON.stringify(messages.language)},messages:${JSON.stringify(messages)},localeRoot:${JSON.stringify(localeHref(locale, "/"))},alternateRoot:${JSON.stringify(localeHref(alternateLocale, "/"))},postsRoot:${JSON.stringify(localeHref(locale, "/posts/"))},searchIndexPath:${JSON.stringify(localeHref(locale, "/search-index.json"))},assetVersion:${JSON.stringify(assetVersion)}};</script><script type="module" src="${assetHref("/assets/app.js")}"></script></body></html>`;
@@ -212,7 +211,6 @@ function serviceWorker(version) {
     localizedPath(locale, "/about/"),
     localizedPath(locale, "/page.html"),
     localizedPath(locale, "/about/page.html"),
-    localizedPath(locale, "/search-index.json"),
     localizedPath(locale, "/rss.xml"),
     localizedPath(locale, "/manifest.webmanifest"),
   ]);
@@ -223,15 +221,17 @@ const ASSET_VERSION=${JSON.stringify(assetVersion)};
 const LOCALIZED_NOT_FOUND=${JSON.stringify(Object.keys(locales).filter((locale) => locale !== defaultLocale).map((locale) => [`/${locale}/`, localizedPath(locale, "/404.html")]))};
 const at=(path)=>BASE_PATH+path;
 const versioned=(path)=>at(path)+"?v="+ASSET_VERSION;
-  const PRECACHE=${JSON.stringify([...localizedPrecache, "/favicon.svg", "/icons/icon-192.png", "/icons/icon-512.png", "/icons/apple-touch-icon.png", "/assets/fonts/anthropic-sans-variable.woff2"])}.map(at).concat([versioned("/assets/styles.css"),versioned("/assets/app.js")],${JSON.stringify(browserAssets.filter((file) => file !== "app.js").map((file) => `/assets/${file}`))}.map(at));
+  const PRECACHE=${JSON.stringify([...localizedPrecache, "/favicon.svg", "/icons/icon-192.png", "/icons/icon-512.png", "/icons/apple-touch-icon.png", "/assets/fonts/anthropic-sans-variable.woff2"])}.map(at).concat([versioned("/assets/styles.css"),versioned("/assets/app.js")]);
+const removeCachedSearchIndexes=async()=>{const cache=await caches.open(CACHE_NAME);const requests=await cache.keys();await Promise.all(requests.filter((request)=>new URL(request.url).pathname.endsWith("/search-index.json")).map((request)=>cache.delete(request)))};
 self.addEventListener("install",(event)=>event.waitUntil(caches.open(CACHE_NAME).then((cache)=>cache.addAll(PRECACHE)).then(()=>self.skipWaiting())));
-self.addEventListener("activate",(event)=>event.waitUntil(caches.keys().then((names)=>Promise.all(names.filter((name)=>name.startsWith("freshmark-")&&name!==CACHE_NAME).map((name)=>caches.delete(name)))).then(()=>self.clients.claim())));
+self.addEventListener("activate",(event)=>event.waitUntil(caches.keys().then((names)=>Promise.all(names.filter((name)=>name.startsWith("freshmark-")&&name!==CACHE_NAME).map((name)=>caches.delete(name)))).then(removeCachedSearchIndexes).then(()=>self.clients.claim())));
 const cacheResponse=async(request,response)=>{if(response&&response.ok){const cache=await caches.open(CACHE_NAME);await cache.put(request,response.clone())}return response};
 const cacheFirst=async(request)=>(await caches.match(request))||cacheResponse(request,await fetch(request));
+const networkOnly=(request)=>fetch(request,{cache:"no-store"});
 const networkFirst=async(request)=>{try{return await cacheResponse(request,await fetch(request))}catch{const path=new URL(request.url).pathname.slice(BASE_PATH.length);const fallback=LOCALIZED_NOT_FOUND.find(([prefix])=>path.startsWith(prefix))?.[1]||"/404.html";return (await caches.match(request))||(request.mode==="navigate"?caches.match(at(fallback)):Response.error())}};
 const staleWhileRevalidate=async(request)=>{const cached=await caches.match(request);const fresh=fetch(request).then((response)=>cacheResponse(request,response)).catch(()=>null);return cached||await fresh||Response.error()};
 const navigationResponse=(request,event)=>{const cached=caches.match(request);const network=fetch(request);const cacheUpdate=network.then((response)=>response.ok?caches.open(CACHE_NAME).then((cache)=>cache.put(request,response.clone())):undefined).catch(()=>undefined);event.waitUntil(cacheUpdate);return cached.then(async(response)=>{if(response)return response;try{return await network}catch{const path=new URL(request.url).pathname.slice(BASE_PATH.length);const fallback=LOCALIZED_NOT_FOUND.find(([prefix])=>path.startsWith(prefix))?.[1]||"/404.html";return caches.match(at(fallback))}})};
-self.addEventListener("fetch",(event)=>{const request=event.request;if(request.method!=="GET")return;const url=new URL(request.url);if(url.origin!==self.location.origin||!url.pathname.startsWith(BASE_PATH||"/"))return;const path=url.pathname.slice(BASE_PATH.length);if(request.mode==="navigate")event.respondWith(navigationResponse(request,event));else if(path.endsWith(".html")||path.endsWith("/search-index.json")||path.endsWith("/rss.xml")||path==="/sitemap.xml")event.respondWith(networkFirst(request));else if(path.endsWith(".md"))event.respondWith(staleWhileRevalidate(request));else if(path.startsWith("/assets/")||/\.(?:png|jpe?g|gif|webp|svg|avif|ttf|woff2?)$/i.test(path))event.respondWith(cacheFirst(request));});
+self.addEventListener("fetch",(event)=>{const request=event.request;if(request.method!=="GET")return;const url=new URL(request.url);if(url.origin!==self.location.origin||!url.pathname.startsWith(BASE_PATH||"/"))return;const path=url.pathname.slice(BASE_PATH.length);if(request.mode==="navigate")event.respondWith(navigationResponse(request,event));else if(path.endsWith("/search-index.json"))event.respondWith(networkOnly(request));else if(path.endsWith(".html")||path.endsWith("/rss.xml")||path==="/sitemap.xml")event.respondWith(networkFirst(request));else if(path.endsWith(".md"))event.respondWith(staleWhileRevalidate(request));else if(path.startsWith("/assets/")||/\.(?:png|jpe?g|gif|webp|svg|avif|ttf|woff2?)$/i.test(path))event.respondWith(cacheFirst(request));});
 `;
 }
 
@@ -248,7 +248,7 @@ const styles = new CleanCSS({ level: 2 }).minify([
   await fs.readFile(path.join(root, "node_modules", "photoswipe", "dist", "photoswipe.css"), "utf8"),
   await fs.readFile(path.join(themeDir, "styles.css"), "utf8"),
 ].join("\n"));
-const katexStyles = await fs.readFile(path.join(root, "node_modules", "katex", "dist", "katex.min.css"));
+const katexStyles = (await fs.readFile(path.join(root, "node_modules", "katex", "dist", "katex.min.css"), "utf8")).replaceAll("font-display:block", "font-display:swap");
 const katexFontDirectory = path.join(root, "node_modules", "katex", "dist", "fonts");
 const katexFonts = (await fs.readdir(katexFontDirectory)).filter((file) => file.endsWith(".woff2"));
 if (styles.errors.length) throw new Error(`CSS minification failed: ${styles.errors.join(", ")}`);
@@ -277,7 +277,6 @@ const browserBundles = bundled.outputFiles.map((file) => ({
   file: path.relative(path.join(outputDir, "assets"), file.path).split(path.sep).join("/"),
   code: file.contents,
 }));
-browserAssets = browserBundles.map(({ file }) => file);
 const assetHash = createHash("sha256").update(styles.styles).update(katexStyles);
 for (const { file, code } of browserBundles) assetHash.update(file).update("\0").update(code).update("\0");
 assetVersion = assetHash.digest("hex").slice(0, 12);
