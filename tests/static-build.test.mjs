@@ -5,7 +5,7 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
 import { locales } from "../lib/i18n.mjs";
 import { parseFrontmatter, renderMarkdown, renderSummary, searchTextFromMarkdown, summaryFromBody } from "../lib/markdown.mjs";
 import { searchableLatexText } from "../lib/search-text.mjs";
-import { netlifyFunctionsEnabled, resolveBaseUrl } from "../lib/site-config.mjs";
+import { commentsEnabled, commentsModerated, netlifyFunctionsEnabled, resolveBaseUrl } from "../lib/site-config.mjs";
 
 const root = new URL("../", import.meta.url);
 const read = (file) => readFile(new URL(file, root), "utf8");
@@ -27,6 +27,14 @@ test("Netlify Functions support is enabled only by an explicit environment value
   for (const value of ["1", "true", "TRUE", "yes", "on"]) {
     assert.equal(netlifyFunctionsEnabled({ FRESHMARK_NETLIFY_FUNCTIONS: value }), true);
   }
+});
+
+test("comments and moderation use independent explicit environment switches", () => {
+  assert.equal(commentsEnabled({}), false);
+  assert.equal(commentsEnabled({ FRESHMARK_COMMENTS: "true" }), true);
+  assert.equal(commentsEnabled({ FRESHMARK_COMMENTS: "false" }), false);
+  assert.equal(commentsModerated({ FRESHMARK_COMMENTS_MODERATED: "on" }), true);
+  assert.equal(commentsModerated({ FRESHMARK_COMMENTS_MODERATED: "" }), false);
 });
 
 test("search index text excludes Markdown and LaTeX syntax", () => {
@@ -165,7 +173,9 @@ test("generated HTML has no application framework runtime", async () => {
   assert.match(html, /<script[^>]+src="\/assets\/app\.js\?v=[a-f0-9]{12}"/);
   assert.match(html, /assetVersion:"[a-f0-9]{12}"/);
   assert.match(html, /views:\{enabled:!1,endpoint:"\/\.netlify\/functions\/views"\}/);
+  assert.match(html, /comments:\{enabled:!1,listEndpoint:"\/api\/comments",submitEndpoint:"\/api\/comments\/submit"\}/);
   assert.doesNotMatch(html, /data-(?:site|article)-view-count/);
+  assert.doesNotMatch(html, /data-comments(?:[ >])/);
   assert.doesNotMatch(html, /<link[^>]+href="\/assets\/fonts\/anthropic-sans-variable\.woff2"[^>]+rel="preload"/);
   assert.match(html, /<script[^>]+src="\/assets\/app\.js\?v=[a-f0-9]{12}"[^>]+type="module"/);
   const katexStylesheet = html.match(/<link[^>]+href="\/assets\/katex\.min\.css\?v=[a-f0-9]{12}"[^>]+data-katex-styles[^>]*>/)?.[0];

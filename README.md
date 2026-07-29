@@ -178,6 +178,51 @@ navigation is counted after the new page has rendered; slow or failed counter
 requests never block page rendering or navigation. Leave the variable unset
 (or set it to `false`) to omit the counter UI and client requests entirely.
 
+### Optional lightweight comments
+
+Set `FRESHMARK_COMMENTS=true` in Netlify for both the Builds and Functions
+scopes. Article pages will then use a framework-free comment form backed by
+Netlify Functions and Blobs:
+
+```bash
+FRESHMARK_COMMENTS=true npm run build
+```
+
+Comments require a name and plain-text body. Email is optional, stored only in
+the private Blob record, and never included in the public API. The public
+interface loads after the article has rendered, supports pagination, and stays
+isolated from article rendering when the backend is slow or unavailable.
+Submissions are protected by field and payload limits, a honeypot, same-origin
+checks, and Netlify's per-IP/domain rate limiting.
+
+Comments publish immediately by default. To hold new comments for review, set
+these Functions-scoped environment variables:
+
+```text
+FRESHMARK_COMMENTS_MODERATED=true
+FRESHMARK_COMMENTS_ADMIN_TOKEN=<a long random secret>
+```
+
+List pending comments for an article:
+
+```bash
+curl -H "Authorization: Bearer $FRESHMARK_COMMENTS_ADMIN_TOKEN" \
+  "https://example.com/api/comments/admin?path=/posts/my-first-note/"
+```
+
+Approve a comment by ID (use `"delete"` instead of `"approve"` to remove it):
+
+```bash
+curl -X PATCH \
+  -H "Authorization: Bearer $FRESHMARK_COMMENTS_ADMIN_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"path":"/posts/my-first-note/","id":"COMMENT_ID","action":"approve"}' \
+  "https://example.com/api/comments/admin"
+```
+
+Keep the admin token secret. Leave `FRESHMARK_COMMENTS` unset or set it to
+`false` to omit the comment UI and public requests.
+
 ## Project map
 
 ```text
@@ -191,7 +236,8 @@ scripts/build.mjs    Static generator
 scripts/build-worker.mjs  Parallel rendering and minification worker
 scripts/new.mjs      Markdown template generator
 templates/           Reusable Markdown templates
-netlify/functions/   Optional view-count backend
+netlify/functions/   Optional serverless backends
+netlify/lib/         Shared Functions data helpers
 netlify.toml          Netlify build and Functions configuration
 public/              Portable generated website
 ```
@@ -211,3 +257,4 @@ public/              Portable generated website
 - Raw Markdown downloads for every published article
 - Installable PWA with versioned offline caching and app icons
 - Optional non-blocking Netlify Functions site/article view counts
+- Optional framework-free comments with pagination, rate limiting, and moderation

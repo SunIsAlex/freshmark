@@ -11,6 +11,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   const searchIndexPath = window.FRESHMARK?.searchIndexPath || `${basePath}/search-index.json`;
   const assetVersion = window.FRESHMARK?.assetVersion || "";
   const views = window.FRESHMARK?.views || {};
+  const comments = window.FRESHMARK?.comments || {};
   const searchQueryParam = "q";
   const contentSnapshotPrefix = "freshmark-content-v2:";
   const modal = document.querySelector("[data-search-modal]");
@@ -33,6 +34,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   let readingStateFrame;
   let searchScrollRequest = 0;
   let viewRequest = 0;
+  let commentsRequest = 0;
   const preparedGalleryImages = new WeakSet();
   const preparedAnswerReveals = new WeakSet();
   const observedInlineMath = new WeakSet();
@@ -79,6 +81,147 @@ import { searchableLatexText } from "../lib/search-text.mjs";
         if (article) showViewCount("[data-article-views]", counts.articleViews);
       })
       .catch(() => {});
+  }
+
+  function commentDate(value) {
+    try {
+      return new Intl.DateTimeFormat(window.FRESHMARK?.language, {
+        dateStyle: "medium",
+        timeStyle: "short",
+      }).format(new Date(value));
+    } catch {
+      return "";
+    }
+  }
+
+  function commentElement(comment) {
+    const article = document.createElement("article");
+    article.className = "comment";
+    article.dataset.commentId = comment.id;
+    const header = document.createElement("header");
+    const author = document.createElement("strong");
+    author.textContent = comment.name;
+    const time = document.createElement("time");
+    time.dateTime = comment.createdAt;
+    time.textContent = commentDate(comment.createdAt);
+    const body = document.createElement("p");
+    body.className = "comment-body";
+    body.textContent = comment.body;
+    header.append(author, time);
+    article.append(header, body);
+    return article;
+  }
+
+  function updateCommentsTitle(section, count) {
+    const title = section.querySelector("[data-comments-title]");
+    if (title) title.textContent = `${message("commentsTitle")} (${count})`;
+  }
+
+  function renderComments(section, payload, { prepend = false } = {}) {
+    const list = section.querySelector("[data-comment-list]");
+    const more = section.querySelector("[data-comments-more]");
+    if (!list || !more) return;
+    const elements = (payload.comments || []).map(commentElement);
+    if (prepend) {
+      const fragment = document.createDocumentFragment();
+      fragment.append(...elements);
+      list.prepend(fragment);
+    } else if (elements.length) {
+      list.replaceChildren(...elements);
+    } else {
+      const empty = document.createElement("p");
+      empty.className = "comment-state";
+      empty.textContent = message("commentsEmpty");
+      list.replaceChildren(empty);
+    }
+    more.dataset.cursor = payload.nextCursor || "";
+    more.hidden = !payload.nextCursor;
+    more.disabled = false;
+    more.textContent = message("loadOlderComments");
+    updateCommentsTitle(section, Number(payload.count) || 0);
+  }
+
+  async function loadComments(section, { cursor = "", prepend = false } = {}) {
+    if (!comments.enabled || !comments.listEndpoint || !section?.isConnected) return;
+    const request = ++commentsRequest;
+    const endpoint = new URL(comments.listEndpoint, location.origin);
+    endpoint.searchParams.set("path", section.dataset.commentsPath);
+    if (cursor) endpoint.searchParams.set("cursor", cursor);
+    try {
+      const response = await fetch(endpoint, {
+        cache: "no-store",
+        credentials: "same-origin",
+        headers: { accept: "application/json" },
+      });
+      if (!response.ok) throw new Error(`Comments returned ${response.status}`);
+      const payload = await response.json();
+      if (request !== commentsRequest || !section.isConnected) return;
+      renderComments(section, payload, { prepend });
+    } catch {
+      if (request !== commentsRequest || !section.isConnected) return;
+      const state = section.querySelector("[data-comment-state]");
+      if (state) state.textContent = message("commentsFailed");
+      const more = section.querySelector("[data-comments-more]");
+      if (more) more.hidden = true;
+    }
+  }
+
+  function prepareComments() {
+    const section = document.querySelector("[data-comments]");
+    if (!comments.enabled || !section) return;
+    const name = section.querySelector("[name='name']");
+    try {
+      if (name && !name.value) name.value = localStorage.getItem("freshmark-comment-name") || "";
+    } catch {}
+    loadComments(section);
+  }
+
+  async function submitComment(form) {
+    const section = form.closest("[data-comments]");
+    const submit = form.querySelector("[data-comment-submit]");
+    const status = form.querySelector("[data-comment-form-status]");
+    if (!section || !submit || !status || !comments.submitEndpoint) return;
+    const data = new FormData(form);
+    submit.disabled = true;
+    submit.textContent = message("submittingComment");
+    status.textContent = "";
+    try {
+      const response = await fetch(comments.submitEndpoint, {
+        method: "POST",
+        headers: { "content-type": "application/json", accept: "application/json" },
+        body: JSON.stringify({
+          path: section.dataset.commentsPath,
+          name: data.get("name"),
+          email: data.get("email"),
+          body: data.get("body"),
+          website: data.get("website"),
+        }),
+        cache: "no-store",
+        credentials: "same-origin",
+      });
+      let result = {};
+      try { result = await response.json(); } catch {}
+      if (!form.isConnected) return;
+      if (response.status === 429) throw Object.assign(new Error("rate_limited"), { code: "rate_limited" });
+      if (!response.ok) throw Object.assign(new Error(result.error || "unavailable"), { code: result.error });
+      try { localStorage.setItem("freshmark-comment-name", String(data.get("name") || "")); } catch {}
+      form.elements.body.value = "";
+      form.elements.website.value = "";
+      status.textContent = result.status === "published" ? message("commentPublished") : message("commentPending");
+      if (result.status === "published") loadComments(section);
+    } catch (error) {
+      if (!form.isConnected) return;
+      status.textContent = error?.code === "invalid"
+        ? message("commentInvalid")
+        : error?.code === "rate_limited"
+          ? message("commentRateLimited")
+          : message("commentSubmitFailed");
+    } finally {
+      if (form.isConnected) {
+        submit.disabled = false;
+        submit.textContent = message("submitComment");
+      }
+    }
   }
 
   function loadKaTeXStyles() {
@@ -779,6 +922,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
 
   async function navigate(url, { push = true, restoreScroll = null } = {}) {
     viewRequest += 1;
+    commentsRequest += 1;
     closeGallery({ restoreFocus: false });
     shell.setAttribute("aria-busy", "true");
     try {
@@ -828,7 +972,10 @@ import { searchableLatexText } from "../lib/search-text.mjs";
       main.setAttribute("tabindex", "-1");
       main.focus({ preventScroll: true });
       main.addEventListener("blur", () => main.removeAttribute("tabindex"), { once: true });
-      afterFirstPaint(() => recordView(url));
+      afterFirstPaint(() => {
+        recordView(url);
+        prepareComments();
+      });
     } catch {
       location.href = url.href;
     } finally {
@@ -839,11 +986,18 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   document.addEventListener("click", (event) => {
     const answerReveal = event.target.closest("u.answer-reveal");
     if (answerReveal) { event.preventDefault(); toggleAnswerReveal(answerReveal); return; }
-    const command = event.target.closest("[data-search-open], [data-theme-toggle], [data-tag], [data-toc-toggle]");
+    const command = event.target.closest("[data-search-open], [data-theme-toggle], [data-tag], [data-toc-toggle], [data-comments-more]");
     if (command?.matches("[data-search-open]")) { event.preventDefault(); openSearch(); return; }
     if (command?.matches("[data-theme-toggle]")) { event.preventDefault(); setTheme(root.dataset.theme === "dark" ? "light" : "dark"); return; }
     if (command?.matches("[data-tag]")) { event.preventDefault(); applyFilter(command); return; }
     if (command?.matches("[data-toc-toggle]")) { event.preventDefault(); toggleToc(command); return; }
+    if (command?.matches("[data-comments-more]")) {
+      event.preventDefault();
+      command.disabled = true;
+      command.textContent = message("commentsLoading");
+      loadComments(command.closest("[data-comments]"), { cursor: command.dataset.cursor, prepend: true });
+      return;
+    }
 
     const anchor = event.target.closest("a[href]");
     if (!anchor || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || anchor.target || anchor.hasAttribute("download") || anchor.hasAttribute("data-no-spa")) return;
@@ -868,6 +1022,13 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     navigate(url);
   });
 
+  document.addEventListener("submit", (event) => {
+    const form = event.target.closest("[data-comment-form]");
+    if (!form) return;
+    event.preventDefault();
+    submitComment(form);
+  });
+
   history.replaceState({ ...(history.state || {}), spa: true, scrollY }, "", location.href);
   addEventListener("load", () => {
     preloadPhotoSwipe();
@@ -889,6 +1050,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   const initialUrl = new URL(location.href);
   afterFirstPaint(() => {
     recordView(initialUrl);
+    prepareComments();
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register(`${basePath}/sw.js`, { scope: `${basePath}/`, updateViaCache: "none" }).catch(() => {});
     }
