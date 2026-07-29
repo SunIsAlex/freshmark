@@ -10,6 +10,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   const postsRoot = window.FRESHMARK?.postsRoot || `${basePath}/posts/`;
   const searchIndexPath = window.FRESHMARK?.searchIndexPath || `${basePath}/search-index.json`;
   const assetVersion = window.FRESHMARK?.assetVersion || "";
+  const views = window.FRESHMARK?.views || {};
   const searchQueryParam = "q";
   const contentSnapshotPrefix = "freshmark-content-v2:";
   const modal = document.querySelector("[data-search-modal]");
@@ -31,6 +32,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   let inlineMathObserver;
   let readingStateFrame;
   let searchScrollRequest = 0;
+  let viewRequest = 0;
   const preparedGalleryImages = new WeakSet();
   const preparedAnswerReveals = new WeakSet();
   const observedInlineMath = new WeakSet();
@@ -41,6 +43,42 @@ import { searchableLatexText } from "../lib/search-text.mjs";
       if ("requestIdleCallback" in window) requestIdleCallback(task, { timeout: 1200 });
       else setTimeout(task, 0);
     }));
+  }
+
+  function viewPath(url) {
+    let path = url.pathname;
+    if (basePath && path.startsWith(basePath)) path = path.slice(basePath.length) || "/";
+    return path.replace(/\/page\.html$/, "/").replace(/\/{2,}/g, "/");
+  }
+
+  function showViewCount(selector, value) {
+    const output = document.querySelector(selector);
+    if (!output || !Number.isSafeInteger(value) || value < 0) return;
+    output.textContent = new Intl.NumberFormat(window.FRESHMARK?.language).format(value);
+    output.closest(".view-count").hidden = false;
+  }
+
+  function recordView(url = new URL(location.href)) {
+    if (!views.enabled || !views.endpoint) return;
+    const request = ++viewRequest;
+    const article = Boolean(document.querySelector("[data-reading-progress]"));
+    fetch(views.endpoint, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ path: viewPath(url), article }),
+      cache: "no-store",
+      credentials: "same-origin",
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error(`View counter returned ${response.status}`);
+        return response.json();
+      })
+      .then((counts) => {
+        if (request !== viewRequest || viewPath(new URL(location.href)) !== viewPath(url)) return;
+        showViewCount("[data-site-views]", counts.siteViews);
+        if (article) showViewCount("[data-article-views]", counts.articleViews);
+      })
+      .catch(() => {});
   }
 
   function loadKaTeXStyles() {
@@ -740,6 +778,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   }
 
   async function navigate(url, { push = true, restoreScroll = null } = {}) {
+    viewRequest += 1;
     closeGallery({ restoreFocus: false });
     shell.setAttribute("aria-busy", "true");
     try {
@@ -789,6 +828,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
       main.setAttribute("tabindex", "-1");
       main.focus({ preventScroll: true });
       main.addEventListener("blur", () => main.removeAttribute("tabindex"), { once: true });
+      afterFirstPaint(() => recordView(url));
     } catch {
       location.href = url.href;
     } finally {
@@ -848,6 +888,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   (navigator.connection || navigator.mozConnection || navigator.webkitConnection)?.addEventListener("change", drainPrefetchQueue);
   const initialUrl = new URL(location.href);
   afterFirstPaint(() => {
+    recordView(initialUrl);
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register(`${basePath}/sw.js`, { scope: `${basePath}/`, updateViaCache: "none" }).catch(() => {});
     }

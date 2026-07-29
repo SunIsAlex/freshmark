@@ -5,7 +5,7 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
 import { locales } from "../lib/i18n.mjs";
 import { parseFrontmatter, renderMarkdown, renderSummary, searchTextFromMarkdown, summaryFromBody } from "../lib/markdown.mjs";
 import { searchableLatexText } from "../lib/search-text.mjs";
-import { resolveBaseUrl } from "../lib/site-config.mjs";
+import { netlifyFunctionsEnabled, resolveBaseUrl } from "../lib/site-config.mjs";
 
 const root = new URL("../", import.meta.url);
 const read = (file) => readFile(new URL(file, root), "utf8");
@@ -18,6 +18,15 @@ test("base URL prefers the environment and falls back to site config", () => {
     resolveBaseUrl("https://config.example", { FRESHMARK_BASE_URL: " https://preview.example " }),
     "https://preview.example",
   );
+});
+
+test("Netlify Functions support is enabled only by an explicit environment value", () => {
+  assert.equal(netlifyFunctionsEnabled({}), false);
+  assert.equal(netlifyFunctionsEnabled({ FRESHMARK_NETLIFY_FUNCTIONS: "" }), false);
+  assert.equal(netlifyFunctionsEnabled({ FRESHMARK_NETLIFY_FUNCTIONS: "false" }), false);
+  for (const value of ["1", "true", "TRUE", "yes", "on"]) {
+    assert.equal(netlifyFunctionsEnabled({ FRESHMARK_NETLIFY_FUNCTIONS: value }), true);
+  }
 });
 
 test("search index text excludes Markdown and LaTeX syntax", () => {
@@ -155,6 +164,8 @@ test("generated HTML has no application framework runtime", async () => {
   assert.ok(html.indexOf("<style data-critical>") < html.indexOf(stylesheetLinks[0]));
   assert.match(html, /<script[^>]+src="\/assets\/app\.js\?v=[a-f0-9]{12}"/);
   assert.match(html, /assetVersion:"[a-f0-9]{12}"/);
+  assert.match(html, /views:\{enabled:!1,endpoint:"\/\.netlify\/functions\/views"\}/);
+  assert.doesNotMatch(html, /data-(?:site|article)-view-count/);
   assert.doesNotMatch(html, /<link[^>]+href="\/assets\/fonts\/anthropic-sans-variable\.woff2"[^>]+rel="preload"/);
   assert.match(html, /<script[^>]+src="\/assets\/app\.js\?v=[a-f0-9]{12}"[^>]+type="module"/);
   const katexStylesheet = html.match(/<link[^>]+href="\/assets\/katex\.min\.css\?v=[a-f0-9]{12}"[^>]+data-katex-styles[^>]*>/)?.[0];

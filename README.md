@@ -4,8 +4,10 @@ Freshmark is a Markdown-first static blog generator. It has the
 writing workflow of Hugo with a softer editorial design and built-in browser
 search.
 
-There is no application server, database, React runtime, or framework runtime.
-The build produces ordinary HTML, CSS, JavaScript, XML, and JSON in `public/`.
+By default there is no application server, database, React runtime, or
+framework runtime. The build produces ordinary HTML, CSS, JavaScript, XML, and
+JSON in `public/`. An optional Netlify Functions view counter can be enabled at
+build time.
 
 ## Requirements
 
@@ -156,6 +158,26 @@ editing the config file. An unset or blank value falls back to
 FRESHMARK_BASE_URL=https://preview.example.com npm run build
 ```
 
+### Optional Netlify view counts
+
+Set `FRESHMARK_NETLIFY_FUNCTIONS=true` in Netlify and make it available to both
+the Builds and Functions scopes. The next deploy will show a site-wide view
+count in the footer and a per-article view count in article metadata:
+
+```bash
+FRESHMARK_NETLIFY_FUNCTIONS=true npm run build
+```
+
+`netlify.toml` already configures `public/` as the publish directory and
+`netlify/functions/` as the Functions directory. Counts are stored persistently
+in Netlify Blobs. The function uses strongly consistent reads and conditional
+writes so concurrent visits do not overwrite one another.
+
+The browser waits until after the first paint before sending the request. SPA
+navigation is counted after the new page has rendered; slow or failed counter
+requests never block page rendering or navigation. Leave the variable unset
+(or set it to `false`) to omit the counter UI and client requests entirely.
+
 ## Project map
 
 ```text
@@ -169,6 +191,8 @@ scripts/build.mjs    Static generator
 scripts/build-worker.mjs  Parallel rendering and minification worker
 scripts/new.mjs      Markdown template generator
 templates/           Reusable Markdown templates
+netlify/functions/   Optional view-count backend
+netlify.toml          Netlify build and Functions configuration
 public/              Portable generated website
 ```
 
@@ -186,3 +210,4 @@ public/              Portable generated website
 - Draft support and configurable base paths
 - Raw Markdown downloads for every published article
 - Installable PWA with versioned offline caching and app icons
+- Optional non-blocking Netlify Functions site/article view counts
