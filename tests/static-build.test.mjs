@@ -182,8 +182,9 @@ test("generated HTML has no application framework runtime", async () => {
   assert.match(html, /<style data-critical>@font-face\{[^}]*font-family:"Anthropic Sans"[^}]*url\("?\/assets\/fonts\/anthropic-sans-variable\.woff2"?\)[^}]*font-display:swap/);
   const stylesheetLinks = html.match(/<link[^>]+href="\/assets\/styles\.css\?v=[a-f0-9]{12}"[^>]*>/g);
   assert.equal(stylesheetLinks.length, 2);
-  assert.match(stylesheetLinks[0], /\bas="style"/);
-  assert.match(stylesheetLinks[0], /\brel="preload"/);
+  assert.match(stylesheetLinks[0], /\brel="stylesheet"/);
+  assert.match(stylesheetLinks[0], /\bmedia="print"/);
+  assert.match(stylesheetLinks[0], /\bonload=/);
   assert.match(stylesheetLinks[1], /\brel="stylesheet"/);
   assert.ok(html.indexOf("<style data-critical>") < html.indexOf(stylesheetLinks[0]));
   assert.match(html, /<script[^>]+src="\/assets\/app\.js\?v=[a-f0-9]{12}"/);
@@ -194,10 +195,13 @@ test("generated HTML has no application framework runtime", async () => {
   assert.doesNotMatch(html, /data-comments(?:[ >])/);
   assert.doesNotMatch(html, /<link[^>]+href="\/assets\/fonts\/anthropic-sans-variable\.woff2"[^>]+rel="preload"/);
   assert.match(html, /<script[^>]+src="\/assets\/app\.js\?v=[a-f0-9]{12}"[^>]+type="module"/);
-  const katexStylesheet = html.match(/<link[^>]+href="\/assets\/katex\.min\.css\?v=[a-f0-9]{12}"[^>]+data-katex-styles[^>]*>/)?.[0];
+  assert.doesNotMatch(html, /katex\.min\.css|class="katex"/);
+  assert.match(html, /class="summary-math"/);
+  const mathArticle = await read("public/posts/chemistry/inorganic/manganese/index.html");
+  const katexStylesheet = mathArticle.match(/<link[^>]+href="\/assets\/katex\.min\.css\?v=[a-f0-9]{12}"[^>]+data-katex-styles[^>]*>/)?.[0];
   assert.match(katexStylesheet, /\brel="preload"/);
   assert.match(katexStylesheet, /\bas="style"/);
-  assert.match(html, /class="katex"/);
+  assert.match(mathArticle, /class="katex"/);
   assert.doesNotMatch(html, /katex\.min\.js|mhchem\.min\.js|auto-render/);
   assert.doesNotMatch(html, /\b(?:_next|__next|react(?:\.production)?\.min|vinext)\b/i);
 });

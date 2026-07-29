@@ -16,7 +16,8 @@ Runtime layout:
 ```
 
 Install `nginx-site.conf` after issuing the Let's Encrypt certificate. The
-site uses HTTP/2 over TLS and redirects plain HTTP requests to HTTPS.
+site uses HTTP/2 over TLS, compresses text assets, gives versioned assets an
+immutable one-year cache lifetime, and redirects plain HTTP requests to HTTPS.
 
 Required environment:
 
