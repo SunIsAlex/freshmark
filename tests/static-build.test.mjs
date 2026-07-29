@@ -188,7 +188,7 @@ test("generated HTML has no application framework runtime", async () => {
   assert.ok(html.indexOf("<style data-critical>") < html.indexOf(stylesheetLinks[0]));
   assert.match(html, /<script[^>]+src="\/assets\/app\.js\?v=[a-f0-9]{12}"/);
   assert.match(html, /assetVersion:"[a-f0-9]{12}"/);
-  assert.match(html, /views:\{enabled:!1,endpoint:"\/\.netlify\/functions\/views"\}/);
+  assert.match(html, /views:\{enabled:!1,endpoint:"\/api\/views"\}/);
   assert.match(html, /comments:\{enabled:!1,auth:!1,listEndpoint:"\/api\/comments",submitEndpoint:"\/api\/comments\/submit",authEndpoints:\{session:"\/api\/auth\/session",login:"\/api\/auth\/login",logout:"\/api\/auth\/logout",register:"\/api\/auth\/register",verify:"\/api\/auth\/register\/verify"\}\}/);
   assert.doesNotMatch(html, /data-(?:site|article)-view-count/);
   assert.doesNotMatch(html, /data-comments(?:[ >])/);

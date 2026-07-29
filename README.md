@@ -6,14 +6,35 @@ search.
 
 By default there is no application server, database, React runtime, or
 framework runtime. The build produces ordinary HTML, CSS, JavaScript, XML, and
-JSON in `public/`. An optional Netlify Functions view counter can be enabled at
-build time.
+JSON in `public/`. The `vps` branch also includes a small self-hosted Node
+runtime for views, accounts, and comments.
 
 ## Requirements
 
 - Node.js 20.9 or newer
 
 Install the build dependencies with `npm install`.
+
+## VPS deployment
+
+This branch is designed to run without Netlify build or function credits:
+
+- Nginx serves `public/`;
+- one loopback-only Node process runs the existing `/api/*` handlers;
+- an atomic file-backed key/value store replaces Netlify Blobs;
+- systemd keeps the API alive and restricts its filesystem access;
+- the existing Postfix bridge continues to send registration codes.
+
+Operational files and the required environment variables are documented in
+`ops/freshmark-vps/README.md`. Run the API locally with:
+
+```bash
+FRESHMARK_DATA_DIR=.freshmark-data \
+FRESHMARK_NETLIFY_FUNCTIONS=true \
+FRESHMARK_COMMENTS=true \
+FRESHMARK_COMMENTS_AUTH=true \
+npm run start:vps
+```
 
 ## Start writing
 

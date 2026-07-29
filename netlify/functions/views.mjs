@@ -1,4 +1,4 @@
-import { getStore } from "@netlify/blobs";
+import { getStore } from "../lib/store.mjs";
 import { netlifyFunctionsEnabled } from "../../lib/site-config.mjs";
 
 const responseHeaders = {

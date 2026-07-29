@@ -1,0 +1,29 @@
+[Unit]
+Description=Freshmark web API
+After=network-online.target freshmark-mailer.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=freshmark
+Group=freshmark
+EnvironmentFile=/etc/freshmark-api.env
+WorkingDirectory=/opt/freshmark
+ExecStart=/usr/bin/node /opt/freshmark/server/server.mjs
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+SystemCallArchitectures=native
+ReadWritePaths=/var/lib/freshmark-api
+
+[Install]
+WantedBy=multi-user.target

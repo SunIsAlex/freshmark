@@ -1,4 +1,4 @@
-import { getStore } from "@netlify/blobs";
+import { getStore } from "../lib/store.mjs";
 import { commentsAuthEnabled, commentsEnabled } from "../../lib/site-config.mjs";
 import { publicAccount, readSession } from "../lib/auth.mjs";
 import { sameOrigin } from "../lib/comments.mjs";
