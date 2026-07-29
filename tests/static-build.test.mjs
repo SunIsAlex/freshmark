@@ -195,8 +195,8 @@ test("generated HTML has no application framework runtime", async () => {
   assert.doesNotMatch(html, /data-comments(?:[ >])/);
   assert.doesNotMatch(html, /<link[^>]+href="\/assets\/fonts\/anthropic-sans-variable\.woff2"[^>]+rel="preload"/);
   assert.match(html, /<script[^>]+src="\/assets\/app\.js\?v=[a-f0-9]{12}"[^>]+type="module"/);
-  assert.doesNotMatch(html, /katex\.min\.css|class="katex"/);
-  assert.match(html, /class="summary-math"/);
+  assert.doesNotMatch(html, /katex\.min\.css|class="katex-html"/);
+  assert.match(html, /class="katex"><math[^>]+xmlns="http:\/\/www\.w3\.org\/1998\/Math\/MathML"/);
   const mathArticle = await read("public/posts/chemistry/inorganic/manganese/index.html");
   const katexStylesheet = mathArticle.match(/<link[^>]+href="\/assets\/katex\.min\.css\?v=[a-f0-9]{12}"[^>]+data-katex-styles[^>]*>/)?.[0];
   assert.match(katexStylesheet, /\brel="preload"/);
