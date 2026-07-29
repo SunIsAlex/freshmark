@@ -3,16 +3,22 @@ import test from "node:test";
 import {
   addCommentToThread,
   createComment,
+  createEmailVerification,
   moderateCommentInThread,
   normalizeArticlePath,
   pageApprovedComments,
+  pruneExpiredVerifications,
   publicComment,
+  removeCommentFromThread,
   updateCommentThread,
   validateCommentInput,
+  verifyCommentInThread,
 } from "../netlify/lib/comments.mjs";
 import commentHandler, { config as submitConfig } from "../netlify/functions/comment.mjs";
+import { config as verifyConfig } from "../netlify/functions/comment-verify.mjs";
 import commentsHandler, { config as listConfig } from "../netlify/functions/comments.mjs";
 import adminHandler from "../netlify/functions/comment-admin.mjs";
+import { sendCommentVerification } from "../netlify/lib/mailer.mjs";
 
 test("comment paths are restricted to article routes", () => {
   assert.equal(normalizeArticlePath("/posts/example/"), "/posts/example/");
@@ -42,6 +48,13 @@ test("comment input is normalized and validated", () => {
   assert.equal(validateCommentInput({ path: "/posts/example/", name: "", body: "Hello" }).ok, false);
   assert.equal(validateCommentInput({ path: "/posts/example/", name: "Alex", email: "bad", body: "Hello" }).ok, false);
   assert.equal(validateCommentInput({ path: "/posts/example/", name: "Alex", body: "x".repeat(2001) }).ok, false);
+  assert.equal(
+    validateCommentInput(
+      { path: "/posts/example/", name: "Alex", body: "Hello" },
+      { emailRequired: true },
+    ).ok,
+    false,
+  );
 });
 
 test("public comments never expose email or moderation state", () => {
@@ -110,8 +123,107 @@ test("moderation can approve or permanently delete a comment", () => {
   assert.deepEqual(deleted.thread.comments.map(({ id }) => id), ["a"]);
 });
 
+test("email verification codes expire, limit attempts, and publish without exposing email", () => {
+  const now = new Date("2026-07-29T10:00:00Z");
+  const verification = createEmailVerification({ now });
+  assert.match(verification.code, /^\d{6}$/);
+  const comment = createComment({
+    name: "Alex",
+    email: "alex@example.com",
+    body: "Hello",
+  }, { emailVerification: verification.record, now });
+  assert.equal(comment.status, "verifying");
+
+  let thread = { version: 1, comments: [comment] };
+  const invalid = verifyCommentInThread(thread, comment.id, "000000" === verification.code ? "000001" : "000000", { now });
+  assert.equal(invalid.result.status, "invalid");
+  assert.equal(invalid.thread.comments[0].verification.attempts, 1);
+  thread = invalid.thread;
+
+  const verified = verifyCommentInThread(thread, comment.id, verification.code, { now });
+  assert.equal(verified.result.status, "approved");
+  assert.equal(verified.result.comment.name, "Alex");
+  assert.equal("email" in verified.result.comment, false);
+  assert.equal("verification" in verified.thread.comments[0], false);
+
+  const expiredComment = createComment({
+    name: "Alex",
+    email: "alex@example.com",
+    body: "Hello",
+  }, { emailVerification: verification.record, now });
+  const expired = verifyCommentInThread(
+    { version: 1, comments: [expiredComment] },
+    expiredComment.id,
+    verification.code,
+    { now: new Date(now.getTime() + 10 * 60_000) },
+  );
+  assert.equal(expired.result.status, "expired");
+  assert.equal(expired.thread.comments.length, 0);
+});
+
+test("unverified comments can be removed after mail delivery failures", () => {
+  const thread = { version: 1, comments: [{ id: "keep" }, { id: "remove" }] };
+  const removed = removeCommentFromThread(thread, "remove");
+  assert.deepEqual(removed.thread.comments.map(({ id }) => id), ["keep"]);
+});
+
+test("expired unverified comments are pruned before thread capacity is checked", () => {
+  const now = new Date("2026-07-29T10:20:00Z");
+  const thread = {
+    version: 1,
+    comments: [
+      { id: "approved", status: "approved" },
+      {
+        id: "expired",
+        status: "verifying",
+        verification: { expiresAt: "2026-07-29T10:10:00Z" },
+      },
+      {
+        id: "active",
+        status: "verifying",
+        verification: { expiresAt: "2026-07-29T10:30:00Z" },
+      },
+    ],
+  };
+  pruneExpiredVerifications(thread, { now });
+  assert.deepEqual(thread.comments.map(({ id }) => id), ["approved", "active"]);
+  const added = addCommentToThread(thread, { id: "new" }, { now });
+  assert.deepEqual(added.thread.comments.map(({ id }) => id), ["approved", "active", "new"]);
+});
+
+test("mailer requires HTTPS and keeps its token in the authorization header", async () => {
+  await assert.rejects(
+    sendCommentVerification(
+      { email: "alex@example.com", code: "123456", locale: "en" },
+      { FRESHMARK_MAILER_ENDPOINT: "http://mailer.example/send", FRESHMARK_MAILER_TOKEN: "secret" },
+    ),
+    { code: "mailer_not_configured" },
+  );
+  const previousFetch = globalThis.fetch;
+  try {
+    globalThis.fetch = async (url, options) => {
+      assert.equal(url.href, "https://mailer.example/send");
+      assert.equal(options.headers.authorization, "Bearer secret");
+      assert.equal(options.redirect, "error");
+      assert.deepEqual(JSON.parse(options.body), {
+        to: "alex@example.com",
+        code: "123456",
+        locale: "en",
+      });
+      return new Response(null, { status: 202 });
+    };
+    await sendCommentVerification(
+      { email: "alex@example.com", code: "123456", locale: "en" },
+      { FRESHMARK_MAILER_ENDPOINT: "https://mailer.example/send", FRESHMARK_MAILER_TOKEN: "secret" },
+    );
+  } finally {
+    globalThis.fetch = previousFetch;
+  }
+});
+
 test("comment functions reject invalid requests before accessing storage", async () => {
   const previous = process.env.FRESHMARK_COMMENTS;
+  const previousVerification = process.env.FRESHMARK_COMMENTS_EMAIL_VERIFICATION;
   process.env.FRESHMARK_COMMENTS = "true";
   try {
     const invalidSubmission = await commentHandler(new Request("https://example.com/api/comments/submit", {
@@ -130,9 +242,24 @@ test("comment functions reject invalid requests before accessing storage", async
     assert.equal(invalidList.status, 400);
     const hiddenAdmin = await adminHandler(new Request("https://example.com/api/comments/admin?path=/posts/example/"));
     assert.equal(hiddenAdmin.status, 404);
+    process.env.FRESHMARK_COMMENTS_EMAIL_VERIFICATION = "true";
+    const mismatchedBuild = await commentHandler(new Request("https://example.com/api/comments/submit", {
+      method: "POST",
+      headers: { "content-type": "application/json", origin: "https://example.com" },
+      body: JSON.stringify({
+        path: "/posts/example/",
+        name: "Alex",
+        email: "alex@example.com",
+        body: "Hello",
+        v: false,
+      }),
+    }));
+    assert.equal(mismatchedBuild.status, 503);
   } finally {
     if (previous === undefined) delete process.env.FRESHMARK_COMMENTS;
     else process.env.FRESHMARK_COMMENTS = previous;
+    if (previousVerification === undefined) delete process.env.FRESHMARK_COMMENTS_EMAIL_VERIFICATION;
+    else process.env.FRESHMARK_COMMENTS_EMAIL_VERIFICATION = previousVerification;
   }
 });
 
@@ -144,4 +271,7 @@ test("public comment endpoints declare separate platform rate limits", () => {
   assert.equal(submitConfig.method, "POST");
   assert.equal(submitConfig.rateLimit.windowLimit, 5);
   assert.deepEqual(submitConfig.rateLimit.aggregateBy, ["ip", "domain"]);
+  assert.equal(verifyConfig.path, "/api/comments/verify");
+  assert.equal(verifyConfig.method, "POST");
+  assert.equal(verifyConfig.rateLimit.windowLimit, 10);
 });

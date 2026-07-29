@@ -5,7 +5,13 @@ import { changedCurrentIndexes } from "../lib/content-diff.mjs";
 import { locales } from "../lib/i18n.mjs";
 import { parseFrontmatter, renderMarkdown, renderSummary, searchTextFromMarkdown, summaryFromBody } from "../lib/markdown.mjs";
 import { searchableLatexText } from "../lib/search-text.mjs";
-import { commentsEnabled, commentsModerated, netlifyFunctionsEnabled, resolveBaseUrl } from "../lib/site-config.mjs";
+import {
+  commentsEmailVerificationEnabled,
+  commentsEnabled,
+  commentsModerated,
+  netlifyFunctionsEnabled,
+  resolveBaseUrl,
+} from "../lib/site-config.mjs";
 
 const root = new URL("../", import.meta.url);
 const read = (file) => readFile(new URL(file, root), "utf8");
@@ -35,6 +41,11 @@ test("comments and moderation use independent explicit environment switches", ()
   assert.equal(commentsEnabled({ FRESHMARK_COMMENTS: "false" }), false);
   assert.equal(commentsModerated({ FRESHMARK_COMMENTS_MODERATED: "on" }), true);
   assert.equal(commentsModerated({ FRESHMARK_COMMENTS_MODERATED: "" }), false);
+  assert.equal(commentsEmailVerificationEnabled({}), false);
+  assert.equal(
+    commentsEmailVerificationEnabled({ FRESHMARK_COMMENTS_EMAIL_VERIFICATION: "yes" }),
+    true,
+  );
 });
 
 test("search index text excludes Markdown and LaTeX syntax", () => {
@@ -173,7 +184,7 @@ test("generated HTML has no application framework runtime", async () => {
   assert.match(html, /<script[^>]+src="\/assets\/app\.js\?v=[a-f0-9]{12}"/);
   assert.match(html, /assetVersion:"[a-f0-9]{12}"/);
   assert.match(html, /views:\{enabled:!1,endpoint:"\/\.netlify\/functions\/views"\}/);
-  assert.match(html, /comments:\{enabled:!1,listEndpoint:"\/api\/comments",submitEndpoint:"\/api\/comments\/submit"\}/);
+  assert.match(html, /comments:\{enabled:!1,emailVerification:!1,listEndpoint:"\/api\/comments",submitEndpoint:"\/api\/comments\/submit",verifyEndpoint:"\/api\/comments\/verify"\}/);
   assert.doesNotMatch(html, /data-(?:site|article)-view-count/);
   assert.doesNotMatch(html, /data-comments(?:[ >])/);
   assert.doesNotMatch(html, /<link[^>]+href="\/assets\/fonts\/anthropic-sans-variable\.woff2"[^>]+rel="preload"/);
@@ -232,8 +243,8 @@ test("localized routes provide Chinese and English navigation", async () => {
   );
   const englishRss = await read("public/en/rss.xml");
   assert.match(englishRss, /<language>en<\/language>/);
-  assert.match(englishRss, /https:\/\/next\.sunisalex\.org\/en\/posts\/chemistry\/inorganic\/manganese\//);
-  assert.match(englishRss, /https:\/\/next\.sunisalex\.org\/en\/posts\/physics\/basic-calculus-02\//);
+  assert.match(englishRss, /https:\/\/netlify\.sunisalex\.org\/en\/posts\/chemistry\/inorganic\/manganese\//);
+  assert.match(englishRss, /https:\/\/netlify\.sunisalex\.org\/en\/posts\/physics\/basic-calculus-02\//);
 });
 
 test("typography uses Claude's font family and size scale", async () => {

@@ -215,6 +215,8 @@ button { color:inherit; }
 .comment-form button:hover { background:var(--accent-hover); }
 .comment-form button:disabled,.comment-more:disabled { cursor:wait; opacity:.65; }
 .comment-honeypot { position:absolute!important; left:-10000px!important; width:1px!important; height:1px!important; overflow:hidden!important; }
+.comment-verification > p { margin:0 0 18px; color:var(--ink-soft); font-size:var(--text-sm); line-height:1.5; }
+.comment-verification input { max-width:220px; font-variant-numeric:tabular-nums; letter-spacing:.2em; }
 .reading-progress { position:fixed; inset:0 auto auto 0; z-index:30; width:0; height:3px; background:var(--accent); transition:width .1s linear; }
 .freshmark-pswp { --pswp-bg:#050a0c; }
 .freshmark-pswp .pswp__button--arrow--prev,.freshmark-pswp .pswp__button--arrow--next { display:none; }

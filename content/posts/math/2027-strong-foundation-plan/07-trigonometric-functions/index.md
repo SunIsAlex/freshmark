@@ -318,7 +318,7 @@ $\cos\frac{\pi}{7} - \cos\frac{2\pi}{7} + \cos\frac{3\pi}{7}=\frac{1}{2}$
 
 或者,考虑用诱导公式去掉讨厌的负号:
 $$\cos\frac{\pi}{7} - \cos\frac{2\pi}{7} + \cos\frac{3\pi}{7}=\cos\frac{\pi}{7} + \cos\frac{3\pi}{7} + \cos\frac{5\pi}{7}$$
-我们发现,这正是之前讨论过的[经典问题](https://next.sunisalex.org/posts/math/2022-labour-day/5-01-01/#%E4%BE%8B8),剩余两种处理思路(单位根/构造裂项)不加赘述.
+我们发现,这正是之前讨论过的[经典问题](https://netlify.sunisalex.org/posts/math/2022-labour-day/5-01-01/#%E4%BE%8B8),剩余两种处理思路(单位根/构造裂项)不加赘述.
 
 # 例4.13
 (北京大学) $\left(1+\cos \frac{\pi}{5}\right)\left(1+\cos \frac{3\pi}{5}\right)$ 的值为

@@ -35,6 +35,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   let searchScrollRequest = 0;
   let viewRequest = 0;
   let commentsRequest = 0;
+  let commentVerificationModule;
   const preparedGalleryImages = new WeakSet();
   const preparedAnswerReveals = new WeakSet();
   const observedInlineMath = new WeakSet();
@@ -153,7 +154,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
         credentials: "same-origin",
         headers: { accept: "application/json" },
       });
-      if (!response.ok) throw new Error(`Comments returned ${response.status}`);
+      if (!response.ok) throw new Error("comments");
       const payload = await response.json();
       if (request !== commentsRequest || !section.isConnected) return;
       renderComments(section, payload, { prepend });
@@ -195,6 +196,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
           email: data.get("email"),
           body: data.get("body"),
           website: data.get("website"),
+          v: comments.emailVerification,
         }),
         cache: "no-store",
         credentials: "same-origin",
@@ -205,6 +207,11 @@ import { searchableLatexText } from "../lib/search-text.mjs";
       if (response.status === 429) throw Object.assign(new Error("rate_limited"), { code: "rate_limited" });
       if (!response.ok) throw Object.assign(new Error(result.error || "unavailable"), { code: result.error });
       try { localStorage.setItem("freshmark-comment-name", String(data.get("name") || "")); } catch {}
+      if (result.status === "verification_required" && result.verification?.id) {
+        commentVerificationModule ||= import("./comment-verification.js");
+        (await commentVerificationModule).beginCommentVerification({ form, id: result.verification.id, message });
+        return;
+      }
       form.elements.body.value = "";
       form.elements.website.value = "";
       status.textContent = result.status === "published" ? message("commentPublished") : message("commentPending");
@@ -222,6 +229,11 @@ import { searchableLatexText } from "../lib/search-text.mjs";
         submit.textContent = message("submitComment");
       }
     }
+  }
+
+  async function verifyComment(form) {
+    commentVerificationModule ||= import("./comment-verification.js");
+    (await commentVerificationModule).verifyComment({ form, comments, message, loadComments });
   }
 
   function loadKaTeXStyles() {
@@ -986,7 +998,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   document.addEventListener("click", (event) => {
     const answerReveal = event.target.closest("u.answer-reveal");
     if (answerReveal) { event.preventDefault(); toggleAnswerReveal(answerReveal); return; }
-    const command = event.target.closest("[data-search-open], [data-theme-toggle], [data-tag], [data-toc-toggle], [data-comments-more]");
+    const command = event.target.closest("[data-search-open], [data-theme-toggle], [data-tag], [data-toc-toggle], [data-comments-more], [data-comment-verify]");
     if (command?.matches("[data-search-open]")) { event.preventDefault(); openSearch(); return; }
     if (command?.matches("[data-theme-toggle]")) { event.preventDefault(); setTheme(root.dataset.theme === "dark" ? "light" : "dark"); return; }
     if (command?.matches("[data-tag]")) { event.preventDefault(); applyFilter(command); return; }
@@ -996,6 +1008,11 @@ import { searchableLatexText } from "../lib/search-text.mjs";
       command.disabled = true;
       command.textContent = message("commentsLoading");
       loadComments(command.closest("[data-comments]"), { cursor: command.dataset.cursor, prepend: true });
+      return;
+    }
+    if (command?.matches("[data-comment-verify]")) {
+      event.preventDefault();
+      verifyComment(command.closest("[data-comment-form]"));
       return;
     }
 
@@ -1026,7 +1043,8 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     const form = event.target.closest("[data-comment-form]");
     if (!form) return;
     event.preventDefault();
-    submitComment(form);
+    if (form.dataset.verificationId) verifyComment(form);
+    else submitComment(form);
   });
 
   history.replaceState({ ...(history.state || {}), spa: true, scrollY }, "", location.href);

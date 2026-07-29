@@ -1,12 +1,19 @@
 import { getStore } from "@netlify/blobs";
-import { commentsEnabled, commentsModerated } from "../../lib/site-config.mjs";
+import {
+  commentsEmailVerificationEnabled,
+  commentsEnabled,
+  commentsModerated,
+} from "../../lib/site-config.mjs";
 import {
   addCommentToThread,
   createComment,
+  createEmailVerification,
+  removeCommentFromThread,
   sameOrigin,
   updateCommentThread,
   validateCommentInput,
 } from "../lib/comments.mjs";
+import { sendCommentVerification } from "../lib/mailer.mjs";
 
 const headers = {
   "cache-control": "no-store",
@@ -26,15 +33,50 @@ export default async function handler(request) {
   } catch {
     return json({ error: "invalid" }, 400);
   }
-  const validated = validateCommentInput(input);
+  const emailVerificationEnabled = commentsEmailVerificationEnabled();
+  if (Boolean(input?.v) !== emailVerificationEnabled) {
+    return json({ error: "configuration_mismatch" }, 503);
+  }
+  const validated = validateCommentInput(input, { emailRequired: emailVerificationEnabled });
   if (!validated.ok) return json({ error: validated.error }, 400);
   if (validated.value.website) return json({ status: "pending" }, 202);
 
   const moderated = commentsModerated();
-  const comment = createComment(validated.value, { moderated });
+  const verification = emailVerificationEnabled ? createEmailVerification() : null;
+  const comment = createComment(validated.value, {
+    moderated,
+    emailVerification: verification?.record,
+  });
   try {
     const store = getStore({ name: "freshmark-comments", consistency: "strong" });
     await updateCommentThread(store, validated.value.path, (thread) => addCommentToThread(thread, comment));
+    if (verification) {
+      try {
+        await sendCommentVerification({
+          email: validated.value.email,
+          code: verification.code,
+          locale: validated.value.path.startsWith("/en/") ? "en" : "zh",
+        });
+      } catch (error) {
+        try {
+          await updateCommentThread(
+            store,
+            validated.value.path,
+            (thread) => removeCommentFromThread(thread, comment.id),
+          );
+        } catch (cleanupError) {
+          console.error("Freshmark unverified comment cleanup failed", cleanupError);
+        }
+        throw error;
+      }
+      return json({
+        status: "verification_required",
+        verification: {
+          id: comment.id,
+          expiresAt: verification.record.expiresAt,
+        },
+      }, 202);
+    }
     return json({
       status: moderated ? "pending" : "published",
       comment: moderated ? undefined : {
@@ -46,7 +88,8 @@ export default async function handler(request) {
     }, moderated ? 202 : 201);
   } catch (error) {
     console.error("Freshmark comment submission failed", error);
-    return json({ error: error?.code || "unavailable" }, error?.code === "thread_full" ? 409 : 503);
+    const status = error?.code === "thread_full" ? 409 : error?.code === "rate_limited" ? 429 : 503;
+    return json({ error: error?.code || "unavailable" }, status);
   }
 }
 

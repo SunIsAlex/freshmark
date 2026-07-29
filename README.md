@@ -195,6 +195,22 @@ isolated from article rendering when the backend is slow or unavailable.
 Submissions are protected by field and payload limits, a honeypot, same-origin
 checks, and Netlify's per-IP/domain rate limiting.
 
+To require a six-digit email code before a comment can be published or sent to
+moderation, set the following variables. The switch must be available to both
+Builds and Functions; the mailer settings are Functions-only secrets:
+
+```text
+FRESHMARK_COMMENTS_EMAIL_VERIFICATION=true
+FRESHMARK_MAILER_ENDPOINT=https://mail.sunisalex.org/api/mail/comment-code
+FRESHMARK_MAILER_TOKEN=<a long random secret shared with the mailer>
+```
+
+The browser sends submission and verification requests asynchronously, after
+the page has rendered. Codes expire after ten minutes, are stored only as
+scrypt hashes, and are removed after five failed attempts. A comment is not
+public until its email is verified. If moderation is enabled, verification
+moves it to the pending queue instead of publishing it immediately.
+
 Comments publish immediately by default. To hold new comments for review, set
 these Functions-scoped environment variables:
 
