@@ -20,6 +20,7 @@ const root = path.resolve(import.meta.dirname, "..");
 const contentDir = path.join(root, "content", "posts");
 const themeDir = path.join(root, "theme");
 const outputDir = path.join(root, "public");
+const imageCacheDir = path.resolve(process.env.FRESHMARK_IMAGE_CACHE_DIR || path.join(root, ".freshmark-cache", "images"));
 let buildWorkers;
 const currentYear = new Date().getUTCFullYear();
 const basePath = `/${String(config.basePath || "").replace(/^\/+|\/+$/g, "")}`.replace(/^\/$/, "");
@@ -322,7 +323,7 @@ const localeOutput = (locale, relative) => `${locale === defaultLocale ? "" : `$
 await enhanceResponsiveImages(posts, {
   contentDirectory: contentDir,
   outputDirectory: outputDir,
-  cacheDirectory: path.join(root, ".freshmark-cache", "images"),
+  cacheDirectory: imageCacheDir,
   articleOutputDirectory: (post) => path.join(outputDir, localeOutput(post.locale, `posts/${post.slug}`)),
 });
 const postsByLocale = Object.fromEntries(Object.keys(locales).map((locale) => [locale, posts.filter((post) => post.locale === locale)]));
