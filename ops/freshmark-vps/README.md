@@ -94,7 +94,12 @@ systemctl daemon-reload
 nginx -t
 systemctl restart freshmark-api.service
 systemctl reload nginx
-curl --fail http://127.0.0.1:8790/api/health
+attempt=0
+until curl --silent --fail http://127.0.0.1:8790/api/health; do
+  attempt=$((attempt + 1))
+  [ "$attempt" -lt 20 ] || exit 1
+  sleep 1
+done
 ```
 
 Normal deployments then require one command:

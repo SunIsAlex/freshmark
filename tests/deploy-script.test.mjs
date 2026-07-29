@@ -19,6 +19,7 @@ test("VPS deployment switches complete releases atomically", async () => {
   assert.match(script, /git -C "\$repository" archive "\$revision" \| tar -x -C "\$stage"/);
   assert.match(script, /mv -Tf -- "\$pending_link" "\$current_link"/);
   assert.match(script, /API health check failed; restoring the previous release/);
+  assert.doesNotMatch(script, /--show-error "\$api_health_url"/);
   assert.match(script, /npm ci --include=dev/);
   assert.match(script, /npm prune --omit=dev/);
   assert.match(nginx, /root \/var\/www\/freshmark\/current\/public;/);
