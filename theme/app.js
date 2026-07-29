@@ -35,7 +35,8 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   let searchScrollRequest = 0;
   let viewRequest = 0;
   let commentsRequest = 0;
-  let commentVerificationModule;
+  let commentAuthModule;
+  let commentSubmitModule;
   const preparedGalleryImages = new WeakSet();
   const preparedAnswerReveals = new WeakSet();
   const observedInlineMath = new WeakSet();
@@ -170,70 +171,21 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   function prepareComments() {
     const section = document.querySelector("[data-comments]");
     if (!comments.enabled || !section) return;
-    const name = section.querySelector("[name='name']");
-    try {
-      if (name && !name.value) name.value = localStorage.getItem("freshmark-comment-name") || "";
-    } catch {}
+    if (!comments.auth) {
+      const name = section.querySelector("[name='name']");
+      try {
+        if (name && !name.value) name.value = localStorage.getItem("freshmark-comment-name") || "";
+      } catch {}
+    } else {
+      commentAuthModule ||= import("./comment-auth.js");
+      commentAuthModule.then((module) => module.prepareCommentAuth({ section, comments, message }));
+    }
     loadComments(section);
   }
 
   async function submitComment(form) {
-    const section = form.closest("[data-comments]");
-    const submit = form.querySelector("[data-comment-submit]");
-    const status = form.querySelector("[data-comment-form-status]");
-    if (!section || !submit || !status || !comments.submitEndpoint) return;
-    const data = new FormData(form);
-    submit.disabled = true;
-    submit.textContent = message("submittingComment");
-    status.textContent = "";
-    try {
-      const response = await fetch(comments.submitEndpoint, {
-        method: "POST",
-        headers: { "content-type": "application/json", accept: "application/json" },
-        body: JSON.stringify({
-          path: section.dataset.commentsPath,
-          name: data.get("name"),
-          email: data.get("email"),
-          body: data.get("body"),
-          website: data.get("website"),
-          v: comments.emailVerification,
-        }),
-        cache: "no-store",
-        credentials: "same-origin",
-      });
-      let result = {};
-      try { result = await response.json(); } catch {}
-      if (!form.isConnected) return;
-      if (response.status === 429) throw Object.assign(new Error("rate_limited"), { code: "rate_limited" });
-      if (!response.ok) throw Object.assign(new Error(result.error || "unavailable"), { code: result.error });
-      try { localStorage.setItem("freshmark-comment-name", String(data.get("name") || "")); } catch {}
-      if (result.status === "verification_required" && result.verification?.id) {
-        commentVerificationModule ||= import("./comment-verification.js");
-        (await commentVerificationModule).beginCommentVerification({ form, id: result.verification.id, message });
-        return;
-      }
-      form.elements.body.value = "";
-      form.elements.website.value = "";
-      status.textContent = result.status === "published" ? message("commentPublished") : message("commentPending");
-      if (result.status === "published") loadComments(section);
-    } catch (error) {
-      if (!form.isConnected) return;
-      status.textContent = error?.code === "invalid"
-        ? message("commentInvalid")
-        : error?.code === "rate_limited"
-          ? message("commentRateLimited")
-          : message("commentSubmitFailed");
-    } finally {
-      if (form.isConnected) {
-        submit.disabled = false;
-        submit.textContent = message("submitComment");
-      }
-    }
-  }
-
-  async function verifyComment(form) {
-    commentVerificationModule ||= import("./comment-verification.js");
-    (await commentVerificationModule).verifyComment({ form, comments, message, loadComments });
+    commentSubmitModule ||= import("./comment-submit.js");
+    (await commentSubmitModule).submitComment({ form, comments, message, loadComments });
   }
 
   function loadKaTeXStyles() {
@@ -998,7 +950,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   document.addEventListener("click", (event) => {
     const answerReveal = event.target.closest("u.answer-reveal");
     if (answerReveal) { event.preventDefault(); toggleAnswerReveal(answerReveal); return; }
-    const command = event.target.closest("[data-search-open], [data-theme-toggle], [data-tag], [data-toc-toggle], [data-comments-more], [data-comment-verify]");
+    const command = event.target.closest("[data-search-open], [data-theme-toggle], [data-tag], [data-toc-toggle], [data-comments-more]");
     if (command?.matches("[data-search-open]")) { event.preventDefault(); openSearch(); return; }
     if (command?.matches("[data-theme-toggle]")) { event.preventDefault(); setTheme(root.dataset.theme === "dark" ? "light" : "dark"); return; }
     if (command?.matches("[data-tag]")) { event.preventDefault(); applyFilter(command); return; }
@@ -1010,12 +962,6 @@ import { searchableLatexText } from "../lib/search-text.mjs";
       loadComments(command.closest("[data-comments]"), { cursor: command.dataset.cursor, prepend: true });
       return;
     }
-    if (command?.matches("[data-comment-verify]")) {
-      event.preventDefault();
-      verifyComment(command.closest("[data-comment-form]"));
-      return;
-    }
-
     const anchor = event.target.closest("a[href]");
     if (!anchor || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || anchor.target || anchor.hasAttribute("download") || anchor.hasAttribute("data-no-spa")) return;
     const url = new URL(anchor.href, location.href);
@@ -1043,8 +989,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     const form = event.target.closest("[data-comment-form]");
     if (!form) return;
     event.preventDefault();
-    if (form.dataset.verificationId) verifyComment(form);
-    else submitComment(form);
+    submitComment(form);
   });
 
   history.replaceState({ ...(history.state || {}), spa: true, scrollY }, "", location.href);

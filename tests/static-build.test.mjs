@@ -6,7 +6,7 @@ import { locales } from "../lib/i18n.mjs";
 import { parseFrontmatter, renderMarkdown, renderSummary, searchTextFromMarkdown, summaryFromBody } from "../lib/markdown.mjs";
 import { searchableLatexText } from "../lib/search-text.mjs";
 import {
-  commentsEmailVerificationEnabled,
+  commentsAuthEnabled,
   commentsEnabled,
   commentsModerated,
   netlifyFunctionsEnabled,
@@ -41,10 +41,15 @@ test("comments and moderation use independent explicit environment switches", ()
   assert.equal(commentsEnabled({ FRESHMARK_COMMENTS: "false" }), false);
   assert.equal(commentsModerated({ FRESHMARK_COMMENTS_MODERATED: "on" }), true);
   assert.equal(commentsModerated({ FRESHMARK_COMMENTS_MODERATED: "" }), false);
-  assert.equal(commentsEmailVerificationEnabled({}), false);
+  assert.equal(commentsAuthEnabled({}), false);
+  assert.equal(commentsAuthEnabled({ FRESHMARK_COMMENTS_AUTH: "yes" }), true);
+  assert.equal(commentsAuthEnabled({ FRESHMARK_COMMENTS_EMAIL_VERIFICATION: "true" }), true);
   assert.equal(
-    commentsEmailVerificationEnabled({ FRESHMARK_COMMENTS_EMAIL_VERIFICATION: "yes" }),
-    true,
+    commentsAuthEnabled({
+      FRESHMARK_COMMENTS_AUTH: "false",
+      FRESHMARK_COMMENTS_EMAIL_VERIFICATION: "true",
+    }),
+    false,
   );
 });
 
@@ -184,7 +189,7 @@ test("generated HTML has no application framework runtime", async () => {
   assert.match(html, /<script[^>]+src="\/assets\/app\.js\?v=[a-f0-9]{12}"/);
   assert.match(html, /assetVersion:"[a-f0-9]{12}"/);
   assert.match(html, /views:\{enabled:!1,endpoint:"\/\.netlify\/functions\/views"\}/);
-  assert.match(html, /comments:\{enabled:!1,emailVerification:!1,listEndpoint:"\/api\/comments",submitEndpoint:"\/api\/comments\/submit",verifyEndpoint:"\/api\/comments\/verify"\}/);
+  assert.match(html, /comments:\{enabled:!1,auth:!1,listEndpoint:"\/api\/comments",submitEndpoint:"\/api\/comments\/submit",authEndpoints:\{session:"\/api\/auth\/session",login:"\/api\/auth\/login",logout:"\/api\/auth\/logout",register:"\/api\/auth\/register",verify:"\/api\/auth\/register\/verify"\}\}/);
   assert.doesNotMatch(html, /data-(?:site|article)-view-count/);
   assert.doesNotMatch(html, /data-comments(?:[ >])/);
   assert.doesNotMatch(html, /<link[^>]+href="\/assets\/fonts\/anthropic-sans-variable\.woff2"[^>]+rel="preload"/);
@@ -195,6 +200,18 @@ test("generated HTML has no application framework runtime", async () => {
   assert.match(html, /class="katex"/);
   assert.doesNotMatch(html, /katex\.min\.js|mhchem\.min\.js|auto-render/);
   assert.doesNotMatch(html, /\b(?:_next|__next|react(?:\.production)?\.min|vinext)\b/i);
+});
+
+test("comment account and submission code load as small optional chunks", async () => {
+  const app = await read("theme/app.js");
+  const auth = await read("theme/comment-auth.js");
+  const chunks = await readdir(new URL("public/assets/chunks/", root));
+  assert.match(app, /import\("\.\/comment-auth\.js"\)/);
+  assert.match(app, /import\("\.\/comment-submit\.js"\)/);
+  assert.ok(chunks.some((file) => /^comment-auth-[A-Z0-9]+\.js$/.test(file)));
+  assert.ok(chunks.some((file) => /^comment-submit-[A-Z0-9]+\.js$/.test(file)));
+  assert.match(auth, /credentials: "same-origin"/);
+  assert.doesNotMatch(auth, /localStorage|sessionStorage/);
 });
 
 test("localized routes provide Chinese and English navigation", async () => {

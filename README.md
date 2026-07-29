@@ -188,28 +188,33 @@ Netlify Functions and Blobs:
 FRESHMARK_COMMENTS=true npm run build
 ```
 
-Comments require a name and plain-text body. Email is optional, stored only in
-the private Blob record, and never included in the public API. The public
-interface loads after the article has rendered, supports pagination, and stays
-isolated from article rendering when the backend is slow or unavailable.
-Submissions are protected by field and payload limits, a honeypot, same-origin
-checks, and Netlify's per-IP/domain rate limiting.
+Comments accept plain text and never expose email addresses through the public
+API. The interface loads after the article has rendered, supports pagination,
+and stays isolated from article rendering when the backend is slow or
+unavailable. Submissions are protected by field and payload limits, a
+honeypot, same-origin checks, and Netlify's per-IP/domain rate limiting.
 
-To require a six-digit email code before a comment can be published or sent to
-moderation, set the following variables. The switch must be available to both
-Builds and Functions; the mailer settings are Functions-only secrets:
+To require a lightweight account before commenting, set the following
+variables. The auth switch must be available to both Builds and Functions; the
+mailer settings are Functions-only secrets:
 
 ```text
-FRESHMARK_COMMENTS_EMAIL_VERIFICATION=true
+FRESHMARK_COMMENTS_AUTH=true
 FRESHMARK_MAILER_ENDPOINT=https://mail.sunisalex.org/api/mail/comment-code
 FRESHMARK_MAILER_TOKEN=<a long random secret shared with the mailer>
 ```
 
-The browser sends submission and verification requests asynchronously, after
-the page has rendered. Codes expire after ten minutes, are stored only as
-scrypt hashes, and are removed after five failed attempts. A comment is not
-public until its email is verified. If moderation is enabled, verification
-moves it to the pending queue instead of publishing it immediately.
+Registration requires a name, email, password, and one six-digit email code.
+Passwords and codes are stored only as salted scrypt hashes. Codes expire after
+ten minutes and are removed after five failed attempts. Successful registration
+creates a 30-day server-side session referenced by a random `HttpOnly`,
+`Secure`, `SameSite=Lax` cookie. Comment names and private email addresses come
+from the authenticated account rather than browser-submitted identity fields.
+All account, session, and comment requests run asynchronously after rendering.
+
+`FRESHMARK_COMMENTS_EMAIL_VERIFICATION=true` remains a compatibility alias for
+the auth switch, so existing deployments migrate without briefly disabling
+protection. Prefer `FRESHMARK_COMMENTS_AUTH` for new configuration.
 
 Comments publish immediately by default. To hold new comments for review, set
 these Functions-scoped environment variables:

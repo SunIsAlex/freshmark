@@ -1,6 +1,6 @@
 const MAILER_TIMEOUT_MS = 8_000;
 
-export async function sendCommentVerification({ email, code, locale }, environment = process.env) {
+export async function sendRegistrationVerification({ email, code, locale }, environment = process.env) {
   const endpoint = environment.FRESHMARK_MAILER_ENDPOINT?.trim();
   const token = environment.FRESHMARK_MAILER_TOKEN?.trim();
   if (!endpoint || !token) {
@@ -28,7 +28,7 @@ export async function sendCommentVerification({ email, code, locale }, environme
       "content-type": "application/json",
       accept: "application/json",
     },
-    body: JSON.stringify({ to: email, code, locale }),
+    body: JSON.stringify({ to: email, code, locale, purpose: "registration" }),
     signal: AbortSignal.timeout(MAILER_TIMEOUT_MS),
     redirect: "error",
   });

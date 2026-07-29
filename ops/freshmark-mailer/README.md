@@ -1,7 +1,7 @@
 # Freshmark mailer
 
-This is the small, authenticated HTTP-to-sendmail bridge used by optional
-comment email verification. It accepts only one request shape, binds to
+This is the small, authenticated HTTP-to-sendmail bridge used by account
+registration verification. It accepts only one request shape, binds to
 `127.0.0.1`, validates the recipient and six-digit code, and submits a fixed
 transactional template to the local Postfix queue.
 

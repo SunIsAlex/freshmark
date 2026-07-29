@@ -1,4 +1,7 @@
-import { randomBytes, randomInt, randomUUID, scryptSync, timingSafeEqual } from "node:crypto";
+import {
+  randomUUID,
+  timingSafeEqual,
+} from "node:crypto";
 
 export const COMMENT_PAGE_SIZE = 20;
 export const MAX_COMMENTS_PER_ARTICLE = 500;
@@ -46,38 +49,22 @@ export function validateCommentInput(input, { emailRequired = false } = {}) {
   return { ok: true, value: { path, name, email, body, website } };
 }
 
-export function createEmailVerification({ now = new Date() } = {}) {
-  const code = String(randomInt(0, 1_000_000)).padStart(6, "0");
-  const salt = randomBytes(16).toString("base64url");
-  return {
-    code,
-    record: {
-      salt,
-      digest: scryptSync(code, salt, 32).toString("base64url"),
-      expiresAt: new Date(now.getTime() + 10 * 60_000).toISOString(),
-      attempts: 0,
-    },
-  };
+export function commentInputForAuthor(input, account) {
+  return { ...input, name: account.name, email: account.email };
 }
 
 export function createComment(input, {
   moderated = false,
   now = new Date(),
-  emailVerification = null,
 } = {}) {
-  const comment = {
+  return {
     id: randomUUID(),
     name: input.name,
     email: input.email,
     body: input.body,
     createdAt: now.toISOString(),
-    status: emailVerification ? "verifying" : moderated ? "pending" : "approved",
+    status: moderated ? "pending" : "approved",
   };
-  if (emailVerification) {
-    comment.afterVerificationStatus = moderated ? "pending" : "approved";
-    comment.verification = emailVerification;
-  }
-  return comment;
 }
 
 export function publicComment(comment) {
@@ -158,44 +145,6 @@ export function moderateCommentInThread(thread, id, action) {
   else if (action === "delete") thread.comments.splice(index, 1);
   else return { thread, result: null };
   return { thread, result: action === "delete" ? { id } : thread.comments[index] };
-}
-
-export function removeCommentFromThread(thread, id) {
-  const index = thread.comments.findIndex((comment) => comment.id === id);
-  if (index < 0) return { thread, result: null };
-  thread.comments.splice(index, 1);
-  return { thread, result: { id } };
-}
-
-export function verifyCommentInThread(thread, id, code, { now = new Date() } = {}) {
-  const index = thread.comments.findIndex((comment) => comment.id === id && comment.status === "verifying");
-  if (index < 0) return { thread, result: { status: "invalid" } };
-  const comment = thread.comments[index];
-  const verification = comment.verification;
-  if (!verification || new Date(verification.expiresAt).getTime() <= now.getTime()) {
-    thread.comments.splice(index, 1);
-    return { thread, result: { status: "expired" } };
-  }
-  if (verification.attempts >= 5) {
-    thread.comments.splice(index, 1);
-    return { thread, result: { status: "attempts_exceeded" } };
-  }
-  const supplied = scryptSync(String(code), verification.salt, 32);
-  const expected = Buffer.from(verification.digest, "base64url");
-  if (supplied.length !== expected.length || !timingSafeEqual(supplied, expected)) {
-    comment.verification = { ...verification, attempts: verification.attempts + 1 };
-    if (comment.verification.attempts >= 5) {
-      thread.comments.splice(index, 1);
-      return { thread, result: { status: "attempts_exceeded" } };
-    }
-    thread.comments[index] = comment;
-    return { thread, result: { status: "invalid" } };
-  }
-  const verified = { ...comment, status: comment.afterVerificationStatus || "approved" };
-  delete verified.afterVerificationStatus;
-  delete verified.verification;
-  thread.comments[index] = verified;
-  return { thread, result: { status: verified.status, comment: publicComment(verified) } };
 }
 
 export function authorized(request, expectedToken) {

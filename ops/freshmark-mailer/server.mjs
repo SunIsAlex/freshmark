@@ -43,10 +43,33 @@ function encodedSubject(value) {
   return `=?UTF-8?B?${Buffer.from(value).toString("base64")}?=`;
 }
 
-function sendCode({ to, code, locale }) {
+function sendCode({ to, code, locale, purpose }) {
   const english = locale === "en";
-  const subject = english ? "Your Freshmark comment verification code" : "Freshmark 评论验证码";
-  const body = english
+  const registration = purpose === "registration";
+  const subject = registration
+    ? english ? "Verify your Freshmark account" : "验证你的 Freshmark 账号"
+    : english ? "Your Freshmark comment verification code" : "Freshmark 评论验证码";
+  const body = registration
+    ? english
+      ? [
+        "You are creating an account on netlify.sunisalex.org.",
+        "",
+        `Verification code: ${code}`,
+        "",
+        "It expires in 10 minutes. If this was not you, ignore this email.",
+        "",
+        "— Freshmark · netlify.sunisalex.org",
+      ].join("\n")
+      : [
+        "你正在注册 netlify.sunisalex.org 的评论账号。",
+        "",
+        `验证码：${code}`,
+        "",
+        "验证码将在 10 分钟后失效。如非本人操作，请忽略此邮件。",
+        "",
+        "— Freshmark · netlify.sunisalex.org",
+      ].join("\n")
+    : english
     ? [
       "You are verifying your email for a comment on netlify.sunisalex.org.",
       "",
@@ -130,10 +153,11 @@ const server = createServer((request, response) => {
       const input = JSON.parse(raw);
       const to = String(input?.to || "").trim().toLowerCase();
       const code = String(input?.code || "").trim();
+      const purpose = input?.purpose === "registration" ? "registration" : "comment";
       const validEmail = to.length <= 254 && /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/u.test(to);
       if (!validEmail || !/^\d{6}$/.test(code)) return json(response, 400, { error: "invalid" });
       if (!allowedRecipient(to)) return json(response, 429, { error: "rate_limited" });
-      await sendCode({ to, code, locale: input?.locale });
+      await sendCode({ to, code, locale: input?.locale, purpose });
       return json(response, 202, { status: "queued" });
     } catch (error) {
       console.error("Mailer request failed", error?.message || error);
