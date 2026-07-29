@@ -9,6 +9,7 @@ import {
   addCommentToThread,
   commentInputForAuthor,
   createComment,
+  publicComment,
   sameOrigin,
   updateCommentThread,
   validateCommentInput,
@@ -54,12 +55,7 @@ export default async function handler(request) {
     await updateCommentThread(store, validated.value.path, (thread) => addCommentToThread(thread, comment));
     return json({
       status: moderated ? "pending" : "published",
-      comment: moderated ? undefined : {
-        id: comment.id,
-        name: comment.name,
-        body: comment.body,
-        createdAt: comment.createdAt,
-      },
+      comment: moderated ? undefined : publicComment(comment),
     }, moderated ? 202 : 201);
   } catch (error) {
     console.error("Freshmark comment submission failed", error);

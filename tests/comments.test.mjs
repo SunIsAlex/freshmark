@@ -16,6 +16,7 @@ import commentHandler, { config as submitConfig } from "../netlify/functions/com
 import commentsHandler, { config as listConfig } from "../netlify/functions/comments.mjs";
 import adminHandler from "../netlify/functions/comment-admin.mjs";
 import { sendRegistrationVerification } from "../netlify/lib/mailer.mjs";
+import { renderCommentMarkdown } from "../netlify/lib/comment-markdown.mjs";
 
 test("comment paths are restricted to article routes", () => {
   assert.equal(normalizeArticlePath("/posts/example/"), "/posts/example/");
@@ -77,7 +78,31 @@ test("public comments never expose email or moderation state", () => {
   const visible = publicComment(comment);
   assert.equal(comment.status, "pending");
   assert.equal(comment.email, "alex@example.com");
-  assert.deepEqual(Object.keys(visible).sort(), ["body", "createdAt", "id", "name"]);
+  assert.deepEqual(Object.keys(visible).sort(), ["body", "bodyHtml", "createdAt", "id", "name"]);
+});
+
+test("comment Markdown is useful without allowing active HTML or tracking images", () => {
+  const html = renderCommentMarkdown([
+    "**bold** and [safe](https://example.com)",
+    "",
+    "<script>alert(1)</script>",
+    "",
+    "![tracking pixel](https://tracker.example/pixel.gif)",
+    "",
+    "[unsafe](javascript:alert(1))",
+    "",
+    "> quoted",
+    "",
+    "`const value = 1`",
+  ].join("\n"));
+  assert.match(html, /<strong>bold<\/strong>/);
+  assert.match(html, /href="https:\/\/example\.com"/);
+  assert.match(html, /rel="nofollow ugc noopener noreferrer"/);
+  assert.match(html, /&lt;script&gt;alert\(1\)&lt;\/script&gt;/);
+  assert.match(html, /tracking pixel/);
+  assert.doesNotMatch(html, /<img|tracker\.example|href="javascript:/);
+  assert.match(html, /<blockquote>/);
+  assert.match(html, /<code>const value = 1<\/code>/);
 });
 
 test("comment pagination returns only approved comments from newest pages", () => {

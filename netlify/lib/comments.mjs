@@ -2,6 +2,7 @@ import {
   randomUUID,
   timingSafeEqual,
 } from "node:crypto";
+import { renderCommentMarkdown } from "./comment-markdown.mjs";
 
 export const COMMENT_PAGE_SIZE = 20;
 export const MAX_COMMENTS_PER_ARTICLE = 500;
@@ -72,6 +73,7 @@ export function publicComment(comment) {
     id: comment.id,
     name: comment.name,
     body: comment.body,
+    bodyHtml: renderCommentMarkdown(comment.body),
     createdAt: comment.createdAt,
   };
 }
