@@ -52,43 +52,43 @@ function sendCode({ to, code, locale, purpose }) {
   const body = registration
     ? english
       ? [
-        "You are creating an account on netlify.sunisalex.org.",
+        "You are creating an account on freshmark.sunisalex.org.",
         "",
         `Verification code: ${code}`,
         "",
         "It expires in 10 minutes. If this was not you, ignore this email.",
         "",
-        "— Freshmark · netlify.sunisalex.org",
+        "— Freshmark · freshmark.sunisalex.org",
       ].join("\n")
       : [
-        "你正在注册 netlify.sunisalex.org 的评论账号。",
+        "你正在注册 freshmark.sunisalex.org 的评论账号。",
         "",
         `验证码：${code}`,
         "",
         "验证码将在 10 分钟后失效。如非本人操作，请忽略此邮件。",
         "",
-        "— Freshmark · netlify.sunisalex.org",
+        "— Freshmark · freshmark.sunisalex.org",
       ].join("\n")
     : english
     ? [
-      "You are verifying your email for a comment on netlify.sunisalex.org.",
+      "You are verifying your email for a comment on freshmark.sunisalex.org.",
       "",
       `Verification code: ${code}`,
       "",
       "It expires in 10 minutes and can only be used for the comment you just submitted.",
       "If this was not you, ignore this email.",
       "",
-      "— Freshmark · netlify.sunisalex.org",
+      "— Freshmark · freshmark.sunisalex.org",
     ].join("\n")
     : [
-      "你正在验证提交到 netlify.sunisalex.org 评论区的邮箱。",
+      "你正在验证提交到 freshmark.sunisalex.org 评论区的邮箱。",
       "",
       `验证码：${code}`,
       "",
       "验证码将在 10 分钟后失效，仅可用于刚才提交的评论。",
       "如非本人操作，请忽略此邮件。",
       "",
-      "— Freshmark · netlify.sunisalex.org",
+      "— Freshmark · freshmark.sunisalex.org",
     ].join("\n");
   const message = [
     `From: ${sender}`,

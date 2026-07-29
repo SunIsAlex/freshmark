@@ -11,7 +11,7 @@ Runtime layout:
 /var/lib/freshmark-api                 private persistent data
 /etc/freshmark-api.env                 root-readable runtime configuration
 /etc/systemd/system/freshmark-api.service
-/etc/nginx/sites-available/netlify.sunisalex.org
+/etc/nginx/sites-available/freshmark.sunisalex.org
 /etc/nginx/conf.d/freshmark-rate-limits.conf
 ```
 
@@ -33,7 +33,7 @@ FRESHMARK_COMMENTS_ADMIN_TOKEN=<independent random token>
 Build the static site with:
 
 ```bash
-FRESHMARK_BASE_URL=https://netlify.sunisalex.org \
+FRESHMARK_BASE_URL=https://freshmark.sunisalex.org \
 FRESHMARK_NETLIFY_FUNCTIONS=true \
 FRESHMARK_COMMENTS=true \
 FRESHMARK_COMMENTS_AUTH=true \

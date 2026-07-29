@@ -263,8 +263,8 @@ test("localized routes provide Chinese and English navigation", async () => {
   );
   const englishRss = await read("public/en/rss.xml");
   assert.match(englishRss, /<language>en<\/language>/);
-  assert.match(englishRss, /https:\/\/netlify\.sunisalex\.org\/en\/posts\/chemistry\/inorganic\/manganese\//);
-  assert.match(englishRss, /https:\/\/netlify\.sunisalex\.org\/en\/posts\/physics\/basic-calculus-02\//);
+  assert.match(englishRss, /https:\/\/freshmark\.sunisalex\.org\/en\/posts\/chemistry\/inorganic\/manganese\//);
+  assert.match(englishRss, /https:\/\/freshmark\.sunisalex\.org\/en\/posts\/physics\/basic-calculus-02\//);
 });
 
 test("typography uses Claude's font family and size scale", async () => {
