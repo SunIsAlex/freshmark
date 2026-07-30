@@ -259,12 +259,13 @@ test("localized routes provide Chinese and English navigation", async () => {
 
   const chineseIndex = JSON.parse(await read("public/search-index.json"));
   const englishIndex = JSON.parse(await read("public/en/search-index.json"));
-  assert.equal(chineseIndex.length, 34);
+  assert.equal(chineseIndex.length, 35);
   assert.equal(englishIndex.length, 31);
   const englishUrls = new Set(englishIndex.map(({ url }) => url.replace(/^\/en/, "")));
   assert.deepEqual(
     chineseIndex.filter(({ url }) => !englishUrls.has(url)).map(({ url }) => url),
     [
+      "/posts/technology/openclaw-vps-operations/",
       "/posts/math/2027-strong-foundation-plan/08-trigonometric-functions/",
       "/posts/technology/self-hosted-email-verification/",
       "/posts/math/2027-strong-foundation-plan/07-trigonometric-functions/",
