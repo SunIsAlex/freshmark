@@ -12,6 +12,7 @@ build_env_file=${FRESHMARK_BUILD_ENV_FILE:-/etc/freshmark-build.env}
 api_service=${FRESHMARK_API_SERVICE:-freshmark-api.service}
 api_health_url=${FRESHMARK_API_HEALTH_URL:-http://127.0.0.1:8790/api/health}
 lock_file=${FRESHMARK_DEPLOY_LOCK:-/run/lock/freshmark-deploy.lock}
+npm_cache_dir=${FRESHMARK_NPM_CACHE_DIR:-/var/cache/freshmark-npm}
 
 force=false
 restart_api=true
@@ -34,6 +35,7 @@ Environment overrides:
   FRESHMARK_KEEP_RELEASES    Number of complete releases to retain (default: 3)
   FRESHMARK_BUILD_ENV_FILE   Root-readable build environment file
   FRESHMARK_API_SERVICE      systemd API unit
+  FRESHMARK_NPM_CACHE_DIR    Writable npm cache outside root's home directory
 EOF
 }
 
@@ -79,6 +81,11 @@ case "$release_root" in
   /*) ;;
   *) echo "FRESHMARK_RELEASE_ROOT must be an absolute path." >&2; exit 1 ;;
 esac
+case "$npm_cache_dir" in
+  /|/var|/var/cache) echo "Refusing unsafe FRESHMARK_NPM_CACHE_DIR: $npm_cache_dir" >&2; exit 1 ;;
+  /*) ;;
+  *) echo "FRESHMARK_NPM_CACHE_DIR must be an absolute path." >&2; exit 1 ;;
+esac
 case "$keep_releases" in
   ''|*[!0-9]*) echo "FRESHMARK_KEEP_RELEASES must be a positive integer." >&2; exit 1 ;;
 esac
@@ -101,7 +108,8 @@ fi
 releases_dir=$release_root/releases
 current_link=$release_root/current
 image_cache=$release_root/build-cache/images
-mkdir -p "$releases_dir" "$image_cache" "$(dirname "$lock_file")"
+mkdir -p "$releases_dir" "$image_cache" "$npm_cache_dir" "$(dirname "$lock_file")"
+chmod 0700 "$npm_cache_dir"
 
 exec 9>"$lock_file"
 if ! flock -n 9; then
@@ -293,6 +301,8 @@ fi
 : "${FRESHMARK_COMMENTS_AUTH:=true}"
 export FRESHMARK_BASE_URL FRESHMARK_NETLIFY_FUNCTIONS FRESHMARK_COMMENTS FRESHMARK_COMMENTS_AUTH
 export FRESHMARK_IMAGE_CACHE_DIR="$image_cache"
+export NPM_CONFIG_CACHE="$npm_cache_dir"
+export NPM_CONFIG_UPDATE_NOTIFIER=false
 
 (
   cd "$stage"

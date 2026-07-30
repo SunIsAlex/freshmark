@@ -21,6 +21,8 @@ test("VPS deployment switches complete releases atomically", async () => {
   assert.match(script, /API health check failed; restoring the previous release/);
   assert.doesNotMatch(script, /--show-error "\$api_health_url"/);
   assert.match(script, /npm ci --include=dev/);
+  assert.match(script, /NPM_CONFIG_CACHE="\$npm_cache_dir"/);
+  assert.match(script, /NPM_CONFIG_UPDATE_NOTIFIER=false/);
   assert.match(script, /npm prune --omit=dev/);
   assert.match(nginx, /root \/var\/www\/freshmark\/current\/public;/);
   assert.match(service, /WorkingDirectory=\/var\/www\/freshmark\/current/);

@@ -63,6 +63,11 @@ link switch, the script restarts `freshmark-api.service` and checks
 and starts the previous API release again. The newest three complete releases
 are retained by default.
 
+The build uses `/var/cache/freshmark-npm` for npm cache and logs by default.
+This keeps npm out of `/root/.npm`, which can be inaccessible when deployment
+is launched through a hardened systemd service. Override it only with an
+absolute, dedicated directory through `FRESHMARK_NPM_CACHE_DIR`.
+
 Create the build-only environment file:
 
 ```bash
