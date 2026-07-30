@@ -74,7 +74,7 @@ OpenClaw 官方也把它定位为**单一可信操作者的个人助手**，而�
 
 服务器原本已经运行 Nginx、Freshmark API、Freshmark 邮件桥接、Tranquil Reader 同步服务、Postfix、OpenDKIM 和 Xray。为了避免在 1 GiB 内存上再引入容器守护进程，本次直接安装 OpenClaw，没有使用 Docker，也没有启用浏览器自动化、本地大模型和多 Agent 并发。
 
-实测空闲时 OpenClaw Gateway 的 RSS 约为 350 MiB。执行一次模型与工具调用时，还会短暂出现约 250 MiB 的 Agent 进程。因此，1 GiB 内存能够运行这套精简配置，但已经接近适合的下限；如果继续加入数据库、无头 Chromium、Docker 构建或本地模型，升级到 2 GiB 会稳妥得多。
+实测空闲时 OpenClaw Gateway 的 RSS 会在约 230–350 MiB 之间变化。执行一次模型与工具调用时，还会短暂出现约 250 MiB 的 Agent 进程；Freshmark 构建期间，负责构建的 Node 进程一度达到约 374 MiB。因此，1 GiB 内存能够运行这套精简配置，但已经接近适合的下限；如果继续加入数据库、无头 Chromium、Docker 构建或本地模型，升级到 2 GiB 会稳妥得多。
 
 RSS 是 Resident Set Size，即进程当前驻留在物理内存中的页面总量。它可能包含共享页面，所以不能简单把所有进程的 RSS 相加并当作系统真实占用；判断 Linux 内存压力时，还应优先观察 `available`，而不是只看 `free`。
 
@@ -103,12 +103,21 @@ systemd 服务的思路可以简化为：
 [Service]
 User=openclaw
 Group=openclaw
+Environment=HOME=/var/lib/openclaw
+Environment=OPENCLAW_STATE_DIR=/var/lib/openclaw/.openclaw
 EnvironmentFile=/etc/openclaw/openclaw.env
-ExecStart=/usr/bin/openclaw gateway
+ExecStart=/usr/bin/openclaw gateway run --bind loopback --port 18789 --auth token
 Restart=on-failure
+MemoryHigh=384M
+MemoryMax=512M
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
 ```
 
-模型密钥和 Gateway Token 不写入仓库，也不放在聊天记录或普通配置文件中。环境文件只允许 root 读取；模型凭据则保存为 OpenClaw 的认证配置。安装插件时固定版本，并设置显式插件白名单，避免服务器在不知情的情况下加载其他插件。
+`MemoryHigh` 是内核开始积极回收内存的软阈值，`MemoryMax` 是 cgroup 的硬上限。子进程默认也会继承这组限制，所以不能直接让 Gateway 进程树承担一次完整的前端构建；后文会说明如何把已批准的构建放进独立的临时 systemd unit。
+
+模型密钥和 Gateway Token 不写入仓库，也不放在聊天记录或普通配置文件中。环境文件只允许 root 读取；systemd 的系统管理器先读取它，再以 `openclaw` 用户启动服务。模型凭据则保存为 OpenClaw 的认证配置。安装插件时固定版本，并设置显式插件白名单，避免服务器在不知情的情况下加载其他插件。
 
 专用用户并不能解决所有安全问题，但它建立了第一层边界：即使 Agent 可以执行普通命令，也不会天然拥有 root 的完整权限。
 
@@ -239,9 +248,48 @@ OpenClaw 的执行审批再提供一层交互边界：
 
 - `ops-status` 加入允许列表，可以自动运行；
 - `ops-deploy` 和 `ops-rollback` 不在自动允许列表；
-- 真正部署或回滚时，操作者必须选择只允许本次执行。
+- 真正部署或回滚时，操作者必须选择 `allow-once`，即只允许本次执行。
 
 这里需要准确理解审批的作用：它是防止助手误解操作者意图的护栏，不是用于隔离恶意租户的完整沙箱。真正可靠的边界仍然来自专用系统用户、固定命令、严格参数检查和原子部署脚本。
+
+### 审批 ID 从哪里来
+
+最初的 Skill 要求 Agent “请求一次性批准”，但没有明确要求它先调用工具。于是 Agent 只生成了下面这段文字：
+
+> 准备执行部署：`/usr/local/bin/ops-deploy freshmark`。
+>
+> 请确认是否允许执行？回复 `/approve` 并选择 **allow once**。
+
+这看起来像一条审批请求，实际上只是普通的模型回复。Gateway 尚未收到 `exec` 调用，自然没有创建审批记录。此时发送裸命令 `/approve`，得到的真实回复是：
+
+```text
+Usage: /approve <id> <decision>
+(see the pending approval message for available decisions)
+```
+
+修复后的规则是：用户已经明确要求部署时，Agent 必须立即调用固定包装命令，不能再索要第二次文字确认。只有这次工具调用触发 allowlist miss 以后，Gateway 才会创建真实审批 ID。
+
+审批转发也被显式设为当前会话：
+
+```json
+{
+  "approvals": {
+    "exec": {
+      "enabled": true,
+      "mode": "session",
+      "agentFilter": ["main"]
+    }
+  }
+}
+```
+
+微信收到的待审批消息会给出 ID 和可用 decision。正确回复类似：
+
+```text
+/approve 01234567-89ab-cdef-0123-456789abcdef allow-once
+```
+
+其中 ID 必须原样使用真实消息中的值，不能自行编造。`allow-always` 会把该命令持久加入允许列表，不适合部署和回滚；如果本次执行失败，再次尝试也应产生一个新的审批 ID。
 
 ## Skill：把运维知识写给 Agent
 
@@ -300,6 +348,18 @@ top_memory_process_2=pid:255795,name:node,memory_percent:4.6,rss_mib:48.0
 
 在一次真实测试中，OpenClaw 能把这些字段整理为表格，并指出活跃的 Agent 进程会短暂增加内存占用。测试结束后，临时进程退出，内存也随之回落。CPU 几乎空闲时，Top 5 可能全部显示 `0.0%`；这并非脚本失效，而是采样窗口内没有可观测的 CPU 消耗。
 
+第二次 Freshmark 部署期间，状态命令捕捉到了真实的构建负载。OpenClaw 的回复包括：
+
+> **CPU TOP 5**：`node`（PID 268941）达到 **128.7%**，`openclaw-gatewa` 约为 1.0%。
+>
+> **内存 TOP 5**：`node` 使用 **373.5 MiB**，Gateway 使用 **230.9 MiB**，同时可以看到 `esbuild` 与 `npm`。
+>
+> 内存使用率为 **84.5%**，可用内存约 **159 MiB**；Swap 使用约 **305 MiB**。
+
+这里的 `128.7%` 使用 `top` 的 Irix 表示方式，约等于占用 1.29 个逻辑 CPU；在 2 核服务器上不等于整机超过 100%。进程名、npm 和 esbuild 同时出现，也为“正在构建”提供了较强证据，但这种判断仍然是对同一时刻多个字段的综合推断。
+
+构建结束后，可用内存恢复到约 512 MiB，内存使用率回落到约 50%。Swap 从约 305 MiB 降到约 238 MiB，但没有立即清零。Linux 会保留已经换出的冷页面，单独看到非零 Swap 不代表仍有故障。
+
 ## 两个项目如何实现原子部署
 
 让 Agent 执行 `git pull && npm run build` 并不等于可靠部署。构建中途失败、SSH 断开或服务重启过早，都可能让线上目录处于半新半旧的状态。
@@ -331,6 +391,62 @@ Freshmark 和 Tranquil Reader 都使用“发布目录 + 当前软链接”的�
 Freshmark 的账号、会话、评论、访问量和图片缓存位于 release 目录之外。Tranquil Reader 的 PDF 也保存在持久化目录，通过链接提供给每次发布。这样，回滚应用代码时不会回滚或删除用户数据。
 
 因此，OpenClaw 所做的只是选择并请求一个已经设计好的部署动作。真正决定发布是否安全的，是部署脚本中的校验、软链接切换、健康检查和自动回滚。
+
+### 为什么构建要离开 Gateway 的 cgroup
+
+第一次通过微信批准部署时，命令确实经过了固定的 root 分发器，但部署进程仍是 Gateway 的后代，继承了 512 MiB 的 `MemoryMax` 和 `ProtectHome=true`。后者使 root 身份的 npm 也无法访问 `/root/.npm`。
+
+失败后的真实回复是：
+
+> npm 更新尝试（10.9.8 → 12.0.2）失败了，退出码 254。
+>
+> 错误原因：npm 尝试写入 `/root/.npm/_logs` 日志目录时遇到权限问题。
+
+这段回复准确复述了日志目录错误，却把 npm 的版本更新提示误判成了“正在升级 npm”。部署脚本实际执行的是 `npm ci`，并没有运行 `npm install -g npm@12.0.2`。npm 只是在失败输出末尾提示有新版本可用。
+
+直接给 `/root` 改权限并不能解决 systemd 的挂载隔离，也会扩大不必要的访问范围。最终修复分为两层。
+
+首先，部署脚本把 npm 缓存和日志固定到专用目录，并关闭与构建无关的更新提示：
+
+```bash
+NPM_CONFIG_CACHE=/var/cache/freshmark-npm
+NPM_CONFIG_UPDATE_NOTIFIER=false
+```
+
+该目录由 root 创建，权限为 `0700`。脚本还拒绝把缓存目录配置成 `/`、`/var` 或 `/var/cache` 这样的宽泛路径。
+
+其次，root 分发器不再直接把构建留在 Gateway 进程树中，而是启动一个临时 unit：
+
+```text
+微信审批
+  │
+  ▼
+OpenClaw Gateway（MemoryMax=512M）
+  │  sudo：仅允许固定服务与动作
+  ▼
+root 分发器
+  │  systemd-run --wait --pipe --collect
+  ▼
+openclaw-freshmark-deploy.service
+  │  独立 cgroup；PrivateTmp / ProtectHome / ProtectSystem
+  ▼
+Freshmark 原子部署脚本
+```
+
+`--wait` 让 OpenClaw 等待真实退出码，`--pipe` 把构建输出交还给审批会话，`--collect` 则在任务结束后回收临时 unit。构建获得独立的 cgroup，同时仍然受到部署脚本、`sudoers` 和固定分发器的约束；它没有变成任意 root shell。
+
+第一次失败发生在构建阶段，尚未切换 `current`，因此线上旧版本一直保持健康。修复后重新产生审批 ID 并选择 `allow-once`，部署成功切换到：
+
+```text
+revision=70794709dbebdfc2f5c04fea8a6764f9a67ef3f7
+release=20260730T020915Z-70794709dbeb
+api=active
+health_http=200
+public_http=200
+article_http=200
+```
+
+这次测试同时验证了一个重要性质：批准只负责允许命令开始运行，发布成功仍必须由退出码、活动 revision、API 健康检查和公网 HTTP 结果共同证明。
 
 ## 安全审计与仍然存在的边界
 
@@ -368,7 +484,11 @@ openclaw security audit --deep
 [✓] 任意 sudo、非法动作和额外参数被拒绝
 [✓] 只读状态命令可以自动执行
 [✓] 部署与回滚命令触发人工审批
+[✓] 微信收到真实审批 ID，allow-once 只批准一次命令
+[✓] 构建在独立临时 systemd unit 中运行并返回真实退出码
+[✓] npm 缓存不访问 /root，构建结束后临时 unit 被回收
 [✓] Freshmark 状态、健康接口和公网首页正常
+[✓] Freshmark 从微信完成一次真实原子部署，失败尝试未切换旧版本
 [✓] Tranquil Reader 状态、清单和 PDF 资源正常
 [✓] 微信扫码登录后通道保持 running
 [✓] 微信消息能够触发一次模型与工具调用并收到回复
