@@ -34,17 +34,61 @@ const types = {
   ".ttf": "font/ttf",
 };
 
-function build() {
-  const result = spawnSync(process.execPath, [path.join(root, "scripts", "build.mjs")], { cwd: root, stdio: "inherit" });
+function build(buildArgs = []) {
+  const result = spawnSync(process.execPath, [path.join(root, "scripts", "build.mjs"), ...buildArgs], { cwd: root, stdio: "inherit" });
   if (result.status !== 0) console.error("Build failed; keeping the last successful preview.");
 }
 
 build();
 if (shouldWatch) {
   let timer;
-  const rebuild = () => { clearTimeout(timer); timer = setTimeout(build, 80); };
-  for (const target of [path.join(root, "content", "posts"), path.join(root, "theme"), path.join(root, "lib")]) watch(target, rebuild);
-  watch(path.join(root, "site.config.mjs"), rebuild);
+  let rebuildAll = false;
+  const changedPosts = new Set();
+  const flush = () => {
+    timer = undefined;
+    if (rebuildAll) build();
+    else for (const post of [...changedPosts].sort()) build(["--post", post]);
+    rebuildAll = false;
+    changedPosts.clear();
+  };
+  const schedule = () => {
+    clearTimeout(timer);
+    timer = setTimeout(flush, 80);
+  };
+  const scheduleFullBuild = () => {
+    rebuildAll = true;
+    changedPosts.clear();
+    schedule();
+  };
+  const schedulePostBuild = (post) => {
+    if (!rebuildAll) changedPosts.add(post);
+    schedule();
+  };
+  const articleSourcesIn = (directory) => fs.readdir(directory, { withFileTypes: true })
+    .then((entries) => entries
+      .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
+      .map((entry) => path.join(directory, entry.name)), () => []);
+  const contentChanged = async (_eventType, filename) => {
+    if (!filename) return scheduleFullBuild();
+    const changed = path.resolve(root, "content", "posts", String(filename));
+    if (!changed.startsWith(`${path.join(root, "content", "posts")}${path.sep}`)) return scheduleFullBuild();
+    if (path.extname(changed).toLowerCase() === ".md") {
+      const exists = await fs.stat(changed).then((entry) => entry.isFile(), () => false);
+      if (!exists) return scheduleFullBuild();
+      const articleSources = await articleSourcesIn(path.dirname(changed));
+      for (const post of articleSources) schedulePostBuild(post);
+      return;
+    }
+    const articleDirectory = path.dirname(changed);
+    const articleSources = await articleSourcesIn(articleDirectory);
+    if (!articleSources.length) return scheduleFullBuild();
+    for (const post of articleSources) schedulePostBuild(post);
+  };
+  watch(path.join(root, "content", "posts"), { recursive: true }, (...event) => {
+    contentChanged(...event).catch(scheduleFullBuild);
+  });
+  for (const target of [path.join(root, "theme"), path.join(root, "lib")]) watch(target, { recursive: true }, scheduleFullBuild);
+  watch(path.join(root, "site.config.mjs"), scheduleFullBuild);
 }
 
 createServer(async (request, response) => {

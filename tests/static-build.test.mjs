@@ -421,6 +421,13 @@ test("articles render math and colocated Markdown images", async () => {
   const devServer = await read("scripts/dev.mjs");
   assert.match(devServer, /"\.avif": "image\/avif"/);
   assert.match(devServer, /"\.webp": "image\/webp"/);
+  assert.match(devServer, /watch\(path\.join\(root, "content", "posts"\), \{ recursive: true \}/);
+  assert.match(devServer, /build\(\["--post", post\]\)/);
+  assert.match(devServer, /changedPosts\.add\(post\)/);
+  const buildScript = await read("scripts/build.mjs");
+  assert.match(buildScript, /optionValue\("--post"\)/);
+  assert.match(buildScript, /loadPosts\(incrementalBuild \? requestedPostSource : ""\)/);
+  assert.match(buildScript, /Freshmark rebuilt \$\{requestedPostSource\} and its indexes/);
 
   const manganeseHtml = await read("public/posts/chemistry/inorganic/manganese/index.html");
   assert.match(manganeseHtml, /src="latimer-group7-acidic\.svg"/);

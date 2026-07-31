@@ -43,7 +43,9 @@ npm install
 npm run dev
 ```
 
-The preview automatically rebuilds when a Markdown post or theme file changes.
+The preview watches the content and theme trees. Changing a post rebuilds only
+that article and its dependent home, search, RSS, sitemap, and runtime files;
+theme, library, configuration, and deleted-post changes trigger a full build.
 
 ## Create a post
 
