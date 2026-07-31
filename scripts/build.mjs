@@ -20,6 +20,22 @@ const root = path.resolve(import.meta.dirname, "..");
 const contentDir = path.join(root, "content", "posts");
 const themeDir = path.join(root, "theme");
 const outputDir = path.join(root, "public");
+const buildArgs = process.argv.slice(2);
+const optionValue = (name) => {
+  const inline = buildArgs.find((argument) => argument.startsWith(`${name}=`));
+  if (inline) return inline.slice(name.length + 1);
+  const index = buildArgs.indexOf(name);
+  return index >= 0 ? buildArgs[index + 1] : undefined;
+};
+const requestedPost = optionValue("--post");
+const requestedPostSource = requestedPost ? (() => {
+  const absolute = path.resolve(root, requestedPost);
+  const relative = path.relative(contentDir, absolute);
+  if (!relative || relative.startsWith("..") || path.isAbsolute(relative) || path.extname(relative).toLowerCase() !== ".md") {
+    throw new Error("--post must reference a Markdown file inside content/posts");
+  }
+  return relative.split(path.sep).join("/");
+})() : "";
 let buildWorkers;
 const currentYear = new Date().getUTCFullYear();
 const basePath = `/${String(config.basePath || "").replace(/^\/+|\/+$/g, "")}`.replace(/^\/$/, "");
@@ -64,7 +80,7 @@ async function findMarkdownFiles(directory, relative = "") {
   return files;
 }
 
-async function loadPosts() {
+async function loadPosts(renderOnlySource = "") {
   const files = (await findMarkdownFiles(contentDir)).sort();
   const loadedPosts = await Promise.all(files.map(async (file) => {
     const sourceFile = file.split(path.sep).join("/");
@@ -77,7 +93,10 @@ async function loadPosts() {
     const locale = locales[requestedLocale] ? requestedLocale : defaultLocale;
     const suffix = localizedFile && locales[localizedFile[1]] ? `.${localizedFile[1]}.md` : ".md";
     const date = String(data.date).slice(0, 10);
-    const { html, headings, spaHtml, spaHeadings } = await buildWorkers.run("render-markdown", { body, sourceFile });
+    const shouldRender = !renderOnlySource || sourceFile === renderOnlySource;
+    const { html, headings, spaHtml, spaHeadings } = shouldRender
+      ? await buildWorkers.run("render-markdown", { body, sourceFile })
+      : { html: "", headings: [], spaHtml: "", spaHeadings: [] };
     const words = body.replace(/[#*`>\[\]()_-]/g, " ").split(/\s+/).filter(Boolean).length;
     const relativeSlug = sourceFile.slice(0, -suffix.length).replace(/(^|\/)index$/, "");
     const summary = data.summary || data.description || summaryFromBody(body);
@@ -263,13 +282,104 @@ self.addEventListener("fetch",(event)=>{const request=event.request;if(request.m
 `;
 }
 
+const localeOutput = (locale, relative) => `${locale === defaultLocale ? "" : `${locale}/`}${relative}`;
+
+async function restoreAssetVersion() {
+  const home = await fs.readFile(path.join(outputDir, "index.html"), "utf8");
+  assetVersion = home.match(/\/assets\/styles\.css\?v=([a-f0-9]+)/)?.[1] || "";
+}
+
+async function writeLocaleIndexes(locale, localePosts) {
+  const messages = locales[locale];
+  if (!localePosts.length) throw new Error(`No publishable Markdown posts found for locale ${locale}.`);
+  const homeHtml = await homePage(locale, localePosts);
+  const homeSpaHtml = await homePage(locale, localePosts, { mathOutput: "source", fragment: true });
+  const homePath = localizedPath(locale, "/");
+  const searchIndex = localePosts.map(({ slug, title, summary, tags, categories, readingTime, searchText }) => ({
+    title,
+    summary: searchTextFromMarkdown(summary),
+    tags,
+    categories,
+    readingTime,
+    searchText,
+    url: localeHref(locale, `/posts/${slug}/`),
+  }));
+  const rss = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>${escapeHtml(config.title)}</title><link>${localeAbsolute(locale, "/")}</link><description>${escapeHtml(messages.siteDescription)}</description><language>${escapeHtml(messages.language)}</language>${localePosts.map((post) => `<item><title>${escapeHtml(post.title)}</title><link>${localeAbsolute(post.locale, `/posts/${post.slug}/`)}</link><guid>${localeAbsolute(post.locale, `/posts/${post.slug}/`)}</guid><pubDate>${new Date(`${post.date}T12:00:00Z`).toUTCString()}</pubDate><description>${escapeHtml(post.summary)}</description></item>`).join("")}</channel></rss>`;
+  await Promise.all([
+    write(localeOutput(locale, "index.html"), homeHtml),
+    write(localeOutput(locale, "page.html"), pageFragment(homeSpaHtml, { locale, pathName: homePath, alternatePath: localizedPath(messages.alternate, "/") })),
+    write(localeOutput(locale, "search-index.json"), JSON.stringify(searchIndex)),
+    write(localeOutput(locale, "rss.xml"), rss),
+  ]);
+}
+
+async function writePost(post) {
+  const html = await postPage(post);
+  const spaHtml = await postPage(post, { mathOutput: "source", fragment: true });
+  const directory = localeOutput(post.locale, `posts/${post.slug}`);
+  const outputDirectory = path.join(outputDir, directory);
+  const sourceDirectory = path.dirname(path.join(contentDir, post.sourceFile));
+  await fs.mkdir(outputDirectory, { recursive: true });
+  await Promise.all([
+    write(`${directory}/index.html`, html),
+    write(`${directory}/page.html`, pageFragment(spaHtml, {
+      locale: post.locale,
+      title: post.title,
+      description: post.summary,
+      pathName: localizedPath(post.locale, `/posts/${post.slug}/`),
+      article: true,
+      alternatePath: post.alternatePath,
+    })),
+    fs.copyFile(path.join(contentDir, post.sourceFile), path.join(outputDirectory, "index.md")),
+    fs.cp(sourceDirectory, outputDirectory, {
+      recursive: true,
+      filter: (source) => source === sourceDirectory || (!source.endsWith(".md") && !source.endsWith(".md.bak")),
+    }),
+  ]);
+}
+
+async function writeSitemap(posts) {
+  const sitemapPages = Object.keys(locales).flatMap((locale) => [localizedPath(locale, "/"), localizedPath(locale, "/about/")]);
+  await write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${sitemapPages.map((pathName) => `<url><loc>${absolute(pathName)}</loc></url>`).join("")}${posts.map((post) => `<url><loc>${localeAbsolute(post.locale, `/posts/${post.slug}/`)}</loc><lastmod>${post.date}</lastmod></url>`).join("")}</urlset>`);
+}
+
+async function writeRuntimeFiles() {
+  const version = await outputVersion();
+  await write("version.json", JSON.stringify({ version }));
+  const minifiedWorker = await minifyJavaScript(serviceWorker(version), { compress: true, mangle: true });
+  if (!minifiedWorker.code) throw new Error("Service worker minification produced no output");
+  await write("sw.js", minifiedWorker.code);
+}
+
 buildWorkers = new BuildWorkerPool({
   workerUrl: new URL("./build-worker.mjs", import.meta.url),
 });
 try {
-const posts = await loadPosts();
+const incrementalBuild = Boolean(requestedPostSource)
+  && await fs.access(path.join(outputDir, "assets", "app.js")).then(() => true, () => false)
+  && await fs.access(path.join(outputDir, "index.html")).then(() => true, () => false);
+if (requestedPostSource && !incrementalBuild) console.log("Freshmark incremental build needs an existing public/ tree; running a full build.");
+const posts = await loadPosts(incrementalBuild ? requestedPostSource : "");
 if (!posts.length) throw new Error("No publishable Markdown posts found.");
 await fs.mkdir(outputDir, { recursive: true });
+if (incrementalBuild) {
+  const post = posts.find(({ sourceFile }) => sourceFile === requestedPostSource);
+  if (!post) throw new Error(`Post is not publishable: ${requestedPostSource}`);
+  await restoreAssetVersion();
+  await enhanceResponsiveImages([post], {
+    contentDirectory: contentDir,
+    outputDirectory: outputDir,
+    cacheDirectory: path.join(root, ".freshmark-cache", "images"),
+    articleOutputDirectory: (entry) => path.join(outputDir, localeOutput(entry.locale, `posts/${entry.slug}`)),
+  });
+  await Promise.all([
+    writePost(post),
+    writeLocaleIndexes(post.locale, posts.filter(({ locale }) => locale === post.locale)),
+  ]);
+  await writeSitemap(posts);
+  await writeRuntimeFiles();
+  console.log(`Freshmark rebuilt ${requestedPostSource} and its indexes.`);
+} else {
 await Promise.all((await fs.readdir(outputDir)).map((entry) => fs.rm(path.join(outputDir, entry), { recursive: true, force: true })));
 await fs.mkdir(path.join(outputDir, "assets", "fonts"), { recursive: true });
 const styles = new CleanCSS({ level: 2 }).minify([
@@ -317,7 +427,6 @@ await fs.cp(contentDir, path.join(outputDir, "posts"), {
   recursive: true,
   filter: (source) => !source.endsWith(".md") && !source.endsWith(".md.bak"),
 });
-const localeOutput = (locale, relative) => `${locale === defaultLocale ? "" : `${locale}/`}${relative}`;
 await enhanceResponsiveImages(posts, {
   contentDirectory: contentDir,
   outputDirectory: outputDir,
@@ -394,6 +503,7 @@ const minifiedWorker = await minifyJavaScript(serviceWorker(version), { compress
 if (!minifiedWorker.code) throw new Error("Service worker minification produced no output");
 await write("sw.js", minifiedWorker.code);
 console.log(`Freshmark built ${posts.length} posts to public/`);
+}
 } finally {
   await buildWorkers.close();
 }
