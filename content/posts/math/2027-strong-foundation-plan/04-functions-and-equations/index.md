@@ -281,7 +281,7 @@ $$
 
 的最小值为（　　）
 
-A. $-1$
+**A.** $-1$
 
 B. $-1.5$
 
@@ -289,6 +289,14 @@ C. $-2$
 
 D. 前三个答案都不对
 
+通过恰当的调整乘法顺序,我们可以提取公共部分:
+$$\begin{gathered}
+    f(x)=x(x+1)(x+2)(x+3)\\
+    =f(x)=x(x+3)(x+1)(x+2)\\
+    =(x^2+3x)(x^2+3x+2)\\
+    x^2+3x=t\in[-\frac{9}{4},+\infty]\\
+    t(t+2)=(t+1)^2-1\in[-1,+\infty]
+\end{gathered}$$
 ### 例题 3.25
 
 （2013·课标全国Ⅰ卷·理16）若函数
@@ -299,6 +307,47 @@ $$
 
 的图象关于直线 $x=-2$ 对称，则 $f(x)$ 的最大值为 $\underline{\qquad}$。
 
+我们有样学样,考虑零点后配对分组:
+
+$$\begin{gathered}
+    f(+1)=0,f(-1)=0\\
+    \Longrightarrow f(-5)=0,f(-3)=0\\
+    f(x)=(1-x^2)(x+5)(x+3)\\
+    =-(x+1)(x+3)(x-1)(x+5)\\
+    =-(x^2+4x+3)(x^2+4x-5)\\
+    =-(x^2+4x-1)^2+16\le16
+\end{gathered}$$
+
+或者,考虑多项式函数有对称轴的充要条件:
+
+$$\begin{gathered}
+    f(x)=-x^4-ax^3-(b-1)x^2+ax+b\\
+    =-(x+2)^4+u(x+2)^2+v\\
+    =-(x^4+8x^3+24x^2+32x+16)+u(x^2+4x+4)+v
+\end{gathered}$$
+
+比较系数,得:
+$$\begin{cases}
+    -a=-8,\\
+    -(b-1)=-24+u,\\
+    a=-32+4u,\\
+    b=-16+4u+v
+\end{cases}$$
+
+解得:
+$$\begin{cases}
+    a=8,\\
+    b=15,\\
+    u=10,\\
+    v=-9
+\end{cases}$$
+这意味着:$f(x)=-(x+2)^4+10(x+2)^2-9$
+
+不难看出$f(x)$相当于换元$t=(x+2)^2\ge0$的二次函数:
+$$\begin{gathered}
+    f(x)=-t^2+10t-9\\
+    =-(t-5)^2+16\ge16
+\end{gathered}$$
 ### 例题 3.26
 
 （复旦）设 $x\in\mathbb R$，求函数
@@ -309,6 +358,14 @@ $$
 
 的最小值。
 
+令$t=2^x\in(0,+\infty)$,则:
+$$\begin{gathered}
+    f(x)=g(t)=\frac{t^4+\frac{4}{t^2}+4t+1}{t^2+\frac{2}{t}}\\
+    =\frac{(t^2+\frac{2}{t})^2+1}{(t^2+\frac{2}{t})}\\
+    =(t^2+\frac{2}{t})+\frac{1}{(t^2+\frac{2}{t})}\\
+    (t^2+\frac{2}{t})=t^2+\frac{1}{t}+\frac{1}{t}\ge3\\
+    \therefore f(x)=g(t)\ge\frac{10}{3}
+\end{gathered}$$
 ## 指数函数与对数函数综合
 
 ### 例题 3.27
@@ -321,6 +378,16 @@ $$
 
 的根不在区间 $[-1,1]$ 内。
 
+采取反证法:由于对称性,假设$\exists x_0\in[0,+1],a^{x_0}+\frac{1}{a^{x_0}}=2a$
+
+$$\begin{gathered}
+    a\gt1,a^{x_0}\in[1,a],a^{x_0}+\frac{1}{a^{x_0}}\in[2,a+\frac{1}{a}]\\
+    \therefore a^{x_0}+\frac{1}{a^{x_0}}\lt 2a\\
+    0\lt a\lt 1,a^{x_0}\in[a,1],a^{x_0}+\frac{1}{a^{x_0}}\in[2,a+\frac{1}{a}]\\
+    \therefore \therefore a^{x_0}+\frac{1}{a^{x_0}}\gt 2a
+\end{gathered}$$
+
+综上所述,假设不成立.
 ### 例题 3.28
 
 （复旦）已知 $a>0$，设
@@ -331,6 +398,17 @@ $$
 
 若 $x_1x_2=a^2$，且 $x_2>x_1>0$，试比较 $f(x_2)$ 和 $f(x_1)$ 的大小。
 
+$$\begin{gathered}
+    x_1x_2=a^2\Longrightarrow x_2\gt a\gt x_1\gt0\\
+    f(x)=(2^{x-1})^2-2^a\cdot 2^{x-1}\\
+    =\frac{1}{4}[(2^x)^2-2\cdot 2^a\cdot 2^x]\\
+    =\frac{1}{4}[(2^x-2^a)^2-2^{2a}]^2\\
+    f(x_2)-f(x_1)=\frac{1}{4}(2^{x_2}-2^{x_1})(2^{x_1}+2^{x_2}-2\cdot2^a)\\
+    2^{x_1}\lt 2^a\lt 2^{x_2},2^{x_2}-2^{x_1}\gt0\\
+    2^{x_1}+2^{x_2}-2\cdot2^a\gt 2\cdot2^\frac{x_1+x_2}{2}-2\cdot2^a\\
+    \gt2\cdot2^{\sqrt{x_1x_2}}-2\cdot2^a=0\\
+    \therefore f(x_2)-f(x_1)\gt 0,f(x_2)\gt f(x_1)
+\end{gathered}$$
 ### 例题 3.29
 
 不等式
@@ -342,3 +420,22 @@ $$
 $$
 
 的解集为 $\underline{\qquad}$。
+
+先保证定义域:$(x+3)^3(x-5)^3\ge0,x\in(-\infty,-3]\cup[+5,+\infty)$
+
+对定义域的两段进行分类:
+
+$$\begin{gathered}
+    x\in(-\infty,-3],\\
+    \Longrightarrow\left(\frac12\right)^{\sqrt{(x+3)^3(x-5)^3}}\le1,7^{(x+3)^2(x-5)}\le1\\
+    x\in[+5,+\infty)\\
+    \left(\frac12\right)^{\sqrt{(x+3)^3(x-5)^3}}
+\cdot 7^{(x+3)^2(x-5)}\\
+=\left(\frac12\right)^{(x+3)^\frac{3}{2}(x-5)^\frac{3}{2}}
+\cdot 7^{(x+3)^2(x-5)}\\
+=\left(\frac72\right)^{(x+3)^\frac{3}{2}(x-5)^\frac{3}{2}}
+\cdot 7^{(x+3)^\frac12(x-5)^\frac{-1}{2}}\ge1(x=5)
+\end{gathered}$$
+
+综上,解集为$(-\infty,-3]\cup\{5\}$
+
