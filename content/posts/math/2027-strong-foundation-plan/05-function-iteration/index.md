@@ -327,7 +327,7 @@ $$\begin{gathered}
     =\frac{x+\tan\frac{\pi}{6}}{1-x\tan\frac{\pi}{6}}\\
     x=\tan\theta,f(x)=f(\tan\theta)=\tan(\theta+\frac{\pi}{6})\\
     f_{6n}(x)=\tan(\theta+n\pi)=\tan\theta=x\\
-    f_{2017}(x)=f_{336\cdot6}(f(x))=f(x)=\tan(\arctan{2017}+\frac{\pi}{6})=\frac{1+2017\sqrt{3}}{\sqrt{3}-2017}
+    f_{2017}(x)\\=f_{336\cdot6}(f(x))\\=f(x)\\=\tan(\arctan{2017}+\frac{\pi}{6})=\frac{1+2017\sqrt{3}}{\sqrt{3}-2017}
 \end{gathered}$$
 ### 例题 3.38
 
