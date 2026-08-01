@@ -206,10 +206,9 @@ test("generated HTML has no application framework runtime", async () => {
   assert.doesNotMatch(html, /katex\.min\.css|class="katex-html"/);
   assert.match(html, /class="katex"><math[^>]+xmlns="http:\/\/www\.w3\.org\/1998\/Math\/MathML"/);
   const mathArticle = await read("public/posts/chemistry/inorganic/manganese/index.html");
-  const katexStylesheet = mathArticle.match(/<link[^>]+href="\/assets\/katex\.min\.css\?v=[a-f0-9]{12}"[^>]+data-katex-styles[^>]*>/)?.[0];
-  assert.match(katexStylesheet, /\brel="preload"/);
-  assert.match(katexStylesheet, /\bas="style"/);
-  assert.match(mathArticle, /class="katex"/);
+  assert.doesNotMatch(mathArticle, /katex\.min\.css/);
+  assert.match(mathArticle, /class="math-expression math-inline"[^>]+aria-label="[^"]+"[^>]+data-math-source="/);
+  assert.match(mathArticle, /class="katex"><math[^>]+xmlns="http:\/\/www\.w3\.org\/1998\/Math\/MathML"/);
   assert.doesNotMatch(html, /katex\.min\.js|mhchem\.min\.js|auto-render/);
   assert.doesNotMatch(html, /\b(?:_next|__next|react(?:\.production)?\.min|vinext)\b/i);
 });
@@ -259,12 +258,14 @@ test("localized routes provide Chinese and English navigation", async () => {
 
   const chineseIndex = JSON.parse(await read("public/search-index.json"));
   const englishIndex = JSON.parse(await read("public/en/search-index.json"));
-  assert.equal(chineseIndex.length, 35);
+  assert.equal(chineseIndex.length, 37);
   assert.equal(englishIndex.length, 31);
   const englishUrls = new Set(englishIndex.map(({ url }) => url.replace(/^\/en/, "")));
   assert.deepEqual(
     chineseIndex.filter(({ url }) => !englishUrls.has(url)).map(({ url }) => url),
     [
+      "/posts/math/2027-strong-foundation-plan/03-constructing-functions/",
+      "/posts/math/2027-strong-foundation-plan/04-functions-and-equations/",
       "/posts/technology/openclaw-vps-operations/",
       "/posts/math/2027-strong-foundation-plan/08-trigonometric-functions/",
       "/posts/technology/self-hosted-email-verification/",
@@ -395,8 +396,9 @@ test("articles render math and colocated Markdown images", async () => {
   const html = await read("public/posts/physics/basic-calculus-02/index.html");
   assert.match(html, /<span class="math-expression math-display"[^>]+aria-label="\\int f\(x\)dx=F\(x\)\+C"/);
   assert.match(html, /class="katex"/);
-  assert.match(html, /class="katex-mathml"><math/);
-  assert.match(html, /<link[^>]+href="\/assets\/katex\.min\.css\?v=[a-f0-9]{12}"[^>]+data-katex-styles/);
+  assert.match(html, /class="math-expression math-display"[^>]+data-math-source="/);
+  assert.match(html, /class="katex"><math[^>]+xmlns="http:\/\/www\.w3\.org\/1998\/Math\/MathML"/);
+  assert.doesNotMatch(html, /katex\.min\.css/);
   assert.doesNotMatch(html, /math-svg-definitions|<use href="#MJX-|\\\[\\int f\(x\)dx/);
   assert.match(html, /<picture class="responsive-picture">/);
   assert.match(html, /<source[^>]*srcset="[^"]*freshmark-[a-f0-9]+-480w\.avif 480w[^"]*"[^>]*type="image\/avif"/);
@@ -831,9 +833,10 @@ test("published posts retain raw Markdown and provide compact KaTeX SPA fragment
 
   const html = await read("public/posts/physics/basic-calculus-02/index.html");
   assert.match(html, /class="katex"/);
-  assert.match(html, /class="katex-mathml"><math/);
+  assert.match(html, /class="math-expression math-display"[^>]+data-math-source="/);
+  assert.match(html, /class="katex"><math[^>]+xmlns="http:\/\/www\.w3\.org\/1998\/Math\/MathML"/);
   assert.doesNotMatch(html, /math-svg-definitions|<use href="#MJX-/);
-  assert.doesNotMatch(html, /data-math-source/);
+  assert.doesNotMatch(html, /class="katex-html"/);
   assert.ok(Buffer.byteLength(fragment) < Buffer.byteLength(html) / 2);
   assert.match(html, /<a href="index\.md" download>下载 Markdown<\/a>/);
 

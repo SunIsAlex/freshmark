@@ -198,7 +198,7 @@ async function homePage(locale, posts, { mathOutput = "html", fragment = false }
   return page({ locale, content, pathName, alternatePath: localizedPath(messages.alternate, "/") });
 }
 
-async function postPage(post, { mathOutput = "html", fragment = false } = {}) {
+async function postPage(post, { mathOutput = "hybrid", fragment = false } = {}) {
   const messages = locales[post.locale];
   const headings = mathOutput === "source" ? post.spaHeadings : post.headings;
   const articleHtml = mathOutput === "source" ? post.spaHtml : post.html;

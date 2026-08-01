@@ -181,6 +181,7 @@ button { color:inherit; }
 .math-expression { color:inherit; }
 .math-inline { display:inline-block; max-width:100%; }
 .math-display { display:block; width:100%; max-width:100%; box-sizing:border-box; overflow-x:auto; overflow-y:hidden; overscroll-behavior-inline:contain; -webkit-overflow-scrolling:touch; padding:.25em 0; text-align:center; }
+.math-display > .katex > math[display="block"] { margin:.9em 0; }
 .math-display > .katex-display { min-width:max-content; margin:0; }
 .math-inline-overflow { display:inline-block; max-width:100%; overflow-x:auto; overflow-y:hidden; overscroll-behavior-inline:contain; -webkit-overflow-scrolling:touch; vertical-align:middle; }
 .math-display,.math-inline-overflow { scrollbar-width:thin; scrollbar-color:var(--line) transparent; }

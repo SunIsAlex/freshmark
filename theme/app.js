@@ -213,6 +213,47 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     katex.renderMath(scope);
   }
 
+  function upgradeInitialMath() {
+    const formulas = [...document.querySelectorAll("[data-math-source]")];
+    if (!formulas.length) return;
+    if (!("IntersectionObserver" in window)) {
+      renderSpaMath(document);
+      return;
+    }
+    const pending = new Set(formulas);
+    const queue = [];
+    let inFlight = false;
+    const observer = new IntersectionObserver((entries) => {
+      let queued = false;
+      for (const entry of entries) {
+        if (!entry.isIntersecting || !pending.has(entry.target)) continue;
+        queue.push(entry.target);
+        queued = true;
+      }
+      if (queued) drainMathQueue();
+    }, { rootMargin: "200px 0px" });
+    const drainMathQueue = async () => {
+      if (inFlight || !queue.length) return;
+      inFlight = true;
+      const batch = queue.splice(0);
+      try {
+        const [katex] = await (katexRequest ||= Promise.all([
+          import("./katex.js"),
+          loadKaTeXStyles(),
+        ]));
+        katex.renderMathList(batch);
+        batch.forEach((element) => pending.delete(element));
+        if (!pending.size) observer.disconnect();
+      } catch {
+        batch.forEach((element) => pending.delete(element));
+      } finally {
+        inFlight = false;
+        drainMathQueue();
+      }
+    };
+    formulas.forEach((element) => observer.observe(element));
+  }
+
   const escape = (value) => String(value).replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[char]);
   const message = (key, values = {}) => String(messages[key] || key).replace(/\{(\w+)\}/g, (_, name) => values[name] ?? "");
   const setTheme = (theme) => { root.dataset.theme = theme; try { localStorage.setItem("freshmark-theme", theme); } catch {} };
@@ -1028,6 +1069,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register(`${basePath}/sw.js`, { scope: `${basePath}/`, updateViaCache: "none" }).catch(() => {});
     }
+    upgradeInitialMath();
     if (document.querySelector("[data-reading-progress]")) applyArticleContentDiff(initialUrl);
     observeInlineMath();
     updateInlineMathOverflow();

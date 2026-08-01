@@ -16,7 +16,7 @@ const htmlMinifierOptions = {
 async function runTask(type, payload) {
   if (type === "render-markdown") {
     try {
-      const { html, headings } = await renderMarkdown(payload.body);
+      const { html, headings } = await renderMarkdown(payload.body, { mathOutput: "hybrid" });
       const { html: spaHtml, headings: spaHeadings } = await renderMarkdown(payload.body, { mathOutput: "source" });
       return { html, headings, spaHtml, spaHeadings };
     } catch (error) {
