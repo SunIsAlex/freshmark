@@ -136,7 +136,7 @@ release_is_valid() {
   [ -d "$candidate" ] \
     && [ -f "$candidate/public/index.html" ] \
     && [ -f "$candidate/public/version.json" ] \
-    && [ -f "$candidate/public/assets/app.js" ] \
+    && [ -n "$(ls -d "$candidate"/public/assets/app.*.js 2>/dev/null)" ] \
     && [ -f "$candidate/server/server.mjs" ] \
     && [ -f "$candidate/.freshmark-release" ]
 }
@@ -310,11 +310,13 @@ export NPM_CONFIG_UPDATE_NOTIFIER=false
   npm run build
   node -e '
     const fs = require("node:fs");
+    const appBundle = fs.readdirSync("public/assets").find((file) => /^app\.[a-f0-9]{12}\.js$/.test(file));
+    if (!appBundle) throw new Error("Missing hashed app bundle in public/assets");
     const required = [
       "public/index.html",
       "public/en/index.html",
       "public/search-index.json",
-      "public/assets/app.js",
+      `public/assets/${appBundle}`,
       "public/version.json",
     ];
     for (const file of required) {
