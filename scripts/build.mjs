@@ -56,7 +56,14 @@ const commentsAuthEndpoints = {
 };
 let assetVersion = "";
 const href = (value = "/") => `${basePath}${value.startsWith("/") ? value : `/${value}`}` || "/";
-const assetHref = (value) => `${href(value)}${assetVersion ? `?v=${assetVersion}` : ""}`;
+const assetHref = (value) => {
+  const slash = value.lastIndexOf("/");
+  const basename = value.slice(slash + 1);
+  const versioned = assetVersion && /\.(?:js|css)$/.test(basename)
+    ? basename.replace(/(\.js|\.css)$/, `.${assetVersion}$1`)
+    : basename;
+  return `${href(value.slice(0, slash + 1))}${versioned}`;
+};
 const absolute = (value) => new URL(href(value), baseUrl).href;
 const localeHref = (locale, value = "/") => href(localizedPath(locale, value));
 const localeAbsolute = (locale, value = "/") => absolute(localizedPath(locale, value));
@@ -269,7 +276,7 @@ const BASE_PATH=${JSON.stringify(basePath)};
 const ASSET_VERSION=${JSON.stringify(assetVersion)};
 const LOCALIZED_NOT_FOUND=${JSON.stringify(Object.keys(locales).filter((locale) => locale !== defaultLocale).map((locale) => [`/${locale}/`, localizedPath(locale, "/404.html")]))};
 const at=(path)=>BASE_PATH+path;
-const versioned=(path)=>at(path)+"?v="+ASSET_VERSION;
+const versioned=(path)=>at(path.replace(/(\\.js|\\.css)$/,"."+ASSET_VERSION+"$1"));
   const PRECACHE=${JSON.stringify([...localizedPrecache, "/favicon.svg", "/icons/icon-192.png", "/icons/icon-512.png", "/icons/apple-touch-icon.png", "/assets/fonts/anthropic-sans-variable.woff2"])}.map(at).concat([versioned("/assets/styles.css"),versioned("/assets/app.js")]);
 const removeCachedSearchIndexes=async()=>{const cache=await caches.open(CACHE_NAME);const requests=await cache.keys();await Promise.all(requests.filter((request)=>new URL(request.url).pathname.endsWith("/search-index.json")).map((request)=>cache.delete(request)))};
 self.addEventListener("install",(event)=>event.waitUntil(caches.open(CACHE_NAME).then((cache)=>cache.addAll(PRECACHE)).then(()=>self.skipWaiting())));
@@ -288,7 +295,7 @@ const localeOutput = (locale, relative) => `${locale === defaultLocale ? "" : `$
 
 async function restoreAssetVersion() {
   const home = await fs.readFile(path.join(outputDir, "index.html"), "utf8");
-  assetVersion = home.match(/\/assets\/styles\.css\?v=([a-f0-9]+)/)?.[1] || "";
+  assetVersion = home.match(/\/assets\/app\.([a-f0-9]{12})\.js/)?.[1] || "";
 }
 
 async function writeLocaleIndexes(locale, localePosts) {
@@ -358,7 +365,7 @@ buildWorkers = new BuildWorkerPool({
 });
 try {
 const incrementalBuild = Boolean(requestedPostSource)
-  && await fs.access(path.join(outputDir, "assets", "app.js")).then(() => true, () => false)
+  && await fs.readdir(path.join(outputDir, "assets")).then((entries) => entries.some((name) => /^app\.[a-f0-9]{12}\.js$/.test(name)), () => false)
   && await fs.access(path.join(outputDir, "index.html")).then(() => true, () => false);
 if (requestedPostSource && !incrementalBuild) console.log("Freshmark incremental build needs an existing public/ tree; running a full build.");
 const posts = await loadPosts(incrementalBuild ? requestedPostSource : "");
@@ -392,14 +399,6 @@ const katexStyles = (await fs.readFile(path.join(root, "node_modules", "katex", 
 const katexFontDirectory = path.join(root, "node_modules", "katex", "dist", "fonts");
 const katexFonts = (await fs.readdir(katexFontDirectory)).filter((file) => file.endsWith(".woff2"));
 if (styles.errors.length) throw new Error(`CSS minification failed: ${styles.errors.join(", ")}`);
-await Promise.all([
-  fs.writeFile(path.join(outputDir, "assets", "styles.css"), styles.styles),
-  fs.writeFile(path.join(outputDir, "assets", "katex.min.css"), katexStyles),
-  fs.copyFile(path.join(themeDir, "favicon.svg"), path.join(outputDir, "favicon.svg")),
-  fs.cp(path.join(themeDir, "icons"), path.join(outputDir, "icons"), { recursive: true }),
-  fs.copyFile(path.join(themeDir, "fonts", "anthropic-sans-variable.woff2"), path.join(outputDir, "assets", "fonts", "anthropic-sans-variable.woff2")),
-  ...katexFonts.map((file) => fs.copyFile(path.join(katexFontDirectory, file), path.join(outputDir, "assets", "fonts", file))),
-]);
 const bundled = await bundle({
   entryPoints: [path.join(themeDir, "app.js")],
   bundle: true,
@@ -420,8 +419,17 @@ const browserBundles = bundled.outputFiles.map((file) => ({
 const assetHash = createHash("sha256").update(styles.styles).update(katexStyles);
 for (const { file, code } of browserBundles) assetHash.update(file).update("\0").update(code).update("\0");
 assetVersion = assetHash.digest("hex").slice(0, 12);
+await Promise.all([
+  fs.writeFile(path.join(outputDir, "assets", `styles.${assetVersion}.css`), styles.styles),
+  fs.writeFile(path.join(outputDir, "assets", `katex.min.${assetVersion}.css`), katexStyles),
+  fs.copyFile(path.join(themeDir, "favicon.svg"), path.join(outputDir, "favicon.svg")),
+  fs.cp(path.join(themeDir, "icons"), path.join(outputDir, "icons"), { recursive: true }),
+  fs.copyFile(path.join(themeDir, "fonts", "anthropic-sans-variable.woff2"), path.join(outputDir, "assets", "fonts", "anthropic-sans-variable.woff2")),
+  ...katexFonts.map((file) => fs.copyFile(path.join(katexFontDirectory, file), path.join(outputDir, "assets", "fonts", file))),
+]);
 await Promise.all(browserBundles.map(async ({ file, code }) => {
-  const target = path.join(outputDir, "assets", file);
+  const outputFile = file === "app.js" ? `app.${assetVersion}.js` : file;
+  const target = path.join(outputDir, "assets", outputFile);
   await fs.mkdir(path.dirname(target), { recursive: true });
   await fs.writeFile(target, code);
 }));

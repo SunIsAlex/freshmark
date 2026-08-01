@@ -196,7 +196,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
       const stylesheet = existing || document.createElement("link");
       stylesheet.rel = "stylesheet";
       stylesheet.dataset.katexStyles = "";
-      stylesheet.href = `${basePath}/assets/katex.min.css${assetVersion ? `?v=${assetVersion}` : ""}`;
+      stylesheet.href = `${basePath}/assets/katex.min${assetVersion ? `.${assetVersion}` : ""}.css`;
       stylesheet.addEventListener("load", resolve, { once: true });
       stylesheet.addEventListener("error", reject, { once: true });
       if (!existing) document.head.append(stylesheet);

@@ -15,6 +15,10 @@ import {
 
 const root = new URL("../", import.meta.url);
 const read = (file) => readFile(new URL(file, root), "utf8");
+const assetPath = async (base) => {
+  const version = (await read("public/index.html")).match(/\/assets\/app\.([a-f0-9]{12})\.js/)?.[1] || "";
+  return `public/assets/${base.replace(/\.(?:js|css)$/, "")}.${version}.${base.endsWith(".js") ? "js" : "css"}`;
+};
 
 test("base URL prefers the environment and falls back to site config", () => {
   assert.equal(resolveBaseUrl("https://config.example", {}), "https://config.example");
@@ -137,9 +141,6 @@ test("build emits portable static pages", async () => {
     "public/search-index.json",
     "public/rss.xml",
     "public/sitemap.xml",
-    "public/assets/styles.css",
-    "public/assets/katex.min.css",
-    "public/assets/app.js",
     "public/assets/fonts/KaTeX_Main-Regular.woff2",
     "public/assets/fonts/anthropic-sans-variable.woff2",
     "public/manifest.webmanifest",
@@ -149,10 +150,14 @@ test("build emits portable static pages", async () => {
     "public/sw.js",
     "public/version.json",
   ];
+  files.push(await assetPath("app.js"), await assetPath("styles.css"), await assetPath("katex.min.css"));
   for (const file of files) {
     assert.equal((await stat(new URL(file, root))).isFile(), true, file);
   }
   await assert.rejects(stat(new URL("public/assets/fonts/anthropic-sans-variable.ttf", root)), { code: "ENOENT" });
+  await assert.rejects(stat(new URL("public/assets/app.js", root)), { code: "ENOENT" });
+  await assert.rejects(stat(new URL("public/assets/styles.css", root)), { code: "ENOENT" });
+  await assert.rejects(stat(new URL("public/assets/katex.min.css", root)), { code: "ENOENT" });
   await assert.rejects(stat(new URL("public/posts/chemistry/inorganic/manganese/index/index.html", root)), { code: "ENOENT" });
 });
 
@@ -188,21 +193,21 @@ test("generated HTML has no application framework runtime", async () => {
   assert.match(html, /搜索文章/);
   assert.match(html, /<style data-critical>[^<]*--paper:#f6f7f8/);
   assert.match(html, /<style data-critical>@font-face\{[^}]*font-family:"Anthropic Sans"[^}]*url\("?\/assets\/fonts\/anthropic-sans-variable\.woff2"?\)[^}]*font-display:swap/);
-  const stylesheetLinks = html.match(/<link[^>]+href="\/assets\/styles\.css\?v=[a-f0-9]{12}"[^>]*>/g);
+  const stylesheetLinks = html.match(/<link[^>]+href="\/assets\/styles\.[a-f0-9]{12}\.css"[^>]*>/g);
   assert.equal(stylesheetLinks.length, 2);
   assert.match(stylesheetLinks[0], /\brel="stylesheet"/);
   assert.match(stylesheetLinks[0], /\bmedia="print"/);
   assert.match(stylesheetLinks[0], /\bonload=/);
   assert.match(stylesheetLinks[1], /\brel="stylesheet"/);
   assert.ok(html.indexOf("<style data-critical>") < html.indexOf(stylesheetLinks[0]));
-  assert.match(html, /<script[^>]+src="\/assets\/app\.js\?v=[a-f0-9]{12}"/);
+  assert.match(html, /<script[^>]+src="\/assets\/app\.[a-f0-9]{12}\.js"/);
   assert.match(html, /assetVersion:"[a-f0-9]{12}"/);
   assert.match(html, /views:\{enabled:!1,endpoint:"\/api\/views"\}/);
   assert.match(html, /comments:\{enabled:!1,auth:!1,listEndpoint:"\/api\/comments",submitEndpoint:"\/api\/comments\/submit",authEndpoints:\{session:"\/api\/auth\/session",login:"\/api\/auth\/login",logout:"\/api\/auth\/logout",register:"\/api\/auth\/register",verify:"\/api\/auth\/register\/verify"\}\}/);
   assert.doesNotMatch(html, /data-(?:site|article)-view-count/);
   assert.doesNotMatch(html, /data-comments(?:[ >])/);
   assert.doesNotMatch(html, /<link[^>]+href="\/assets\/fonts\/anthropic-sans-variable\.woff2"[^>]+rel="preload"/);
-  assert.match(html, /<script[^>]+src="\/assets\/app\.js\?v=[a-f0-9]{12}"[^>]+type="module"/);
+  assert.match(html, /<script[^>]+src="\/assets\/app\.[a-f0-9]{12}\.js"[^>]+type="module"/);
   assert.doesNotMatch(html, /katex\.min\.css|class="katex-html"/);
   assert.match(html, /class="katex"><math[^>]+xmlns="http:\/\/www\.w3\.org\/1998\/Math\/MathML"/);
   const mathArticle = await read("public/posts/chemistry/inorganic/manganese/index.html");
@@ -283,7 +288,7 @@ test("localized routes provide Chinese and English navigation", async () => {
 });
 
 test("typography uses Claude's font family and size scale", async () => {
-  const css = await read("public/assets/styles.css");
+  const css = await read(await assetPath("styles.css"));
   assert.match(css, /@font-face\{[^}]*font-family:"Anthropic Sans"[^}]*anthropic-sans-variable\.woff2[^}]*format\("woff2"\)/);
   assert.match(css, /--text-xs:12px;--text-sm:14px;--text-md:16px;--text-lg:20px/);
   assert.match(css, /--heading-lg:20px;--heading-xl:24px;--heading-2xl:28px;--heading-3xl:36px/);
@@ -298,7 +303,7 @@ test("typography uses Claude's font family and size scale", async () => {
 
 test("cold pages skip rendering content below the initial viewport", async () => {
   const html = await read("public/index.html");
-  const css = await read("public/assets/styles.css");
+  const css = await read(await assetPath("styles.css"));
   assert.match(html, /<style data-critical>[^<]*\.post-card\{content-visibility:auto/);
   assert.match(html, /<style data-critical>[^<]*\.prose>:nth-child\(n\+8\)\{content-visibility:auto/);
   assert.match(css, /\.post-card\{[^}]*content-visibility:auto[^}]*contain-intrinsic-size:auto 130px/);
@@ -310,7 +315,7 @@ test("manganese color descriptions render with matching colors", async () => {
   const englishHtml = await read("public/en/posts/chemistry/inorganic/manganese/index.html");
   const source = await read("content/posts/chemistry/inorganic/manganese/index.md");
   const englishSource = await read("content/posts/chemistry/inorganic/manganese/index.en.md");
-  const css = await read("public/assets/styles.css");
+  const css = await read(await assetPath("styles.css"));
   assert.equal(html.match(/class="chemical-color"/g)?.length, 122);
   assert.match(html, /溶液酸碱性对 <span[^>]+aria-label="\\ce\{Mn\(II\)\}"[^>]*>/);
   assert.match(html, /高锰酸钾的制备、提纯与产率测定/);
@@ -406,7 +411,7 @@ test("articles render math and colocated Markdown images", async () => {
   assert.match(html, /<img[^>]*data-gallery-src="image\.png"[^>]*height="983"[^>]*src="image\.png"[^>]*width="640"[^>]*>/);
   assert.match(html, /<img[^>]*alt="alt text"[^>]*>/);
   assert.doesNotMatch(html, /!\[alt text\]\(image\.png\)/);
-  const katexCss = await read("public/assets/katex.min.css");
+  const katexCss = await read(await assetPath("katex.min.css"));
   assert.doesNotMatch(katexCss, /font-display:block/);
   assert.match(katexCss, /font-display:swap/);
   for (const asset of ["katex.min.js", "mhchem.min.js", "auto-render.min.js"]) {
@@ -489,7 +494,7 @@ test("standalone boxed formulas become scrollable display math", async () => {
   assert.match(html, /<td><span class="math-expression math-inline"[^>]+aria-label="\\theta"[\s\S]*<\/span><\/td>[\s\S]*<td>直线的倾斜角<\/td>/);
   assert.doesNotMatch(html, /<p>\|字母\|含义\|/);
 
-  const css = await read("public/assets/styles.css");
+  const css = await read(await assetPath("styles.css"));
   assert.match(css, /\.math-display\{[^}]*width:100%[^}]*max-width:100%[^}]*overflow-x:auto/);
   assert.match(css, /\.math-display>\.katex-display\{[^}]*min-width:max-content[^}]*margin:0/);
   assert.match(css, /\.math-inline-overflow\{[^}]*display:inline-block[^}]*max-width:100%[^}]*overflow-x:auto/);
@@ -497,7 +502,7 @@ test("standalone boxed formulas become scrollable display math", async () => {
 });
 
 test("HTML underlines continue through KaTeX formulae", async () => {
-  const css = await read("public/assets/styles.css");
+  const css = await read(await assetPath("styles.css"));
   const html = await read("public/posts/chemistry/inorganic/manganese/index.html");
   assert.match(css, /\.prose u\{[^}]*padding-bottom:.12em/);
   assert.match(css, /\.prose u\{[^}]*background-image:linear-gradient\(currentColor,currentColor\)/);
@@ -613,7 +618,7 @@ test("frontmatter categories and tags are indexed and displayed", async () => {
 
 test("client enhances internal links with SPA navigation", async () => {
   const app = await read("theme/app.js");
-  const bundle = await read("public/assets/app.js");
+  const bundle = await read(await assetPath("app.js"));
   assert.doesNotMatch(bundle, /MarkdownIt/);
   await assert.rejects(stat(new URL("public/assets/markdown.js", root)), { code: "ENOENT" });
   assert.match(app, /searchIndexPath/);
@@ -627,7 +632,7 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /import\("\.\/katex\.js"\)/);
   assert.match(app, /await renderSpaMath\(nextMain\)/);
   assert.ok(app.indexOf("await renderSpaMath(nextMain)") < app.indexOf("currentMain.replaceWith(nextMain)"));
-  assert.match(app, /assets\/katex\.min\.css/);
+  assert.match(app, /katex\.min\$\{assetVersion/);
   assert.match(app, /updateInlineMathOverflow\(nextMain\)/);
   assert.match(app, /function observeInlineMath/);
   assert.match(app, /new IntersectionObserver/);
@@ -754,8 +759,8 @@ test("ordered content diff does not confuse repeated blocks", () => {
 test("article images open in a PhotoSwipe keyboard and touch-friendly gallery", async () => {
   const html = await read("public/posts/physics/basic-calculus-02/index.html");
   const app = await read("theme/app.js");
-  const bundle = await read("public/assets/app.js");
-  const css = await read("public/assets/styles.css");
+  const bundle = await read(await assetPath("app.js"));
+  const css = await read(await assetPath("styles.css"));
   const chunks = await readdir(new URL("public/assets/chunks/", root));
   assert.doesNotMatch(html, /data-image-gallery/);
   assert.match(app, /import\("photoswipe"\)/);
@@ -811,7 +816,10 @@ test("service worker versions and persists generated resources", async () => {
   assert.doesNotMatch(worker, /katex-[A-Z0-9]+\.js/);
   assert.doesNotMatch(worker, /assets\/markdown\.js/);
   assert.doesNotMatch(worker, /katex\.min\.js|mhchem\.min\.js|auto-render\.min\.js|anthropic-sans-variable\.ttf/);
-  assert.match(worker, /\?v=/);
+  assert.match(worker, /ASSET_VERSION="[a-f0-9]{12}"/);
+  assert.match(worker, /versioned\("\/assets\/styles\.css"\)/);
+  assert.match(worker, /versioned\("\/assets\/app\.js"\)/);
+  assert.doesNotMatch(worker, /\?v=/);
   assert.match(worker, /"navigate"===/);
   assert.match(worker, /navigationResponse/);
   assert.match(build, /const navigationResponse=\(request,event\)=>\{const cached=caches\.match\(request\);const network=fetch\(request\)/);
@@ -840,7 +848,7 @@ test("published posts retain raw Markdown and provide compact KaTeX SPA fragment
   assert.ok(Buffer.byteLength(fragment) < Buffer.byteLength(html) / 2);
   assert.match(html, /<a href="index\.md" download>下载 Markdown<\/a>/);
 
-  assert.equal((await stat(new URL("public/assets/katex.min.css", root))).isFile(), true);
+  assert.equal((await stat(new URL(await assetPath("katex.min.css"), root))).isFile(), true);
   assert.equal((await stat(new URL("public/assets/fonts/KaTeX_Main-Regular.woff2", root))).isFile(), true);
   const chunks = await readdir(new URL("public/assets/chunks/", root));
   assert.ok(chunks.some((file) => /^katex-[A-Z0-9]+\.js$/.test(file)));
