@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="430" viewBox="0 0 820 430" role="img" aria-labelledby="title desc">
+  <title id="title">例题 6.8 的向量面积图</title><desc id="desc">从 C 发出的向量 a 与 b 构成三角形 ABC，并补成平行四边形。三角形面积是平行四边形面积的一半，也可由底乘高、夹角或二维行列式表示。</desc>
+  <defs><marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 9 4.5 0 9Z" fill="#3273b9"/></marker><style>.s{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif}.m{font-family:"Cambria Math","Times New Roman",serif;font-style:italic}.l{font-size:18px;fill:#17252f}.u{font-size:15px;fill:#65747d}</style></defs>
+  <rect width="820" height="430" rx="18" fill="#f7faf9"/><rect x="22" y="22" width="776" height="386" rx="14" fill="#fff" stroke="#dce8e4"/>
+  <g>
+    <path d="M80 335 330 335 240 95Z" fill="#eaf7f3" stroke="#0f8a72" stroke-width="2.5"/>
+    <path d="M330 335 490 95 240 95" fill="none" stroke="#9aa9b0" stroke-width="1.8" stroke-dasharray="6 5"/>
+    <path d="M80 335 330 335" stroke="#3273b9" stroke-width="3" marker-end="url(#ar)"/><path d="M80 335 240 95" stroke="#3273b9" stroke-width="3" marker-end="url(#ar)"/>
+    <path d="M240 95V335" stroke="#df5c4f" stroke-width="2.5" stroke-dasharray="5 4"/><path d="M240 317H258V335" fill="none" stroke="#17252f" stroke-width="1.6"/>
+    <path d="M130 335A50 50 0 0 0 107.7 293.4" fill="none" stroke="#9c6dca" stroke-width="2"/>
+    <text x="62" y="360" class="m l">C</text><text x="336" y="358" class="m l">A</text><text x="230" y="83" class="m l">B</text><text x="496" y="99" class="m l">A+B</text><text x="193" y="327" class="m l" fill="#3273b9">a</text><text x="143" y="196" class="m l" fill="#3273b9">b</text><text x="113" y="301" class="m l" fill="#9c6dca">φ</text><text x="248" y="228" class="s u" fill="#df5c4f">高</text>
+  </g>
+  <g class="s"><rect x="505" y="69" width="273" height="292" rx="14" fill="#f1f6fa" stroke="#d8e3ea"/>
+    <text x="530" y="107" font-size="18" font-weight="700" fill="#17252f">同一个面积，三种写法</text><text x="530" y="151" font-size="17" fill="#0f8a72" font-family="Cambria Math,Times New Roman,serif">S = ½|a||b| sin φ</text>
+    <text x="530" y="194" font-size="17" fill="#3273b9" font-family="Cambria Math,Times New Roman,serif">S = ½√(|a|²|b|²−(a·b)²)</text>
+    <text x="530" y="237" font-size="17" fill="#9c6dca" font-family="Cambria Math,Times New Roman,serif">S = ½|x₁y₂−x₂y₁|</text>
+    <line x1="530" y1="266" x2="752" y2="266" stroke="#cedbe1"/><text x="530" y="305" class="u">三角形面积 = 平行四边形面积 ÷ 2</text>
+  </g>
+</svg>
