@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="430" viewBox="0 0 760 430" role="img" aria-labelledby="title desc">
+  <title id="title">例题 6.6 的中点与垂线构型</title><desc id="desc">M 为 BC 中点，极化恒等式把数量积最小转化为 PM 最短。P0M 垂直 AB；又因 P0B 是 AB 的四分之一，连接 AB 中点 T 与 C，可知 CT 与 P0M 共线，得到等腰三角形。</desc>
+  <defs><style>.s{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif}.m{font-family:"Cambria Math","Times New Roman",serif;font-style:italic}.l{font-size:18px;fill:#17252f}.u{font-size:15px;fill:#65747d}</style></defs>
+  <rect width="760" height="430" rx="18" fill="#f7faf9"/><rect x="22" y="22" width="716" height="386" rx="14" fill="#fff" stroke="#dce8e4"/>
+  <g>
+    <path d="M70 340 410 340 240 72Z" fill="#eef7fb" stroke="#3273b9" stroke-width="2.5"/>
+    <circle cx="325" cy="206" r="4.5"/><path d="M240 72V340" stroke="#9c6dca" stroke-width="2" stroke-dasharray="6 5"/><path d="M325 206V340" stroke="#0f8a72" stroke-width="4"/>
+    <path d="M325 322H343V340" fill="none" stroke="#17252f" stroke-width="1.6"/>
+    <circle cx="325" cy="340" r="4.5" fill="#0f8a72"/><circle cx="240" cy="340" r="4.5" fill="#9c6dca"/>
+    <text x="52" y="363" class="m l">A</text><text x="416" y="363" class="m l">B</text><text x="228" y="61" class="m l">C</text><text x="334" y="202" class="m l">M</text><text x="314" y="370" class="m l">P₀</text><text x="229" y="369" class="m l">T</text>
+    <text x="338" y="287" class="s u" fill="#0f8a72">最短线段 P₀M</text><text x="287" y="390" class="s u">P₀B = AB/4</text>
+  </g>
+  <g class="s"><rect x="470" y="69" width="238" height="294" rx="14" fill="#f1f6fa" stroke="#d8e3ea"/>
+    <text x="495" y="107" font-size="18" font-weight="700" fill="#17252f">数量积最小</text><text x="495" y="143" class="u">等价于 |PM| 在 P=P₀ 时最小</text>
+    <text x="495" y="178" font-size="18" fill="#0f8a72" font-family="Cambria Math,Times New Roman,serif">P₀M ⟂ AB</text><line x1="495" y1="204" x2="682" y2="204" stroke="#cedbe1"/>
+    <text x="495" y="240" class="u">T 是 AB 中点，M 是 BC 中点</text><text x="495" y="271" class="u">所以 CT ∥ P₀M，进而 CT ⟂ AB</text>
+    <text x="495" y="319" font-size="19" font-weight="700" fill="#9c6dca" font-family="Cambria Math,Times New Roman,serif">AC = BC</text>
+  </g>
+</svg>
