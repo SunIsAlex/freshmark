@@ -407,7 +407,7 @@ $$\begin{gathered}
    AB^2+BC^2+CA^2\\=3\sum_{cyc}(x_1^2+y_1^2)-(x_1+x_2+x_3)^2-(y_1+y_2+y_3)^2\\\ge3\sum_{cyc}(x_1^2+y_1^2)
 \end{gathered}$$
 
-显而易见,对于五边型的情况,只是系数不同:
+显而易见,对于五边形的情况,只是系数不同:
 $$\begin{gathered}
    =\sum_{cyc}[(x_1-x_2)^2+(y_1-y_2)^2]\\
    =\textcolor{red}{3}\sum_{cyc}(x_1^2+y_1^2)-2\sum_{cyc}(x_1x_2+y_1y_2)
