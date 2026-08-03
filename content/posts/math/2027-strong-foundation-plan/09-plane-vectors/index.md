@@ -444,13 +444,25 @@ $$
 
 则实数 $\lambda$ 和 $\mu$ 的值分别为（　　）
 
-A. $\dfrac29,\dfrac49$
+**A. $\dfrac29,\dfrac49$**
 
 B. $\dfrac49,\dfrac29$
 
 C. $\dfrac19,\dfrac29$
 
 D. $\dfrac29,\dfrac19$
+
+由熟知的奔驰定理:
+$$\begin{gathered}
+   4\vec{OC}+3\vec{OA}+2\vec{OB}=\vec{0}\\
+   4(\vec{AC}-\vec{AO})-3\vec{AO}+2(\vec{AB}-\vec{AO})=\vec{0}\\
+   9\vec{AO}=2\vec{AB}+4\vec{AC}\\
+   \lambda=\frac{2}{9},\mu=\frac{4}{9}
+\end{gathered}$$
+
+该结论可以通过构造重心来证明,此处不加赘述.
+
+![例题 6.13 的面积权重与奔驰定理](example-6-13.svg "例题 6.13 的面积权重与奔驰定理")
 
 ### 例题 6.14
 
@@ -467,9 +479,54 @@ A. $1$
 
 B. $2$
 
-C. $3$
+**C. $3$**
 
 D. $4$
+
+对于内心,由内分三角形比,有结论:
+$$\begin{gathered}
+   a\vec{OA}+b\vec{OB}+c\vec{OC}=\vec{0}\\
+   4\vec{OA}+3\vec{OB}+2\vec{OC}=\vec{0}\\
+   -4\vec{AO}+3(\vec{AB}-\vec{AO})+2(-\vec{AO}+\vec{AB}+\vec{BC})=\vec{0}\\
+   9\vec{AO}=5\vec{AB}+2\vec{BC}\\
+   \lambda=\frac{5}{9},\mu=\frac{2}{9}\\
+   3\lambda+6\mu=\frac{5}{3}+\frac{4}{3}=3
+\end{gathered}$$
+
+或者考虑内心对应角平分线的性质:$AB,AC$方向的单位向量的矢量和与$\vec{AO}$同向共线:
+$$\begin{gathered}
+   m(\frac{\vec{AB}}{2}+\frac{\vec{AC}}{3})=\vec{AO}
+\end{gathered}$$
+
+我们可以通过向量长度确定$m$.作$OH\perp AB$与点$H$,则:
+$$\begin{gathered}
+   S_\triangle ABC=\sqrt{p(p-a)(p-b)(p-c)}\\=\sqrt{\frac{9}{2}\cdot\frac{1}{2}\cdot\frac{3}{2}\cdot\frac{5}{2}}=\frac{3}{4}\sqrt{15}\\=rp=\frac{9}{2}r\\
+   r=\frac{1}{6}\sqrt{15},AH=p-a=\frac{1}{2}\\
+   |\vec{AO}|=\sqrt{r^2+AH^2}=\frac{\sqrt{6}}{3}\\
+   |\frac{\vec{AB}}{2}+\frac{\vec{AC}}{3}|^2=(\frac{\vec{AB}}{2}+\frac{\vec{AC}}{3})^2\\
+   =\frac{\vec{AB}^2}{4}+\frac{\vec{AC}^2}{9}+\frac{1}{3}\vec{AB}\cdot\vec{AC}\\
+   =1^2+1^2+\frac{1}{3}\cdot\frac{b^2+c^2-a^2}{2}\\
+   =2-\frac{1}{2}=\frac{3}{2}\\
+   \Longrightarrow |\frac{\vec{AB}}{2}+\frac{\vec{AC}}{3}|=\frac{\sqrt{6}}{2}\\
+   \Longrightarrow m=\frac{2}{3}\\
+   \vec{AO}=\frac{1}{3}\vec{AB}+\frac{2}{9}\vec{AC}\\
+   =\frac{1}{3}\vec{AB}+\frac{2}{9}(\vec{AB}+\vec{BC})\\
+   =\frac{5}{9}\vec{AB}+\frac{2}{9}\vec{BC}
+\end{gathered}$$
+
+再或者,可以利用对$\vec{AO}$算两次:
+$$\begin{gathered}
+   \overrightarrow{AO}
+=\lambda\overrightarrow{AB}+\mu\overrightarrow{BC}\\
+=\vec{AB}+\vec{BO}\\
+\vec{BO}=(\lambda-1)\vec{AB}+\mu\vec{BC}\\
+=(-2\lambda+2)\frac{\vec{BA}}{2}+4\mu\frac{\vec{BC}}{4}\\
+(-2\lambda+2)=4\mu\\
+3\lambda+6\mu=3
+\end{gathered}$$
+可见$3\lambda+6\mu$的系数绝非随意.
+
+![例题 6.14 的内心向量模型](example-6-14.svg "例题 6.14 的内心向量模型")
 
 ### 例题 6.15
 
@@ -482,6 +539,22 @@ $$
 
 则 $\triangle ABC$ 的最大内角的正弦值是 $\underline{\qquad}$。
 
+对于垂心,三个分三角形面积比为$\tan A,\tan B,\tan C$,故列出奔驰定理:
+$$\begin{gathered}
+   \tan A\vec{HA}+\tan B\vec{HB}+\tan C\vec{HC}=\vec{0}\\
+   \tan A=2k,\tan B=3k,\tan C=4k\\
+   \tan A\tan B\tan C=\tan A+\tan B+\tan C\\
+   24k^3=9k,k=\pm\frac{\sqrt{6}}{4}
+\end{gathered}$$
+
+显然,$k=-\frac{\sqrt{6}}{4}$不是合理的结果,应当舍去:
+$$\begin{gathered}
+   k=\frac{\sqrt{6}}{4},\frac{\pi}{2}\gt C\gt B\gt A\gt0\\
+   \tan C=\sqrt{6},\sin C=\frac{\tan C}{\sqrt{1+\tan^2 C}}=\frac{\sqrt{42}}{7}
+\end{gathered}$$
+
+![例题 6.15 的垂心与正切权重](example-6-15.svg "例题 6.15 的垂心与正切权重")
+
 ### 例题 6.16
 
 求证：$\triangle ABC$ 的外心 $O$、重心 $G$、垂心 $H$ 在同一直线上，且
@@ -490,12 +563,76 @@ $$
 OG:GH=1:2.
 $$
 
+在直角三角形中,通过建系可以完成证明:
+
+在非直角三角形中,综合使用三心的欧拉定理:
+$$\begin{gathered}
+\vec{GA}+\vec{GB}+\vec{GC}=\vec{0}\\
+\sin 2A\vec{OA}+\sin 2B\vec{OB}+\sin 2C\vec{OC}=\vec{0}\\
+\tan A\vec{HA}+\tan B\vec{HB}+\tan C\vec{HC}=\vec{0}\\
+\vec{GA}+(\vec{GA}+\vec{AB})+(\vec{GA}+\vec{AC})=\vec{0}\\
+\vec{AG}=\frac{\vec{AB}+\vec{AC}}{3}
+\end{gathered}$$
+同理可以写出:
+$$\begin{gathered}
+   \vec{AO}=\frac{\sin 2B\vec{AB}+\sin 2C\vec{AC}}{\sin 2A+\sin 2B+\sin 2C}\\
+   \vec{AH}=\frac{\tan B\vec{AB}+\tan C\vec{AC}}{\tan A+\tan B+\tan C}
+\end{gathered}$$
+接下来计算$\vec{OG},\vec{GH}$:
+$$\begin{gathered}
+   \vec{OG}=\vec{AG}-\vec{AO}\\=\frac{\sin 2A-2\sin 2B+\sin 2C}{3(\sin 2A+\sin 2B+\sin 2C)}\vec{AB}+\frac{\sin 2A+\sin 2B-2\sin 2C}{3(\sin 2A+\sin 2B+\sin 2C)}\vec{AC}\\
+   \vec{GH}=\vec{AH}-\vec{AG}\\
+   =\frac{2\tan B-\tan A-\tan C}{3(\tan A+\tan B+\tan C)}\vec{AB}+\frac{2\tan C-\tan A-\tan B}{3(\tan A+\tan B+\tan C)}\vec{AC}
+\end{gathered}$$
+
+不难看出,只要有$\frac{2(\sin 2A-2\sin 2B+\sin 2C)}{3(\sin 2A+\sin 2B+\sin 2C)}=\frac{2\tan B-\tan A-\tan C}{3(\tan A+\tan B+\tan C)}$即可
+
+$$\begin{gathered}
+   \frac{2\tan B-\tan A-\tan C}{3(\tan A+\tan B+\tan C)}\\
+   =\frac{2\tan B-\tan A-\tan C}{3\tan A\tan B\tan C}\\
+   =\frac{1}{3}(\frac{2}{\tan A\tan C}-\frac{1}{\tan B\tan C}-\frac{1}{\tan A\tan B})
+\end{gathered}$$
+
+$$\begin{gathered}
+   \frac{2(\sin 2A-2\sin 2B+\sin 2C)}{3(\sin 2A+\sin 2B+\sin 2C)}\\
+   =\frac{2}{3}\cdot\frac{(\sin 2A-2\sin 2B+\sin 2C)}{(\sin 2A+\sin 2B+\sin 2C)}\\
+   =\frac{2}{3}\cdot\frac{\frac{2\tan A}{1+\tan^2A}-2\frac{2\tan B}{1+\tan^2B}+\frac{2\tan C}{1+\tan^2C}}{\frac{2\tan A}{1+\tan^2A}+\frac{2\tan B}{1+\tan^2B}+\frac{2\tan C}{1+\tan^2C}}\\
+   =\frac{2}{3}\cdot\frac{\frac{\tan A}{1+\tan^2A}-2\frac{\tan B}{1+\tan^2B}+\frac{\tan C}{1+\tan^2C}}{\frac{\tan A}{1+\tan^2A}+\frac{\tan B}{1+\tan^2B}+\frac{\tan C}{1+\tan^2C}}\\
+   =\frac{2}{3}\cdot\frac{\tan A(1+\tan^2 B)(1+\tan^2 C)-2\tan B(1+\tan^2 C)(1+\tan^2 A)+\tan C(1+\tan^2 A)(1+\tan^2 B)}{\tan A(1+\tan^2 B)(1+\tan^2 C)+\tan B(1+\tan^2 C)(1+\tan^2 A)+\tan C(1+\tan^2 A)(1+\tan^2 B)}\\
+   =\frac{1}{3}(\frac{2}{\tan A\tan C}-\frac{1}{\tan B\tan C}-\frac{1}{\tan A\tan B})
+\end{gathered}$$
+
+实际上,不如分离常数:
+$$\begin{gathered}
+   \frac{2\tan B-\tan A-\tan C}{3(\tan A+\tan B+\tan C)}\\
+   =\frac{2}{3}-\frac{\tan A+\tan C}{\tan A+\tan B+\tan C}\\
+   \frac{2(\sin 2A-2\sin 2B+\sin 2C)}{3(\sin 2A+\sin 2B+\sin 2C)}\\
+   =\frac{2}{3}-\frac{2\sin 2B}{\sin 2A+\sin 2B+\sin 2C}
+\end{gathered}$$
+问题转化为证明:
+$$\begin{gathered}
+   \frac{\tan A+\tan C}{\tan A+\tan B+\tan C}=\frac{2\sin 2B}{\sin 2A+\sin 2B+\sin 2C}\\
+   LHS=\frac{\tan A+\tan C}{\tan A\tan B\tan C}\\=\frac{1}{\tan B\tan C}+\frac{1}{\tan A\tan B}\\=1-\frac{1}{\tan A\tan C}\\
+   RHS=\frac{2\sin 2B}{2\sin(A+C)\cos(A-C)+2\sin B\cos B}\\
+   =\frac{2\sin 2B}{2\sin B(\cos B+\cos(A-C))}\\
+   =\frac{2\sin 2B}{2\sin B[-\cos (A+C)+\cos(A-C)]}\\
+   =\frac{2\sin 2B}{4\sin A\sin B\sin C}\\
+   =\frac{\sin 2B}{2\sin A\sin B\sin C}\\
+   =\frac{2\sin B\cos B}{2\sin A\sin B\sin C}\\
+   =\frac{\cos B}{\sin A\sin C}\\
+   =\frac{-\cos(A+C)}{\sin A\sin C}\\
+   =\frac{\sin A\sin C-\cos A\cos C}{\sin A\sin C}=1-\frac{1}{\tan A\tan C}
+\end{gathered}$$
+
+![例题 6.16 的欧拉线](example-6-16.svg "例题 6.16 的欧拉线")
+
 ### 例题 6.17
 
 如图，$\triangle ABC$ 的两条高线 $AD$，$BE$ 交于点 $H$，其外接圆圆心为 $O$。过点 $O$ 作 $OF\perp BC$，垂足为 $F$，直线 $OH$ 与 $AF$ 相交于点 $G$，则 $\triangle OFG$ 与 $\triangle GAH$ 的面积之比为 $\underline{\qquad}$。
 
 ![例题 6.17 几何示意图](example-6-17.png "例题 6.17 几何示意图")
 
+由欧拉线经典结论:$2OG=GH$知:$\triangle OFG$和$\triangle GAH$相似比为$1:2$,则面积比为$1:4$
 ## 内积不等式与高维视角
 
 ### 例题 6.18
@@ -505,6 +642,15 @@ $$
 $$
 (ac+bd)^2\leqslant(a^2+b^2)(c^2+d^2).
 $$
+
+设向量$\boldsymbol{u}=(a,b),\boldsymbol{v}=(c,d)$,则:
+$$\begin{gathered}
+   \boldsymbol{u}\cdot\boldsymbol{v}\le |\boldsymbol{u}||\boldsymbol{v}|\\
+   (ac+bd)^2\leqslant(a^2+b^2)(c^2+d^2)
+\end{gathered}$$
+当且仅当$\boldsymbol{u}\parallel\boldsymbol{v}$时等号成立.
+
+![例题 6.18 的柯西不等式几何图](example-6-18.svg "例题 6.18 的柯西不等式几何图")
 
 ### 例题 6.19
 
@@ -528,11 +674,51 @@ $$
 
 A. $1$
 
-B. $\dfrac43$
+**B. $\dfrac43$**
 
 C. $\dfrac32$
 
 D. $2$
+
+容易知道变量间的依赖关系:两个自由度,$y,z$确定后$x$唯一确定.
+$$\begin{gathered}
+   -\frac{\sqrt3}{2}y+\frac{\sqrt3}{2}z=1\\
+   x-\frac{y}{2}-\frac{z}{2}=1\\
+   x=\frac{y+z}{2}+1,z-y=\frac{2\sqrt3}{3}\\
+   \Longrightarrow x=y+\frac{\sqrt{3}+3}{3}\\
+   x^2+y^2+z^2\\
+   =(y+\frac{\sqrt{3}+3}{3})^2+y^2+(y+\frac{2\sqrt{3}}{3})^2\\
+   =3y^2+2(\sqrt{3}+1)y+\frac{24+6\sqrt{3}}{9}\\
+   \ge\frac{4}{3}
+\end{gathered}$$
+
+尊重$y,z$内禀的对称性,可以简化计算:
+$$\begin{gathered}
+   \begin{cases}
+      z=t+\frac{\sqrt{3}}{3},\\
+      y=t-\frac{\sqrt{3}}{3}
+   \end{cases}\\
+   x=t+1\\
+   x^2+y^2+z^2\\
+   =(t+1)^2+(t+\frac{\sqrt{3}}{3})^2+(t-\frac{\sqrt{3}}{3})^2\\
+   =3t^2+2t+\frac{5}{3}\ge\frac{4}{3}
+\end{gathered}$$
+
+考虑几何性质:点$A(x,y,z)$在空间中的轨迹为一条方向向量为$(1,1,1)$的直线$l$,则当$OA\perp l$时,$x^2+y^2+z^2=OA^2$取得最小值:
+
+$$\begin{gathered}
+   (x,y,z)\cdot(1,1,1)=0\\
+   x+y+z=0\\
+   3t+1=0\\
+   t=-\frac{1}{3}\\
+   \begin{cases}
+      x=\frac{2}{3},\\
+      y=\frac{\sqrt{3}-1}{3}\\
+      z=\frac{-\sqrt{3}-1}{3}
+   \end{cases}
+\end{gathered}$$
+
+![例题 6.19 的三维直线最短距离模型](example-6-19.svg "例题 6.19 的三维直线最短距离模型")
 
 ### 例题 6.20
 
@@ -543,6 +729,31 @@ $$
 $$
 
 的最大值为 $\underline{\qquad}$。
+
+$$\begin{gathered}
+   |\boldsymbol a\cdot\boldsymbol b|+|\boldsymbol b\cdot\boldsymbol c|\\
+   =|\boldsymbol{b}|(|\boldsymbol{a}||\cos<\boldsymbol{a},\boldsymbol{b}>|+|\boldsymbol{c}||\cos<\boldsymbol{c},\boldsymbol{b}>|)\\
+   =|\cos<\boldsymbol{a},\boldsymbol{b}>|+\sqrt{26}|\cos<\boldsymbol{c},\boldsymbol{b}>|
+\end{gathered}$$
+根据对称性知,最大值在$<\boldsymbol{a},\boldsymbol{b}>,<\boldsymbol{c},\boldsymbol{b}>\lt\frac{\pi}{2}$时取得.
+
+$$\begin{gathered}
+   \cos\theta+\sqrt{26}\cos(<\boldsymbol{a},\boldsymbol{c}>-\theta)\\
+   =\cos\theta+\sqrt{26}(\cos<\boldsymbol{a},\boldsymbol{c}>\cos\theta+\sin<\boldsymbol{a},\boldsymbol{c}>\sin\theta)\\
+   =\cos\theta+\sqrt{26}(\frac{1}{\sqrt{26}}\cos\theta+\frac{5}{\sqrt{26}}\sin\theta)\\
+   =2\cos\theta+5\sin\theta\le\sqrt{29}
+\end{gathered}$$
+
+或者,引入参数$\lambda,\mu$以取去绝对值:
+$$\begin{gathered}
+   |\boldsymbol a\cdot\boldsymbol b|+|\boldsymbol b\cdot\boldsymbol c|\\
+   =\lambda \boldsymbol a\cdot\boldsymbol b+\mu \boldsymbol b\cdot\boldsymbol c\\
+   =\boldsymbol{b}\cdot(\lambda \boldsymbol{a}+\mu\boldsymbol{c})\\
+   \le |\boldsymbol{b}||\lambda \boldsymbol{a}+\mu\boldsymbol{c}|\\
+   =\max{|\boldsymbol{a}-\boldsymbol{c}|,|\boldsymbol{a}+\boldsymbol{c}|}=\sqrt{29}
+\end{gathered}$$
+
+![例题 6.20 的向量合成模型](example-6-20.svg "例题 6.20 的向量合成模型")
 
 ### 例题 6.21
 
@@ -562,11 +773,57 @@ $$
 
 A. $2$
 
-B. $2\sqrt3$
+**B. $2\sqrt3$**
 
 C. $4$
 
 D. $6$
+
+
+
+核心在于消去$\boldsymbol{c}$,这里需要一个交换系数的帽子戏法:
+
+注意到:
+$$\begin{gathered}
+   |\boldsymbol b-2\boldsymbol c|^2=5-4\boldsymbol{b}\boldsymbol{c}\\
+   |-2\boldsymbol b+\boldsymbol c|^2=5-4\boldsymbol{b}\boldsymbol{c}
+\end{gathered}$$
+
+同理$|2\boldsymbol a-\boldsymbol c|=|-\boldsymbol a+2\boldsymbol c|$
+$$\begin{gathered}
+   |2\boldsymbol a-\boldsymbol c|+|\boldsymbol b-2\boldsymbol c|\\
+   =|2\boldsymbol a-\boldsymbol c|+|-2\boldsymbol b+\boldsymbol c|\\
+   \ge 2|\boldsymbol{a}-\boldsymbol{b}|\
+\end{gathered}$$
+
+$$\begin{gathered}
+   |2\boldsymbol a-\boldsymbol c|+|\boldsymbol b-2\boldsymbol c|\\
+   =|-\boldsymbol a+2\boldsymbol c|+|\boldsymbol b-2\boldsymbol c|\\
+   \ge |\boldsymbol{b}-\boldsymbol{a}|
+\end{gathered}$$
+
+显然,$2|\boldsymbol{b}-\boldsymbol{a}|$是下界.
+
+$$\begin{gathered}
+   |3\boldsymbol a-5\boldsymbol b|=7\\
+   34-30\boldsymbol{a}\boldsymbol{b}=49\\
+   \boldsymbol{a}\boldsymbol{b}=-\frac{1}{2}\\
+   |\boldsymbol{b}-\boldsymbol{a}|^2=2-2\boldsymbol{a}\boldsymbol{b}=3\\
+   |2\boldsymbol a-\boldsymbol c|+|\boldsymbol b-2\boldsymbol c|\\
+   \ge 2|\boldsymbol{b}-\boldsymbol{a}|=2\sqrt{3}
+\end{gathered}$$
+
+验证取等条件:
+$$\begin{gathered}
+   2\boldsymbol a-\boldsymbol c=\lambda(-2\boldsymbol b+\boldsymbol c),\lambda\gt0\\
+   \boldsymbol{c}=2\frac{\boldsymbol{a}+\lambda\boldsymbol{b}}{\lambda+1}\\
+   \boldsymbol{c}^2=4[(\frac{\boldsymbol{a}}{\lambda+1})^2+\frac{2\lambda}{(\lambda+1)^2}\boldsymbol{a}\boldsymbol{b}+(\frac{\lambda\boldsymbol{b}}{\lambda+1})^2]\\
+   =4[\frac{1}{(\lambda+1)^2}-\frac{\lambda}{(\lambda+1)^2}+\frac{\lambda^2}{(\lambda+1)^2}]=1\\
+   4(\lambda^2-\lambda+1)=(\lambda+1)^2\\\\
+   (\lambda-1)^2=0\Longleftrightarrow \lambda=1
+\end{gathered}$$
+
+![例题 6.21 的交换系数与三角不等式](example-6-21.svg "例题 6.21 的交换系数与三角不等式")
 
 ### 例题 6.22
 
@@ -586,3 +843,33 @@ $$
 $$
 
 的最小值为 $-3$，则 $\triangle ABC$ 的面积 $S=\underline{\qquad}$。
+
+考虑两向量相等的必要条件:模长相等
+$$\begin{gathered}
+   \frac{3\overrightarrow{AB}}{|\overrightarrow{AB}|}
++\frac{2\overrightarrow{AC}}{|\overrightarrow{AC}|}
+=\frac{\sqrt{19}\left(\overrightarrow{AB}+\overrightarrow{AC}\right)}
+{\left|\overrightarrow{AB}+\overrightarrow{AC}\right|}\\
+\Longrightarrow 9+4+12\frac{\vec{AB}}{|\vec{AB}|}\frac{\vec{AC}}{|\vec{AC}|}=19\\
+\cos<\vec{AB},\vec{AC}>=\frac{1}{2}\\
+\Longleftrightarrow <\vec{AB},\vec{AC}>=\frac{\pi}{3}
+\end{gathered}$$
+
+再考虑系数对应相同:平面向量基本定理
+$$\begin{gathered}
+   \frac{3}{|\vec{AB}|}=\frac{\sqrt{19}}{|\vec{AB}+\vec{AC}|}=\frac{2}{|\vec{AC}|}\\
+   |\vec{AB}|=3k,|\vec{AC}|=2k
+\end{gathered}$$
+
+紧接着,用极化恒等式化简条件$\overrightarrow{DA}\cdot\overrightarrow{DC}$:取$AC$中点$M$,作$DH\perp AB$于点$H$.
+$$\begin{gathered}
+   \vec{DA}\vec{DC}\\
+   =\vec{DM}^2-\vec{MA}^2\\
+   =|DM|^2-k^2\\
+   \ge |HM|^2-k^2=(\frac{\sqrt{3}}{2}k)^2-k^2=-\frac{1}{4}k^2=-3\\
+   \Longrightarrow k^2=12
+\end{gathered}$$
+
+进而得到$S=\frac{1}{2}AB\cdot AC\sin\frac{\pi}{3}=\frac{3\sqrt{3}}{2}k^2=18\sqrt{3}$
+
+![例题 6.22 的中点与最短距离模型](example-6-22.svg "例题 6.22 的中点与最短距离模型")
