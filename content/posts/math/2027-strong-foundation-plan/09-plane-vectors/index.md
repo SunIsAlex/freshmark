@@ -10,13 +10,13 @@ featured: false
 
 ### 例题 6.1
 
-（浙江卷）已知 $\boldsymbol a$，$\boldsymbol b$，$\boldsymbol e$ 是平面向量，$\boldsymbol e$ 是单位向量。若非零向量 $\boldsymbol a$ 与 $\boldsymbol e$ 的夹角为 $\dfrac{\pi}{3}$，向量 $\boldsymbol b$ 满足
+（浙江卷）已知 $\vec{a}$，$\vec{b}$，$\vec{e}$ 是平面向量，$\vec{e}$ 是单位向量。若非零向量 $\vec{a}$ 与 $\vec{e}$ 的夹角为 $\frac{\pi}{3}$，向量 $\vec{b}$ 满足
 
 $$
-|\boldsymbol b|^2-4\boldsymbol e\cdot\boldsymbol b+3=0,
+|\vec{b}|^2-4\vec{e}\cdot\vec{b}+3=0,
 $$
 
-则 $|\boldsymbol a-\boldsymbol b|$ 的最小值是（　　）
+则 $|\vec{a}-\vec{b}|$ 的最小值是（　　）
 
 **A.** $\sqrt3-1$
 
@@ -28,7 +28,7 @@ D. $2-\sqrt3$
 
 应当注意到因式分解:
 $$\begin{gathered}
-   (\boldsymbol b-\boldsymbol{e})(\boldsymbol{b}-3\boldsymbol{e})=0
+   (\vec{b}-\vec{e})(\vec{b}-3\vec{e})=0
 \end{gathered}$$
 
 
@@ -38,15 +38,15 @@ $$\begin{gathered}
 
 ### 例题 6.2
 
-已知向量 $\boldsymbol a$，$\boldsymbol b$ 满足
+已知向量 $\vec{a}$，$\vec{b}$ 满足
 
 $$
-|\boldsymbol a|=\sqrt3,
+|\vec{a}|=\sqrt3,
 \qquad
-|4\boldsymbol a+\boldsymbol b|+|\boldsymbol b|=8,
+|4\vec{a}+\vec{b}|+|\vec{b}|=8,
 $$
 
-则 $|2\boldsymbol a+\boldsymbol b|$ 的取值范围是（　　）
+则 $|2\vec{a}+\vec{b}|$ 的取值范围是（　　）
 
 **A.** $[2,4]$
 
@@ -56,7 +56,7 @@ C. $[\sqrt3,8]$
 
 D. $[4,16]$
 
-不难发现,题中暗藏着$a=4,c=2\sqrt{3}.b=2$的椭圆$\frac{x^2}{16}+\frac{y^2}{4}=1$,所求$|2\boldsymbol a+\boldsymbol b|$则是椭圆上点到中心的距离,则:
+不难发现,题中暗藏着$a=4,c=2\sqrt{3}.b=2$的椭圆$\frac{x^2}{16}+\frac{y^2}{4}=1$,所求$|2\vec{a}+\vec{b}|$则是椭圆上点到中心的距离,则:
 
 $$\begin{gathered}
    x^2+4y^2=16,y\in[-2,+2]\\
@@ -69,38 +69,38 @@ $$\begin{gathered}
 
 ### 例题 6.3
 
-（北京大学）$\overrightarrow{OA}$，$\overrightarrow{OB}$ 的夹角为 $\theta$，
+（北京大学）$\vec{OA}$，$\vec{OB}$ 的夹角为 $\theta$，
 
 $$
-|\overrightarrow{OA}|=2,
+|\vec{OA}|=2,
 \qquad
-|\overrightarrow{OB}|=1,
+|\vec{OB}|=1,
 $$
 
 $$
-\overrightarrow{OP}=t\overrightarrow{OA},
+\vec{OP}=t\vec{OA},
 \qquad
-\overrightarrow{OQ}=(1-t)\overrightarrow{OB}.
+\vec{OQ}=(1-t)\vec{OB}.
 $$
 
-$|\overrightarrow{PQ}|$ 在 $t=t_0$ 时取得最小值。若 $0<t_0<\dfrac15$，则 $\theta$ 的取值范围为（　　）
+$|\vec{PQ}|$ 在 $t=t_0$ 时取得最小值。若 $0<t_0<\frac15$，则 $\theta$ 的取值范围为（　　）
 
-A. $\left(\dfrac\pi3,\dfrac\pi2\right)$
+A. $\left(\frac\pi3,\frac\pi2\right)$
 
-B. $\left(\dfrac\pi3,\dfrac{2\pi}3\right)$
+B. $\left(\frac\pi3,\frac{2\pi}3\right)$
 
-C. $\left(\dfrac\pi2,\dfrac{5\pi}6\right)$
+C. $\left(\frac\pi2,\frac{5\pi}6\right)$
 
-**D.** $\left(\dfrac\pi2,\dfrac{2\pi}3\right)$
+**D.** $\left(\frac\pi2,\frac{2\pi}3\right)$
 
 先考虑代数方法,构建目标函数:
 $$\begin{gathered}
    |\vec{PQ}|=|\vec{OQ}-\vec{OP}|\\
    =\sqrt{|\vec{OQ}|^2+|\vec{OP}|^2-2|\vec{OQ}||\vec{OP}|\cos\theta}\\
    =\sqrt{(1-t)^2+(2t)^2-2\cdot(1-t)\cdot (2t)\cos\theta}\\
-   =\sqrt{(5+4\cos\theta)t^2-2(2\cos\theta+1)t+1},t\in \R\\
-   t_0=\frac{2\cos\theta+1}{5+4\cos\theta}\in(0,\dfrac15)\\
-   \cos\theta\in(-\dfrac12,0),\theta\in[0,\pi]\\
+   =\sqrt{(5+4\cos\theta)t^2-2(2\cos\theta+1)t+1},t\in \mathbb{R}\\
+   t_0=\frac{2\cos\theta+1}{5+4\cos\theta}\in(0,\frac15)\\
+   \cos\theta\in(-\frac12,0),\theta\in[0,\pi]\\
    \Longleftrightarrow \theta\in(\frac{\pi}{2},\frac{2\pi}{3})
 \end{gathered}$$
 
@@ -132,12 +132,12 @@ $$\begin{gathered}
 
 ### 例题 6.4
 
-在直角三角形 $\triangle ABC$ 中，$AB=4$，$AC=3$，$\angle A=\dfrac\pi2$，
+在直角三角形 $\triangle ABC$ 中，$AB=4$，$AC=3$，$\angle A=\frac\pi2$，
 
 $$
-\overrightarrow{AP}=m\overrightarrow{PB},
+\vec{AP}=m\vec{PB},
 \qquad
-\overrightarrow{AQ}=n\overrightarrow{QC},
+\vec{AQ}=n\vec{QC},
 \qquad
 \frac1m+\frac1n=\frac12.
 $$
@@ -145,7 +145,7 @@ $$
 $M$ 是 $BC$ 的中点。对任意 $\lambda\in\mathbb R$，
 
 $$
-\left|\lambda\overrightarrow{QP}+\overrightarrow{QM}\right|
+\left|\lambda\vec{QP}+\vec{QM}\right|
 $$
 
 的最小值记为 $f(m)$，则当 $m>0$ 时，$f(m)$ 的最大值为 $\underline{\qquad}$。
@@ -160,11 +160,11 @@ $$\begin{gathered}
 
 这意味着如果取T点,使得$\frac{AT}{AM}=\frac{4}{5}$,则有$P,Q,T$三点共线.
 
-$\min_{\lambda\in\R}\left|\lambda\overrightarrow{QP}+\overrightarrow{QM}\right|$等于直线$PQ$到点M的距离,构建不等式:
+$\min_{\lambda\in\mathbb{R}}\left|\lambda\vec{QP}+\vec{QM}\right|$等于直线$PQ$到点M的距离,构建不等式:
 $$\begin{gathered}
-   \min_{\lambda\in\R}\left|\lambda\overrightarrow{QP}+\overrightarrow{QM}\right|\\
+   \min_{\lambda\in\mathbb{R}}\left|\lambda\vec{QP}+\vec{QM}\right|\\
    =d(M,PQ)\\
-   \le |TM|\\
+   \leq |TM|\\
    =\frac{1}{5}|AM|=\frac{1}{5}\cdot\frac{5}{2}=\frac{1}{2}
 \end{gathered}$$
 
@@ -185,7 +185,7 @@ $$
 设
 
 $$
-I_k=\overrightarrow{P_kB}\cdot\overrightarrow{P_kC}
+I_k=\vec{P_kB}\cdot\vec{P_kC}
 \qquad(k=1,2,3),
 $$
 
@@ -201,9 +201,9 @@ C. $I_3<I_2<I_1$
 
 由几何关系,$P_1,P_2,P_3$都是$AB$上的八等分点.
 
-取$BC$中点$M$,考虑极化恒等式$I_k=\overrightarrow{P_kB}\cdot\overrightarrow{P_kC}=|P_kM|^2-|BM|^2(k=1,2,3)$,其中$|BM|$为一定值.
+取$BC$中点$M$,考虑极化恒等式$I_k=\vec{P_kB}\cdot\vec{P_kC}=|P_kM|^2-|BM|^2(k=1,2,3)$,其中$|BM|$为一定值.
 
-由图形比例:$|P_3M|\gt|P_1M|\gt|P_2M|\Longleftrightarrow I_2\lt I_1\lt I_3$
+由图形比例:$|P_3M|>|P_1M|>|P_2M|\Longleftrightarrow I_2< I_1< I_3$
 
 ![例题 6.5 的极化恒等式构型](example-6-5.svg "例题 6.5 的极化恒等式构型")
 
@@ -218,9 +218,9 @@ $$
 且对于边 $AB$ 上任意一点 $P$，恒有
 
 $$
-\overrightarrow{PB}\cdot\overrightarrow{PC}
-\geqslant
-\overrightarrow{P_0B}\cdot\overrightarrow{P_0C},
+\vec{PB}\cdot\vec{PC}
+\geq
+\vec{P_0B}\cdot\vec{P_0C},
 $$
 
 则（　　）
@@ -234,8 +234,8 @@ C. $AB=AC$
 **D.** $AC=BC$
 
 $$\begin{gathered}
-   \overrightarrow{PB}\cdot\overrightarrow{PC}=|PM|^2-|BM|^2\\
-   \ge \overrightarrow{P_0B}\cdot\overrightarrow{P_0}=|P_0M|^2-|BM|^2
+   \vec{PB}\cdot\vec{PC}=|PM|^2-|BM|^2\\
+   \geq \vec{P_0B}\cdot\vec{P_0}=|P_0M|^2-|BM|^2
 \end{gathered}$$
 
 这表明$P_0M$是最短线段,$P_0M\perp AB$.又注意到如果取$AB$中点$T$,则$TM$为$\triangle ABC$中$AC$所对中位线,则$CT\perp P_0M \Longrightarrow CT\perp AB$.
@@ -248,23 +248,23 @@ $$\begin{gathered}
 
 ### 例题 6.7
 
-（清华大学）向量 $\boldsymbol a\ne\boldsymbol e$，$|\boldsymbol e|=1$。若对任意 $t\in\mathbb R$，都有
+（清华大学）向量 $\vec{a}\ne\vec{e}$，$|\vec{e}|=1$。若对任意 $t\in\mathbb R$，都有
 
 $$
-|\boldsymbol a-t\boldsymbol e|\geqslant|\boldsymbol a+\boldsymbol e|,
+|\vec{a}-t\vec{e}|\geq|\vec{a}+\vec{e}|,
 $$
 
 则（　　）
 
-A. $\boldsymbol a\perp\boldsymbol e$
+A. $\vec{a}\perp\vec{e}$
 
-B. $\boldsymbol a\perp(\boldsymbol a+\boldsymbol e)$
+B. $\vec{a}\perp(\vec{a}+\vec{e})$
 
-**C.** $\boldsymbol e\perp(\boldsymbol a+\boldsymbol e)$
+**C.** $\vec{e}\perp(\vec{a}+\vec{e})$
 
-D. $(\boldsymbol a-\boldsymbol e)\perp(\boldsymbol a+\boldsymbol e)$
+D. $(\vec{a}-\vec{e})\perp(\vec{a}+\vec{e})$
 
-将向量$\boldsymbol a\ne\boldsymbol e$平移至共起点,可知题目条件本质为$\boldsymbol e\perp(\boldsymbol a+\boldsymbol e)$
+将向量$\vec{a}\ne\vec{e}$平移至共起点,可知题目条件本质为$\vec{e}\perp(\vec{a}+\vec{e})$
 
 ![例题 6.7 的向量投影图](example-6-7.svg "例题 6.7 的向量投影图")
 
@@ -272,24 +272,24 @@ D. $(\boldsymbol a-\boldsymbol e)\perp(\boldsymbol a+\boldsymbol e)$
 
 在 $\triangle ABC$ 中：
 
-1. 若 $\overrightarrow{CA}=\boldsymbol a$，$\overrightarrow{CB}=\boldsymbol b$，求证：
+1. 若 $\vec{CA}=\vec{a}$，$\vec{CB}=\vec{b}$，求证：
 
    $$
    S_{\triangle ABC}
-   =\frac12\sqrt{(|\boldsymbol a||\boldsymbol b|)^2-(\boldsymbol a\cdot\boldsymbol b)^2}.
+   =\frac12\sqrt{(|\vec{a}||\vec{b}|)^2-(\vec{a}\cdot\vec{b})^2}.
    $$
 
-2. 若 $\overrightarrow{CA}=(x_1,y_1)$，$\overrightarrow{CB}=(x_2,y_2)$，求证：
+2. 若 $\vec{CA}=(x_1,y_1)$，$\vec{CB}=(x_2,y_2)$，求证：
 
    $$
    S_{\triangle ABC}=\frac12|x_1y_2-x_2y_1|.
    $$
 
 $$\begin{gathered}
-   S_{\triangle ABC}=\frac{1}{2}|\boldsymbol a||\boldsymbol b|\sin<\boldsymbol{a},\boldsymbol{b}>\\
-   =\frac{1}{2}|\boldsymbol a||\boldsymbol b|\sqrt{1-\cos^2<\boldsymbol{a},\boldsymbol{b}>}\\
-   =\frac{1}{2}|\boldsymbol a||\boldsymbol b|\sqrt{1-(\frac{\boldsymbol a\cdot\boldsymbol b}{|\boldsymbol a||\boldsymbol b|})^2}\\
-   =\frac{1}{2}\sqrt{|\boldsymbol a|^2|\boldsymbol b|^2-(\boldsymbol a\cdot\boldsymbol b)^2}\\
+   S_{\triangle ABC}=\frac{1}{2}|\vec{a}||\vec{b}|\sin\langle\vec{a},\vec{b}\rangle\\
+   =\frac{1}{2}|\vec{a}||\vec{b}|\sqrt{1-\cos^2\langle\vec{a},\vec{b}\rangle}\\
+   =\frac{1}{2}|\vec{a}||\vec{b}|\sqrt{1-(\frac{\vec{a}\cdot\vec{b}}{|\vec{a}||\vec{b}|})^2}\\
+   =\frac{1}{2}\sqrt{|\vec{a}|^2|\vec{b}|^2-(\vec{a}\cdot\vec{b})^2}\\
    =\frac{1}{2}\sqrt{(x_1^2+y_1^2)(x_2^2+y_2^2)-(x_1x_2+y_1y_2)^2}\\
    =\frac{1}{2}\sqrt{(x_1y_2-x_2y_1)^2}=\frac12|x_1y_2-x_2y_1|
 \end{gathered}$$
@@ -326,28 +326,28 @@ $$\begin{gathered}
 
 过 $\triangle ABC$ 的重心作一条直线，将 $\triangle ABC$ 分成两部分，则较小部分与较大部分的面积之比（　　）
 
-A. 最小值为 $\dfrac34$
+A. 最小值为 $\frac34$
 
-**B.** 最小值为 $\dfrac45$
+**B.** 最小值为 $\frac45$
 
-C. 最大值为 $\dfrac43$
+C. 最大值为 $\frac43$
 
-D. 最大值为 $\dfrac54$
+D. 最大值为 $\frac54$
 
 本题的几何图形与例6.9师出同门,应考虑结论:
 $$\begin{gathered}
-   \frac{S_\triangle{ABC}}{S_\triangle{AEF}}=\frac{AB}{AE}\frac{AC}{AF}=\frac{1}{k}\cdot\frac{1}{h}\le(\frac{\frac{1}{k}+\frac{1}{h}}{2})^2=\frac94
+   \frac{S_{\triangle ABC}}{S_{\triangle AEF}}=\frac{AB}{AE}\frac{AC}{AF}=\frac{1}{k}\cdot\frac{1}{h}\leq(\frac{\frac{1}{k}+\frac{1}{h}}{2})^2=\frac94
 \end{gathered}$$
 
-当然,我们还需要确定$\frac{S_\triangle{ABC}}{S_\triangle{AEF}}$的下界:
+当然,我们还需要确定$\frac{S_{\triangle ABC}}{S_{\triangle AEF}}$的下界:
 $$\begin{gathered}
-   0\lt h,k\le1\Longrightarrow (\frac{1}{k}-1)(\frac{1}{h}-1)\ge0\\
-   \frac{1}{kh}\ge \frac{1}{h}+\frac{1}{k}-1=2\\
-   \frac{S_\triangle{ABC}}{S_\triangle{AEF}}\in[2,\frac{9}{4}]\\
-   S_{BEFC}\ge S_{\triangle{AEF}}\\
-   \frac{S_\triangle{AEF}+S_{BEFC}}{S_\triangle{AEF}}=1+\frac{S_{BEFC}}{S_\triangle{AEF}}\\
-   \frac{S_{BEFC}}{S_\triangle{AEF}}\in[1,\frac{5}{4}]\\
-   \frac{S_\triangle{AEF}}{S_{BEFC}}\in[\frac{4}{5},1]
+   0< h,k\leq1\Longrightarrow (\frac{1}{k}-1)(\frac{1}{h}-1)\geq0\\
+   \frac{1}{kh}\geq \frac{1}{h}+\frac{1}{k}-1=2\\
+   \frac{S_{\triangle ABC}}{S_{\triangle AEF}}\in[2,\frac{9}{4}]\\
+   S_{BEFC}\geq S_{\triangle{AEF}}\\
+   \frac{S_{\triangle AEF}+S_{BEFC}}{S_{\triangle AEF}}=1+\frac{S_{BEFC}}{S_{\triangle AEF}}\\
+   \frac{S_{BEFC}}{S_{\triangle AEF}}\in[1,\frac{5}{4}]\\
+   \frac{S_{\triangle AEF}}{S_{BEFC}}\in[\frac{4}{5},1]
 \end{gathered}$$
 ### 例题 6.11
 
@@ -393,28 +393,28 @@ D. 前三个答案都不对
 在平面直角坐标系中,有三角形$ABC$,考虑三条边的平方和:
 $$\begin{gathered}
    AB^2+BC^2+CA^2\\
-   =\sum_{cyc}[(x_1-x_2)^2+(y_1-y_2)^2]\\
-   =2\sum_{cyc}(x_1^2+y_1^2)-2\sum_{cyc}(x_1x_2+y_1y_2)
+   =\sum_{\mathrm{cyc}}[(x_1-x_2)^2+(y_1-y_2)^2]\\
+   =2\sum_{\mathrm{cyc}}(x_1^2+y_1^2)-2\sum_{\mathrm{cyc}}(x_1x_2+y_1y_2)
 \end{gathered}$$
-对于$2\sum_{cyc}(x_1x_2+y_1y_2)$,我们注意到其交叉项的形式:
+对于$2\sum_{\mathrm{cyc}}(x_1x_2+y_1y_2)$,我们注意到其交叉项的形式:
 $$\begin{gathered}
-   (x_1+x_2+x_3)^2=\sum_{cyc}x_1^2+2\sum_{cyc}(x_1x_2)\\
-   (y_1+y_2+y_3)^2=\sum_{cyc}y_1^2+2\sum_{cyc}(y_1y_2)\\
-   2\sum_{cyc}(x_1x_2+y_1y_2)=(x_1+x_2+x_3)^2+(y_1+y_2+y_3)^2-\sum_{cyc}(x_1^2+y_1^2)
+   (x_1+x_2+x_3)^2=\sum_{\mathrm{cyc}}x_1^2+2\sum_{\mathrm{cyc}}(x_1x_2)\\
+   (y_1+y_2+y_3)^2=\sum_{\mathrm{cyc}}y_1^2+2\sum_{\mathrm{cyc}}(y_1y_2)\\
+   2\sum_{\mathrm{cyc}}(x_1x_2+y_1y_2)=(x_1+x_2+x_3)^2+(y_1+y_2+y_3)^2-\sum_{\mathrm{cyc}}(x_1^2+y_1^2)
 \end{gathered}$$
 于是:
 $$\begin{gathered}
-   AB^2+BC^2+CA^2\\=3\sum_{cyc}(x_1^2+y_1^2)-(x_1+x_2+x_3)^2-(y_1+y_2+y_3)^2\\\ge3\sum_{cyc}(x_1^2+y_1^2)
+   AB^2+BC^2+CA^2\\=3\sum_{\mathrm{cyc}}(x_1^2+y_1^2)-(x_1+x_2+x_3)^2-(y_1+y_2+y_3)^2\\\geq3\sum_{\mathrm{cyc}}(x_1^2+y_1^2)
 \end{gathered}$$
 
 显而易见,对于五边形的情况,只是系数不同:
 $$\begin{gathered}
-   =\sum_{cyc}[(x_1-x_2)^2+(y_1-y_2)^2]\\
-   =\textcolor{red}{3}\sum_{cyc}(x_1^2+y_1^2)-2\sum_{cyc}(x_1x_2+y_1y_2)
+   =\sum_{\mathrm{cyc}}[(x_1-x_2)^2+(y_1-y_2)^2]\\
+   =\textcolor{red}{3}\sum_{\mathrm{cyc}}(x_1^2+y_1^2)-2\sum_{\mathrm{cyc}}(x_1x_2+y_1y_2)
 \end{gathered}$$
 
 $$\begin{gathered}
-   \sum_{cyc}[(x_1-x_2)^2+(y_1-y_2)^2]\ge 5\sum_{cyc}(x_1^2+y_1^2)\\
+   \sum_{\mathrm{cyc}}[(x_1-x_2)^2+(y_1-y_2)^2]\geq 5\sum_{\mathrm{cyc}}(x_1^2+y_1^2)\\
    =5\cdot 5\cdot 1=25
 \end{gathered}$$
 
@@ -424,7 +424,7 @@ $$\begin{gathered}
 
 | 公式 | 建议名称 |
 | :--- | :--- |
-| $\displaystyle \sum_{i<j} P_iP_j^2=n\sum OP_i^2-\left\lVert\sum\overrightarrow{OP_i}\right\rVert^2$ | 点系平方距离恒等式 |
+| $\displaystyle \sum_{i<j} P_iP_j^2=n\sum OP_i^2-\left\lVert\sum\vec{OP_i}\right\rVert^2$ | 点系平方距离恒等式 |
 | $\displaystyle \sum_{i<j} P_iP_j^2=n\sum GP_i^2$ | 点系恒等式的重心形式 |
 | $\displaystyle \sum PP_i^2=\frac{1}{n}\sum_{i<j}P_iP_j^2+nPG^2$ | 广义莱布尼茨定理 |
 ### 例题 6.13
@@ -438,19 +438,19 @@ $$
 设
 
 $$
-\overrightarrow{AO}
-=\lambda\overrightarrow{AB}+\mu\overrightarrow{AC},
+\vec{AO}
+=\lambda\vec{AB}+\mu\vec{AC},
 $$
 
 则实数 $\lambda$ 和 $\mu$ 的值分别为（　　）
 
-**A. $\dfrac29,\dfrac49$**
+**A. $\frac29,\frac49$**
 
-B. $\dfrac49,\dfrac29$
+B. $\frac49,\frac29$
 
-C. $\dfrac19,\dfrac29$
+C. $\frac19,\frac29$
 
-D. $\dfrac29,\dfrac19$
+D. $\frac29,\frac19$
 
 由熟知的奔驰定理:
 $$\begin{gathered}
@@ -469,8 +469,8 @@ $$\begin{gathered}
 （清华大学）$\triangle ABC$ 中，$AB=2$，$AC=3$，$BC=4$，$O$ 为三角形内心。若
 
 $$
-\overrightarrow{AO}
-=\lambda\overrightarrow{AB}+\mu\overrightarrow{BC},
+\vec{AO}
+=\lambda\vec{AB}+\mu\vec{BC},
 $$
 
 则 $3\lambda+6\mu=$（　　）
@@ -500,7 +500,7 @@ $$\begin{gathered}
 
 我们可以通过向量长度确定$m$.作$OH\perp AB$与点$H$,则:
 $$\begin{gathered}
-   S_\triangle ABC=\sqrt{p(p-a)(p-b)(p-c)}\\=\sqrt{\frac{9}{2}\cdot\frac{1}{2}\cdot\frac{3}{2}\cdot\frac{5}{2}}=\frac{3}{4}\sqrt{15}\\=rp=\frac{9}{2}r\\
+   S_{\triangle ABC}=\sqrt{p(p-a)(p-b)(p-c)}\\=\sqrt{\frac{9}{2}\cdot\frac{1}{2}\cdot\frac{3}{2}\cdot\frac{5}{2}}=\frac{3}{4}\sqrt{15}\\=rp=\frac{9}{2}r\\
    r=\frac{1}{6}\sqrt{15},AH=p-a=\frac{1}{2}\\
    |\vec{AO}|=\sqrt{r^2+AH^2}=\frac{\sqrt{6}}{3}\\
    |\frac{\vec{AB}}{2}+\frac{\vec{AC}}{3}|^2=(\frac{\vec{AB}}{2}+\frac{\vec{AC}}{3})^2\\
@@ -516,8 +516,8 @@ $$\begin{gathered}
 
 再或者,可以利用对$\vec{AO}$算两次:
 $$\begin{gathered}
-   \overrightarrow{AO}
-=\lambda\overrightarrow{AB}+\mu\overrightarrow{BC}\\
+   \vec{AO}
+=\lambda\vec{AB}+\mu\vec{BC}\\
 =\vec{AB}+\vec{BO}\\
 \vec{BO}=(\lambda-1)\vec{AB}+\mu\vec{BC}\\
 =(-2\lambda+2)\frac{\vec{BA}}{2}+4\mu\frac{\vec{BC}}{4}\\
@@ -533,8 +533,8 @@ $$\begin{gathered}
 （北京大学）已知 $H$ 是 $\triangle ABC$ 的垂心，且
 
 $$
-2\overrightarrow{HA}+3\overrightarrow{HB}+4\overrightarrow{HC}
-=\overrightarrow0,
+2\vec{HA}+3\vec{HB}+4\vec{HC}
+=\vec{0},
 $$
 
 则 $\triangle ABC$ 的最大内角的正弦值是 $\underline{\qquad}$。
@@ -549,7 +549,7 @@ $$\begin{gathered}
 
 显然,$k=-\frac{\sqrt{6}}{4}$不是合理的结果,应当舍去:
 $$\begin{gathered}
-   k=\frac{\sqrt{6}}{4},\frac{\pi}{2}\gt C\gt B\gt A\gt0\\
+   k=\frac{\sqrt{6}}{4},\frac{\pi}{2}> C> B> A>0\\
    \tan C=\sqrt{6},\sin C=\frac{\tan C}{\sqrt{1+\tan^2 C}}=\frac{\sqrt{42}}{7}
 \end{gathered}$$
 
@@ -630,7 +630,7 @@ $$\begin{gathered}
 
 **欧拉线**一个比较标准的平面几何证明是通过同一法实现的:
 
-如图,点$M$为边$BC$中点,延长$BO$交$\triangle ABC$外接圆于点$D$,由直径所对圆周角为$90\degree$知:
+如图,点$M$为边$BC$中点,延长$BO$交$\triangle ABC$外接圆于点$D$,由直径所对圆周角为$90^\circ$知:
 
 $$AD\perp AB,CD\perp BC$$
 
@@ -671,15 +671,15 @@ $$\frac{AG'}{G'M}=\frac{G'H}{G'O}=\frac{AH}{OM}=2$$
 用向量方法证明：对于任意的 $a,b,c,d\in\mathbb R$，恒有不等式
 
 $$
-(ac+bd)^2\leqslant(a^2+b^2)(c^2+d^2).
+(ac+bd)^2\leq(a^2+b^2)(c^2+d^2).
 $$
 
-设向量$\boldsymbol{u}=(a,b),\boldsymbol{v}=(c,d)$,则:
+设向量$\vec{u}=(a,b),\vec{v}=(c,d)$,则:
 $$\begin{gathered}
-   \boldsymbol{u}\cdot\boldsymbol{v}\le |\boldsymbol{u}||\boldsymbol{v}|\\
-   (ac+bd)^2\leqslant(a^2+b^2)(c^2+d^2)
+   \vec{u}\cdot\vec{v}\leq |\vec{u}||\vec{v}|\\
+   (ac+bd)^2\leq(a^2+b^2)(c^2+d^2)
 \end{gathered}$$
-当且仅当$\boldsymbol{u}\parallel\boldsymbol{v}$时等号成立.
+当且仅当$\vec{u}\parallel\vec{v}$时等号成立.
 
 ![例题 6.18 的柯西不等式几何图](example-6-18.svg "例题 6.18 的柯西不等式几何图")
 
@@ -688,26 +688,26 @@ $$\begin{gathered}
 （清华大学）已知向量
 
 $$
-\boldsymbol a=(0,1),
+\vec{a}=(0,1),
 \qquad
-\boldsymbol b=\left(-\frac{\sqrt3}{2},-\frac12\right),
+\vec{b}=\left(-\frac{\sqrt3}{2},-\frac12\right),
 \qquad
-\boldsymbol c=\left(\frac{\sqrt3}{2},-\frac12\right),
+\vec{c}=\left(\frac{\sqrt3}{2},-\frac12\right),
 $$
 
 且
 
 $$
-x\boldsymbol a+y\boldsymbol b+z\boldsymbol c=(1,1),
+x\vec{a}+y\vec{b}+z\vec{c}=(1,1),
 $$
 
 则 $x^2+y^2+z^2$ 的最小值为（　　）
 
 A. $1$
 
-**B. $\dfrac43$**
+**B. $\frac43$**
 
-C. $\dfrac32$
+C. $\frac32$
 
 D. $2$
 
@@ -720,7 +720,7 @@ $$\begin{gathered}
    x^2+y^2+z^2\\
    =(y+\frac{\sqrt{3}+3}{3})^2+y^2+(y+\frac{2\sqrt{3}}{3})^2\\
    =3y^2+2(\sqrt{3}+1)y+\frac{24+6\sqrt{3}}{9}\\
-   \ge\frac{4}{3}
+   \geq\frac{4}{3}
 \end{gathered}$$
 
 尊重$y,z$内禀的对称性,可以简化计算:
@@ -732,7 +732,7 @@ $$\begin{gathered}
    x=t+1\\
    x^2+y^2+z^2\\
    =(t+1)^2+(t+\frac{\sqrt{3}}{3})^2+(t-\frac{\sqrt{3}}{3})^2\\
-   =3t^2+2t+\frac{5}{3}\ge\frac{4}{3}
+   =3t^2+2t+\frac{5}{3}\geq\frac{4}{3}
 \end{gathered}$$
 
 考虑几何性质:点$A(x,y,z)$在空间中的轨迹为一条方向向量为$(1,1,1)$的直线$l$,则当$OA\perp l$时,$x^2+y^2+z^2=OA^2$取得最小值:
@@ -753,51 +753,51 @@ $$\begin{gathered}
 
 ### 例题 6.20
 
-（清华大学）已知 $\boldsymbol a$，$\boldsymbol b$ 为平面上的单位向量，$|\boldsymbol c|=\sqrt{26}$，且 $\boldsymbol a\cdot\boldsymbol c=1$，则
+（清华大学）已知 $\vec{a}$，$\vec{b}$ 为平面上的单位向量，$|\vec{c}|=\sqrt{26}$，且 $\vec{a}\cdot\vec{c}=1$，则
 
 $$
-|\boldsymbol a\cdot\boldsymbol b|+|\boldsymbol b\cdot\boldsymbol c|
+|\vec{a}\cdot\vec{b}|+|\vec{b}\cdot\vec{c}|
 $$
 
 的最大值为 $\underline{\qquad}$。
 
 $$\begin{gathered}
-   |\boldsymbol a\cdot\boldsymbol b|+|\boldsymbol b\cdot\boldsymbol c|\\
-   =|\boldsymbol{b}|(|\boldsymbol{a}||\cos<\boldsymbol{a},\boldsymbol{b}>|+|\boldsymbol{c}||\cos<\boldsymbol{c},\boldsymbol{b}>|)\\
-   =|\cos<\boldsymbol{a},\boldsymbol{b}>|+\sqrt{26}|\cos<\boldsymbol{c},\boldsymbol{b}>|
+   |\vec{a}\cdot\vec{b}|+|\vec{b}\cdot\vec{c}|\\
+   =|\vec{b}|(|\vec{a}||\cos\langle\vec{a},\vec{b}\rangle|+|\vec{c}||\cos\langle\vec{c},\vec{b}\rangle|)\\
+   =|\cos\langle\vec{a},\vec{b}\rangle|+\sqrt{26}|\cos\langle\vec{c},\vec{b}\rangle|
 \end{gathered}$$
-根据对称性知,最大值在$<\boldsymbol{a},\boldsymbol{b}>,<\boldsymbol{c},\boldsymbol{b}>\lt\frac{\pi}{2}$时取得.
+根据对称性知,最大值在$\langle\vec{a},\vec{b}\rangle,\langle\vec{c},\vec{b}\rangle<\frac{\pi}{2}$时取得.
 
 $$\begin{gathered}
-   \cos\theta+\sqrt{26}\cos(<\boldsymbol{a},\boldsymbol{c}>-\theta)\\
-   =\cos\theta+\sqrt{26}(\cos<\boldsymbol{a},\boldsymbol{c}>\cos\theta+\sin<\boldsymbol{a},\boldsymbol{c}>\sin\theta)\\
+   \cos\theta+\sqrt{26}\cos(\langle\vec{a},\vec{c}\rangle-\theta)\\
+   =\cos\theta+\sqrt{26}(\cos\langle\vec{a},\vec{c}\rangle\cos\theta+\sin\langle\vec{a},\vec{c}\rangle\sin\theta)\\
    =\cos\theta+\sqrt{26}(\frac{1}{\sqrt{26}}\cos\theta+\frac{5}{\sqrt{26}}\sin\theta)\\
-   =2\cos\theta+5\sin\theta\le\sqrt{29}
+   =2\cos\theta+5\sin\theta\leq\sqrt{29}
 \end{gathered}$$
 
 或者,引入参数$\lambda,\mu$以取去绝对值:
 $$\begin{gathered}
-   |\boldsymbol a\cdot\boldsymbol b|+|\boldsymbol b\cdot\boldsymbol c|\\
-   =\lambda \boldsymbol a\cdot\boldsymbol b+\mu \boldsymbol b\cdot\boldsymbol c\\
-   =\boldsymbol{b}\cdot(\lambda \boldsymbol{a}+\mu\boldsymbol{c})\\
-   \le |\boldsymbol{b}||\lambda \boldsymbol{a}+\mu\boldsymbol{c}|\\
-   =\max{|\boldsymbol{a}-\boldsymbol{c}|,|\boldsymbol{a}+\boldsymbol{c}|}=\sqrt{29}
+   |\vec{a}\cdot\vec{b}|+|\vec{b}\cdot\vec{c}|\\
+   =\lambda \vec{a}\cdot\vec{b}+\mu \vec{b}\cdot\vec{c}\\
+   =\vec{b}\cdot(\lambda \vec{a}+\mu\vec{c})\\
+   \leq |\vec{b}||\lambda \vec{a}+\mu\vec{c}|\\
+   =\max\{|\vec{a}-\vec{c}|,|\vec{a}+\vec{c}|\}=\sqrt{29}
 \end{gathered}$$
 
 ![例题 6.20 的向量合成模型](example-6-20.svg "例题 6.20 的向量合成模型")
 
 ### 例题 6.21
 
-已知 $\boldsymbol a$，$\boldsymbol b$，$\boldsymbol c$ 为单位向量，且
+已知 $\vec{a}$，$\vec{b}$，$\vec{c}$ 为单位向量，且
 
 $$
-|3\boldsymbol a-5\boldsymbol b|=7,
+|3\vec{a}-5\vec{b}|=7,
 $$
 
 则
 
 $$
-|2\boldsymbol a-\boldsymbol c|+|\boldsymbol b-2\boldsymbol c|
+|2\vec{a}-\vec{c}|+|\vec{b}-2\vec{c}|
 $$
 
 的最小值为（　　）
@@ -812,43 +812,43 @@ D. $6$
 
 
 
-核心在于消去$\boldsymbol{c}$,这里需要一个交换系数的帽子戏法:
+核心在于消去$\vec{c}$,这里需要一个交换系数的帽子戏法:
 
 注意到:
 $$\begin{gathered}
-   |\boldsymbol b-2\boldsymbol c|^2=5-4\boldsymbol{b}\boldsymbol{c}\\
-   |-2\boldsymbol b+\boldsymbol c|^2=5-4\boldsymbol{b}\boldsymbol{c}
+   |\vec{b}-2\vec{c}|^2=5-4\vec{b}\cdot\vec{c}\\
+   |-2\vec{b}+\vec{c}|^2=5-4\vec{b}\cdot\vec{c}
 \end{gathered}$$
 
-同理$|2\boldsymbol a-\boldsymbol c|=|-\boldsymbol a+2\boldsymbol c|$
+同理$|2\vec{a}-\vec{c}|=|-\vec{a}+2\vec{c}|$
 $$\begin{gathered}
-   |2\boldsymbol a-\boldsymbol c|+|\boldsymbol b-2\boldsymbol c|\\
-   =|2\boldsymbol a-\boldsymbol c|+|-2\boldsymbol b+\boldsymbol c|\\
-   \ge 2|\boldsymbol{a}-\boldsymbol{b}|\
+   |2\vec{a}-\vec{c}|+|\vec{b}-2\vec{c}|\\
+   =|2\vec{a}-\vec{c}|+|-2\vec{b}+\vec{c}|\\
+   \geq 2|\vec{a}-\vec{b}|\
 \end{gathered}$$
 
 $$\begin{gathered}
-   |2\boldsymbol a-\boldsymbol c|+|\boldsymbol b-2\boldsymbol c|\\
-   =|-\boldsymbol a+2\boldsymbol c|+|\boldsymbol b-2\boldsymbol c|\\
-   \ge |\boldsymbol{b}-\boldsymbol{a}|
+   |2\vec{a}-\vec{c}|+|\vec{b}-2\vec{c}|\\
+   =|-\vec{a}+2\vec{c}|+|\vec{b}-2\vec{c}|\\
+   \geq |\vec{b}-\vec{a}|
 \end{gathered}$$
 
-显然,$2|\boldsymbol{b}-\boldsymbol{a}|$是下界.
+显然,$2|\vec{b}-\vec{a}|$是下界.
 
 $$\begin{gathered}
-   |3\boldsymbol a-5\boldsymbol b|=7\\
-   34-30\boldsymbol{a}\boldsymbol{b}=49\\
-   \boldsymbol{a}\boldsymbol{b}=-\frac{1}{2}\\
-   |\boldsymbol{b}-\boldsymbol{a}|^2=2-2\boldsymbol{a}\boldsymbol{b}=3\\
-   |2\boldsymbol a-\boldsymbol c|+|\boldsymbol b-2\boldsymbol c|\\
-   \ge 2|\boldsymbol{b}-\boldsymbol{a}|=2\sqrt{3}
+   |3\vec{a}-5\vec{b}|=7\\
+   34-30\vec{a}\cdot\vec{b}=49\\
+   \vec{a}\cdot\vec{b}=-\frac{1}{2}\\
+   |\vec{b}-\vec{a}|^2=2-2\vec{a}\cdot\vec{b}=3\\
+   |2\vec{a}-\vec{c}|+|\vec{b}-2\vec{c}|\\
+   \geq 2|\vec{b}-\vec{a}|=2\sqrt{3}
 \end{gathered}$$
 
 验证取等条件:
 $$\begin{gathered}
-   2\boldsymbol a-\boldsymbol c=\lambda(-2\boldsymbol b+\boldsymbol c),\lambda\gt0\\
-   \boldsymbol{c}=2\frac{\boldsymbol{a}+\lambda\boldsymbol{b}}{\lambda+1}\\
-   \boldsymbol{c}^2=4[(\frac{\boldsymbol{a}}{\lambda+1})^2+\frac{2\lambda}{(\lambda+1)^2}\boldsymbol{a}\boldsymbol{b}+(\frac{\lambda\boldsymbol{b}}{\lambda+1})^2]\\
+   2\vec{a}-\vec{c}=\lambda(-2\vec{b}+\vec{c}),\lambda>0\\
+   \vec{c}=2\frac{\vec{a}+\lambda\vec{b}}{\lambda+1}\\
+   |\vec{c}|^2=4[(\frac{|\vec{a}|}{\lambda+1})^2+\frac{2\lambda}{(\lambda+1)^2}\vec{a}\cdot\vec{b}+(\frac{\lambda|\vec{b}|}{\lambda+1})^2]\\
    =4[\frac{1}{(\lambda+1)^2}-\frac{\lambda}{(\lambda+1)^2}+\frac{\lambda^2}{(\lambda+1)^2}]=1\\
    4(\lambda^2-\lambda+1)=(\lambda+1)^2\\\\
    (\lambda-1)^2=0\Longleftrightarrow \lambda=1
@@ -861,29 +861,29 @@ $$\begin{gathered}
 已知 $\triangle ABC$ 满足
 
 $$
-\frac{3\overrightarrow{AB}}{|\overrightarrow{AB}|}
-+\frac{2\overrightarrow{AC}}{|\overrightarrow{AC}|}
-=\frac{\sqrt{19}\left(\overrightarrow{AB}+\overrightarrow{AC}\right)}
-{\left|\overrightarrow{AB}+\overrightarrow{AC}\right|},
+\frac{3\vec{AB}}{|\vec{AB}|}
++\frac{2\vec{AC}}{|\vec{AC}|}
+=\frac{\sqrt{19}\left(\vec{AB}+\vec{AC}\right)}
+{\left|\vec{AB}+\vec{AC}\right|},
 $$
 
 点 $D$ 为线段 $AB$ 上一动点。若
 
 $$
-\overrightarrow{DA}\cdot\overrightarrow{DC}
+\vec{DA}\cdot\vec{DC}
 $$
 
 的最小值为 $-3$，则 $\triangle ABC$ 的面积 $S=\underline{\qquad}$。
 
 考虑两向量相等的必要条件:模长相等
 $$\begin{gathered}
-   \frac{3\overrightarrow{AB}}{|\overrightarrow{AB}|}
-+\frac{2\overrightarrow{AC}}{|\overrightarrow{AC}|}
-=\frac{\sqrt{19}\left(\overrightarrow{AB}+\overrightarrow{AC}\right)}
-{\left|\overrightarrow{AB}+\overrightarrow{AC}\right|}\\
-\Longrightarrow 9+4+12\frac{\vec{AB}}{|\vec{AB}|}\frac{\vec{AC}}{|\vec{AC}|}=19\\
-\cos<\vec{AB},\vec{AC}>=\frac{1}{2}\\
-\Longleftrightarrow <\vec{AB},\vec{AC}>=\frac{\pi}{3}
+   \frac{3\vec{AB}}{|\vec{AB}|}
++\frac{2\vec{AC}}{|\vec{AC}|}
+=\frac{\sqrt{19}\left(\vec{AB}+\vec{AC}\right)}
+{\left|\vec{AB}+\vec{AC}\right|}\\
+\Longrightarrow 9+4+12\frac{\vec{AB}}{|\vec{AB}|}\cdot\frac{\vec{AC}}{|\vec{AC}|}=19\\
+\cos\langle\vec{AB},\vec{AC}\rangle=\frac{1}{2}\\
+\Longleftrightarrow \langle\vec{AB},\vec{AC}\rangle=\frac{\pi}{3}
 \end{gathered}$$
 
 再考虑系数对应相同:平面向量基本定理
@@ -892,12 +892,12 @@ $$\begin{gathered}
    |\vec{AB}|=3k,|\vec{AC}|=2k
 \end{gathered}$$
 
-紧接着,用极化恒等式化简条件$\overrightarrow{DA}\cdot\overrightarrow{DC}$:取$AC$中点$M$,作$DH\perp AB$于点$H$.
+紧接着,用极化恒等式化简条件$\vec{DA}\cdot\vec{DC}$:取$AC$中点$M$,作$DH\perp AB$于点$H$.
 $$\begin{gathered}
-   \vec{DA}\vec{DC}\\
+   \vec{DA}\cdot\vec{DC}\\
    =\vec{DM}^2-\vec{MA}^2\\
    =|DM|^2-k^2\\
-   \ge |HM|^2-k^2=(\frac{\sqrt{3}}{2}k)^2-k^2=-\frac{1}{4}k^2=-3\\
+   \geq |HM|^2-k^2=(\frac{\sqrt{3}}{2}k)^2-k^2=-\frac{1}{4}k^2=-3\\
    \Longrightarrow k^2=12
 \end{gathered}$$
 
