@@ -626,6 +626,37 @@ $$\begin{gathered}
 
 ![例题 6.16 的欧拉线](example-6-16.svg "例题 6.16 的欧拉线")
 
+![alt text](image.png)
+
+**欧拉线**一个比较标准的平面几何证明是通过同一法实现的:
+
+如图,点$M$为边$BC$中点,延长$BO$交$\triangle ABC$外接圆于点$D$,由直径所对圆周角为$90\degree$知:
+
+$$AD\perp AB,CD\perp BC$$
+
+同时结合垂心定义$CH\perp AB,AH\perp BC$,知:
+
+$$AD\parallel CH,AH\parallel CD$$
+
+根据平行四边形判定法则,四边形$AHCD$是平行四边形,有:
+
+$$AH=CD$$
+
+于此同时,点$O,M$分别是线段$BD,BC$的中点,由中位线定理知$CD=2OM$:
+
+$$AH=2OM$$
+
+根据外心定义,$OM\perp BC$,结合$AH\perp BC$有:
+
+$$OM\parallel AH$$
+
+连接$AM$,交线段$OM$于点$G'$,由平行线所截分线段成比例知:
+
+$$\frac{AG'}{G'M}=\frac{G'H}{G'O}=\frac{AH}{OM}=2$$
+
+这表明,点$G'$是三角形$\triangle ABC$中$BC$边上中线上,靠近$BC$边的三等分点,也就是重心$G$.
+
+并且,$2=\frac{G'H}{G'O}=\frac{GH}{GO}$,Q.E.D
 ### 例题 6.17
 
 如图，$\triangle ABC$ 的两条高线 $AD$，$BE$ 交于点 $H$，其外接圆圆心为 $O$。过点 $O$ 作 $OF\perp BC$，垂足为 $F$，直线 $OH$ 与 $AF$ 相交于点 $G$，则 $\triangle OFG$ 与 $\triangle GAH$ 的面积之比为 $\underline{\qquad}$。
