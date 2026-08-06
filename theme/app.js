@@ -37,6 +37,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   let commentsRequest = 0;
   let commentAuthModule;
   let commentSubmitModule;
+  let shareModule;
   const preparedGalleryImages = new WeakSet();
   const preparedAnswerReveals = new WeakSet();
   const observedInlineMath = new WeakSet();
@@ -257,6 +258,11 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   const escape = (value) => String(value).replace(/[&<>"']/g, (char) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[char]);
   const message = (key, values = {}) => String(messages[key] || key).replace(/\{(\w+)\}/g, (_, name) => values[name] ?? "");
   const setTheme = (theme) => { root.dataset.theme = theme; try { localStorage.setItem("freshmark-theme", theme); } catch {} };
+
+  async function shareArticle(button) {
+    shareModule ||= import("./share.js");
+    (await shareModule).shareArticle(button, { message });
+  }
 
   async function loadIndex() {
     if (!index) index = await fetch(searchIndexPath).then((response) => response.json());
@@ -969,8 +975,14 @@ import { searchableLatexText } from "../lib/search-text.mjs";
         }
         updateMetadata(nextPage);
       };
-      if (document.startViewTransition) await document.startViewTransition(swap).finished;
-      else swap();
+      if (document.startViewTransition) {
+        root.dataset.navigationDirection = push ? "forward" : "back";
+        try {
+          await document.startViewTransition(swap).finished;
+        } finally {
+          delete root.dataset.navigationDirection;
+        }
+      } else swap();
       const searchMatch = highlightSearchTerm(url, nextMain);
 
       if (push) {
@@ -1002,11 +1014,12 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   document.addEventListener("click", (event) => {
     const answerReveal = event.target.closest("u.answer-reveal");
     if (answerReveal) { event.preventDefault(); toggleAnswerReveal(answerReveal); return; }
-    const command = event.target.closest("[data-search-open], [data-theme-toggle], [data-tag], [data-toc-toggle], [data-comments-more]");
+    const command = event.target.closest("[data-search-open], [data-theme-toggle], [data-tag], [data-toc-toggle], [data-comments-more], [data-share-article]");
     if (command?.matches("[data-search-open]")) { event.preventDefault(); openSearch(); return; }
     if (command?.matches("[data-theme-toggle]")) { event.preventDefault(); setTheme(root.dataset.theme === "dark" ? "light" : "dark"); return; }
     if (command?.matches("[data-tag]")) { event.preventDefault(); applyFilter(command); return; }
     if (command?.matches("[data-toc-toggle]")) { event.preventDefault(); toggleToc(command); return; }
+    if (command?.matches("[data-share-article]")) { event.preventDefault(); shareArticle(command); return; }
     if (command?.matches("[data-comments-more]")) {
       event.preventDefault();
       command.disabled = true;

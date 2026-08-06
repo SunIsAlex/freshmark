@@ -679,6 +679,38 @@ test("client enhances internal links with SPA navigation", async () => {
   assert.match(app, /afterFirstPaint\(\(\) => \{/);
 });
 
+test("SPA navigation uses directional view transitions with reduced-motion support", async () => {
+  const app = await read("theme/app.js");
+  const css = await read("theme/styles.css");
+  assert.match(app, /document\.startViewTransition\(swap\)\.finished/);
+  assert.match(app, /root\.dataset\.navigationDirection = push \? "forward" : "back"/);
+  assert.match(app, /delete root\.dataset\.navigationDirection/);
+  assert.match(css, /main\s*\{[^}]*view-transition-name:freshmark-main/);
+  assert.match(css, /::view-transition-new\(freshmark-main\)/);
+  assert.match(css, /data-navigation-direction="back"/);
+  assert.match(css, /@media \(prefers-reduced-motion:reduce\)[^{]*\{[\s\S]*::view-transition-old\(freshmark-main\)[^{]*\{animation:none!important\}/);
+});
+
+test("articles use Web Share with a clipboard fallback", async () => {
+  const app = await read("theme/app.js");
+  const share = await read("theme/share.js");
+  const html = await read("public/posts/physics/basic-calculus-02/index.html");
+  const chunks = await readdir(new URL("public/assets/chunks/", root));
+  assert.match(html, /<button[^>]+data-share-article[^>]*>[\s\S]*分享文章/);
+  assert.match(html, /data-share-title=/);
+  assert.match(html, /data-share-status[^>]+role="status"/);
+  assert.match(app, /import\("\.\/share\.js"\)/);
+  assert.ok(chunks.some((file) => /^share-[A-Z0-9]+\.js$/.test(file)));
+  assert.match(share, /typeof navigator\.share === "function"/);
+  assert.match(share, /navigator\.canShare\(payload\)/);
+  assert.match(share, /await navigator\.share\(payload\)/);
+  assert.match(share, /navigator\.clipboard\?\.writeText/);
+  assert.match(share, /document\.execCommand\("copy"\)/);
+  assert.match(share, /error\?\.name === "AbortError"/);
+  assert.match(share, /shareCopied/);
+  assert.match(share, /shareFailed/);
+});
+
 test("article reading progress persists in the current heading anchor", async () => {
   const app = await read("theme/app.js");
   assert.match(app, /function syncReadingAnchor/);
