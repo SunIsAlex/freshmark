@@ -626,7 +626,6 @@ $$\begin{gathered}\Phi(\alpha)\Phi(\beta)\\
 =8-6+9=11\end{gathered}$$
 除此以外,我们还有别的配对视角:
 
-3\omega+\omega^2+4\omega^3+3\omega^4+5$$\begin{gathered}P(w^4)=P(\overline{\omega})=\overline{P(\omega)}\\
 P(w^3)=P(\overline{\omega^2})=\overline{P(\omega^2)}\\
 P(w)P(w^2)P(w^3)P(w^4)\\
 =|P(w)P(w^2)|^2\\
