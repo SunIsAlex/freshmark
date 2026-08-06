@@ -20,8 +20,10 @@ Runtime layout:
 ```
 
 Install `nginx-site.conf` after issuing the Let's Encrypt certificate. The
-site uses HTTP/2 over TLS, compresses text assets, gives versioned assets an
-immutable one-year cache lifetime, and redirects plain HTTP requests to HTTPS.
+site uses HTTP/3 with HTTP/2 fallback, compresses text assets, gives versioned
+assets an immutable one-year cache lifetime, and redirects plain HTTP requests
+to HTTPS. HTTP/3 requires Nginx 1.25 or newer built with
+`--with-http_v3_module`, plus inbound UDP port 443.
 
 Required environment:
 
@@ -91,6 +93,8 @@ chmod 0755 /opt/freshmark/ops/freshmark-vps/deploy.sh
 Then install the release-aware Nginx and systemd files:
 
 ```bash
+openssl rand -out /etc/nginx/quic_host.key 80
+chmod 0600 /etc/nginx/quic_host.key
 install -m 0644 /opt/freshmark/ops/freshmark-vps/freshmark-api.service \
   /etc/systemd/system/freshmark-api.service
 install -m 0644 /opt/freshmark/ops/freshmark-vps/nginx-site.conf \
@@ -99,6 +103,7 @@ systemctl daemon-reload
 nginx -t
 systemctl restart freshmark-api.service
 systemctl reload nginx
+ufw allow 443/udp comment 'HTTP/3 QUIC'
 attempt=0
 until curl --silent --fail http://127.0.0.1:8790/api/health; do
   attempt=$((attempt + 1))
