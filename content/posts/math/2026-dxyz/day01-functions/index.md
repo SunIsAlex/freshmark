@@ -133,17 +133,40 @@ $$\begin{gathered}x+\sqrt{x^2+1}\gt0,y+\sqrt{y^2+1}\gt0\\
 
 ## 两正一负
 
+### 法1
+
 想要$\min{a+b+c}$,那么两个正数要尽可能小,于是令其等于1.
 
 不妨设$a,b\gt0,c\lt0$,有:
 
-$$\begin{gathered}a+b+c+\frac1a+\frac1b+\frac1c=0\\
-(a+b)(1+\frac{1}{ab})=-(c+\frac{1}{c})\\
-1+\frac{1}{ab}\gt0\\
--(c+\frac{1}{c})\ge2(1+\frac{1}{ab})\\
-c\ge\frac{-2(1+\frac{1}{ab})-\sqrt{(2+\frac{2}{ab})^2-4}}{2}\\
-=-(1+\frac{1}{ab})-\sqrt{(1+\frac{1}{ab})^2-1}\ge-2-\sqrt{3}\\
-a+b+c\ge1+1+(-2-\sqrt3)=-\sqrt3\end{gathered}$$
+$$\begin{gathered}0=a+b+c+\frac1a+\frac1b+\frac1c\le1+(a+b-1)+c+\frac11+\frac{1}{a+b-1}+\frac1c\\
+c+\frac{1}{c}\ge-[(a+b+1)+\frac{1}{a+b-1}]\\
+c\ge\frac{-[(a+b+1)+\frac{1}{a+b-1}]-\sqrt{([(a+b+1)+\frac{1}{a+b-1}]^2-4}}{2}\\
+a+b+c\ge\frac{(a+b-1)-\frac{1}{a+b-1}-\sqrt{([(a+b+1)+\frac{1}{a+b-1}]^2-4}}{2}\\
+f(x)=x-\frac1x-\sqrt{(x+\frac1x+2)^2-4},x\ge1\\
+f'(x)=1+\frac1{x^2}-2(x+\frac1x+2)(1-\frac{1}{x^2})\frac{1}{2\sqrt{(x+\frac1x+2)^2-4}}\\
+=1+\frac1{x^2}-(1-\frac1{x^2})\frac{1}{\sqrt{1-\frac{4}{(x+\frac{1}{x}+2)^2}}}\ge0\\
+\Longleftrightarrow (1+\frac{1}{x^2})\ge(1-\frac1{x^2})\frac{1}{\sqrt{1-\frac{4}{(x+\frac{1}{x}+2)^2}}}\\\Longleftrightarrow
+\frac{1+\frac{1}{x^2}}{1-\frac{1}{x^2}}\ge\frac{1}{\sqrt{1-\frac{4}{(x+\frac{1}{x}+2)^2}}}\\\Longleftrightarrow
+1+\frac{2}{x^2-1}=\frac{x^2+1}{x^2-1}\ge\frac{(x+\frac{1}{x}+2)}{\sqrt{(x+\frac{1}{x}+2)^2-4}}=\sqrt{1+\frac{4}{(x+\frac{1}{x}+2)^2-4}}\\\Longleftrightarrow
+1+\frac{4}{x^2-1}+\frac{4}{(x^2-1)^2}\ge1+\frac{4}{(x+\frac{1}{x}+2)^2-4}\\\Longleftrightarrow
+(x+1)^4\ge(x^2+1)^2\\
+\Longleftrightarrow (x+1)^2\ge x^2+1\\a+b+c=f(a+b-1)/2\ge f(1)/2=1+1+(-2-\sqrt3)=-\sqrt3\end{gathered}$$
+
+### 法2
+
+回顾法1，事实上我们是在已经猜出边界取等条件$a=1$时进行了恒等变形。事实上，如果从结论$a=b=+1,c=-2-\sqrt3\Longrightarrow a+b+c\ge-\sqrt3$出发,逆推顺证,便如顺水行舟.
+
+$$\begin{gathered}a+b+c\ge-\sqrt3\\
+\Longleftrightarrow c\ge-(a+b+\sqrt3)\\
+\Longleftrightarrow c+\frac{1}{c}\ge-(a+b+\sqrt3+\frac{1}{a+b+\sqrt3})\\\end{gathered}$$
+同时,根据法1:$c+\frac{1}{c}\ge-[(a+b+1)+\frac{1}{a+b-1}]$,欲证明:
+
+$$\begin{gathered}-[(a+b+1)+\frac{1}{a+b-1}]\ge-(a+b+\sqrt3+\frac{1}{a+b+\sqrt3})\\
+\Leftrightarrow (a+b+1)+\frac{1}{a+b-1}\le a+b+\sqrt3+\frac{1}{a+b+\sqrt3}\\
+\Leftrightarrow x+1+\frac{1}{x-1}\le x+\sqrt3+\frac{1}{x+\sqrt3}(x\ge2)\\
+\Leftrightarrow (x-2)[(\sqrt3-1)x+2]\ge0(x\ge2)\end{gathered}$$
+两种思路对比,法1稳扎稳打,确保了恒等变形;法2反客为主,以条件为杠杆,以必要条件撬动了问题解决.
 
 ## 两负一正
 
