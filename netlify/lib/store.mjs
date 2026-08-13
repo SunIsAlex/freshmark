@@ -1,5 +1,3 @@
-import { getStore as getNetlifyStore } from "@netlify/blobs";
-
 const factorySymbol = Symbol.for("freshmark.storeFactory");
 
 export function setStoreFactory(factory) {
@@ -8,5 +6,8 @@ export function setStoreFactory(factory) {
 
 export function getStore(options) {
   const factory = globalThis[factorySymbol];
-  return factory ? factory(options) : getNetlifyStore(options);
+  if (!factory) {
+    throw new Error("Freshmark store factory has not been configured");
+  }
+  return factory(options);
 }
