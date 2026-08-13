@@ -63,8 +63,10 @@ button { color:inherit; }
 .prose img { max-width:100%; height:auto; }
 .math-expression { color:inherit; }
 .math-inline { display:inline-block; max-width:100%; }
-.math-display { display:block; width:100%; max-width:100%; overflow-x:auto; overflow-y:hidden; text-align:center; }
-.math-display > .katex > math[display="block"] { margin:.9em 0; }
+.math-display { display:block; width:100%; max-width:100%; overflow-x:auto; overflow-y:hidden; padding:.7em 0 .85em; text-align:center; }
+.math-display > .katex > math[display="block"] { margin:1.05em 0; }
+.math-display .katex-html > .newline { height:.8em; }
+.math-display math mspace[linebreak="newline"] { height:.8em; }
 @media (max-width:820px) {
   .container { width:min(100% - 28px,680px); } .header { height:74px; } .nav>a:not(.language-switch) { display:none; } .nav { gap:8px; }
   .hero { grid-template-columns:1fr; gap:38px; padding:70px 0 54px; } .hero h1,.article-header h1 { font-size:var(--heading-2xl); line-height:1.1; }
