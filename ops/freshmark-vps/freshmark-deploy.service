@@ -2,7 +2,7 @@
 Description=Deploy the latest Freshmark vps branch
 Wants=network-online.target
 After=network-online.target
-ConditionPathIsExecutable=/opt/freshmark/ops/freshmark-vps/deploy.sh
+ConditionPathExists=/opt/freshmark/ops/freshmark-vps/deploy.sh
 
 [Service]
 Type=oneshot
@@ -14,4 +14,3 @@ IOSchedulingPriority=7
 NoNewPrivileges=true
 PrivateTmp=true
 UMask=0022
-
