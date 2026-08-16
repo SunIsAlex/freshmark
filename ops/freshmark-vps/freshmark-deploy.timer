@@ -1,0 +1,14 @@
+[Unit]
+Description=Check the Freshmark vps branch for new commits
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=1min
+AccuracySec=10s
+RandomizedDelaySec=10s
+Persistent=true
+Unit=freshmark-deploy.service
+
+[Install]
+WantedBy=timers.target
+

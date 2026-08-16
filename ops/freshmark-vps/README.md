@@ -118,6 +118,28 @@ Normal deployments then require one command:
 /opt/freshmark/ops/freshmark-vps/deploy.sh
 ```
 
+### Automatic deployments
+
+Install and enable the deployment timer to check `origin/vps` once per minute:
+
+```bash
+install -m 0644 /opt/freshmark/ops/freshmark-vps/freshmark-deploy.service \
+  /etc/systemd/system/freshmark-deploy.service
+install -m 0644 /opt/freshmark/ops/freshmark-vps/freshmark-deploy.timer \
+  /etc/systemd/system/freshmark-deploy.timer
+systemctl daemon-reload
+systemctl enable --now freshmark-deploy.timer
+```
+
+The timer reuses `deploy.sh`, so concurrent runs are locked and an already
+active revision exits without rebuilding. A pushed `vps` commit is normally
+deployed within about one minute. Inspect the schedule and recent logs with:
+
+```bash
+systemctl list-timers freshmark-deploy.timer
+journalctl -u freshmark-deploy.service -n 100 --no-pager
+```
+
 Redeploy the same commit after changing `/etc/freshmark-build.env` with
 `--force`. Roll back to the most recent previous release, or to an explicit
 release directory name, with:

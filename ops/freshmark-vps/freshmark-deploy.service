@@ -1,0 +1,17 @@
+[Unit]
+Description=Deploy the latest Freshmark vps branch
+Wants=network-online.target
+After=network-online.target
+ConditionPathIsExecutable=/opt/freshmark/ops/freshmark-vps/deploy.sh
+
+[Service]
+Type=oneshot
+ExecStart=/opt/freshmark/ops/freshmark-vps/deploy.sh
+TimeoutStartSec=20min
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+NoNewPrivileges=true
+PrivateTmp=true
+UMask=0022
+
