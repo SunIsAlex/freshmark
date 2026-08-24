@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" role="img" aria-labelledby="title desc">
+  <title id="title">茶水温度随时间衰减的函数图像</title>
+  <desc id="desc">温度从八十摄氏度开始随时间下降，并逐渐趋近于二十摄氏度。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.2" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#172126"/>
+    </marker>
+  </defs>
+  <rect width="720" height="420" rx="24" fill="#fff"/>
+  <g fill="none" stroke="#172126" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 105 350 V 55" marker-end="url(#arrow)"/>
+    <path d="M 55 330 H 655" marker-end="url(#arrow)"/>
+    <path d="M 105 115 C 165 185, 235 235, 320 268 C 405 300, 500 307, 615 308" stroke="#ff4500" stroke-width="4"/>
+    <path d="M 105 308 H 615" stroke-dasharray="11 11" stroke-width="2.5"/>
+  </g>
+  <g fill="#172126" font-family="Times New Roman, STIX Two Math, serif" font-size="30">
+    <text x="75" y="377" font-style="italic">O</text>
+    <text x="665" y="342" font-style="italic">t</text>
+    <text x="75" y="54" font-style="italic">T</text>
+    <text x="56" y="124">80</text>
+    <text x="56" y="317">20</text>
+  </g>
+</svg>
