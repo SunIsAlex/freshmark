@@ -11,6 +11,7 @@ Runtime layout:
 /var/www/freshmark/current             atomic symlink to the active release
 /var/www/freshmark/releases/*          complete static + API releases
 /var/www/freshmark/build-cache/images  shared responsive-image build cache
+/var/www/freshmark/build-cache/pdfs    shared content-addressed PDF cache
 /var/lib/freshmark-api                 private persistent data
 /etc/freshmark-api.env                 root-readable runtime configuration
 /etc/freshmark-build.env               root-readable build configuration
@@ -24,6 +25,19 @@ site uses HTTP/3 with HTTP/2 fallback, compresses text assets, gives versioned
 assets an immutable one-year cache lifetime, and redirects plain HTTP requests
 to HTTPS. HTTP/3 requires Nginx 1.25 or newer built with
 `--with-http_v3_module`, plus inbound UDP port 443.
+
+Install the build-time PDF renderer and Chinese font once on the host:
+
+```bash
+apt-get update
+apt-get install -y weasyprint fonts-noto-cjk
+weasyprint --version
+```
+
+`deploy.sh` checks for WeasyPrint before creating a release. Each normal or
+incremental site build then emits an `index.pdf` beside every published article.
+The shared cache skips WeasyPrint for articles whose content and PDF dependencies
+did not change between releases.
 
 Required environment:
 
@@ -149,9 +163,9 @@ release directory name, with:
 /opt/freshmark/ops/freshmark-vps/deploy.sh --rollback 20260729T120000Z-0123456789ab
 ```
 
-The shared image cache is outside every release, so rollbacks do not discard
-expensive responsive-image work. Persistent accounts, sessions, comments, and
-view counts remain under `/var/lib/freshmark-api` and are never copied or
+The shared image and PDF caches are outside every release, so rollbacks do not
+discard expensive responsive-image or PDF rendering work. Persistent accounts,
+sessions, comments, and view counts remain under `/var/lib/freshmark-api` and are never copied or
 deleted by the deployment script.
 
 The file store implements the subset of the Netlify Blobs API used by

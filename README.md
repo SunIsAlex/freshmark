@@ -12,8 +12,17 @@ runtime for views, accounts, and comments.
 ## Requirements
 
 - Node.js 20.9 or newer
+- WeasyPrint 61 or newer
+- A CJK font such as Noto Sans CJK when publishing Chinese articles
 
-Install the build dependencies with `npm install`.
+On Ubuntu or Debian, install the PDF renderer and font with:
+
+```bash
+sudo apt install weasyprint fonts-noto-cjk
+```
+
+On macOS, use `brew install weasyprint`; on Windows, use WeasyPrint from WSL.
+Install the JavaScript build dependencies with `npm install`.
 
 ## VPS deployment
 
@@ -136,8 +145,23 @@ original full-resolution image. Generated variants are cached in
 npm run build
 ```
 
+Every published article is rendered to both HTML and a print-ready A4 `index.pdf`.
+The article header links to the generated PDF and the original `index.md`; formulas,
+images, tables, headings, page numbers, and running headers are laid out at build time.
+A single-post incremental build refreshes its PDF as well:
+
+```bash
+npm run build -- --post content/posts/my-first-note.md
+```
+
+PDFs use a content-addressed cache under `.freshmark-cache/pdfs`. An article reuses
+its cached PDF unless its rendered content, referenced local assets, PDF styles, fonts,
+metadata, or WeasyPrint version changed. Set `FRESHMARK_PDF_CACHE_DIR` to keep this
+cache in another persistent location.
+
 The build uses up to four worker threads for Markdown/KaTeX rendering and HTML
-minification. Override the worker count with `FRESHMARK_WORKERS` when tuning for
+minification, plus up to four resource-aware WeasyPrint processes for PDF generation.
+Override them with `FRESHMARK_WORKERS` and `FRESHMARK_PDF_WORKERS` when tuning for
 the available CPU and memory:
 
 ```bash
@@ -145,8 +169,11 @@ the available CPU and memory:
 FRESHMARK_WORKERS=2 npm run build
 
 # PowerShell
-$env:FRESHMARK_WORKERS=2; npm run build
+$env:FRESHMARK_WORKERS=2; $env:FRESHMARK_PDF_WORKERS=1; npm run build
 ```
+
+If WeasyPrint is installed under a non-standard executable name or path, set
+`FRESHMARK_WEASYPRINT` to that executable before running the build.
 
 Upload the resulting `public/` directory to any static host, including GitHub
 Pages, Cloudflare Pages, Netlify, Vercel, S3, or a basic web server. No Node.js

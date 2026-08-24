@@ -348,18 +348,17 @@ x\in[4,5),f(x)\in[8,9)$$
 显然有$x,y\in[0,4)$,下面根据$x$进行分类:
 
 $$x\in(0,1),f(x)=x\in(0,1),f(y)\in[0,7-x]\\
-y_\max\in[3,4),f(y_\max)=y_\max+3=7-x\\
-y_\max=4-x\\
+y_{\max}\in[3,4),f(y_{\max})=y_{\max}+3=7-x\\
+y_{\max}=4-x\\
 x\in(1,2),f(x)=x+1\in(2,3),f(y)\in[0,6-x]\\
-y_\max\in[2,3),f(y_\max)=y+2=6-x\\
-y_\max=4-x\\
+y_{\max}\in[2,3),f(y_{\max})=y_{\max}+2=6-x\\
+y_{\max}=4-x\\
 x\in(2,3),f(x)=x+2\in(4,5),f(y)\in[0,5-x)\\
-y_\max\in[1,2),f(y_\max)=y+1=5-x\\
-y_\max=4-x\\
-_\max=4-x\\
+y_{\max}\in[1,2),f(y_{\max})=y_{\max}+1=5-x\\
+y_{\max}=4-x\\
 x\in(3,4),f(x)=x+3\in(6,7),f(y)\in[0,4-x)\\
-y_\max\in[0,1),f(y_\max)=y=4-x\\
-y_\max=4-x\\$$
+y_{\max}\in[0,1),f(y_{\max})=y_{\max}=4-x\\
+y_{\max}=4-x\\$$
 
 综上,区域面积等于$x+y-4=0$与坐标轴围成三角形的面积$\frac{1}{2}\cdot4^2=8$
 

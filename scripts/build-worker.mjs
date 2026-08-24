@@ -17,8 +17,9 @@ async function runTask(type, payload) {
   if (type === "render-markdown") {
     try {
       const { html, headings } = await renderMarkdown(payload.body, { mathOutput: "hybrid" });
+      const { html: pdfHtml } = await renderMarkdown(payload.body, { mathOutput: "html" });
       const { html: spaHtml, headings: spaHeadings } = await renderMarkdown(payload.body, { mathOutput: "source" });
-      return { html, headings, spaHtml, spaHeadings };
+      return { html, headings, pdfHtml, spaHtml, spaHeadings };
     } catch (error) {
       error.message = `${payload.sourceFile}: ${error.message}`;
       throw error;

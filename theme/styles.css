@@ -197,8 +197,8 @@ html[data-navigation-direction="back"]::view-transition-new(freshmark-main) { an
 .math-display { display:block; width:100%; max-width:100%; box-sizing:border-box; overflow-x:auto; overflow-y:hidden; overscroll-behavior-inline:contain; -webkit-overflow-scrolling:touch; padding:.7em 0 .85em; text-align:center; }
 .math-display > .katex > math[display="block"] { margin:1.05em 0; }
 .math-display > .katex-display { min-width:max-content; margin:0; }
-.math-display .katex-html > .newline { height:.8em; }
-.math-display math mspace[linebreak="newline"] { height:.8em; }
+.math-display .katex-html > .newline { height:1.2em; }
+.math-display math mspace[linebreak="newline"] { height:1.2em; }
 .math-inline-overflow { display:inline-block; max-width:100%; overflow-x:auto; overflow-y:hidden; overscroll-behavior-inline:contain; -webkit-overflow-scrolling:touch; vertical-align:middle; }
 .math-display,.math-inline-overflow { scrollbar-width:thin; scrollbar-color:var(--line) transparent; }
 .prose table { display:block; width:max-content; max-width:100%; overflow-x:auto; border-collapse:collapse; margin:0 0 1.5em; }

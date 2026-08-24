@@ -94,7 +94,7 @@ if [ "$keep_releases" -lt 2 ]; then
   exit 1
 fi
 
-for command in git npm node tar curl flock systemctl find awk sort mktemp; do
+for command in git npm node weasyprint tar curl flock systemctl find awk sort mktemp; do
   if ! command -v "$command" >/dev/null 2>&1; then
     echo "Required command is missing: $command" >&2
     exit 1
@@ -108,7 +108,8 @@ fi
 releases_dir=$release_root/releases
 current_link=$release_root/current
 image_cache=$release_root/build-cache/images
-mkdir -p "$releases_dir" "$image_cache" "$npm_cache_dir" "$(dirname "$lock_file")"
+pdf_cache=$release_root/build-cache/pdfs
+mkdir -p "$releases_dir" "$image_cache" "$pdf_cache" "$npm_cache_dir" "$(dirname "$lock_file")"
 chmod 0700 "$npm_cache_dir"
 
 exec 9>"$lock_file"
@@ -301,6 +302,7 @@ fi
 : "${FRESHMARK_COMMENTS_AUTH:=true}"
 export FRESHMARK_BASE_URL FRESHMARK_NETLIFY_FUNCTIONS FRESHMARK_COMMENTS FRESHMARK_COMMENTS_AUTH
 export FRESHMARK_IMAGE_CACHE_DIR="$image_cache"
+export FRESHMARK_PDF_CACHE_DIR="$pdf_cache"
 export NPM_CONFIG_CACHE="$npm_cache_dir"
 export NPM_CONFIG_UPDATE_NOTIFIER=false
 
@@ -318,6 +320,7 @@ export NPM_CONFIG_UPDATE_NOTIFIER=false
       "public/search-index.json",
       `public/assets/${appBundle}`,
       "public/version.json",
+      "public/posts/math/2024-2026-beijing-first-mock-basic-properties-of-functions/index.pdf",
     ];
     for (const file of required) {
       if (!fs.statSync(file).isFile()) throw new Error(`Missing build output: ${file}`);
