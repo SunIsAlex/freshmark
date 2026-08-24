@@ -4,6 +4,7 @@ import test from "node:test";
 import { changedCurrentIndexes } from "../lib/content-diff.mjs";
 import { locales } from "../lib/i18n.mjs";
 import { parseFrontmatter, renderMarkdown, renderSummary, searchTextFromMarkdown, summaryFromBody } from "../lib/markdown.mjs";
+import { normalizePdfOrderedLists } from "../lib/pdf.mjs";
 import { searchableLatexText } from "../lib/search-text.mjs";
 import {
   commentsAuthEnabled,
@@ -914,6 +915,14 @@ test("PDF styles preserve KaTeX radicals and increase formula line spacing", asy
   assert.doesNotMatch(maxSource, /y_\\max|^_\\max/m);
   const pdf = await readFile(new URL("public/posts/math/2027-strong-foundation-plan/solving-triangles/index.pdf", root));
   assert.equal(pdf.subarray(0, 5).toString("ascii"), "%PDF-");
+});
+
+test("PDF ordered lists preserve Markdown start values", () => {
+  assert.equal(
+    normalizePdfOrderedLists(`<ol start="34"><li>First</li><li>Second</li></ol>`),
+    `<ol start="34" style="counter-reset:list-item 33"><li>First</li><li>Second</li></ol>`,
+  );
+  assert.equal(normalizePdfOrderedLists("<ol><li>First</li></ol>"), "<ol><li>First</li></ol>");
 });
 
 test("PDF cache tracks rendered dependencies instead of unrelated articles", async () => {
