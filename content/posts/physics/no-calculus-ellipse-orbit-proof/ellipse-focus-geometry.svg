@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="560" viewBox="0 0 920 560" role="img" aria-labelledby="title desc">
+  <title id="title">椭圆的焦点三角形与切线夹角</title>
+  <desc id="desc">椭圆上点 P 到焦点 F1 和 F2 的距离分别为 r 和 2a-r。速度沿切线，切线平分焦点三角形在 P 点的外角。</desc>
+  <defs>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0 0 9 3 0 6Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0 0 9 3 0 6Z" fill="#ea580c"/>
+    </marker>
+    <style>
+      text{font-family:"Noto Sans SC","Microsoft YaHei",Arial,sans-serif;fill:#172033}
+      .math{font-family:"Cambria Math","Times New Roman",serif;font-style:italic}
+      .label{font-size:20px;font-weight:650}
+      .note{font-size:17px;fill:#526176}
+      .formula{font-size:22px;font-family:"Cambria Math","Times New Roman",serif}
+    </style>
+  </defs>
+  <rect width="920" height="560" fill="#f7faf9"/>
+  <rect x="22" y="22" width="876" height="516" rx="20" fill="#fff" stroke="#dce8e4" stroke-width="2"/>
+
+  <text x="54" y="62" font-size="25" font-weight="750">椭圆：距离和固定，切线平分外角</text>
+  <text x="54" y="90" class="note">红色构成焦点三角形；蓝色是位矢与速度。</text>
+
+  <ellipse cx="430" cy="304" rx="310" ry="154" fill="#eff6ff" stroke="#2563eb" stroke-width="3"/>
+  <line x1="92" y1="304" x2="768" y2="304" stroke="#cbd5e1" stroke-width="1.6" stroke-dasharray="7 7"/>
+
+  <circle cx="162" cy="304" r="7" fill="#dc2626"/>
+  <circle cx="698" cy="304" r="7" fill="#dc2626"/>
+  <circle cx="608" cy="178" r="8" fill="#0f766e"/>
+  <text x="139" y="335" class="math label">F₁</text>
+  <text x="704" y="335" class="math label">F₂</text>
+  <text x="618" y="167" class="math label">P</text>
+
+  <path d="M162 304 608 178 698 304" fill="none" stroke="#dc2626" stroke-width="2.5"/>
+  <text x="360" y="222" class="math label" fill="#b91c1c">r = PF₁</text>
+  <text x="657" y="224" class="math label" fill="#b91c1c" transform="rotate(54 657 224)">2a − r</text>
+  <path d="M162 322H698" stroke="#dc2626" stroke-width="1.7"/>
+  <path d="M162 315V329M698 315V329" stroke="#dc2626" stroke-width="1.7"/>
+  <text x="397" y="348" class="math label" fill="#b91c1c">2c</text>
+
+  <line x1="386" y1="100" x2="830" y2="256" stroke="#ea580c" stroke-width="3"/>
+  <line x1="608" y1="178" x2="777" y2="237" stroke="#ea580c" stroke-width="4" marker-end="url(#arrow-orange)"/>
+  <text x="790" y="245" class="math label" fill="#c2410c">v</text>
+  <line x1="162" y1="304" x2="594" y2="182" stroke="#2563eb" stroke-width="4" marker-end="url(#arrow-blue)"/>
+  <text x="500" y="184" class="math label" fill="#1d4ed8">r</text>
+
+  <path d="M580 186 A38 38 0 0 1 574 209" fill="none" stroke="#7c3aed" stroke-width="2.5"/>
+  <text x="548" y="198" class="math label" fill="#6d28d9">θ</text>
+  <path d="M577 187 A47 47 0 0 0 621 224" fill="none" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="601" y="228" class="math label" fill="#0f766e">α</text>
+
+  <rect x="92" y="404" width="736" height="94" rx="15" fill="#f8fafc" stroke="#dbe4ea"/>
+  <text x="118" y="439" class="formula">PF₁ + PF₂ = 2a</text>
+  <text x="118" y="475" class="formula">sin θ = cos(α/2) = b / √[r(2a − r)]</text>
+  <text x="625" y="452" class="note">b² = a² − c²</text>
+</svg>
