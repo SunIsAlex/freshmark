@@ -1,12 +1,13 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import { build as bundle } from "esbuild";
 import CleanCSS from "clean-css";
 import { minify as minifyJavaScript } from "terser";
 import config from "../site.config.mjs";
 import { BuildWorkerPool } from "../lib/build-worker-pool.mjs";
-import { buildPostPdfs } from "../lib/pdf.mjs";
+import { buildPostPdfs, findPdfRenderer } from "../lib/pdf.mjs";
 import { defaultLocale, interpolate, locales, localizedPath } from "../lib/i18n.mjs";
 import { parseFrontmatter, renderSummary, searchTextFromMarkdown, summaryFromBody } from "../lib/markdown.mjs";
 import { enhanceResponsiveImages } from "../lib/responsive-images.mjs";
@@ -17,7 +18,7 @@ import {
   resolveBaseUrl,
 } from "../lib/site-config.mjs";
 
-const root = path.resolve(import.meta.dirname, "..");
+const root = fileURLToPath(new URL("../", import.meta.url));
 const contentDir = path.join(root, "content", "posts");
 const themeDir = path.join(root, "theme");
 const outputDir = path.join(root, "public");
@@ -353,6 +354,7 @@ async function writePdfs(posts) {
   console.log(`Freshmark preparing ${posts.length} article PDF${posts.length === 1 ? "" : "s"}...`);
   await buildPostPdfs(posts, {
     root,
+    renderer: pdfRenderer,
     contentDirectory: contentDir,
     outputDirectory: outputDir,
     cacheDirectory: pdfCacheDir,
@@ -380,6 +382,8 @@ async function writeRuntimeFiles() {
   await write("sw.js", minifiedWorker.code);
 }
 
+// Check mandatory external dependencies before touching the existing output.
+const pdfRenderer = await findPdfRenderer({ root });
 buildWorkers = new BuildWorkerPool({
   workerUrl: new URL("./build-worker.mjs", import.meta.url),
 });

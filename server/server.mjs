@@ -46,7 +46,8 @@ const json = (response, status, body) => {
 async function requestBody(request) {
   const chunks = [];
   let size = 0;
-  for await (const chunk of request) {
+  // Preserve the socket on early exit so the client can receive the 413.
+  for await (const chunk of request.iterator({ destroyOnReturn: false })) {
     size += chunk.length;
     if (size > maxBodySize) {
       const error = new Error("Request body is too large");
@@ -92,7 +93,10 @@ const server = createServer(async (request, response) => {
     if (!handler) return json(response, 404, { error: "not_found" });
     await sendWebResponse(response, await handler(await webRequest(request)));
   } catch (error) {
-    if (error?.code === "body_too_large") return json(response, 413, { error: "invalid" });
+    if (error?.code === "body_too_large") {
+      response.setHeader("connection", "close");
+      return json(response, 413, { error: "invalid" });
+    }
     console.error("Freshmark API request failed", error);
     if (!response.headersSent) return json(response, 500, { error: "unavailable" });
     response.destroy();

@@ -3,7 +3,7 @@ import { randomUUID, timingSafeEqual } from "node:crypto";
 import { spawn } from "node:child_process";
 
 const host = "127.0.0.1";
-const port = 8788;
+const port = Number(process.env.MAILER_PORT || 8788);
 const token = process.env.MAILER_TOKEN || "";
 const sender = "Freshmark <noreply@sunisalex.org>";
 const envelopeSender = "bounce@mailer.sunisalex.org";
@@ -121,6 +121,11 @@ function sendCode({ to, code, locale, purpose }) {
       clearTimeout(timeout);
       reject(spawnError);
     });
+    child.stdin.on("error", (writeError) => {
+      clearTimeout(timeout);
+      child.kill("SIGKILL");
+      reject(writeError);
+    });
     child.on("close", (status) => {
       clearTimeout(timeout);
       if (status === 0) resolve();
@@ -141,14 +146,23 @@ const server = createServer((request, response) => {
     return json(response, 413, { error: "invalid" });
   }
   let raw = "";
+  let size = 0;
   let tooLarge = false;
   request.setEncoding("utf8");
   request.on("data", (chunk) => {
+    if (tooLarge) return;
+    size += Buffer.byteLength(chunk);
+    if (size > 4096) {
+      tooLarge = true;
+      raw = "";
+      response.setHeader("connection", "close");
+      json(response, 413, { error: "invalid" });
+      return;
+    }
     raw += chunk;
-    if (raw.length > 4096) tooLarge = true;
   });
   request.on("end", async () => {
-    if (tooLarge) return json(response, 413, { error: "invalid" });
+    if (tooLarge) return;
     try {
       const input = JSON.parse(raw);
       const to = String(input?.to || "").trim().toLowerCase();
@@ -167,4 +181,4 @@ const server = createServer((request, response) => {
 });
 server.requestTimeout = 12_000;
 server.headersTimeout = 5_000;
-server.listen(port, host, () => console.log(`Freshmark mailer listening on ${host}:${port}`));
+server.listen(port, host, () => console.log(`Freshmark mailer listening on ${host}:${server.address().port}`));

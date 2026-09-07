@@ -176,7 +176,7 @@ set_current_release() {
 wait_for_api() {
   attempt=0
   while [ "$attempt" -lt 20 ]; do
-    if curl --noproxy '*' --fail --silent "$api_health_url" >/dev/null; then
+    if curl --noproxy '*' --connect-timeout 2 --max-time 3 --fail --silent "$api_health_url" >/dev/null; then
       return 0
     fi
     attempt=$((attempt + 1))

@@ -2,8 +2,9 @@ import { createServer } from "node:http";
 import { promises as fs, watch } from "node:fs";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const root = path.resolve(import.meta.dirname, "..");
+const root = fileURLToPath(new URL("../", import.meta.url));
 const output = path.join(root, "public");
 const args = process.argv.slice(2);
 const valueFor = (name, fallback) => {

@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import process from "node:process";
 import { generateMarkdown, listTemplates, quoteYaml, renderTemplate, slugify, yamlList } from "../lib/templates.mjs";
 
-const root = path.resolve(import.meta.dirname, "..");
+const root = fileURLToPath(new URL("../", import.meta.url));
 const templatesDir = path.join(root, "templates");
 
 function usage() {
