@@ -1,4 +1,4 @@
-import { changedCurrentIndexes } from "../lib/content-diff.mjs";
+import { createRequestCache } from "../lib/request-cache.mjs";
 import { searchableLatexText } from "../lib/search-text.mjs";
 
 (() => {
@@ -18,13 +18,14 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   const input = document.querySelector("[data-search-input]");
   const results = document.querySelector("[data-search-results]");
   const shell = document.querySelector(".site-shell");
-  const pageCache = new Map();
+  const pageCache = createRequestCache(12);
+  const searchCache = createRequestCache(1);
   const prefetchQueue = [];
   const queuedPrefetches = new Set();
   const preparedPrefetchLinks = new WeakSet();
   let prefetching = false;
   let renderedRoute = `${location.pathname}${location.search}`;
-  let index;
+  let searchRequest = 0;
   let activePhotoSwipe;
   let photoSwipeModule;
   let galleryRequest = 0;
@@ -265,8 +266,11 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   }
 
   async function loadIndex() {
-    if (!index) index = await fetch(searchIndexPath).then((response) => response.json());
-    return index;
+    return searchCache.get(searchIndexPath, async () => {
+      const response = await fetch(searchIndexPath);
+      if (!response.ok) throw new Error("Could not load search index");
+      return response.json();
+    });
   }
 
   function searchResultHref(value, term) {
@@ -321,7 +325,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     modal.hidden = false;
     modal.scrollTop = 0;
     input.focus({ preventScroll: true });
-    try { draw(await loadIndex()); } catch { results.innerHTML = `<p class="search-hint">${escape(message("searchFailed"))}</p>`; }
+    await updateSearch();
   }
   function closeSearch() {
     if (!modal || modal.hidden) return;
@@ -495,7 +499,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     return `${element.tagName}\u0000${text}\u0000${resources.join("\u0001")}`;
   }
 
-  function applyArticleContentDiff(url, scope = document) {
+  async function applyArticleContentDiff(url, scope = document) {
     const prose = scope.querySelector(".prose");
     if (!prose) return 0;
     prose.querySelector(":scope > .content-diff-notice")?.remove();
@@ -512,7 +516,9 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     } catch {}
 
     let changed = 0;
-    if (previous) {
+    if (previous && JSON.stringify(previous) !== JSON.stringify(snapshot)) {
+      const { changedCurrentIndexes } = await import("../lib/content-diff.mjs");
+      if (!prose.isConnected) return 0;
       const changedIndexes = changedCurrentIndexes(previous, snapshot);
       for (const index of changedIndexes) units[index].dataset.contentDiff = "changed";
       changed = changedIndexes.length;
@@ -593,7 +599,9 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   }
 
   function preloadPhotoSwipe(scope = document) {
-    if (scope.querySelector(".prose img")) idle(() => loadPhotoSwipe().catch(() => {}));
+    if (scope.querySelector(".prose img") && canPrefetch()) idle(() => {
+      if (canPrefetch()) loadPhotoSwipe().catch(() => {});
+    });
   }
 
   async function openGallery(image) {
@@ -692,12 +700,19 @@ import { searchableLatexText } from "../lib/search-text.mjs";
 
   document.querySelector("[data-search-close]")?.addEventListener("click", closeSearch);
   modal?.addEventListener("click", (event) => { if (event.target === modal) closeSearch(); });
-  input?.addEventListener("input", async () => {
+  async function updateSearch() {
+    const request = ++searchRequest;
     const term = input.value.trim();
     const needle = searchNeedle(term);
-    const posts = await loadIndex();
-    draw(!needle ? (term ? [] : posts) : posts.filter((post) => `${post.title} ${post.summary} ${(post.categories || []).join(" ")} ${(post.tags || []).join(" ")} ${post.searchText}`.toLowerCase().includes(needle)), term);
-  });
+    try {
+      const posts = await loadIndex();
+      if (request !== searchRequest || modal.hidden) return;
+      draw(!needle ? (term ? [] : posts) : posts.filter((post) => `${post.title} ${post.summary} ${(post.categories || []).join(" ")} ${(post.tags || []).join(" ")} ${post.searchText}`.toLowerCase().includes(needle)), term);
+    } catch {
+      if (request === searchRequest && !modal.hidden) results.innerHTML = `<p class="search-hint">${escape(message("searchFailed"))}</p>`;
+    }
+  }
+  input?.addEventListener("input", updateSearch);
   addEventListener("keydown", (event) => {
     const answerTrigger = event.target.closest?.("u.answer-reveal");
     if (answerTrigger && ["Enter", " "].includes(event.key)) { event.preventDefault(); toggleAnswerReveal(answerTrigger); return; }
@@ -828,7 +843,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   async function getPage(url) {
     const contentUrl = pageContentUrl(url);
     const key = `${contentUrl.pathname}${contentUrl.search}`;
-    if (!pageCache.has(key)) {
+    return pageCache.get(key, async () => {
       let page;
       if (contentUrl.pathname.endsWith("/")) {
         const fragmentUrl = new URL("page.html", contentUrl);
@@ -860,9 +875,8 @@ import { searchableLatexText } from "../lib/search-text.mjs";
         };
       }
       if (!page.html) throw new Error(`Page has no main content: ${key}`);
-      pageCache.set(key, page);
-    }
-    return pageCache.get(key);
+      return page;
+    });
   }
 
   function canPrefetch() {
@@ -885,6 +899,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
       if (canPrefetch()) {
         const url = prefetchQueue.shift();
         try { await getPage(url); } catch {}
+        finally { queuedPrefetches.delete(`${url.pathname}${url.search}`); }
       }
       prefetching = false;
       drainPrefetchQueue();
@@ -958,7 +973,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
 
       const swap = () => {
         currentMain.replaceWith(nextMain);
-        if (nextPage.article) applyArticleContentDiff(url, nextMain);
+        if (nextPage.article) applyArticleContentDiff(url, nextMain).catch(() => {});
         observeInlineMath(nextMain);
         updateInlineMathOverflow(nextMain);
         document.fonts?.ready.then(() => updateInlineMathOverflow(nextMain));
@@ -1083,7 +1098,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
       navigator.serviceWorker.register(`${basePath}/sw.js`, { scope: `${basePath}/`, updateViaCache: "none" }).catch(() => {});
     }
     upgradeInitialMath();
-    if (document.querySelector("[data-reading-progress]")) applyArticleContentDiff(initialUrl);
+    if (document.querySelector("[data-reading-progress]")) applyArticleContentDiff(initialUrl).catch(() => {});
     observeInlineMath();
     updateInlineMathOverflow();
     document.fonts?.ready.then(() => updateInlineMathOverflow());

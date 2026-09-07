@@ -161,7 +161,7 @@ function page({ locale = defaultLocale, title, description, content, article = f
   const pageDescription = description || messages.siteDescription;
   const fullTitle = title ? `${escapeHtml(title)} — ${escapeHtml(config.title)}` : `${escapeHtml(config.title)} — ${escapeHtml(messages.siteDescription)}`;
   const stylesUrl = assetHref("/assets/styles.css");
-  const deferredStyles = `<link rel="stylesheet" href="${stylesUrl}" media="print" onload="this.onload=null;this.media='all'"><noscript><link rel="stylesheet" href="${stylesUrl}"></noscript>`;
+  const deferredStyles = `<link rel="modulepreload" href="${assetHref("/assets/app.js")}"><link rel="stylesheet" href="${stylesUrl}" media="print" onload="this.onload=null;this.media='all'"><noscript><link rel="stylesheet" href="${stylesUrl}"></noscript>`;
   const mathStyles = content.includes('class="katex-html"') ? `<link rel="preload" href="${assetHref("/assets/katex.min.css")}" as="style" data-katex-styles onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="${assetHref("/assets/katex.min.css")}"></noscript>` : "";
   const defaultPath = locale === defaultLocale ? pathName : alternatePath;
   const alternateLink = hasAlternate ? `<link rel="alternate" hreflang="${alternate.language}" href="${absolute(alternatePath)}">` : "";
