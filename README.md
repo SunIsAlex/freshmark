@@ -181,6 +181,23 @@ process is needed after the build.
 
 ## Configuration
 
+### Paper laboratory theme
+
+The interface pairs a paper-colored reading surface with geometric diagrams,
+numbered article indexes, and a dark reading theme. `theme/editorial.css` is
+included in both the critical and deferred styles so the first render uses the
+same layout as the fully loaded page. Explicit article categories take
+precedence; display labels fall back to the article's content directory.
+
+Browser checks require a complete build, Chromium, and ChromeDriver. In separate
+terminals, serve `public/` on loopback port 8767 and start ChromeDriver on port
+9517, then run `npm run test:ui`. Override `PREVIEW_URL`, `WEBDRIVER_URL`, or
+`CHROME_BINARY` for other local setups. Screenshots and layout results are saved
+under `.freshmark-cache/ui/`; the checks include mobile layouts, both languages,
+both themes, search focus handling, filtering, and article navigation.
+
+### Site settings
+
 Edit `site.config.mjs`:
 
 ```js

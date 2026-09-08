@@ -168,12 +168,12 @@ test("site is installable as a progressive web app", async () => {
   const html = await read("public/index.html");
   const favicon = await read("public/favicon.svg");
   assert.match(html, /<link[^>]+href="\/manifest\.webmanifest"[^>]+rel="manifest"/);
-  assert.match(html, /<meta[^>]+content="#ff4500"[^>]+name="theme-color"/);
+  assert.match(html, /<meta[^>]+content="#ba3d2a"[^>]+name="theme-color"/);
   assert.match(html, /<link[^>]+href="\/icons\/apple-touch-icon\.png"[^>]+rel="apple-touch-icon"/);
   assert.match(html, /<svg[^>]+class="brand-mark"[^>]*>/);
   assert.match(html, /M18 13h31v9H29v8h16v9H29v14l-5\.5-5-5\.5 5V13Z/);
   assert.doesNotMatch(html, /✦/);
-  assert.match(favicon, /<rect width="64" height="64" rx="18" fill="#ff4500"\/>/);
+  assert.match(favicon, /<rect width="64" height="64" rx="4" fill="#ba3d2a"\/>/);
   assert.match(favicon, /M18 13h31v9H29v8h16v9H29v14l-5\.5-5-5\.5 5V13Z/);
 
   const manifest = JSON.parse(await read("public/manifest.webmanifest"));
@@ -194,7 +194,7 @@ test("site is installable as a progressive web app", async () => {
 test("generated HTML has no application framework runtime", async () => {
   const html = await read("public/index.html");
   assert.match(html, /搜索文章/);
-  assert.match(html, /<style data-critical>[^<]*--paper:#f6f7f8/);
+  assert.match(html, /<style data-critical>[^<]*--paper:#f5f1e8/);
   assert.match(html, /<style data-critical>@font-face\{[^}]*font-family:"Anthropic Sans"[^}]*url\("?\/assets\/fonts\/anthropic-sans-variable\.woff2"?\)[^}]*font-display:swap/);
   const stylesheetLinks = html.match(/<link[^>]+href="\/assets\/styles\.[a-f0-9]{12}\.css"[^>]*>/g);
   assert.equal(stylesheetLinks.length, 2);
@@ -240,10 +240,10 @@ test("localized routes provide Chinese and English navigation", async () => {
   const englishArticle = await read("public/en/posts/chemistry/inorganic/manganese/index.html");
 
   assert.match(chineseHome, /<html lang="zh-CN"/);
-  assert.match(chineseHome, /写给 <em>好奇的人。<\/em>/);
+  assert.match(chineseHome, /把好奇， <em>推导下去。<\/em>/);
   assert.match(chineseHome, /href="\/en\/" class="language-switch"/);
   assert.match(englishHome, /<html lang="en"/);
-  assert.match(englishHome, /Notes for <em>curious people.<\/em>/);
+  assert.match(englishHome, /Follow your <em>curiosity.<\/em>/);
   assert.match(englishHome, /href="\/" class="language-switch"/);
 
   assert.match(chineseArticle, /href="\/en\/posts\/chemistry\/inorganic\/manganese\/" class="language-switch"/);
@@ -266,8 +266,8 @@ test("localized routes provide Chinese and English navigation", async () => {
 
   const chineseIndex = JSON.parse(await read("public/search-index.json"));
   const englishIndex = JSON.parse(await read("public/en/search-index.json"));
-  assert.equal(chineseIndex.length, (chineseHome.match(/data-post-card/g) || []).length + 1);
-  assert.equal(englishIndex.length, (englishHome.match(/data-post-card/g) || []).length + 1);
+  assert.equal(chineseIndex.length, (chineseHome.match(/data-post-card/g) || []).length);
+  assert.equal(englishIndex.length, (englishHome.match(/data-post-card/g) || []).length);
   assert.ok(chineseIndex.length > englishIndex.length);
   const chineseUrls = new Set(chineseIndex.map(({ url }) => url));
   const englishUrls = new Set(englishIndex.map(({ url }) => url.replace(/^\/en/, "")));
@@ -284,16 +284,14 @@ test("localized routes provide Chinese and English navigation", async () => {
   assert.match(englishRss, /https:\/\/freshmark\.sunisalex\.org\/en\/posts\/physics\/basic-calculus-02\//);
 });
 
-test("typography uses Claude's font family and size scale", async () => {
+test("editorial typography uses local fonts and a spacious reading scale", async () => {
   const css = await read(await assetPath("styles.css"));
   assert.match(css, /@font-face\{[^}]*font-family:"Anthropic Sans"[^}]*anthropic-sans-variable\.woff2[^}]*format\("woff2"\)/);
   assert.match(css, /--text-xs:12px;--text-sm:14px;--text-md:16px;--text-lg:20px/);
-  assert.match(css, /--heading-lg:20px;--heading-xl:24px;--heading-2xl:28px;--heading-3xl:36px/);
-  assert.match(css, /body\{[^}]*font-size:var\(--text-md\)[^}]*line-height:1\.4/);
-  assert.match(css, /\.prose\{[^}]*font-size:var\(--text-md\)[^}]*line-height:1\.4/);
-  assert.match(css, /\.article-header h1,\.hero h1\{font-size:var\(--heading-2xl\);line-height:1\.1\}/);
-  assert.match(css, /\.featured h2,\.section-head h2\{font-size:var\(--heading-xl\);line-height:1\.25\}/);
-  assert.match(css, /\.prose h2\{font-size:var\(--heading-xl\);line-height:1\.25\}/);
+  assert.match(css, /--heading-lg:24px;--heading-xl:28px;--heading-2xl:36px;--heading-3xl:52px/);
+  assert.match(css, /\.prose\{font-size:18px;line-height:1\.8\}/);
+  assert.match(css, /\.hero h1\{font-size:clamp\(40px,5vw,68px\)/);
+  assert.match(css, /--paper:#171c1a/);
   assert.doesNotMatch(await read("theme/styles.css"), /\.post-card p\s*\{\s*display:none/);
   assert.doesNotMatch(css, /Iowan Old Style|Baskerville|Times New Roman/);
 });

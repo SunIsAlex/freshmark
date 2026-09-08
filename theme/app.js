@@ -26,6 +26,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   let prefetching = false;
   let renderedRoute = `${location.pathname}${location.search}`;
   let searchRequest = 0;
+  let searchReturnFocus;
   let activePhotoSwipe;
   let photoSwipeModule;
   let galleryRequest = 0;
@@ -321,6 +322,8 @@ import { searchableLatexText } from "../lib/search-text.mjs";
 
   async function openSearch() {
     if (!modal?.hidden) return;
+    searchReturnFocus = document.activeElement;
+    shell.inert = true;
     root.classList.add("search-open");
     modal.hidden = false;
     modal.scrollTop = 0;
@@ -331,8 +334,10 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     if (!modal || modal.hidden) return;
     if (modal.contains(document.activeElement)) document.activeElement.blur();
     modal.hidden = true;
+    shell.inert = false;
     root.classList.remove("search-open");
     input.value = "";
+    if (searchReturnFocus?.isConnected) searchReturnFocus.focus({ preventScroll: true });
   }
 
   function searchTerm(url = new URL(location.href)) {
@@ -700,6 +705,14 @@ import { searchableLatexText } from "../lib/search-text.mjs";
 
   document.querySelector("[data-search-close]")?.addEventListener("click", closeSearch);
   modal?.addEventListener("click", (event) => { if (event.target === modal) closeSearch(); });
+  modal?.addEventListener("keydown", (event) => {
+    if (event.key !== "Tab") return;
+    const focusable = [...modal.querySelectorAll('a[href],button,input')].filter((element) => !element.disabled && element.getClientRects().length);
+    const first = focusable[0];
+    const last = focusable.at(-1);
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+  });
   async function updateSearch() {
     const request = ++searchRequest;
     const term = input.value.trim();
