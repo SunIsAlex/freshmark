@@ -4,7 +4,6 @@ date: "2026-08-23"
 summary: "整理2025年北京重点校高三上学期期中数学试题中利用导数研究函数性质的36道题，涵盖单调性、极值、零点、切线与参数范围，仅收录题目。"
 tags: ["数学", "北京高考", "高三期中", "导数", "函数性质"]
 featured: false
-draft: true
 ---
 
 > 题目来源：[菁师帮试卷 190953](https://www.jingshibang.com/home/#/paperDetail?id=190953)  
@@ -26,6 +25,21 @@ draft: true
 
 **D.** 14
 
+解答:
+
+由极小值点为$-\frac\pi3$:
+
+$$-\frac\pi{3}\omega+\frac\pi6=-\frac\pi2+2k\pi,k\in\Z\\
+\omega=2-6k,k\in\Z$$
+
+然后考虑极大值点在区间上的存在性:
+
+$$\frac\pi6\omega+\frac\pi6\gt\frac\pi2\\
+\omega\gt2\\
+k=-1,\omega_\min=8$$
+
+正确答案:B
+
 ### 2.
 
 (2025 北京顺义牛栏山第一中学高三上期中) 已知函数 $f(x)=|\ln(x+1)|-kx$，则下列结论中正确结论的个数为（　　）
@@ -44,6 +58,35 @@ draft: true
 
 **D.** 3
 
+对于①,取$k=1$,则:
+
+$$x\in(-1,0),f(x)=-\ln(x+1)-x\downarrow\\
+x\in(0,+\infty),f(x)=\ln(x+1)-x\\
+f'(x)=\frac{1}{x+1}-1\lt f'(0)=0\\
+x\in(0,+\infty),f(x)\downarrow$$
+
+对于②,我们结合图像,做出左右切线:
+
+$$\begin{cases}y=kx,k\in[-1,0]\\
+y=|\ln(x+1)|\end{cases}$$
+
+仅有$(0,0)$这一个交点
+
+对于③,不妨设$x_1\lt x_2$易知$k\in(-\infty,-1)\cup(0,+\infty)$,分类:
+
+$$k\in(-\infty,-1),x_2=0,x_1\in(-1,0)\\
+|x_2-x_1|\in(0,1)\\
+k\in(0,+\infty),x_1=0,\ln(x_2+1)=kx_2\\
+k=\frac{\ln(x_2+1)}{x_2}\\
+g(x)=\frac{\ln(x+1)}{x},x\gt0\\
+g'(x)=\frac{\frac{x}{x+1}-\ln(x+1)}{x^2}\lt0\\
+|x_2-x_1|=x_2\gt2,k=g(x_2)\lt g(2)=\frac{\ln3}2\\
+\therefore k\in(0,\frac{\ln3}{2})$$
+
+正确答案:D
+
+
+
 ### 3.
 
 (2025 北京第一六六中学高三上期中)已知函数$f(x)$和$g(x)$在实数集上的图象均为一条连续不断的曲线,且满足:$\forall x_1、x_2\in \mathbf{R}$,都有$|f(x_1)-f(x_2)|\geq|g(x_1)-g(x_2)|$.
@@ -59,6 +102,39 @@ draft: true
 
 **D.** $p$是假命题,$q$是真命题
 
+对于命题$p$,不严谨的证明是:
+
+$$|\frac{f(x_1)-f(x_2)}{x_1-x_2}|\geq|\frac{g(x_1)-g(x_2)}{x_1-x_2}|\\
+\lim_{x_2\to x_1}|\frac{f(x_1)-f(x_2)}{x_1-x_2}|\geq \lim_{x_2\to x_1}|\frac{g(x_1)-g(x_2)}{x_1-x_2}|\\
+|f'(x_1)|\ge |g'(x_1)|\\f'(x)\ge 0,f'(x)\ge |g'(x)|\\
+h'(x)=f'(x)-g'(x)\\
+\ge f'(x)-|g'(x)|\ge0$$
+
+这样可以不完备地说明$h(x)$不减.
+
+注意,可导函数一定连续,连续函数不一定可导. 以上的证明方法默认了$f(x),g(x)$均可导.
+
+严谨的书写如下:
+
+$$x_1\lt x_2,f(x_1)-f(x_2)\lt 0\\
+h(x_1)-h(x_2)\\
+=f(x_1)-f(x_2)-[g(x_1)-g(x_2)]\\
+=-|f(x_1)-f(x_2)|-[g(x_1)-g(x_2)]\\
+\le -|f(x_1)-f(x_2)|+|g(x_1)-g(x_2)|\le0$$
+
+对于命题$q$,可以构造反例:
+
+$$f(x)=e^x\\
+g(x)=\begin{cases}e^x,x\in(-\infty,0],\\
+x+1,x\in(0,1)\\
+-x+3,x\in[1,+\infty)\end{cases}$$
+
+显然这样的构造符合题干要求,推翻了命题$q$.
+
+正确答案:C
+
+
+
 ### 4.
 
 (2025 北京朝阳高三上期中)若函数 $f(x)=x+\frac{a}{x^2}$ 在区间 $[1,2]$ 上是单调函数,则实数 $a$ 的取值范围是( )
@@ -70,6 +146,14 @@ draft: true
 **C.** $(-\infty, 0] \cup [4, +\infty)$
 
 **D.** $\left[0, \frac{1}{2}\right] \cup [8, +\infty)$
+
+要求导函数$f'(x)=1-\frac{2a}{x^3}$无变号零点:
+
+$$f'(x)=\frac1{x^3}(x^3-2a),x\in[1,2]\\
+2a\in (-\infty,1]\cup[8,+\infty)\\
+a\in(-\infty,\frac12]\cup[4,+\infty)$$
+
+正确答案:A
 
 ### 5.
 
@@ -83,6 +167,8 @@ draft: true
 
 **D.** $f(x)=\log_{\frac{1}{2}}|x|$
 
+正确答案:C
+
 ### 6.
 
 (2025 北京汇文中学高三上期中)对于函数 $f(x)$,若存在实数 $x_0$,使 $f(x_0)f(x_0+\lambda)=1$,其中 $\lambda\neq 0$,则称 $f(x)$ 为“可移 $\lambda$ 倒数函数”,$x_0$ 为“$f(x)$ 的可移 $\lambda$ 倒数点”. 设 $f(x)=\begin{cases} e^x, & x>0 \\ \frac{1}{x+a}, & x<0 \end{cases}$,若函数 $f(x)$ 恰有 3 个“可移 1 倒数点”,则 $a$ 的取值范围( )
@@ -94,6 +180,48 @@ draft: true
 **C.** $(-1,2)$
 
 **D.** $\left(\frac{1+\sqrt{5}}{2},e\right)$
+
+函数 $f(x)$ 恰有 3 个“可移 1 倒数点”,等价于$g(x)=f(x)f(x+1)-1$恰有三个零点,下面按照"易中天"的顺序思考:
+
+$$x\in(0,+\infty),g(x)=e^x\cdot e^{x+1}-1\gt e-1\gt0\\
+x\in(-1,0),g(x)=\frac{e^{x+1}}{x+a}-1=0\\
+e^{x+1}=x+a\gt0\\
+x\in(-\infty,-1),g(x)=\frac{1}{(x+a)(x+a+1)}-1=0\\
+(x+a)(x+a+1)=1$$
+
+我们接下来为$g(x)$的三个零点划定归属:
+
+- $x_1\lt x_2\lt -1\lt x_3\lt 0$
+- $x_1\lt -1\lt x_2\lt x_3\lt0$
+
+对于$x_1\lt x_2\lt -1\lt x_3\lt 0$,对应图像中$y=x+a$与$y=e^{x+1}$相切,即$a=2$,切点$(-1,1)$,与$x_3\gt-1$矛盾
+
+对应$x_1\lt -1\lt x_2\lt x_3\lt0$,对应图像中$a\in(2,e)$,接下来考虑二次函数零点个数的约束:
+
+$$x^2+(2a+1)x+(a^2+a-1)=0\\
+\Delta=(2a+1)^2-4(a^2+a-1)\\
+=4a+5\gt0\\
+x_{1,2}=\frac{-(2a+1)\pm\sqrt{4a+5}}{2}\\
+\begin{cases}x_1=\frac{-(2a+1)-\sqrt{4a+5}}{2}\lt-1,\\
+x_2=\frac{-(2a+1)+\sqrt{4a+5}}{2}\ge-1\end{cases}$$
+
+对于$x_1$,有:
+
+$$x_1\lt -a\lt-1$$
+
+对于$x_2$,有:
+
+$$-(2a+1)+\sqrt{4a+5}\ge -2\\
+\sqrt{4a+5}\ge 2a-1\ge 3\gt0\\
+4a+5\ge 4a^2-4a+1\\
+4a^2-8a-4\le0\\
+4(a-1)^2-8\le0\\
+|a-1|\le 2\\
+a\in[-1,3]$$
+
+综上,有:$a\in(2,e)$
+
+正确答案:A
 
 ### 7.
 
@@ -107,11 +235,49 @@ draft: true
 
 **D.** 对于任意实数 $k$,存在实数 $m$,使得函数 $g(x)$ 恰有 3 个零点
 
+对$k$的符号进行分类,可以确定抛物线的开口方向和单调性,或退化情况:
+
+$$x_0=\frac1{2k}\\
+k=0,m\in(0,+\infty),g(x)\text{没有零点}\\
+m=0,g(x)\text{有唯一零点}\\
+m\in(-\frac1e,0),g(x)\text{有且仅有三个零点}\\
+m=-\frac1e,g(x)\text{恰有两个零点}\\
+m\in(-\infty,-\frac1e),g(x)\text{恰有一个零点}\\k\lt 0,x_0\lt 0,\text{同k=0}$$
+
+此时,我们可以知难而退,$k\gt0$时顶点处函数值与$-\frac1e$的大小关系还会影响分类,这样过于复杂. 我们直接从选项入手.
+
+A:要使对于任意实数m,$g(x)$都有零点,要求$f(x)$值域为$\R$,这表明$k\gt 0$,否则$f(x)\le0$.
+
+若$k\gt0$,则$f(x)$有最小值,取足够小的$m$就可以让$g(x)\gt0$. 所以A不正确
+
+B:取$m\in(-\frac1e,0)$,可以使得$g(x)$在$(-\infty,0)$上恰有两个零点,符合B. B正确
+
+C:取$m\in(0,+\infty)$,根据二次函数的图像,$g(x)$有且仅有一个零点,所以C不正确.
+
+D:取一个极特殊的$k\gt0$,使得抛物线顶点处函数值$-\frac1{4k}$等于$-\frac1e$,即可让$g(x)$可能的零点数目为$0,1,2,4$,D不正确.
+
+正确答案:B
+
+
+
 ## 填空题
 
 ### 8.
 
 (2025 北京顺义第一中学高三上期中)已知函数 $f(x)=x+\frac{a}{x}(x>0)$,若 $f(x)$ 为单调递增函数,则实数 $a$ 的范围为______,若 $f(x)\geq 3$ 恒成立,则实数 $a$ 的范围______。
+
+$$f(x)\text{为单调递增函数}\Longleftrightarrow f'(x)\ge0\\
+f'(x)=1-\frac{a}{x^2}\ge0\\
+a\le 0,f'(x)\ge1\gt0\\
+a\gt 0,x\in(0,\sqrt{a}),f'(x)\lt0$$
+
+综上,$a\in(-\infty,0]$
+
+对于第二个空,如果$a\le0,f(1)=1+a\lt3$,不符合题意.
+
+如果$a\gt0,\min_{x\gt0}f(x)=2\sqrt{a}\ge3$,有$a\ge\frac94$.
+
+综上,$a\in[\frac94,+\infty)$
 
 ### 9.
 
@@ -129,6 +295,58 @@ draft: true
 
 其中所有正确结论的序号是______。
 
+①:
+
+$$MN\perp OA\Longleftrightarrow R\cos\angle MON=OM\\
+60\cos\frac{2\pi}{3\cdot 60}t=t,t\in[0,60]\\
+t=30$$
+
+②:
+
+在$\triangle MON$中使用余弦定理:
+
+$$f(t)=\sqrt{R^2+OM^2-2R\cdot OM\cdot \cos\angle MON}\\
+=\sqrt{60^2+(t)^2-2(60)(t)\cos\frac{\pi}{90}t}\\
+=\sqrt{60^2+t^2-120t\cos\frac{\pi}{90}t}$$
+
+$$(t\cos\frac\pi{90}t)'=\cos\frac\pi{90}t-t\frac\pi{90}\sin\frac\pi{90}t\lt \cos\frac\pi3-\sin\frac\pi3\lt0,\\
+(t^2)'=2t\gt0,\\
+f'(t)=\frac{1}{2\sqrt{60^2+t^2-120t\cos\frac{\pi}{90}t}}[(t^2)'-120(t\cos\frac\pi{90}t)']\gt0,t\in(30,45)$$
+
+事实上,从几何直观上看,$t\in(30,45),t\uparrow$,$M,N$的横纵间距都在增大.
+
+但是代数法自有强大之处:对于$t\in[30,60]$,我们同样可以得到$f(t)$的单调性. 但是由于$M,N$纵坐标在$t\in[45,60]$上单减,难以继续沿用几何法.
+
+$t\in[30,60],\frac\pi{90}t\in[\frac\pi3,\frac{2\pi}{3}],(t\cos\frac\pi{90}t)'=\cos\frac\pi{90}t-t\frac\pi{90}\sin\frac\pi{90}t\lt \cos\frac\pi3-\sin\frac\pi3\lt0$
+
+③:
+
+沿用②的拓展结论,$f(45)=\sqrt{60^2+45^2}=75$,那么:
+
+$$t\in[45,60],f(t)\ge f(45)\gt 60\\
+f(t)=60\text{无解}$$
+
+④:
+
+$$t\in[30,60],f(t)\uparrow$$
+
+那么,只需要考虑$t\in[0,30]$,在这个闭区间里,最小值要么出自于端点,要么出自于内部的极小值点.
+
+$$f'(t)=\frac{1}{2\sqrt{60^2+t^2-120t\cos\frac{\pi}{90}t}}[(t^2)'-120(t\cos\frac\pi{90}t)'],t\in[0,30]\\
+=k(2t-120\cos\frac\pi{90}t+120t\frac\pi{90}\sin\frac\pi{90}t)\\
+t\uparrow,(2t-120\cos\frac\pi{90}t+120t\frac\pi{90}\sin\frac\pi{90}t)\uparrow\\
+f'(0)\lt0,f'(30)\gt0\\
+\exists x_0\in(0,30),x\in(0,x_0),f'(x)\lt0,\\
+x\in(x_0,60),f'(x)\gt0$$
+
+所以,$\min_{t\in[0,60]} f(t)=f(x_0),x_0\in(0,30)$
+
+正确答案:①②④
+
+反思:返璞归真的代数法,反而快于几何法,因为减少了不同方法的切换overhead.
+
+
+
 ### 10.
 
 (2025 北京东直门中学高三上期中) 写出一个满足条件①②③的函数 $f(x)=$______。
@@ -138,6 +356,9 @@ draft: true
 ② $f(x)$ 的值域为 $[0,1]$；
 
 ③ $x=0$ 为 $f(x)$ 的极值点。
+
+例:$f(x)=\begin{cases}\frac1{x+1},x\ge0\\
+\frac1{-x+1},x\lt0\end{cases}$
 
 ### 11.
 
@@ -153,6 +374,34 @@ draft: true
 
 其中所有正确结论的序号是______。
 
+①:显然$f(1)+f(-1)=2f(1)\ne0$,错误
+
+②:$f(0)=1,x\to+\infty,f(x)\to0$,由零点存在性定理,正确
+
+③:
+
+$$\frac{\cos x}{x^2+1}=\frac1x\\
+\cos x=x+\frac1x\\
+|\cos x|=|x+\frac1x|\ge2$$
+
+这将与三角函数的有界性矛盾,故无公共点
+
+④:
+
+$$f'(x)=\frac{(-\sin x)(x^2+1)-(\cos x)(2x)}{(x^2+1)^2}=0\\
+(x^2+1)\sin x+2x\cos x=0\\
+\cos x\ne0\\
+g(x)=(x^2+1)\tan x+2x=0$$
+
+显然,$g(x)$为奇函数,则$g(x)$的零点关于$x=0$对称.
+
+$$x\gt0,k\in \N^*,x\to (\frac\pi2+k\pi)^+,\tan x\to -\infty,g(x)\to -\infty\\
+g(k\pi)=2k\pi\gt0$$
+
+根据零点存在性定理,必然存在无数个$x\in(k\pi,\frac\pi2+k\pi),k\in \N^*,s.t f'(x)=0$
+
+正确答案:②③
+
 ### 12.
 
 (2025 北京育才学校高三上期中) 已知函数 $f(x)=\frac{1}{3+x^2}-(kx+b)$，给出下列四个结论：
@@ -166,6 +415,42 @@ draft: true
 ④ 当 $0<b<\frac{1}{3}$ 时，存在 $k\in\mathbf{R}$，使得 $f(x)$ 有 3 个零点。
 
 其中所有正确结论的序号是______。
+
+①:$k=0$,显然$x=0$是$f(x)$唯一的极值点
+
+②:
+
+$$f'(x)=2x\frac{-1}{(x^2+3)^2}-k=0\\
+x\ne0\\
+k=\frac{2(-x)}{(x^2+3)^2}\\
+=\frac{2(-x)}{(x^2+1+1+1)^2}\\
+\le \frac{2|x|}{(4\sqrt{|x|})^2}=\frac18(x=-1)\\
+x=0,k=0$$
+
+则②错误,因为$k\gt\frac18$使得$f(x)$单调递减
+
+③:
+
+$$f(x)=0\\
+kx=\frac{1}{x^2+3}\\
+kx(x^2+3)=1\\
+kx^3+3kx-1=0$$
+
+取$k=0$,$f(x)\ne0$,无零点
+
+④:
+
+$$kx+b=\frac{1}{x^2+3}\\
+(kx+b)(x^2+3)-1=0\\
+g(x)=kx^3+bx^2+3kx+(3b-1)=0\\
+g'(x)=3kx^2+2bx+3k\\
+\Delta=4b^2-36k^2\gt0$$
+
+通过选取较小的$k$,可以让$g(x)$出现不单调的情况,这否定不了④.
+
+我们使用一元三次方程有三个不同实根的充要条件:
+
+$$\Delta=b^2(3k)^2-4k(3k)^3-4b^3(3b-1)-27k^2(3b-1)^2+18k(b)(3k)(3b-1)\gt0$$
 
 ## 解答题
 
