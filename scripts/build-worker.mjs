@@ -14,6 +14,12 @@ const htmlMinifierOptions = {
 };
 
 async function runTask(type, payload) {
+  if (type === "article-tokens") {
+    const { articleTokenStream } = await import("../lib/article-tokens.mjs");
+    // Match page.html's whitespace before inserting token spans, including
+    // whitespace between table cells used by article revision snapshots.
+    return articleTokenStream(await minifyHtml(payload.fragment, htmlMinifierOptions));
+  }
   if (type === "render-markdown") {
     try {
       const { html, headings } = await renderMarkdown(payload.body, { mathOutput: "hybrid" });

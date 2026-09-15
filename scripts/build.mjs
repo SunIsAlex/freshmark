@@ -337,6 +337,17 @@ async function writeLocaleIndexes(locale, localePosts) {
   ]);
 }
 
+async function writeArticleTokens(post, spaHtml) {
+  const fragment = pageFragment(spaHtml, {
+    locale: post.locale, title: post.title, description: post.summary,
+    pathName: localizedPath(post.locale, `/posts/${post.slug}/`),
+    article: true, alternatePath: post.alternatePath,
+  });
+  const data = await buildWorkers.run("article-tokens", { fragment });
+  await write(localeOutput(post.locale, `posts/${post.slug}/tokens.bin`), data);
+  await fs.rm(path.join(outputDir, localeOutput(post.locale, `posts/${post.slug}/tokens.ndjson`)), { force: true });
+}
+
 async function writePost(post) {
   const html = await postPage(post);
   const spaHtml = await postPage(post, { mathOutput: "source", fragment: true });
@@ -345,6 +356,7 @@ async function writePost(post) {
   const sourceDirectory = path.dirname(path.join(contentDir, post.sourceFile));
   await fs.mkdir(outputDirectory, { recursive: true });
   await Promise.all([
+    writeArticleTokens(post, spaHtml),
     write(`${directory}/index.html`, html),
     write(`${directory}/page.html`, pageFragment(spaHtml, {
       locale: post.locale,
@@ -521,6 +533,7 @@ await Promise.all(posts.map(async (post) => {
   const directory = localeOutput(post.locale, `posts/${post.slug}`);
   await fs.mkdir(path.join(outputDir, directory), { recursive: true });
   const writes = [
+    writeArticleTokens(post, spaHtml),
     write(`${directory}/index.html`, html),
     write(`${directory}/page.html`, pageFragment(spaHtml, {
       locale: post.locale,

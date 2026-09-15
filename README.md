@@ -9,6 +9,44 @@ framework runtime. The build produces ordinary HTML, CSS, JavaScript, XML, and
 JSON in `public/`. The `vps` branch also includes a small self-hosted Node
 runtime for views, accounts, and comments.
 
+## AI Tokenizer Beta
+
+After the first paint, Freshmark loads a small tokenizer viewer in the background.
+The current page keeps its original rendering. Subsequent article navigations fetch
+`tokens.bin` and display complete Markdown blocks as they arrive, preserving links,
+tables, images and math. A failed or interrupted stream falls back to ordinary HTML;
+navigating elsewhere cancels the old stream. No model API or API key is required.
+
+On streamed articles, **AI Tokenizer Beta** (中文：**AI 分词器 Beta**) toggles alternating
+token background colors. Highlighting defaults to off and the preference is saved
+locally. Hover a token to inspect its IDs. Initial direct article loads remain ordinary
+HTML, including when JavaScript is unavailable.
+
+Build workers use the **Qwen3.5** tokenizer (`Qwen/Qwen3.5-9B`) through
+`@huggingface/tokenizers` to tokenize each prose text node. It was selected by comparing
+five tokenizers on 60 idioms, 60 technical terms and this site's article corpus; see
+[the evaluation and its limitations](TOKENIZER_BENCHMARK.md). Token IDs describe those text nodes, not a single encoding of the
+raw Markdown document. Code, formulas and hidden non-content markup are excluded.
+Tokens that split one Unicode grapheme (for example a rare character or joined emoji)
+share a display span containing all their IDs so the original text remains intact.
+The model's NFC normalization also preserves the author's original displayed text.
+The vocabulary is pinned to a model revision, compressed under `vendor/tokenizer/`,
+and checked with SHA-256 at build time. Normal builds require no tokenizer download.
+Both full builds and `--post` builds generate a self-contained binary stream: HTML
+structure, compact local token IDs, and only the token-to-byte entries used in that
+article. Dictionary entries are sent before their first use, so the first paragraph
+can display before the rest downloads. Local IDs map back to the genuine Qwen IDs.
+The browser generates token spans, colors and tooltips; the file contains no repeated
+annotation markup and needs no full vocabulary download. See [the binary format](TOKEN_FORMAT.md).
+Token files use normal HTTP revalidation and are not precached by the
+service worker; offline navigation can fall back to previously cached HTML.
+
+With a local preview and ChromeDriver running, `npm run test:tokenizer-ui` checks
+progressive rendering, fallback, cancellation, search and the annotation toggle.
+To repeat the comparison, run `npm run benchmark:tokenizers` after a build. This
+downloads only pinned tokenizer files on its first run and saves measurements under
+`.freshmark-cache/tokenizer-benchmark/`; it never downloads model weights.
+
 ## Requirements
 
 - Node.js 20.9 or newer

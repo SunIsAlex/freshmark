@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { readFile, readdir, stat } from "node:fs/promises";
 import test from "node:test";
+import { parseFragment } from "parse5";
+import { openTokenStream, readTokenRecords } from "../lib/token-stream.mjs";
 import { changedCurrentIndexes } from "../lib/content-diff.mjs";
 import { locales } from "../lib/i18n.mjs";
 import { parseFrontmatter, renderMarkdown, renderSummary, searchTextFromMarkdown, summaryFromBody } from "../lib/markdown.mjs";
@@ -20,6 +22,38 @@ const assetPath = async (base) => {
   const version = (await read("public/index.html")).match(/\/assets\/app\.([a-f0-9]{12})\.js/)?.[1] || "";
   return `public/assets/${base.replace(/\.(?:js|css)$/, "")}.${version}.${base.endsWith(".js") ? "js" : "css"}`;
 };
+
+test("both locales publish independent token streams without adding tokens to initial HTML", async () => {
+  const findProse = (node) => node.attrs?.some((attr) => attr.name === "class" && attr.value === "prose")
+    ? node : (node.childNodes || []).map(findProse).find(Boolean);
+  const textContent = (node) => node.value || (node.childNodes || []).map(textContent).join("");
+  for (const locale of ["", "en/"]) {
+    const directory = `public/${locale}posts/chemistry/inorganic/manganese`;
+    const bytes = await readFile(new URL(`${directory}/tokens.bin`, root));
+    const records = [];
+    for await (const record of readTokenRecords(new Response(bytes))) records.push(record);
+    const decoded = [];
+    const stream = await openTokenStream(new Response(bytes));
+    await stream.consume((html) => decoded.push(html));
+    assert.equal(records[0].version, 2);
+    assert.equal(records[0].tokenizer, "qwen3.5");
+    assert.equal(new URL(records[0].page.canonical).pathname, `/${locale}posts/chemistry/inorganic/manganese/`);
+    assert.match(records[0].page.html, /<article class="prose"><\/article>/);
+    assert.ok(decoded.some((html) => html.includes("data-ai-token=")));
+    assert.doesNotMatch(new TextDecoder().decode(bytes), /data-ai-token/);
+    assert.equal(records.at(-1).type, "end");
+    assert.equal(records.at(-1).blocks, decoded.length);
+    assert.doesNotMatch(await read(`${directory}/index.html`), /data-ai-token/);
+    assert.doesNotMatch(await read(`${directory}/page.html`), /data-ai-token/);
+    const ordinary = findProse(parseFragment(await read(`${directory}/page.html`)));
+    const streamed = parseFragment(decoded.join(""));
+    assert.equal(textContent(streamed), textContent(ordinary), "Token markup must not introduce whitespace changes or false revision notices");
+  }
+  const chunks = await readdir(new URL("public/assets/chunks/", root));
+  const tokenizer = chunks.find((file) => /^tokenizer-[A-Z0-9]+\.js$/.test(file));
+  assert.ok(tokenizer);
+  assert.ok((await stat(new URL(`public/assets/chunks/${tokenizer}`, root))).size < 10000, "Browser viewer must not include the vocabulary");
+});
 
 test("base URL prefers the environment and falls back to site config", () => {
   assert.equal(resolveBaseUrl("https://config.example", {}), "https://config.example");
@@ -767,7 +801,7 @@ test("articles highlight content changed since the previous local visit", async 
   assert.match(app, /localStorage\.setItem\(storageKey/);
   assert.match(app, /changedCurrentIndexes\(previous, snapshot\)/);
   assert.match(app, /units\[index\]\.dataset\.contentDiff = "changed"/);
-  assert.match(app, /if \(nextPage\.article\) applyArticleContentDiff\(url, nextMain\)/);
+  assert.match(app, /if \(nextPage\.article && !tokenStream\) applyArticleContentDiff\(url, nextMain\)/);
   assert.match(app, /if \(document\.querySelector\("\[data-reading-progress\]"\)\) applyArticleContentDiff\(initialUrl\)/);
   assert.match(css, /\.prose \[data-content-diff="changed"\]/);
   assert.match(css, /\.content-diff-notice/);

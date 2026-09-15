@@ -1,3 +1,14 @@
+.ai-tokens-visible [data-ai-token] { border-radius:2px; box-decoration-break:clone; -webkit-box-decoration-break:clone; }
+.ai-tokens-visible [data-ai-tone="0"] { background:rgba(53,137,190,.17); }
+.ai-tokens-visible [data-ai-tone="1"] { background:rgba(202,143,44,.19); }
+.ai-tokens-visible [data-ai-tone="2"] { background:rgba(134,91,181,.17); }
+[data-theme="dark"] .ai-tokens-visible [data-ai-tone="0"] { background:rgba(88,170,220,.25); }
+[data-theme="dark"] .ai-tokens-visible [data-ai-tone="1"] { background:rgba(227,171,71,.25); }
+[data-theme="dark"] .ai-tokens-visible [data-ai-tone="2"] { background:rgba(170,129,219,.25); }
+.ai-token-toggle[aria-pressed="true"] { color:var(--accent); text-decoration:underline; }
+@media (forced-colors:active) {
+  .ai-tokens-visible [data-ai-token] { outline:1px dotted CanvasText; }
+}
 @font-face {
   font-family:"Anthropic Sans";
   src:url("fonts/anthropic-sans-variable.woff2") format("woff2");

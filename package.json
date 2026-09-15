@@ -13,18 +13,23 @@
     "new": "node scripts/new.mjs",
     "test": "npm run build && node --test tests/*.test.mjs",
     "test:ui": "node scripts/check-ui.mjs",
-    "lint": "node --check scripts/build.mjs && node --check scripts/build-worker.mjs && node --check scripts/dev.mjs && node --check scripts/new.mjs && node --check lib/build-worker-pool.mjs && node --check lib/content-diff.mjs && node --check lib/i18n.mjs && node --check lib/markdown.mjs && node --check lib/math-config.mjs && node --check lib/math-html.mjs && node --check lib/pdf.mjs && node --check lib/responsive-images.mjs && node --check lib/search-text.mjs && node --check lib/site-config.mjs && node --check lib/templates.mjs && node --check netlify/lib/auth.mjs && node --check netlify/lib/comment-markdown.mjs && node --check netlify/lib/comments.mjs && node --check netlify/lib/mailer.mjs && node --check netlify/lib/store.mjs && node --check netlify/functions/auth-register.mjs && node --check netlify/functions/auth-register-verify.mjs && node --check netlify/functions/auth-login.mjs && node --check netlify/functions/auth-session.mjs && node --check netlify/functions/auth-logout.mjs && node --check netlify/functions/comment.mjs && node --check netlify/functions/comment-admin.mjs && node --check netlify/functions/comments.mjs && node --check netlify/functions/views.mjs && node --check server/file-store.mjs && node --check server/server.mjs && node --check ops/freshmark-mailer/server.mjs && node --check theme/app.js && node --check theme/comment-auth.js && node --check theme/comment-submit.js && node --check theme/katex.js && node --check theme/share.js"
+    "lint": "node --check scripts/build.mjs && node --check scripts/build-worker.mjs && node --check scripts/dev.mjs && node --check scripts/new.mjs && node --check lib/build-worker-pool.mjs && node --check lib/content-diff.mjs && node --check lib/i18n.mjs && node --check lib/markdown.mjs && node --check lib/math-config.mjs && node --check lib/math-html.mjs && node --check lib/pdf.mjs && node --check lib/responsive-images.mjs && node --check lib/search-text.mjs && node --check lib/site-config.mjs && node --check lib/templates.mjs && node --check netlify/lib/auth.mjs && node --check netlify/lib/comment-markdown.mjs && node --check netlify/lib/comments.mjs && node --check netlify/lib/mailer.mjs && node --check netlify/lib/store.mjs && node --check netlify/functions/auth-register.mjs && node --check netlify/functions/auth-register-verify.mjs && node --check netlify/functions/auth-login.mjs && node --check netlify/functions/auth-session.mjs && node --check netlify/functions/auth-logout.mjs && node --check netlify/functions/comment.mjs && node --check netlify/functions/comment-admin.mjs && node --check netlify/functions/comments.mjs && node --check netlify/functions/views.mjs && node --check server/file-store.mjs && node --check server/server.mjs && node --check ops/freshmark-mailer/server.mjs && node --check theme/app.js && node --check theme/comment-auth.js && node --check theme/comment-submit.js && node --check theme/katex.js && node --check theme/share.js && node --check lib/article-tokens.mjs && node --check lib/token-stream.mjs && node --check theme/tokenizer.js && node --check lib/hf-tokenizer.mjs && node --check lib/token-groups.mjs && node --check scripts/benchmark-tokenizers.mjs && node --check lib/token-binary.mjs",
+    "test:tokenizer-ui": "node scripts/check-tokenizer-ui.mjs",
+    "benchmark:tokenizers": "node scripts/benchmark-tokenizers.mjs"
   },
   "dependencies": {
+    "@huggingface/tokenizers": "^0.2.0",
     "diff": "^9.0.0",
     "katex": "^0.17.0",
     "markdown-it": "^14.3.0",
+    "parse5": "^8.0.1",
     "photoswipe": "^5.4.4"
   },
   "devDependencies": {
     "@img/sharp-wasm32": "0.35.3",
     "clean-css": "^5.3.3",
     "esbuild": "^0.28.1",
+    "gpt-tokenizer": "^4.0.0",
     "html-minifier-terser": "^7.2.0",
     "sharp": "0.35.3",
     "terser": "^5.49.0"
