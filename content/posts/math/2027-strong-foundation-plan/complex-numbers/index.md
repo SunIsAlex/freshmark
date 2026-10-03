@@ -279,7 +279,9 @@ $$\begin{gathered}
 
 不等式$|z|^4-|z|^2+1\ge-2|z|^2$显然成立,而:
 
-$$|z|^4-|z|^2+1\le2|z|^2$$
+$$
+|z|^4-|z|^2+1\le2|z|^2
+$$
 
 给出 $|z|^2\in[\frac{3-\sqrt{5}}{2},\frac{3+\sqrt{5}}{2}]$，即 $|z|\in[\frac{\sqrt{5}-1}{2},\frac{\sqrt{5}+1}{2}]$。
 
@@ -690,11 +692,16 @@ $$\begin{gathered}\omega^{2025}=(-1)^{2025}e^{\pi i}=1,|\omega|=1,\overline{\ome
 
 **解答**
 
-考虑2026次单位根:$$\omega^{2026}=1$$
+考虑2026次单位根:
+$$
+\omega^{2026}=1
+$$
 
 这2026个复数在复平面上表示单位圆内接正2026边形的2026个顶点,则所求为:
 
-$$|(1-\omega)(1-\omega^2)(1-\omega^3)\cdots(1-\omega^{2025})|$$
+$$
+|(1-\omega)(1-\omega^2)(1-\omega^3)\cdots(1-\omega^{2025})|
+$$
 
 仍然考虑单位根对应的因式分解:
 
@@ -859,7 +866,9 @@ $$
 
 这里我们不加以详细讨论,直接沿用经典结论:
 
-$$d_1+d_2+d_3\ge2\frac{2\sqrt3}{3}+(1-\frac{\sqrt{3}}{3})=\sqrt{3}+1$$
+$$
+d_1+d_2+d_3\ge2\frac{2\sqrt3}{3}+(1-\frac{\sqrt{3}}{3})=\sqrt{3}+1
+$$
 
 ### 例题 7.28
 
@@ -871,4 +880,6 @@ $$d_1+d_2+d_3\ge2\frac{2\sqrt3}{3}+(1-\frac{\sqrt{3}}{3})=\sqrt{3}+1$$
 
 想象一个半径为2的圆盘,在以$(2,0),(0,2)$为端点的线段长滑动,划过区域的面积为:
 
-$$\begin{gathered}\pi\cdot2^2+2\sqrt{2}\cdot4=4(\pi+2\sqrt2)\end{gathered}$$
+$$
+\begin{gathered}\pi\cdot2^2+2\sqrt{2}\cdot4=4(\pi+2\sqrt2)\end{gathered}
+$$

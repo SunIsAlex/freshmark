@@ -76,7 +76,9 @@ According to the acid-base order of the alcohol molecule, the electronic effect 
 
 Since most organic reactions occur in the liquid phase, it is generally believed that **alkyl groups are electron-donating groups**.
 
-$$\boxed{\text{alcohol + reactive metal (K, Na, Mg, Al)}\rightarrow\text{alkoxide}+\ce{H2 ^}}$$
+$$
+\boxed{\text{alcohol + reactive metal (K, Na, Mg, Al)}\rightarrow\text{alkoxide}+\ce{H2 ^}}
+$$
 
 ### Common alkoxides and their uses
 -$\ce{EtONa}$: As a small sterically hindered strong base, as a strong nucleophile

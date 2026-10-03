@@ -78,15 +78,21 @@ repost:
 
 根据对称性可以得到:
 
-$$\langle v_x^2\rangle=\langle v_y^2\rangle=\langle v_z^2\rangle$$
+$$
+\langle v_x^2\rangle=\langle v_y^2\rangle=\langle v_z^2\rangle
+$$
 
 而:
 
-$$\langle v^2\rangle=\langle v_x^2+v_y^2+v_z^2\rangle=3\langle v_x^2\rangle$$
+$$
+\langle v^2\rangle=\langle v_x^2+v_y^2+v_z^2\rangle=3\langle v_x^2\rangle
+$$
 
 所以可以用平均质心运动动能改写压强:
 
-$$P=\frac{2}{3}n\langle \frac{mv^2}{2}\rangle$$
+$$
+P=\frac{2}{3}n\langle \frac{mv^2}{2}\rangle
+$$
 
 事实上,并不能简单的把动能看成总能量(内能)$U$:
 - 对于单原子分子,比如$He,Ar,Hg(g)$以及足够高温的$K(g)$,可以假定分子中没有内部运动,$U=n\langle \frac{1}{2}mv^2\rangle$
@@ -94,11 +100,15 @@ $$P=\frac{2}{3}n\langle \frac{mv^2}{2}\rangle$$
 
 所以,对于单原子分子,我们有:
 
-$$PV=\frac{2}{3}U$$
+$$
+PV=\frac{2}{3}U
+$$
 
 事实上,更普遍的结论是:
 
-$$PV=(\gamma-1)U$$
+$$
+PV=(\gamma-1)U
+$$
 
 - 分子结构越简单,原子数越少,$\gamma$越大
 - 所有气体的$\gamma\gt1$
@@ -130,7 +140,9 @@ $$\begin{gathered}
 
 其中$\gamma$为一常数,得:
 
-$$PV^{\gamma}=C$$
+$$
+PV^{\gamma}=C
+$$
 
 事实上,反过来用这个结论可以测定$\gamma$.
 
@@ -158,7 +170,9 @@ $$\begin{gathered}
 
 由简谐运动结论:
 
-$$F=kx\Leftrightarrow T=2\pi\sqrt{\frac{m}{k}}$$
+$$
+F=kx\Leftrightarrow T=2\pi\sqrt{\frac{m}{k}}
+$$
 
 可知:$T = 2\pi \sqrt{\frac{mV}{\gamma p A^2}}$
 
@@ -179,7 +193,9 @@ $$\begin{gathered}
 
 也就是说,光子的$\gamma=\frac{4}{3}$,于是有类似的绝热压缩(其实是所做的功全部转化为光子能量)规律:
 
-$$PV^{\frac{4}{3}}=C$$
+$$
+PV^{\frac{4}{3}}=C
+$$
 
 ## 39.4:温度和动能
 

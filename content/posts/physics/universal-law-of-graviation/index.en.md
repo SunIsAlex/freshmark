@@ -90,7 +90,9 @@ From Kepler’s second law, it is not difficult to derive $S_{DAB}\lt S_{BCD},t_
 
 ## 2: Law of Universal Gravity
 For two mass points with masses $M,m$ respectively:
-$$\boxed{F=\frac{GMm}{r^2}}$$
+$$
+\boxed{F=\frac{GMm}{r^2}}
+$$
 
 $G=6.67\times 10^{-11}N\cdot m^2\cdot kg^{-2}$
 
@@ -121,7 +123,9 @@ For a homogeneous sphere A with a total mass M and a radius R, cut out a small b
 
 Consider completing A as an imaginary ball A':
 
-$$F=\frac{GM\frac{M}{8}}{(\frac{5}{2}R)^2}-\frac{G\frac{M}{8}\frac{M}{8}}{(2R)^2}$$
+$$
+F=\frac{GM\frac{M}{8}}{(\frac{5}{2}R)^2}-\frac{G\frac{M}{8}\frac{M}{8}}{(2R)^2}
+$$
 
 ### Example 2
 Calculate the motion parameters of near-Earth satellites, synchronous satellites, and residents on the equator:
@@ -297,18 +301,24 @@ $$\begin{gathered}
 #### Situation 1
 ![alt text](image-10.png)
 
-$$\frac{Gmm}{r^2}+\frac{Gmm}{(2r)^2}=m\frac{4\pi^2}{T^2}r$$
+$$
+\frac{Gmm}{r^2}+\frac{Gmm}{(2r)^2}=m\frac{4\pi^2}{T^2}r
+$$
 
 #### Situation 2
 ![alt text](image-11.png)
 
-$$2\frac{\sqrt{3}}{2}\frac{Gmm}{(\sqrt{3}r)^2}=m\frac{4\pi^2}{T^2}r$$
+$$
+2\frac{\sqrt{3}}{2}\frac{Gmm}{(\sqrt{3}r)^2}=m\frac{4\pi^2}{T^2}r
+$$
 
 ## Three: Celestial Energy
 ### Gravitational potential energy
 Assuming that infinity is the zero point of potential energy, then the gravitational potential energy between particles with mass $M,m$ is:
 
-$$\boxed{E=-\frac{GMm}{r}=-W}$$
+$$
+\boxed{E=-\frac{GMm}{r}=-W}
+$$
 
 Among them, $W$ is the work done by gravity when $m$ moves from the infinite point to $r$.
 
@@ -333,7 +343,9 @@ $$\begin{gathered}
 ### Total energy of elliptical orbit
 Proof: The total energy of an elliptical orbit
 
-$$\boxed{E=E_k+E_p=-\frac{GMm}{2a}}$$
+$$
+\boxed{E=E_k+E_p=-\frac{GMm}{2a}}
+$$
 
 According to the conservation of mechanical energy, just calculate the mechanical energy at any point on the orbit.
 
@@ -364,12 +376,16 @@ Obviously, among various Conic Sections, ellipses (closed curves) have the small
 ### First cosmic speed
 $v_1$ =7.9km/s, also known as **orbiting speed**
   
-$$\frac{GMm}{R^2}=m\frac{v_1^2}{R},v_1=\sqrt{gr}$$
+$$
+\frac{GMm}{R^2}=m\frac{v_1^2}{R},v_1=\sqrt{gr}
+$$
 
 ### Second universe speed
 $v_2=11.2km/s$, also known as **breakaway speed**
 
-$$E=\frac{1}{2}mv_2^2+(-\frac{GMm}{R})=0,v_2=\sqrt{2gr}=\sqrt{2}v_1$$
+$$
+E=\frac{1}{2}mv_2^2+(-\frac{GMm}{R})=0,v_2=\sqrt{2gr}=\sqrt{2}v_1
+$$
 
 ### The third universe speed
 $v_3=16.7km/s$, also known as **escape velocity**

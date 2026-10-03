@@ -31,7 +31,9 @@ $$\begin{cases}
 > 自反函数（Self-reciprocal function / Involution）是指其反函数等于自身的函数。换句话说，如果对该函数进行两次复合，结果会回到自变量本身，即满足 $f(f(x)) = x$。在几何图像上，自反函数的图像关于直线 $y = x$ 严格对称。
 
 对于分式函数$f(x)=\frac{ax+b}{cx+d}$,其为自反函数的充要条件为
-$$a=-d$$
+$$
+a=-d
+$$
 证明:
 $$\begin{gathered}
     y=f(x),f(f(x))=f(y)=x\\

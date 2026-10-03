@@ -87,15 +87,21 @@ Attached is an exercise question:
 ### Ellipse
 **First definition of ellipse**
 
-$$\boxed{r_1+r_2=2a}$$
+$$
+\boxed{r_1+r_2=2a}
+$$
 
 For a focal chord of an ellipse, the focal point divides the focal chord into two parts with length $r_1,r_2$, as follows:
 
-$$\boxed{\frac{1}{r_1}+\frac{1}{r_2}=C}$$
+$$
+\boxed{\frac{1}{r_1}+\frac{1}{r_2}=C}
+$$
 
 Draw three chords through a point in the ellipse, intersecting the ellipse and six points respectively. These six points are connected in sequence. The distances between adjacent points are $a,d,c,f,b,e$, as follows:
 
-$$\boxed{abc=edf}$$
+$$
+\boxed{abc=edf}
+$$
 
 **Optical Properties of Ellipses**
 
@@ -277,7 +283,9 @@ The virial force theorem (English: Virial theorem, also known as the Virial theo
 
 Consider a system with $N$ particles, and its mathematical expression is:
 
-$$\langle T \rangle = -\frac{1}{2}\sum_{k=1}^{N}\langle \mathbf{F}_k \cdot \mathbf{r}_k \rangle$$
+$$
+\langle T \rangle = -\frac{1}{2}\sum_{k=1}^{N}\langle \mathbf{F}_k \cdot \mathbf{r}_k \rangle
+$$
 
 Among them:
 
@@ -293,11 +301,15 @@ Among them:
 
 If the force between any two particles in the system comes from the potential energy proportional to the distance between the particles $r$ raised to the power of $n$
 
-$$V(r) = \alpha r^n \quad (\alpha,\, n \text{ are constants})$$
+$$
+V(r) = \alpha r^n \quad (\alpha,\, n \text{ are constants})
+$$
 
 Then the theorem simplifies to:
 
-$$2\langle T \rangle = n\langle V_{\text{total}} \rangle$$
+$$
+2\langle T \rangle = n\langle V_{\text{total}} \rangle
+$$
 
 That is, 2 times the total kinetic energy of the system is equal to $n$ times the total potential energy.
 
@@ -316,7 +328,9 @@ The importance of the virial force theorem is that it allows the calculation of 
 
 In particular, for stable multi-body motion, if the relative positions of each particle remain unchanged, the total kinetic energy and total potential energy of the system remain unchanged, and always have:
 
-$$\boxed{2E_k=-E_p}$$
+$$
+\boxed{2E_k=-E_p}
+$$
 
 ### Simple proof
 Suppose n particles with the same mass form a regular n-gon and steadily perform uniform circular motion with a radius of $r_0$.
@@ -377,7 +391,9 @@ Centrifugal effects of satellite orbiting motion.
 
 After correcting the coefficients we get:
 
-$$d \approx 2.44\, R_M \left(\frac{M_M}{m}\right)^{1/3}$$
+$$
+d \approx 2.44\, R_M \left(\frac{M_M}{m}\right)^{1/3}
+$$
 
 Although the tidal forces experienced by large satellites and small satellites in the same orbit are different (the larger one is stronger), the self-gravity of the large satellite also increases in the same proportion, and the two exactly offset each other. **The Roche limit has nothing to do with the size of the satellite**.
 
@@ -409,7 +425,9 @@ Taking a moving object as the inertial system, the inertial force should be intr
 
 Taking the earth as the inertial system, the inertial force on the moon is the same as the gravitational force of the moon and the earth:
 
-$$F=\frac{GMm}{R^2}+m\frac{Gm}{R^2}=ma\Longrightarrow a=\frac{G(M+m)}{R^2}$$
+$$
+F=\frac{GMm}{R^2}+m\frac{Gm}{R^2}=ma\Longrightarrow a=\frac{G(M+m)}{R^2}
+$$
 
 Using the moon as the inertial system, the same result can be calculated in the same way, which is not inconsistent with the Galilean transformation.
 

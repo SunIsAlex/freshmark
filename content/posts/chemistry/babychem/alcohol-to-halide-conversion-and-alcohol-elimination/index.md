@@ -74,7 +74,9 @@ P是第三周期元素,故$\ce{PBr3}$中P原子有3d轨道,可以被羟基的氧
 3. 低温避免重排
 
 ## ROH + SOCl2
-$$\ce{ROH + SOCl2 ->[\triangle] SO2 ^ + HCl ^ + RCl}$$
+$$
+\ce{ROH + SOCl2 ->[\triangle] SO2 ^ + HCl ^ + RCl}
+$$
 
 反应优点:直接得到氯代烷,条件温和,速率快,产率高,产物易于提纯.
 

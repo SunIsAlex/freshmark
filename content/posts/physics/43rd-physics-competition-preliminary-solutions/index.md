@@ -60,7 +60,9 @@ D. $\dfrac{mg}{n}$
 
 5. 人类在 2015 年首次探测到了双黑洞并合产生的引力波。记双黑洞的质量分别为 $M$ 和 $m$，它们以角速度 $\omega$ 绕其质心做圆周运动，双黑洞引力辐射功率为
 
-$$P=k \frac{G^{\alpha} \omega^{\beta}}{c^{\gamma}} \cdot \frac{(M m)^{2}}{(M+m)^{2 / 3}}$$
+$$
+P=k \frac{G^{\alpha} \omega^{\beta}}{c^{\gamma}} \cdot \frac{(M m)^{2}}{(M+m)^{2 / 3}}
+$$
 
 式中 $c$ 为真空中的光速，$G$ 为引力常量，$k$ 为无量纲常数。指数 $\alpha$、$\beta$、$\gamma$ 应满足
 
@@ -82,7 +84,9 @@ D. $\alpha=\frac{7}{3}$
 
 正确答案:
 
-$$T=\frac{\lambda}{v},\frac{\Delta t}{d}\sqrt{\frac{g\lambda}{2\pi}}$$
+$$
+T=\frac{\lambda}{v},\frac{\Delta t}{d}\sqrt{\frac{g\lambda}{2\pi}}
+$$
 
 7. 将地球表面附近的空气视为稳定分布的理想气体。考虑高度差为 $\Delta z$ 的一层空气，其顶部和底部的压强差为 $\Delta p$，记此层内空气的平均温度为 $T$，平均压强为 $p$，平均摩尔质量为 $\mu$，重力加速度大小为 $g$，摩尔气体常量为 $R$，则 $\frac{\Delta p}{\Delta z}=$ ______。若不同高度的空气之间没有热传递，则在所考虑的空气层的顶部和底部的温度差随相应的压强差的变化满足关系 $\Delta T=\alpha \frac{T}{p} \Delta p$。取 $g=9.8 \mathrm{~m} \cdot \mathrm{s}^{-2}, \alpha=\frac{2}{7}, R=8.31 \mathrm{~J} \cdot \mathrm{K}^{-1} \cdot \mathrm{mol}^{-1}$，$\mu=29 \mathrm{~g} \cdot \mathrm{mol}^{-1}$，由此估算每上升 $1.0 \mathrm{~km}$，空气温度下降 ______ $\mathrm{K}$（结果保留两位有效数字）。
 

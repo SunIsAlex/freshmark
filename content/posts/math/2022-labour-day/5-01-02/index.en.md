@@ -56,7 +56,9 @@ $ABCD$ is a quadrilateral inscribed in a circle. Prove that: the centers of grav
 
 $ABCD$ The equivalent condition for four points to be a cocircle is:
 
-$$\frac{z_2-z_1}{z_3-z_1}:\frac{z_2-z_4}{z_3-z_4}\in\R$$
+$$
+\frac{z_2-z_1}{z_3-z_1}:\frac{z_2-z_4}{z_3-z_4}\in\R
+$$
 
 Under this condition, the conclusion is equivalent to:
 
@@ -176,7 +178,9 @@ Considering the range of x, $x=0,2\pi,\frac{\pi}{3}$
 $Solve:x^5+10x^3+20x-4=0$
 Clever yuan exchange: $x=z-\frac{2}{z},z\in C$
 
-$$z^5-\frac{32}{z^5}-4=0$$
+$$
+z^5-\frac{32}{z^5}-4=0
+$$
 
 Solution: $z^5=-4\text{ or }8$
 
@@ -332,7 +336,9 @@ The required formula is equal to $-\frac{1}{2}$
 
 Or depending on special angles:
 
-$$\sin18\degree=\frac{\sqrt{5}-1}{4}$$
+$$
+\sin18\degree=\frac{\sqrt{5}-1}{4}
+$$
 
 $$\begin{gathered}
   \cos\frac{2}{5}\pi+\cos\frac{4}{5}\pi\\

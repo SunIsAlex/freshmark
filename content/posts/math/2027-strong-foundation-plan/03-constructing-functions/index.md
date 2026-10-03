@@ -25,11 +25,15 @@ $$
 应当注意到,$2026,-2025$不是本质的,$\sin^2 72^\circ+\sin^2 18^\circ=1$才是重点:
 
 显然$\sin^2 72^\circ,\sin^2 18^\circ$是关于$t$的方程
-$$\frac{x}{t+2026}+\frac{y}{t-2025}=1$$
+$$
+\frac{x}{t+2026}+\frac{y}{t-2025}=1
+$$
 的两根.
 
 去分母,按$t$的降幂排列:
-$$t^2+(1-x-y)t-(2025\cdot2026-2025x-2026y)=0$$
+$$
+t^2+(1-x-y)t-(2025\cdot2026-2025x-2026y)=0
+$$
 
 所以$\sin^2 72^\circ+\sin^2 18^\circ=(x+y-1)$,得$x+y=2$
 ### 例题 3.2
@@ -46,7 +50,9 @@ $$
 若对任意的 $t>0$，$t+\dfrac{k}{t}\geqslant x+y$ 恒成立，则实数 $k$ 的最小值为 $\underline{\qquad}$。
 
 注意到同构的形式,令:
-$$f(x)=x^3+2023x$$
+$$
+f(x)=x^3+2023x
+$$
 
 显然$f(x)$为单增的奇函数,$f(x-2)=-f(y-2)=f(2-y)$,必有$x-2=2-y$.
 
@@ -219,7 +225,9 @@ D. 前三个答案都不对
 
 设中间量$t$.
 
-$$\begin{array} { r l } { \log _ { 4 } ( 2 ^ { x } + 3 ^ { x } ) = t = \log _ { 3 } ( 4 ^ { x } - 2 ^ { x } ) } \\ { \left\{ \begin{array} { l l } { 2 ^ { x } + 3 ^ { x } = 4 ^ { t } } \\ { 2 ^ { x } + 3 ^ { t } = 4 ^ { x } } \end{array} \right. } \\ { \therefore 3 ^ { x } - 3 ^ { t } = 4 ^ { t } - 4 ^ { x } } \\ { \therefore 3 ^ { x } + 4 ^ { x } = 3 ^ { t } + 4 ^ { t } } \\ { \therefore f ( x ) = 3 ^ { x } + 4 ^ { x } \uparrow } \\ { \therefore 2 ^ { x } + 3 ^ { x } = 4 ^ { x } \Rightarrow ( \frac { 1 } { 2 } ) ^ { x } + ( \frac { 3 } { 4 } ) ^ { x } = 1 } \\ { g ( x ) = ( \frac { 1 } { 2 } ) ^ { x } + ( \frac { 3 } { 4 } ) ^ { x } \downarrow } \\ { g ( 2 ) = 2 \quad g ( \infty ) < 1 } \end{array}$$
+$$
+\begin{array} { r l } { \log _ { 4 } ( 2 ^ { x } + 3 ^ { x } ) = t = \log _ { 3 } ( 4 ^ { x } - 2 ^ { x } ) } \\ { \left\{ \begin{array} { l l } { 2 ^ { x } + 3 ^ { x } = 4 ^ { t } } \\ { 2 ^ { x } + 3 ^ { t } = 4 ^ { x } } \end{array} \right. } \\ { \therefore 3 ^ { x } - 3 ^ { t } = 4 ^ { t } - 4 ^ { x } } \\ { \therefore 3 ^ { x } + 4 ^ { x } = 3 ^ { t } + 4 ^ { t } } \\ { \therefore f ( x ) = 3 ^ { x } + 4 ^ { x } \uparrow } \\ { \therefore 2 ^ { x } + 3 ^ { x } = 4 ^ { x } \Rightarrow ( \frac { 1 } { 2 } ) ^ { x } + ( \frac { 3 } { 4 } ) ^ { x } = 1 } \\ { g ( x ) = ( \frac { 1 } { 2 } ) ^ { x } + ( \frac { 3 } { 4 } ) ^ { x } \downarrow } \\ { g ( 2 ) = 2 \quad g ( \infty ) < 1 } \end{array}
+$$
 
 所以$g(x)=1$有唯一解，对应方程的唯一解.
 ### 例题 3.10

@@ -55,7 +55,9 @@ $ABCD$为圆内接四边形,求证:$\triangle ABC,\triangle CDA,\triangle BCD,\t
 
 $ABCD$四点共圆的等价条件是:
 
-$$\frac{z_2-z_1}{z_3-z_1}:\frac{z_2-z_4}{z_3-z_4}\in\R$$
+$$
+\frac{z_2-z_1}{z_3-z_1}:\frac{z_2-z_4}{z_3-z_4}\in\R
+$$
 
 在这个条件下,结论相当于:
 
@@ -175,7 +177,9 @@ $\sin(x+\frac{\pi}{3})=\frac{\sqrt{3}}{2}$,得$x+\frac{\pi}{3}=\frac{\pi}{3}+2k\
 $Solve:x^5+10x^3+20x-4=0$
 巧妙换元:$x=z-\frac{2}{z},z\in C$
 
-$$z^5-\frac{32}{z^5}-4=0$$
+$$
+z^5-\frac{32}{z^5}-4=0
+$$
 
 解得:$z^5=-4\text{ or }8$
 
@@ -331,7 +335,9 @@ $$\begin{gathered}
 
 或者依赖于特殊角:
 
-$$\sin18\degree=\frac{\sqrt{5}-1}{4}$$
+$$
+\sin18\degree=\frac{\sqrt{5}-1}{4}
+$$
 
 $$\begin{gathered}
   \cos\frac{2}{5}\pi+\cos\frac{4}{5}\pi\\

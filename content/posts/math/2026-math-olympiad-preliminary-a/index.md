@@ -153,7 +153,9 @@ $$f(n,b)=\frac{b}{n}+\frac{1}{1+\frac{b}{n}}\\
 1+\frac{b}{n}\gt1\\
 \therefore b\uparrow,f(n,b)\uparrow$$
 
-$$S\le f(n,b)\le f(n,n-1)=2-\frac1n+\frac{1}{2-\frac1n}$$
+$$
+S\le f(n,b)\le f(n,n-1)=2-\frac1n+\frac{1}{2-\frac1n}
+$$
 
 令$g(n)=2-\frac1n+\frac{1}{2-\frac1n}-\frac12$
 
@@ -163,7 +165,9 @@ $$S\le f(n,b)\le f(n,n-1)=2-\frac1n+\frac{1}{2-\frac1n}$$
 
 令$m=2n-1\le 30$，则$n\le15$，有:
 
-$$g(n)\le g(15)=\frac{14}{15}+\frac{15}{29}=\frac{631}{435}$$
+$$
+g(n)\le g(15)=\frac{14}{15}+\frac{15}{29}=\frac{631}{435}
+$$
 
 这个方法的不严谨之处，在于带入了取等条件$b=n-1,k=1$，但是结果确实是正确的.
 

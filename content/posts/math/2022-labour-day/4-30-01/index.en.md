@@ -158,9 +158,13 @@ $$\begin{gathered}
 ## Example 5
 Find the equation of the straight line passing through the intersection of $y=2x^2-2x-1$ and $y=-5x^2+2x+3$.
 
-$$5y+2y=5(2x^2-2x-1)+2(-5x^2+2x+3)=-6x+1$$
+$$
+5y+2y=5(2x^2-2x-1)+2(-5x^2+2x+3)=-6x+1
+$$
 
-$$y=\frac{-6}{7}x+\frac{1}{7}$$
+$$
+y=\frac{-6}{7}x+\frac{1}{7}
+$$
 
 Another method:
 
@@ -242,7 +246,9 @@ The chord length is constant, find the equation of the straight line l.
 
 Set point $A(2pu^2,2pu),B(2pv^2,2pv),k_{AB}=\frac{u-v}{u^2-v^2}=\frac{1}{u+v}$
 
-$$l_{D}:y=-(u+v)[x-p(u^2+v^2)]+p(u+v)$$
+$$
+l_{D}:y=-(u+v)[x-p(u^2+v^2)]+p(u+v)
+$$
 
 Let $y=0,a=x=p(u^2+v^2+1)$
 
@@ -258,7 +264,9 @@ $a=\frac{m+p}{2}=2p,D(2p,0)$
 
 $A(2pu^2,2pu)$, equation of circle with AD as diameter:
 
-$$(x-2pu^2)(x-2p)+(y-2pu)y=0$$
+$$
+(x-2pu^2)(x-2p)+(y-2pu)y=0
+$$
 
 Assume $l:x=k$ and enter the equation of the circle:
 
@@ -363,13 +371,17 @@ That is: $k^2+1=(2t^2-1)^2k^2-4t(2t^2-1)k+4t^2$
 
 Simplify: $4t^2(t^2-1)k^2-4t(2t^2-1)k+(4t^2-1)=0(*)$
 
-$$\Delta=16t^2(2t^2-1)^2-16t^2(4t^2-1)(t^2-1)=16t^4$$
+$$
+\Delta=16t^2(2t^2-1)^2-16t^2(4t^2-1)(t^2-1)=16t^4
+$$
 
 Let the two roots of (*) be $k_1,k_2$.
 
 Let $x=0,y=-2t^2k+2t+1$, then $|BC|=2t^2|k_1-k_2|=2t^2\frac{4t^2}{4t^2|t^2-1|}=\frac{2t^2}{|t^2-1|},h=2t^2$
 
-$$S_{\triangle PBC}=\frac{1}{2}|BC|h=\frac{2t^4}{|t^2-1|}\ge8(t=\pm\sqrt{2})$$
+$$
+S_{\triangle PBC}=\frac{1}{2}|BC|h=\frac{2t^4}{|t^2-1|}\ge8(t=\pm\sqrt{2})
+$$
 
 ## Example 11
 Assume that the eccentricity of the ellipse \(C: \frac{x^2}{a^2} + \frac{y^2}{b^2} = 1 (a > b > 0)\) is \(e = \frac{\sqrt{3}}{2}\), and the straight line \(y = x + \sqrt{2}\) is tangent to the circle \(O\) with the origin as the center and the minor axis length of the ellipse \(C\) as the radius.
@@ -502,9 +514,13 @@ In the xOy coordinate plane, $\angle AOB=\frac{\pi}{3}$, side AB moves on the st
 
 Assume B is above A, $\angle XOB=\theta$
 
-$$B(3,3\tan\theta),A(3,3\tan(\theta-\frac{\pi}{3}))$$
+$$
+B(3,3\tan\theta),A(3,3\tan(\theta-\frac{\pi}{3}))
+$$
 
-$$y=\frac{3}{2}(\tan\theta+\tan(\theta-\frac{\pi}{3}))$$
+$$
+y=\frac{3}{2}(\tan\theta+\tan(\theta-\frac{\pi}{3}))
+$$
 
 The mid-perpendicular line of OA: $y=-\cot\theta(x-\frac{3}{2})+\frac{3}{2}\tan\theta$
 

@@ -141,7 +141,9 @@ $$\begin{gathered}
 
 熟知天体运动的轨道方程为:
 
-$$\boxed{\frac{\frac{L^2}{GMm^2}}{1+\sqrt{1+\frac{2EL^2}{G^2M^2m^3}}\cos\theta}}$$
+$$
+\boxed{\frac{\frac{L^2}{GMm^2}}{1+\sqrt{1+\frac{2EL^2}{G^2M^2m^3}}\cos\theta}}
+$$
 
 $$\begin{gathered}
   e_0=\sqrt{1+\frac{2E_0L_0^2}{G^2M^2m^3}}=0\\
@@ -266,7 +268,9 @@ $$\begin{gathered}
 
 由角动量守恒:
 
-$$v_ar_n=v_br_f$$
+$$
+v_ar_n=v_br_f
+$$
 
 所以:$\frac{v_a}{v_b}=\frac{r_f}{r_n}\in[4,9]$
 
@@ -296,7 +300,9 @@ $$\begin{gathered}
 
 不难看出,可以两质点间的万有引力**等效**为在P点放一个质量为$\frac{m}{4}$的质点.
 
-$$\frac{a^3}{T^2}=\frac{G(\frac{1}{4}m)}{4\pi^2}$$
+$$
+\frac{a^3}{T^2}=\frac{G(\frac{1}{4}m)}{4\pi^2}
+$$
 
 而半长轴$a=\frac{d+l}{4}$,解得:$T=\pi\sqrt{\frac{16(\frac{l+d}{4})^3}{Gm}}=\pi\sqrt{\frac{(l+d)^3}{4Gm}}$
 

@@ -89,7 +89,9 @@ $$\begin{gathered}
 
 ## 二:万有引力定律
 对于质量分别为$M,m$的两质点:
-$$\boxed{F=\frac{GMm}{r^2}}$$
+$$
+\boxed{F=\frac{GMm}{r^2}}
+$$
 
 $G=6.67\times 10^{-11}N\cdot m^2\cdot kg^{-2}$
 
@@ -120,7 +122,9 @@ $$\begin{gathered}
 
 考虑补全A为一个假想球A':
 
-$$F=\frac{GM\frac{M}{8}}{(\frac{5}{2}R)^2}-\frac{G\frac{M}{8}\frac{M}{8}}{(2R)^2}$$
+$$
+F=\frac{GM\frac{M}{8}}{(\frac{5}{2}R)^2}-\frac{G\frac{M}{8}\frac{M}{8}}{(2R)^2}
+$$
 
 ### 例2
 计算近地卫星,同步卫星,赤道上居民的运动参量:
@@ -296,18 +300,24 @@ $$\begin{gathered}
 #### 情况一
 ![alt text](image-10.png)
 
-$$\frac{Gmm}{r^2}+\frac{Gmm}{(2r)^2}=m\frac{4\pi^2}{T^2}r$$
+$$
+\frac{Gmm}{r^2}+\frac{Gmm}{(2r)^2}=m\frac{4\pi^2}{T^2}r
+$$
 
 #### 情况二
 ![alt text](image-11.png)
 
-$$2\frac{\sqrt{3}}{2}\frac{Gmm}{(\sqrt{3}r)^2}=m\frac{4\pi^2}{T^2}r$$
+$$
+2\frac{\sqrt{3}}{2}\frac{Gmm}{(\sqrt{3}r)^2}=m\frac{4\pi^2}{T^2}r
+$$
 
 ## 三:天体能量
 ### 引力势能
 设无穷远处为势能零点,则质量为$M,m$的质点之间引力势能为:
 
-$$\boxed{E=-\frac{GMm}{r}=-W}$$
+$$
+\boxed{E=-\frac{GMm}{r}=-W}
+$$
 
 其中,$W$是$m$从无穷远点运动到$r$处引力做的功.
 
@@ -332,7 +342,9 @@ $$\begin{gathered}
 ### 椭圆轨道总能量
 证明:椭圆轨道的总能量
 
-$$\boxed{E=E_k+E_p=-\frac{GMm}{2a}}$$
+$$
+\boxed{E=E_k+E_p=-\frac{GMm}{2a}}
+$$
 
 根据机械能守恒,只要算出轨道上任意一点的机械能即可.
 
@@ -363,12 +375,16 @@ $$\begin{gathered}
 ### 第一宇宙速度
 $v_1$=7.9km/s,又称**环绕速度**
   
-$$\frac{GMm}{R^2}=m\frac{v_1^2}{R},v_1=\sqrt{gr}$$
+$$
+\frac{GMm}{R^2}=m\frac{v_1^2}{R},v_1=\sqrt{gr}
+$$
 
 ### 第二宇宙速度
 $v_2=11.2km/s$,又称**脱离速度**
 
-$$E=\frac{1}{2}mv_2^2+(-\frac{GMm}{R})=0,v_2=\sqrt{2gr}=\sqrt{2}v_1$$
+$$
+E=\frac{1}{2}mv_2^2+(-\frac{GMm}{R})=0,v_2=\sqrt{2gr}=\sqrt{2}v_1
+$$
 
 ### 第三宇宙速度
 $v_3=16.7km/s$,又称**逃逸速度**

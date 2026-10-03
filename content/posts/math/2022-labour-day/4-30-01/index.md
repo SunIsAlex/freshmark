@@ -157,9 +157,13 @@ $$\begin{gathered}
 ## 例5
 求过$y=2x^2-2x-1$和$y=-5x^2+2x+3$交点的直线方程.
 
-$$5y+2y=5(2x^2-2x-1)+2(-5x^2+2x+3)=-6x+1$$
+$$
+5y+2y=5(2x^2-2x-1)+2(-5x^2+2x+3)=-6x+1
+$$
 
-$$y=\frac{-6}{7}x+\frac{1}{7}$$
+$$
+y=\frac{-6}{7}x+\frac{1}{7}
+$$
 
 另法:
 
@@ -241,7 +245,9 @@ $$\begin{gathered}
 
 设点$A(2pu^2,2pu),B(2pv^2,2pv),k_{AB}=\frac{u-v}{u^2-v^2}=\frac{1}{u+v}$
 
-$$l_{D}:y=-(u+v)[x-p(u^2+v^2)]+p(u+v)$$
+$$
+l_{D}:y=-(u+v)[x-p(u^2+v^2)]+p(u+v)
+$$
 
 令$y=0,a=x=p(u^2+v^2+1)$
 
@@ -257,7 +263,9 @@ $a=\frac{m+p}{2}=2p,D(2p,0)$
 
 $A(2pu^2,2pu)$,以AD为直径的圆方程:
 
-$$(x-2pu^2)(x-2p)+(y-2pu)y=0$$
+$$
+(x-2pu^2)(x-2p)+(y-2pu)y=0
+$$
 
 设$l:x=k$,带入圆的方程:
 
@@ -362,13 +370,17 @@ $$\begin{gathered}
 
 化简:$4t^2(t^2-1)k^2-4t(2t^2-1)k+(4t^2-1)=0(*)$
 
-$$\Delta=16t^2(2t^2-1)^2-16t^2(4t^2-1)(t^2-1)=16t^4$$
+$$
+\Delta=16t^2(2t^2-1)^2-16t^2(4t^2-1)(t^2-1)=16t^4
+$$
 
 设(*)的两根为$k_1,k_2$.
 
 令$x=0,y=-2t^2k+2t+1$,则$|BC|=2t^2|k_1-k_2|=2t^2\frac{4t^2}{4t^2|t^2-1|}=\frac{2t^2}{|t^2-1|},h=2t^2$
 
-$$S_{\triangle PBC}=\frac{1}{2}|BC|h=\frac{2t^4}{|t^2-1|}\ge8(t=\pm\sqrt{2})$$
+$$
+S_{\triangle PBC}=\frac{1}{2}|BC|h=\frac{2t^4}{|t^2-1|}\ge8(t=\pm\sqrt{2})
+$$
 
 ## 例11
 设椭圆 \(C: \frac{x^2}{a^2} + \frac{y^2}{b^2} = 1 (a > b > 0)\) 的离心率为 \(e = \frac{\sqrt{3}}{2}\)，直线 \(y = x + \sqrt{2}\) 与以原点为圆心、椭圆 \(C\) 的短轴长为半径的圆 \(O\) 相切。
@@ -501,9 +513,13 @@ $$\begin{gathered}
 
 设B在A的上方,$\angle XOB=\theta$
 
-$$B(3,3\tan\theta),A(3,3\tan(\theta-\frac{\pi}{3}))$$
+$$
+B(3,3\tan\theta),A(3,3\tan(\theta-\frac{\pi}{3}))
+$$
 
-$$y=\frac{3}{2}(\tan\theta+\tan(\theta-\frac{\pi}{3}))$$
+$$
+y=\frac{3}{2}(\tan\theta+\tan(\theta-\frac{\pi}{3}))
+$$
 
 OA的中垂线:$y=-\cot\theta(x-\frac{3}{2})+\frac{3}{2}\tan\theta$
 

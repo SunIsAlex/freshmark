@@ -48,7 +48,9 @@ featured: false
 
 由电极电势$E^\ominus(Mn^{2+}/Mn)=-1.18V$知锰是活泼金属,能溶解在冷的非氧化性稀酸里,例如:
 
-$$\ce{Mn + 2HCl(aq)->MnCl2 + H2 ^}$$
+$$
+\ce{Mn + 2HCl(aq)->MnCl2 + H2 ^}
+$$
 
 在室温下,锰对非金属的反应活性不高,但加热时容易发生反应:
 - 在空气中加热生成$\ce{Mn3O4}$
@@ -93,7 +95,9 @@ $Mn(II)$的氢氧化物和多数弱酸盐难溶.
 ## 还原性
 在**碱性**溶液中,$Mn(II)$还原性较强,极易被氧化为$Mn(IV)$.
 
-$$E^\ominus[\ce{MnO2/Mn(OH)2}]=-0.05V,E^\ominus(\ce{O2/OH-})=0.40V$$
+$$
+E^\ominus[\ce{MnO2/Mn(OH)2}]=-0.05V,E^\ominus(\ce{O2/OH-})=0.40V
+$$
 $$
 \mathrm{Mn^{2+}} \xrightarrow{\mathrm{OH^-}} \mathrm{Mn(OH)_2} \text{ (white)} \xrightarrow{\mathrm{O_2}} \mathrm{MnO(OH)} \text{ (brown)} \xrightarrow{\mathrm{O_2}} \mathrm{MnO_2 \cdot nH_2O}
 $$
@@ -103,9 +107,13 @@ $\ce{Mn(OH)2}$极易被氧化,甚至水中少量溶解氧也可以将其氧化�
 
 $\ce{MnS,MnCO3,MnC2O4}$沉淀在空气中放置或加热,都会被空气中的氧气氧化为$\ce{MnO(OH)2}$.
 
-$$\ce{MnS + O2 + H2O -> MnO(OH)2 + S}$$
+$$
+\ce{MnS + O2 + H2O -> MnO(OH)2 + S}
+$$
 
-$$\ce{2MnCO3 + O2 + 2H2O ->[\triangle] 2MnO(OH)2 + 2CO2}$$
+$$
+\ce{2MnCO3 + O2 + 2H2O ->[\triangle] 2MnO(OH)2 + 2CO2}
+$$
 
 
 
@@ -121,7 +129,9 @@ $$
 
 在**酸性**溶液中,$Mn(II)$的还原性较弱:
 
-$$E^\ominus(\ce{MnO4-/Mn^2+)=1.51V}$$
+$$
+E^\ominus(\ce{MnO4-/Mn^2+)=1.51V}
+$$
 
 强氧化剂可以把$\ce{Mn^2+}$氧化为$\ce{MnO4-}$:
 - $\ce{S2O8^2-->[Ag+]SO4^2-}$
@@ -134,13 +144,19 @@ $$E^\ominus(\ce{MnO4-/Mn^2+)=1.51V}$$
 
 $Mn(II)$盐受热分解,若酸根有氧化性,则$Mn(II)$被氧化:
 
-$$\ce{Mn(NO3)2->[\triangle]MnO2 + 2NO2 ^}$$
+$$
+\ce{Mn(NO3)2->[\triangle]MnO2 + 2NO2 ^}
+$$
 
-$$\ce{Mn(ClO4)2 ->[\triangle] MnO2 + Cl2 ^ + 3O2 ^}$$
+$$
+\ce{Mn(ClO4)2 ->[\triangle] MnO2 + Cl2 ^ + 3O2 ^}
+$$
 
 类比一下,高氯酸亚硝酰$\ce{NOClO4}$的一种分解方式为:
 
-$$\ce{2NOClO4 ->[\triangle] N2O4 + Cl2 ^ + 3O2 ^}$$
+$$
+\ce{2NOClO4 ->[\triangle] N2O4 + Cl2 ^ + 3O2 ^}
+$$
 
 ## 配位化合物
 ### 弱场配体:高自旋八面体配位化合物
@@ -176,7 +192,9 @@ $\ce{MnO2}$在通常情况下很稳定,不溶于$\ce{H2O}$,稀酸和稀碱,且�
 
 $\ce{MnO2}$与$\ce{NaOH}$隔绝空气共熔,生成亚锰酸盐$\ce{Na2MnO3}$.
 
-$$\ce{MnO2 + 2NaOH ->[\Delta]Na2MnO3 + H2O}$$
+$$
+\ce{MnO2 + 2NaOH ->[\Delta]Na2MnO3 + H2O}
+$$
 
 $\ce{MnO2}$与$\ce{NaOH}$也能部分发生相同反应,说明$\ce{MnO2}$具有酸性.
 
@@ -258,21 +276,31 @@ $$
 
 在酸性溶液中，$\mathrm{KMnO_4}$ 是很强的氧化剂：
 
-$$\mathrm{MnO_4^-} + 8\mathrm{H^+} + 5\mathrm{e^-} \xlongequal{} \mathrm{Mn^{2+}} + 4\mathrm{H_2O} \quad E^\ominus = 1.51 \text{ V}$$
+$$
+\mathrm{MnO_4^-} + 8\mathrm{H^+} + 5\mathrm{e^-} \xlongequal{} \mathrm{Mn^{2+}} + 4\mathrm{H_2O} \quad E^\ominus = 1.51 \text{ V}
+$$
 
 它可以氧化 $\mathrm{Cl^-}, \mathrm{Cr^{3+}}, \mathrm{I_2}$ 等：
 
-$$2\mathrm{MnO_4^-} + 16\mathrm{H^+} + 10\mathrm{Cl^-} \xlongequal{} 2\mathrm{Mn^{2+}} + 5\mathrm{Cl_2} \uparrow + 8\mathrm{H_2O}$$
+$$
+2\mathrm{MnO_4^-} + 16\mathrm{H^+} + 10\mathrm{Cl^-} \xlongequal{} 2\mathrm{Mn^{2+}} + 5\mathrm{Cl_2} \uparrow + 8\mathrm{H_2O}
+$$
 
-$$6\mathrm{MnO_4^-} + 10\mathrm{Cr^{3+}} + 11\mathrm{H_2O} \xlongequal{} 6\mathrm{Mn^{2+}} + 5\mathrm{Cr_2O_7^{2-}} + 22\mathrm{H^+}$$
+$$
+6\mathrm{MnO_4^-} + 10\mathrm{Cr^{3+}} + 11\mathrm{H_2O} \xlongequal{} 6\mathrm{Mn^{2+}} + 5\mathrm{Cr_2O_7^{2-}} + 22\mathrm{H^+}
+$$
 
-$$2\mathrm{MnO_4^-} + \mathrm{I_2} + 4\mathrm{H^+} \xlongequal{} 2\mathrm{Mn^{2+}} + 2\mathrm{IO_3^-} + 2\mathrm{H_2O}$$
+$$
+2\mathrm{MnO_4^-} + \mathrm{I_2} + 4\mathrm{H^+} \xlongequal{} 2\mathrm{Mn^{2+}} + 2\mathrm{IO_3^-} + 2\mathrm{H_2O}
+$$
 
 $\mathrm{KMnO_4}$ 与盐酸反应可用于实验室制备氯气，但不能实现随制随停，加之 $\mathrm{KMnO_4}$ 比 $\mathrm{MnO_2}$ 价格高，故实验室更多采用 $\mathrm{MnO_2}$ 与浓盐酸反应制备氯气。
 
 酸性条件下，$\mathrm{KMnO_4}$ 与 $\mathrm{H_2C_2O_4}$ 定量反应，可用于标定 $\mathrm{KMnO_4}$ 溶液的浓度：
 
-$$2\mathrm{MnO_4^-} + 6\mathrm{H^+} + 5\mathrm{H_2C_2O_4} \xlongequal{} 2\mathrm{Mn^{2+}} + 10\mathrm{CO_2} \uparrow + 8\mathrm{H_2O}$$
+$$
+2\mathrm{MnO_4^-} + 6\mathrm{H^+} + 5\mathrm{H_2C_2O_4} \xlongequal{} 2\mathrm{Mn^{2+}} + 10\mathrm{CO_2} \uparrow + 8\mathrm{H_2O}
+$$
 
 $\mathrm{KMnO_4}$ 与 $\mathrm{Fe^{2+}}$ 定量反应，可用于测定 $\mathrm{Fe^{2+}}$ 的含量：
 
@@ -286,21 +314,29 @@ $\mathrm{KMnO_4}$ 作为一种氧化剂被应用于许多有机制备反应中�
 
 高锰酸盐氧化性强，不稳定，在酸性溶液中明显分解，在中性或微碱性溶液中缓慢分解：
 
-$$4\mathrm{MnO_4^-} + 4\mathrm{H^+} \xlongequal{} 4\mathrm{MnO_2} \downarrow + 3\mathrm{O_2} \uparrow + 2\mathrm{H_2O}$$
+$$
+4\mathrm{MnO_4^-} + 4\mathrm{H^+} \xlongequal{} 4\mathrm{MnO_2} \downarrow + 3\mathrm{O_2} \uparrow + 2\mathrm{H_2O}
+$$
 
-$$4\mathrm{MnO_4^-} + 4\mathrm{OH^-} \xlongequal{} 4\mathrm{MnO_4^{2-}} + \mathrm{O_2} \uparrow + 2\mathrm{H_2O}$$
+$$
+4\mathrm{MnO_4^-} + 4\mathrm{OH^-} \xlongequal{} 4\mathrm{MnO_4^{2-}} + \mathrm{O_2} \uparrow + 2\mathrm{H_2O}
+$$
 
 光对高锰酸钾分解起催化作用，因此高锰酸钾溶液应当储存在<span class="chemical-color" data-color="brown">棕色</span>瓶中。由于分解反应的存在，其浓度会随时间而变化，所以高锰酸钾标准溶液需在使用前重新标定。
 
 在固相中高锰酸盐稳定性比在溶液中高，但受热时也将分解。大约 $200\ ^\circ\mathrm{C}$ 时分解为 $\mathrm{K_2MnO_4}$ 和 $\mathrm{MnO_2}$，并放出 $\mathrm{O_2}$：
 
-$$2\mathrm{KMnO_4(s)} \xlongequal{200\ ^\circ\mathrm{C}} \mathrm{K_2MnO_4} + \mathrm{MnO_2} + \mathrm{O_2} \uparrow$$
+$$
+2\mathrm{KMnO_4(s)} \xlongequal{200\ ^\circ\mathrm{C}} \mathrm{K_2MnO_4} + \mathrm{MnO_2} + \mathrm{O_2} \uparrow
+$$
 
 将 $\mathrm{KMnO_4}$ 放入干燥试管中小火加热，有爆鸣声，爆鸣声停止后，观察到固体不再有原来的晶体光泽；向试管中加入少量水后摇动试管，试管壁呈<span class="chemical-color" data-color="green">绿色</span>，说明 $\mathrm{KMnO_4}$ 分解产物中有 $\mathrm{K_2MnO_4}$。加入大量水后溶液立即变为<span class="chemical-color" data-color="purple">紫色</span>的，因为 $\mathrm{K_2MnO_4}$ 歧化，有 $\mathrm{KMnO_4}$ 生成。
 
 $\mathrm{KMnO_4}$ 和冷的浓硫酸作用生成<span class="chemical-color" data-color="dark-green">暗绿色</span>油状七氧化二锰（$\mathrm{Mn_2O_7}$）：
 
-$$2\mathrm{KMnO_4} + \mathrm{H_2SO_4(浓)} \xlongequal{低温} \mathrm{Mn_2O_7} + \mathrm{K_2SO_4} + \mathrm{H_2O}$$
+$$
+2\mathrm{KMnO_4} + \mathrm{H_2SO_4(浓)} \xlongequal{低温} \mathrm{Mn_2O_7} + \mathrm{K_2SO_4} + \mathrm{H_2O}
+$$
 
 $\mathrm{Mn_2O_7}$ 遇有机物即燃烧，受热爆炸分解，常温下缓慢放出 $\mathrm{O_2}$，转化为 $\mathrm{MnO_2}$。
 
@@ -310,11 +346,15 @@ $\mathrm{Mn_2O_7}$ 遇有机物即燃烧，受热爆炸分解，常温下缓慢�
 
 首先制取锰酸钾，将 $\mathrm{MnO_2}$ 与 $\mathrm{KClO_3}$、$\mathrm{KOH}$ 的混合物加热共熔(2026北京化学高考)，得到<span class="chemical-color" data-color="green">绿色</span>产物锰酸钾：
 
-$$3\mathrm{MnO_2} + 6\mathrm{KOH} + \mathrm{KClO_3} \xlongequal{共熔} 3\mathrm{K_2MnO_4} + \mathrm{KCl} + 3\mathrm{H_2O}$$
+$$
+3\mathrm{MnO_2} + 6\mathrm{KOH} + \mathrm{KClO_3} \xlongequal{共熔} 3\mathrm{K_2MnO_4} + \mathrm{KCl} + 3\mathrm{H_2O}
+$$
 
 用强氧化剂氧化 $\mathrm{K_2MnO_4}$，可以得到 $\mathrm{KMnO_4}$。例如，使用氯气为氧化剂：
 
-$$2 \mathrm { M n O _ { 4 } ^ { 2 - } } + \mathrm { C l _ { 2 } } \xlongequal { } 2 \mathrm { M n O _ { 4 } ^ { - } } + 2 \mathrm { C l ^ { - } }$$
+$$
+2 \mathrm { M n O _ { 4 } ^ { 2 - } } + \mathrm { C l _ { 2 } } \xlongequal { } 2 \mathrm { M n O _ { 4 } ^ { - } } + 2 \mathrm { C l ^ { - } }
+$$
 
 生产中经常采用电解法, 电解 $\mathrm{K}_{2} \mathrm{MnO}_{4}$ 溶液得到 $\mathrm{KMnO}_{4}$ :
 
@@ -434,7 +474,9 @@ A. 实验①中还可能观察到钠块浮在溶液表面，剧烈燃烧，发�
 B. 实验②中的现象说明实验①中溶液变色的原因与产生的气体无关
 
 C. 实验③中的现象说明实验①中可能发生的反应：
-$$4\mathrm{MnO_4^-} + 4\mathrm{OH^-} \xlongequal{} 4\mathrm{MnO_4^{2-}} + \mathrm{O_2} \uparrow + 2\mathrm{H_2O}$$
+$$
+4\mathrm{MnO_4^-} + 4\mathrm{OH^-} \xlongequal{} 4\mathrm{MnO_4^{2-}} + \mathrm{O_2} \uparrow + 2\mathrm{H_2O}
+$$
 
 D. 上述实验能证明溶液中的 $\mathrm{MnO_4^-}$ 可以被金属钠还原
 

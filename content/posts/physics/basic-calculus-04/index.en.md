@@ -54,7 +54,9 @@ $$\begin{gathered}
 
 Constructed differential equation:
 
-$$\frac{d^2\vec{x}}{dt^2}=\frac{-k}{m}x$$
+$$
+\frac{d^2\vec{x}}{dt^2}=\frac{-k}{m}x
+$$
 
 Alternative $x(t)$:
 - $A\cos (\omega t+\phi)$
@@ -310,9 +312,13 @@ The sun/earth motion can be regarded as the translational motion of the sun-eart
 Therefore, the force will produce translational motion with respect to the center of mass; the torque of the force will cause rotation.
 
 ### Newton’s second law of point system
-$$\boxed{(\sum m)a_c=\sum{F}}$$
+$$
+\boxed{(\sum m)a_c=\sum{F}}
+$$
 ### Koenig (center of mass motion) theorem
-$$\boxed{\sum{\frac{1}{2}m_iv_i^2}=\frac{1}{2}Mv^2+\sum{\frac{1}{2}m_iv_{ic}^2}}$$
+$$
+\boxed{\sum{\frac{1}{2}m_iv_i^2}=\frac{1}{2}Mv^2+\sum{\frac{1}{2}m_iv_{ic}^2}}
+$$
 
 Through $a_c$, it is not difficult to find $v_c$; now we hope to find the angular velocity of all particles rotating around the center of mass $\omega$ through the moment of the combined external force.
 
@@ -320,7 +326,9 @@ Torque $M=Fr$, angular acceleration $\beta=\frac{d\omega}{dt}$.
 
 Definition: $M=I\beta$, where $I$ is the moment of inertia.
 
-$$\boxed{I=\sum{m_ir_i^2}}$$
+$$
+\boxed{I=\sum{m_ir_i^2}}
+$$
 
 The calculation formula is as above, where $r_i$ is the distance from particle i to the center of mass.
 
@@ -341,7 +349,9 @@ $$\begin{gathered}
 ### Parallel axis theorem of moment of inertia
 The moment of inertia of a rigid body about any axis of rotation is equal to the sum of the moment of inertia of a rigid body about an axis parallel to the center of mass and the product of the total mass of the rigid body and the square of the vertical distance between the two axes.
 
-$$\boxed{I=I_c+Md^2}$$
+$$
+\boxed{I=I_c+Md^2}
+$$
 
 For example 11, $I=I_c+m(\frac{1}{2}l)^2=\frac{1}{12}ml^2+\frac{1}{4}ml^2=\frac{1}{3}ml^2$
 

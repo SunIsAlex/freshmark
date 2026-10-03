@@ -142,7 +142,9 @@ It is easy to know that the new motion trajectory of the spacecraft is a hyperbo
 
 The well-known orbital equation of celestial motion is:
 
-$$\boxed{\frac{\frac{L^2}{GMm^2}}{1+\sqrt{1+\frac{2EL^2}{G^2M^2m^3}}\cos\theta}}$$
+$$
+\boxed{\frac{\frac{L^2}{GMm^2}}{1+\sqrt{1+\frac{2EL^2}{G^2M^2m^3}}\cos\theta}}
+$$
 
 $$\begin{gathered}
   e_0=\sqrt{1+\frac{2E_0L_0^2}{G^2M^2m^3}}=0\\
@@ -267,7 +269,9 @@ $$\begin{gathered}
 
 From conservation of angular momentum:
 
-$$v_ar_n=v_br_f$$
+$$
+v_ar_n=v_br_f
+$$
 
 So: $\frac{v_a}{v_b}=\frac{r_f}{r_n}\in[4,9]$
 
@@ -297,7 +301,9 @@ The mass of the two particle points is m, and the gravitational constant is G. I
 
 It is not difficult to see that the gravitational force between two particles can be **equivalent** to placing a particle with mass $\frac{m}{4}$ at point P.
 
-$$\frac{a^3}{T^2}=\frac{G(\frac{1}{4}m)}{4\pi^2}$$
+$$
+\frac{a^3}{T^2}=\frac{G(\frac{1}{4}m)}{4\pi^2}
+$$
 
 And the semi-major axis $a=\frac{d+l}{4}$, the solution is: $T=\pi\sqrt{\frac{16(\frac{l+d}{4})^3}{Gm}}=\pi\sqrt{\frac{(l+d)^3}{4Gm}}$
 

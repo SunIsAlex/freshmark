@@ -93,19 +93,29 @@ It is easy to prove that the limit of the four arithmetic operations is equal to
 
 Calculate the limit (the limit does not necessarily exist)
 
-$$\lim_{x \to 5} \frac{1}{x-5}$$
+$$
+\lim_{x \to 5} \frac{1}{x-5}
+$$
 $x-5\to 0$, there is no limit
-$$\lim_{x \to 0} \frac{x^2}{\sin x}$$
+$$
+\lim_{x \to 0} \frac{x^2}{\sin x}
+$$
 $\lim_{x \to 0} \frac{x^2}{\sin x}=\frac{\lim_{x\to 0}x}{\lim_{x\to 0}\frac{\sin x}{x}}=\frac{0}{1}=0$
-$$\lim_{x \to \infty} \frac{\sin x}{x}$$
+$$
+\lim_{x \to \infty} \frac{\sin x}{x}
+$$
 According to the pinch theorem:
 
 $\frac{-1}{|x|}\le \frac{\sin x}{x}\le \frac{1}{|x|}$
 
 The left and right limits are equal to 0, so the required limit is 0.
-$$\lim_{x \to \infty} \frac{10x^2 + 203x}{3x^2 + 5x + 7}$$
+$$
+\lim_{x \to \infty} \frac{10x^2 + 203x}{3x^2 + 5x + 7}
+$$
 $\lim_{x \to \infty} \frac{10x^2 + 203x}{3x^2 + 5x + 7}=\lim_{x \to \infty} \frac{10 + 203\frac{1}{x}}{3 + 5\frac{1}{x} + 7\frac{1}{x^2}}=\frac{\lim_{x \to \infty}(10 + 203\frac{1}{x})}{\lim_{x \to \infty}(3 + 5\frac{1}{x} + 7\frac{1}{x^2})}=\frac{10}{3}1$
-$$\lim_{x\to 0}\frac{1-\cos x}{x^2}$$
+$$
+\lim_{x\to 0}\frac{1-\cos x}{x^2}
+$$
 $\lim_{x\to 0}\frac{1-\cos x}{x^2}=\lim_{x\to 0}\frac{2\sin^2 \frac{x}{2}}{x^2}=\frac{1}{2}\lim_{x\to 0}(\frac{\sin \frac{x}{2}}{\frac{x}{2}})(\frac{\sin \frac{x}{2}}{\frac{x}{2}})=\frac{1}{2}(\lim_{x\to 0}(\frac{\sin \frac{x}{2}}{\frac{x}{2}}))^2=\frac{1}{2}\times1^2=\frac{1}{2}$
 
 ## Derivative
@@ -116,7 +126,9 @@ Considering the function $f(x)=x^2$, what is the **instantaneous rate of change*
 
 Let’s first consider the **average rate of change** from $x=1$ to $x=1+\Delta x$:
 
-$$\frac{f(1+\Delta x)-f(1)}{\Delta x}=\frac{(1+\Delta x)^2-1}{\Delta x}=2+\Delta x$$
+$$
+\frac{f(1+\Delta x)-f(1)}{\Delta x}=\frac{(1+\Delta x)^2-1}{\Delta x}=2+\Delta x
+$$
 
 When $\Delta x\to 0$, the average rate of change approaches $2$, which is the **instantaneous rate of change** of $f(x)=x^2$ at $x=1$, that is, the **derivative**.
 
@@ -130,7 +142,9 @@ Definition $f'(x)=\lim_{\Delta x\to0}\frac{\Delta f}{\Delta x}=\frac{df}{dx} $
 
 If the limit
 
-$$\lim_{\Delta x\to 0}\frac{f(x_0+\Delta x)-f(x_0)}{\Delta x}$$
+$$
+\lim_{\Delta x\to 0}\frac{f(x_0+\Delta x)-f(x_0)}{\Delta x}
+$$
 
 exists, then $f(x)$ is said to be **differentiable** at $x_0$, and this limit value is called the **derivative** of $f(x)$ at $x_0$, denoted as $f'(x_0)$ or $\left.\dfrac{\mathrm{d}f}{\mathrm{d}x}\right|_{x=x_0}$.
 
@@ -153,7 +167,9 @@ Starting from the definition, the following common conclusions can be derived:
 
 #### Example: Derivation from definition $(x^2)'=2x$
 
-$$\lim_{\Delta x\to 0}\frac{(x+\Delta x)^2-x^2}{\Delta x}=\lim_{\Delta x\to 0}\frac{2x\Delta x+(\Delta x)^2}{\Delta x}=\lim_{\Delta x\to 0}(2x+\Delta x)=2x$$
+$$
+\lim_{\Delta x\to 0}\frac{(x+\Delta x)^2-x^2}{\Delta x}=\lim_{\Delta x\to 0}\frac{2x\Delta x+(\Delta x)^2}{\Delta x}=\lim_{\Delta x\to 0}(2x+\Delta x)=2x
+$$
 
 ## Four arithmetic rules for derivatives
 
@@ -169,13 +185,19 @@ Assume that $f(x),g(x)$ can all be derived, then:
 
 ### Derivation of the multiplication rule
 
-$$[f(x)g(x)]'=\lim_{\Delta x\to 0}\frac{f(x+\Delta x)g(x+\Delta x)-f(x)g(x)}{\Delta x}$$
+$$
+[f(x)g(x)]'=\lim_{\Delta x\to 0}\frac{f(x+\Delta x)g(x+\Delta x)-f(x)g(x)}{\Delta x}
+$$
 
 Adding and subtracting the same term $f(x)g(x+\Delta x)$:
 
-$$=\lim_{\Delta x\to 0}\frac{f(x+\Delta x)-f(x)}{\Delta x}\cdot g(x+\Delta x)+f(x)\cdot\frac{g(x+\Delta x)-g(x)}{\Delta x}$$
+$$
+=\lim_{\Delta x\to 0}\frac{f(x+\Delta x)-f(x)}{\Delta x}\cdot g(x+\Delta x)+f(x)\cdot\frac{g(x+\Delta x)-g(x)}{\Delta x}
+$$
 
-$$=f'(x)g(x)+f(x)g'(x)$$
+$$
+=f'(x)g(x)+f(x)g'(x)
+$$
 
 ### Example questions
 
@@ -185,7 +207,9 @@ Find the derivative of $f(x)=x^3\sin x$.
 
 By the multiplication rule:
 
-$$f'(x)=(x^3)'\sin x+x^3(\sin x)'=3x^2\sin x+x^3\cos x$$
+$$
+f'(x)=(x^3)'\sin x+x^3(\sin x)'=3x^2\sin x+x^3\cos x
+$$
 
 #### Example 2
 
@@ -193,7 +217,9 @@ Find the derivative ($x\ne 0$) of $f(x)=\dfrac{\sin x}{x}$.
 
 By the division rule:
 
-$$f'(x)=\frac{(\sin x)'\cdot x-\sin x\cdot(x)'}{x^2}=\frac{x\cos x-\sin x}{x^2}$$
+$$
+f'(x)=\frac{(\sin x)'\cdot x-\sin x\cdot(x)'}{x^2}=\frac{x\cos x-\sin x}{x^2}
+$$
 
 #### Example 3
 
@@ -201,11 +227,17 @@ Find the derivative of $f(x)=e^x(\sin x+\cos x)$.
 
 By the multiplication rule:
 
-$$f'(x)=(e^x)'(\sin x+\cos x)+e^x(\sin x+\cos x)'$$
+$$
+f'(x)=(e^x)'(\sin x+\cos x)+e^x(\sin x+\cos x)'
+$$
 
-$$=e^x(\sin x+\cos x)+e^x(\cos x-\sin x)$$
+$$
+=e^x(\sin x+\cos x)+e^x(\cos x-\sin x)
+$$
 
-$$=2e^x\cos x$$
+$$
+=2e^x\cos x
+$$
 
 #### Example 4
 
@@ -213,9 +245,13 @@ Find the derivative of $f(x)=\tan x$.
 
 Convert $\tan x=\dfrac{\sin x}{\cos x}$ by the division rule:
 
-$$(\tan x)'=\frac{(\sin x)'\cos x-\sin x(\cos x)'}{\cos^2 x}=\frac{\cos^2 x+\sin^2 x}{\cos^2 x}=\frac{1}{\cos^2 x}=\sec^2 x$$
+$$
+(\tan x)'=\frac{(\sin x)'\cos x-\sin x(\cos x)'}{\cos^2 x}=\frac{\cos^2 x+\sin^2 x}{\cos^2 x}=\frac{1}{\cos^2 x}=\sec^2 x
+$$
 
-$$\boxed{(\tan x)'=\sec^2 x}$$
+$$
+\boxed{(\tan x)'=\sec^2 x}
+$$
 
 ## Physical applications of derivatives
 

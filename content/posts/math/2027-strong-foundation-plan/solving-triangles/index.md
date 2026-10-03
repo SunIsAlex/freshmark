@@ -226,7 +226,9 @@ x=\frac{20(a+b)}{3c}\gt\frac{20}{3}$$
 
 为了满足三角形的边条件,我们还需要利用$b+c\gt a$($b\lt a$)
 
-$$x=\frac{20(a-b)}{c}\lt20$$
+$$
+x=\frac{20(a-b)}{c}\lt20
+$$
 
 综上,答案选C
 
@@ -255,11 +257,15 @@ CD=9,BD=5$$
 
 计算内切圆圆心到BC边的距离(这同时也是内切圆圆心到AD的距离):
 
-$$\frac{5+12-13}{2}=2,\frac{12+9-15}{2}=3$$
+$$
+\frac{5+12-13}{2}=2,\frac{12+9-15}{2}=3
+$$
 
 因此,内切圆圆心距离为:
 
-$$\sqrt{(3-2)^2+(2+3)^2}=\sqrt{26}$$
+$$
+\sqrt{(3-2)^2+(2+3)^2}=\sqrt{26}
+$$
 
 ![例题 8.6 的两个直角三角形内心图](example-8-6.svg "例题 8.6 的两个直角三角形内心图")
 
@@ -304,7 +310,9 @@ For 1:
 
 我们回顾一下三角形内的斯特瓦尔特定理:
 
-$$AD^2=\frac{CD\cdot AB^2+BD\cdot AC^2}{BC}-CD\cdot BD$$
+$$
+AD^2=\frac{CD\cdot AB^2+BD\cdot AC^2}{BC}-CD\cdot BD
+$$
 
 设$AC=x,AB=2x,AD=kx,BC=y\in(x,3x)$,有:
 
@@ -354,7 +362,9 @@ BC^2\sin2\theta+4\cos2\theta=5\\
 BC^2\ge3,BC\ge\sqrt3$$
 
 当$BC=\sqrt3$时,$\sin2\theta=\frac{3}{5},\cos2\theta=\frac45$:
-$$\cos\theta=\sqrt{\frac{1+\cos2\theta}{2}}=\frac{3\sqrt{10}}{10}\\k=\frac{4}{3}\cos\theta=\frac{2\sqrt{10}}{5}$$
+$$
+\cos\theta=\sqrt{\frac{1+\cos2\theta}{2}}=\frac{3\sqrt{10}}{10}\\k=\frac{4}{3}\cos\theta=\frac{2\sqrt{10}}{5}
+$$
 
 ![例题 8.8 的角平分线长度与最短边示意图](example-8-8.svg "例题 8.8 的角平分线长度与最短边示意图")
 
@@ -440,7 +450,9 @@ DR:RP:PA=1:3:3$$
 
 同理,根据图形对称性有:
 
-$$\frac{RP}{RA}=\frac12,\frac{RQ}{RF}=\frac34$$
+$$
+\frac{RP}{RA}=\frac12,\frac{RQ}{RF}=\frac34
+$$
 
 于是,线段的比例已知,我们得以大展拳脚:
 
@@ -490,7 +502,9 @@ x=\frac{\sqrt5+1}{2}$$
 
 因为$\angle ABD=\angle CBD$,故$\angle ADC=180^\circ-2\cdot30^\circ=120^\circ,AD=CD=m,AC=\sqrt3m$.
 
-$$S_{ABCD}=\frac12BD(AB+AC)\sin30^\circ=\frac32(AB+AC)$$
+$$
+S_{ABCD}=\frac12BD(AB+AC)\sin30^\circ=\frac32(AB+AC)
+$$
 
 再考虑托勒密定理:
 
@@ -548,13 +562,17 @@ $$
 
 四边形面积是对边乘积的一半,这提醒我们使用托勒密定理:
 
-$$S_{ABCD}\le\frac12AC\cdot BC\le\frac{AB\cdot CD+BC\cdot AD}{2}$$
+$$
+S_{ABCD}\le\frac12AC\cdot BC\le\frac{AB\cdot CD+BC\cdot AD}{2}
+$$
 
 这表明所有等号都成立,即$BC\perp AC,A,B,C,D$四点共圆.
 
 根据图形对称性,有:
 
-$$AB=BC=4,AD=DC$$
+$$
+AB=BC=4,AD=DC
+$$
 
 根据角度求边:
 
@@ -626,7 +644,9 @@ $$2|PA|^2=|PD|^2\\
 
 长度分别为$a\le b\le c$的边能构成三角形的充要条件:
 
-$$a+b\gt c$$
+$$
+a+b\gt c
+$$
 
 那么固定$a$,考察$c$的可能情况数:
 

@@ -52,7 +52,9 @@ Pure manganese can be prepared by reducing $\ce{MnO2}$ or $\ce{Mn3O4}$ through a
 
 The electrode potential $E^\ominus(\ce{Mn^{2+}/Mn})=-1.18\ \mathrm{V}$ shows that manganese is an active metal. It dissolves in cold, dilute, non-oxidizing acids, for example:
 
-$$\ce{Mn + 2HCl(aq)->MnCl2 + H2 ^}$$
+$$
+\ce{Mn + 2HCl(aq)->MnCl2 + H2 ^}
+$$
 
 At room temperature, manganese is not highly reactive toward nonmetals, but it reacts readily on heating:
 
@@ -110,7 +112,9 @@ Note that $\ce{MnS}$ is insoluble in water but dissolves in weak acids such as $
 
 In **alkaline** solution, $\ce{Mn(II)}$ is a fairly strong reducing agent and is readily oxidized to $\ce{Mn(IV)}$.
 
-$$E^\ominus[\ce{MnO2/Mn(OH)2}]=-0.05\ \mathrm{V},\qquad E^\ominus(\ce{O2/OH-})=0.40\ \mathrm{V}$$
+$$
+E^\ominus[\ce{MnO2/Mn(OH)2}]=-0.05\ \mathrm{V},\qquad E^\ominus(\ce{O2/OH-})=0.40\ \mathrm{V}
+$$
 
 $$
 \mathrm{Mn^{2+}} \xrightarrow{\mathrm{OH^-}} \mathrm{Mn(OH)_2} \text{ (white)} \xrightarrow{\mathrm{O_2}} \mathrm{MnO(OH)} \text{ (brown)} \xrightarrow{\mathrm{O_2}} \mathrm{MnO_2 \cdot nH_2O}
@@ -122,9 +126,13 @@ $\ce{Mn(OH)2}$ is oxidized extremely readily. Even the small amount of dissolved
 
 When precipitates of $\ce{MnS}$, $\ce{MnCO3}$, or $\ce{MnC2O4}$ stand in air or are heated, atmospheric oxygen oxidizes them to $\ce{MnO(OH)2}$.
 
-$$\ce{MnS + O2 + H2O -> MnO(OH)2 + S}$$
+$$
+\ce{MnS + O2 + H2O -> MnO(OH)2 + S}
+$$
 
-$$\ce{2MnCO3 + O2 + 2H2O ->[\triangle] 2MnO(OH)2 + 2CO2}$$
+$$
+\ce{2MnCO3 + O2 + 2H2O ->[\triangle] 2MnO(OH)2 + 2CO2}
+$$
 
 In an oxygen-free environment, MnO can be prepared by the thermal decomposition of $\ce{MnC2O4}$ or $\ce{MnCO3}$.
 
@@ -138,7 +146,9 @@ $$
 
 In **acidic** solution, $\ce{Mn(II)}$ is a weaker reducing agent:
 
-$$E^\ominus(\ce{MnO4-/Mn^2+})=1.51\ \mathrm{V}$$
+$$
+E^\ominus(\ce{MnO4-/Mn^2+})=1.51\ \mathrm{V}
+$$
 
 Strong oxidizing agents can oxidize $\ce{Mn^2+}$ to $\ce{MnO4^-}$:
 
@@ -152,13 +162,19 @@ The concentration $c(\ce{Mn^2+})$ must not be too high, especially in the first 
 
 When a $\ce{Mn(II)}$ salt is heated and its anion is oxidizing, $\ce{Mn(II)}$ is oxidized:
 
-$$\ce{Mn(NO3)2->[\triangle]MnO2 + 2NO2 ^}$$
+$$
+\ce{Mn(NO3)2->[\triangle]MnO2 + 2NO2 ^}
+$$
 
-$$\ce{Mn(ClO4)2 ->[\triangle] MnO2 + Cl2 ^ + 3O2 ^}$$
+$$
+\ce{Mn(ClO4)2 ->[\triangle] MnO2 + Cl2 ^ + 3O2 ^}
+$$
 
 By analogy, one possible decomposition pathway of nitrosyl perchlorate, $\ce{NOClO4}$, is:
 
-$$\ce{2NOClO4 ->[\triangle] N2O4 + Cl2 ^ + 3O2 ^}$$
+$$
+\ce{2NOClO4 ->[\triangle] N2O4 + Cl2 ^ + 3O2 ^}
+$$
 
 ## Coordination Compounds
 
@@ -178,7 +194,9 @@ Only $\ce{Mn(II)}$ with certain strong-field ligands forms colored, low-spin com
 
 # $\ce{Mn(III)}$ Compounds
 
-$$\mathrm{MnO_2} \xrightarrow{+0.95\ \mathrm{V}} \mathrm{Mn^{3+}} \xrightarrow{+1.51\ \mathrm{V}} \mathrm{Mn^{2+}}$$
+$$
+\mathrm{MnO_2} \xrightarrow{+0.95\ \mathrm{V}} \mathrm{Mn^{3+}} \xrightarrow{+1.51\ \mathrm{V}} \mathrm{Mn^{2+}}
+$$
 
 The Latimer diagram shows that $\ce{Mn(III)}$ is strongly oxidizing. It is unstable in solution and readily disproportionates.
 
@@ -203,7 +221,9 @@ Under ordinary conditions, $\ce{MnO2}$ is very stable. It is insoluble in $\ce{H
 
 Fusion of $\ce{MnO2}$ with $\ce{NaOH}$ in the absence of air produces the manganite $\ce{Na2MnO3}$:
 
-$$\ce{MnO2 + 2NaOH ->[\Delta]Na2MnO3 + H2O}$$
+$$
+\ce{MnO2 + 2NaOH ->[\Delta]Na2MnO3 + H2O}
+$$
 
 The fact that $\ce{MnO2}$ reacts with $\ce{NaOH}$ in this way demonstrates its acidic character.
 
@@ -287,21 +307,31 @@ $$
 
 In acidic solution, $\ce{KMnO4}$ is a very strong oxidizing agent:
 
-$$\mathrm{MnO_4^-} + 8\mathrm{H^+} + 5\mathrm{e^-} \xlongequal{} \mathrm{Mn^{2+}} + 4\mathrm{H_2O} \quad E^\ominus = 1.51 \text{ V}$$
+$$
+\mathrm{MnO_4^-} + 8\mathrm{H^+} + 5\mathrm{e^-} \xlongequal{} \mathrm{Mn^{2+}} + 4\mathrm{H_2O} \quad E^\ominus = 1.51 \text{ V}
+$$
 
 It can oxidize $\ce{Cl^-}$, $\ce{Cr^3+}$, $\ce{I2}$, and many other species:
 
-$$2\mathrm{MnO_4^-} + 16\mathrm{H^+} + 10\mathrm{Cl^-} \xlongequal{} 2\mathrm{Mn^{2+}} + 5\mathrm{Cl_2} \uparrow + 8\mathrm{H_2O}$$
+$$
+2\mathrm{MnO_4^-} + 16\mathrm{H^+} + 10\mathrm{Cl^-} \xlongequal{} 2\mathrm{Mn^{2+}} + 5\mathrm{Cl_2} \uparrow + 8\mathrm{H_2O}
+$$
 
-$$6\mathrm{MnO_4^-} + 10\mathrm{Cr^{3+}} + 11\mathrm{H_2O} \xlongequal{} 6\mathrm{Mn^{2+}} + 5\mathrm{Cr_2O_7^{2-}} + 22\mathrm{H^+}$$
+$$
+6\mathrm{MnO_4^-} + 10\mathrm{Cr^{3+}} + 11\mathrm{H_2O} \xlongequal{} 6\mathrm{Mn^{2+}} + 5\mathrm{Cr_2O_7^{2-}} + 22\mathrm{H^+}
+$$
 
-$$2\mathrm{MnO_4^-} + \mathrm{I_2} + 4\mathrm{H^+} \xlongequal{} 2\mathrm{Mn^{2+}} + 2\mathrm{IO_3^-} + 2\mathrm{H_2O}$$
+$$
+2\mathrm{MnO_4^-} + \mathrm{I_2} + 4\mathrm{H^+} \xlongequal{} 2\mathrm{Mn^{2+}} + 2\mathrm{IO_3^-} + 2\mathrm{H_2O}
+$$
 
 The reaction between $\ce{KMnO4}$ and hydrochloric acid can be used to prepare chlorine in the laboratory, but gas generation cannot be stopped on demand. Because $\ce{KMnO4}$ is also more expensive than $\ce{MnO2}$, laboratories more commonly prepare chlorine by reacting $\ce{MnO2}$ with concentrated hydrochloric acid.
 
 Under acidic conditions, $\ce{KMnO4}$ reacts quantitatively with $\ce{H2C2O4}$ and can therefore be standardized using oxalic acid:
 
-$$2\mathrm{MnO_4^-} + 6\mathrm{H^+} + 5\mathrm{H_2C_2O_4} \xlongequal{} 2\mathrm{Mn^{2+}} + 10\mathrm{CO_2} \uparrow + 8\mathrm{H_2O}$$
+$$
+2\mathrm{MnO_4^-} + 6\mathrm{H^+} + 5\mathrm{H_2C_2O_4} \xlongequal{} 2\mathrm{Mn^{2+}} + 10\mathrm{CO_2} \uparrow + 8\mathrm{H_2O}
+$$
 
 $\ce{KMnO4}$ also reacts quantitatively with $\ce{Fe^2+}$ and can be used to determine its concentration.
 
@@ -315,21 +345,29 @@ As an oxidizing agent, $\ce{KMnO4}$ is used in many organic syntheses, including
 
 Permanganates are strongly oxidizing and unstable. They decompose appreciably in acidic solution and slowly in neutral or mildly alkaline solution:
 
-$$4\mathrm{MnO_4^-} + 4\mathrm{H^+} \xlongequal{} 4\mathrm{MnO_2} \downarrow + 3\mathrm{O_2} \uparrow + 2\mathrm{H_2O}$$
+$$
+4\mathrm{MnO_4^-} + 4\mathrm{H^+} \xlongequal{} 4\mathrm{MnO_2} \downarrow + 3\mathrm{O_2} \uparrow + 2\mathrm{H_2O}
+$$
 
-$$4\mathrm{MnO_4^-} + 4\mathrm{OH^-} \xlongequal{} 4\mathrm{MnO_4^{2-}} + \mathrm{O_2} \uparrow + 2\mathrm{H_2O}$$
+$$
+4\mathrm{MnO_4^-} + 4\mathrm{OH^-} \xlongequal{} 4\mathrm{MnO_4^{2-}} + \mathrm{O_2} \uparrow + 2\mathrm{H_2O}
+$$
 
 Light catalyzes the decomposition of potassium permanganate, so its solutions should be stored in <span class="chemical-color" data-color="brown">brown</span> bottles. Because decomposition causes the concentration to change over time, a standard potassium permanganate solution must be re-standardized before use.
 
 Permanganates are more stable as solids than in solution, but they still decompose on heating. At about $200\ ^\circ\mathrm{C}$, $\ce{KMnO4}$ forms $\ce{K2MnO4}$, $\ce{MnO2}$, and $\ce{O2}$:
 
-$$2\mathrm{KMnO_4(s)} \xlongequal{200\ ^\circ\mathrm{C}} \mathrm{K_2MnO_4} + \mathrm{MnO_2} + \mathrm{O_2} \uparrow$$
+$$
+2\mathrm{KMnO_4(s)} \xlongequal{200\ ^\circ\mathrm{C}} \mathrm{K_2MnO_4} + \mathrm{MnO_2} + \mathrm{O_2} \uparrow
+$$
 
 Heat $\ce{KMnO4}$ gently in a dry test tube. Popping sounds are heard, and after they stop the solid has lost its original crystalline luster. Add a small amount of water and shake: the test-tube wall becomes <span class="chemical-color" data-color="green">green</span>, showing that $\ce{K2MnO4}$ is among the decomposition products. Adding a large amount of water immediately turns the solution <span class="chemical-color" data-color="purple">purple</span> because $\ce{K2MnO4}$ disproportionates to form $\ce{KMnO4}$.
 
 Cold concentrated sulfuric acid reacts with $\ce{KMnO4}$ to form oily, <span class="chemical-color" data-color="dark-green">dark-green</span> manganese heptoxide, $\ce{Mn2O7}$:
 
-$$2\mathrm{KMnO_4} + \mathrm{H_2SO_4(conc.)} \xlongequal{\text{low temperature}} \mathrm{Mn_2O_7} + \mathrm{K_2SO_4} + \mathrm{H_2O}$$
+$$
+2\mathrm{KMnO_4} + \mathrm{H_2SO_4(conc.)} \xlongequal{\text{low temperature}} \mathrm{Mn_2O_7} + \mathrm{K_2SO_4} + \mathrm{H_2O}
+$$
 
 $\ce{Mn2O7}$ ignites on contact with organic matter, decomposes explosively when heated, and slowly releases $\ce{O2}$ at room temperature while converting to $\ce{MnO2}$.
 
@@ -339,11 +377,15 @@ Potassium permanganate is commonly prepared from pyrolusite, $\ce{MnO2}$.
 
 First prepare potassium manganate by heating a fused mixture of $\ce{MnO2}$, $\ce{KClO3}$, and $\ce{KOH}$ (2026 Beijing Gaokao chemistry). The product is <span class="chemical-color" data-color="green">green</span> potassium manganate:
 
-$$3\mathrm{MnO_2} + 6\mathrm{KOH} + \mathrm{KClO_3} \xlongequal{\text{fusion}} 3\mathrm{K_2MnO_4} + \mathrm{KCl} + 3\mathrm{H_2O}$$
+$$
+3\mathrm{MnO_2} + 6\mathrm{KOH} + \mathrm{KClO_3} \xlongequal{\text{fusion}} 3\mathrm{K_2MnO_4} + \mathrm{KCl} + 3\mathrm{H_2O}
+$$
 
 Oxidation of $\ce{K2MnO4}$ with a strong oxidizing agent gives $\ce{KMnO4}$. Chlorine, for example, can be used:
 
-$$2\mathrm{MnO_4^{2-}} + \mathrm{Cl_2} \xlongequal{} 2\mathrm{MnO_4^-} + 2\mathrm{Cl^-}$$
+$$
+2\mathrm{MnO_4^{2-}} + \mathrm{Cl_2} \xlongequal{} 2\mathrm{MnO_4^-} + 2\mathrm{Cl^-}
+$$
 
 Industrial production commonly uses electrolysis of a $\ce{K2MnO4}$ solution:
 
@@ -470,7 +512,9 @@ B. Experiment 2 shows that the color change in Experiment 1 is unrelated to the 
 
 C. Experiment 3 suggests that the following reaction may occur in Experiment 1:
 
-$$4\mathrm{MnO_4^-} + 4\mathrm{OH^-} \xlongequal{} 4\mathrm{MnO_4^{2-}} + \mathrm{O_2} \uparrow + 2\mathrm{H_2O}$$
+$$
+4\mathrm{MnO_4^-} + 4\mathrm{OH^-} \xlongequal{} 4\mathrm{MnO_4^{2-}} + \mathrm{O_2} \uparrow + 2\mathrm{H_2O}
+$$
 
 D. These experiments prove that metallic sodium can reduce $\ce{MnO4^-}$ in solution.
 

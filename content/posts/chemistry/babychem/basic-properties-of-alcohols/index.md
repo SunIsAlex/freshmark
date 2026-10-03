@@ -75,7 +75,9 @@ repost:
 
 由于有机反应大多在液相中进行,所以一般认为**烷基是给电子基团**.
 
-$$\boxed{\text{醇+活泼金属(K,Na,Mg,Al)}\rightarrow\text{醇盐}+\ce{H2 ^}}$$
+$$
+\boxed{\text{醇+活泼金属(K,Na,Mg,Al)}\rightarrow\text{醇盐}+\ce{H2 ^}}
+$$
 
 ### 常见醇盐及其用途
 - $\ce{EtONa}$:作为小位阻强碱,作为强亲核试剂

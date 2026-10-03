@@ -36,7 +36,9 @@ repost:
 ## Definition
 $X\sim{H(n,K,N)}$, X is said to obey the hypergeometric distribution.
 
-$$\boxed{P(X=k)=\frac{C_{K}^{k}C_{N-K}^{n-k}}{C_{N}^{n}}(k=0,1,2,...,n)}$$
+$$
+\boxed{P(X=k)=\frac{C_{K}^{k}C_{N-K}^{n-k}}{C_{N}^{n}}(k=0,1,2,...,n)}
+$$
 ## Preliminary knowledge
 ### Commonly used combined identities
 1. $C_{n}^{k}=\frac{n}{k}C_{n-1}^{k-1}=\frac{n(n-1)}{k(k-1)}C_{n-2}^{k-2}=...$
@@ -54,7 +56,9 @@ Consider this scenario: select r people $(r\le \min{m,n})$ among m boys and n gi
 
 To add, 2 is exactly the famous **Vandermonde Identity**
 ### Properties of random variables
-$$\boxed{D(X)=E(X^2)-[E(X)]^2}$$
+$$
+\boxed{D(X)=E(X^2)-[E(X)]^2}
+$$
 
 Starting from the definition of variance:
 $$\begin{gathered}
@@ -104,7 +108,9 @@ $$\begin{gathered}
 
 At this point, we have completely derived the distribution law based on only two combination identities.
 
-$$E(X)=n\frac{K}{N},\qquad D(X)=n\frac{K}{N}\cdot\frac{N-K}{N}\cdot\frac{N-n}{N-1}.$$
+$$
+E(X)=n\frac{K}{N},\qquad D(X)=n\frac{K}{N}\cdot\frac{N-K}{N}\cdot\frac{N-n}{N-1}.
+$$
 
 There are two key points in the whole process: one is to repeatedly use identity 1 to **reduce** the combination number and eliminate $i$ in the summation term with $i$; the other is to use the Vandermonde identity to **merge** the summation into a single combination number. The reason why $i^2$ is split into $(i-1)+1$ when calculating the variance is precisely to create $i(i-1)$, a structure that can be reduced to two orders again. In essence, it is to find the factorial moment $E[X(X-1)]$.
 

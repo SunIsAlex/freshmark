@@ -112,7 +112,9 @@ $x^3(3y)=x^3(1-x)$, obviously there is no minimum value.
 
 Suppose the maximum value is greater than 0, then $x,(1-x)$ has the same sign as $x\in (0,1)$.
 
-$$9x^3y=3x^3(3y)=x^3(3-3x)\le (\frac{3}{4})^4$$
+$$
+9x^3y=3x^3(3y)=x^3(3-3x)\le (\frac{3}{4})^4
+$$
 
 $x^3y\le \frac{9}{256}\lt \frac{1}{3}$
 
@@ -245,18 +247,26 @@ When $\Delta < 0$, $\sqrt{\Delta}$ is an imaginary number, so the cube root of a
 
 When $\Delta < 0$, it is more intuitive to change the parameterization. At this time $\dfrac{q+\sqrt{-\Delta}i}{2}$ is a complex number, written in polar coordinate form:
 
-$$\frac{q+\sqrt{-\Delta}i}{2} = r e^{i\theta}$$
-$$\frac{q-\sqrt{-\Delta}i}{2} = r e^{-i\theta}$$
+$$
+\frac{q+\sqrt{-\Delta}i}{2} = r e^{i\theta}
+$$
+$$
+\frac{q-\sqrt{-\Delta}i}{2} = r e^{-i\theta}
+$$
 
 Among them
 
-$$r = \sqrt{\frac{q^2 - |\Delta|}{4}} = \sqrt{-\frac{p^3}{27}}, \quad \theta = \arctan\frac{\sqrt{-\Delta}}{q}$$
+$$
+r = \sqrt{\frac{q^2 - |\Delta|}{4}} = \sqrt{-\frac{p^3}{27}}, \quad \theta = \arctan\frac{\sqrt{-\Delta}}{q}
+$$
 
 ($\Delta < 0$ is $p < 0$, so $r$ is a real number.)
 
 $u_k=-r^{1/3} e^{i(\theta + 2k\pi)/3}+r^{1/3} e^{i(-\theta + 2k\pi)/3}$, $k=0,1,2$, corresponding to three roots:
 
-$$\boxed{u_k = -2\sqrt{-\frac{p}{3}}\cos\left(\frac{1}{3}\arccos\left(\frac{3q}{2p}\sqrt{-\frac{3}{p}}\right) - \frac{2k\pi}{3}\right), \quad k=0,1,2}$$
+$$
+\boxed{u_k = -2\sqrt{-\frac{p}{3}}\cos\left(\frac{1}{3}\arccos\left(\frac{3q}{2p}\sqrt{-\frac{3}{p}}\right) - \frac{2k\pi}{3}\right), \quad k=0,1,2}
+$$
 
 The three roots are all real numbers because the complex parts exactly cancel when $v+w$ is added.
 
@@ -266,11 +276,15 @@ The three roots are all real numbers because the complex parts exactly cancel wh
 
 The key is that $vw = -p/3$ is a real constraint. $v$ and $w$ are complex conjugates of each other:
 
-$$v = r^{1/3}e^{i\theta/3}, \quad w = \bar{v} = r^{1/3}e^{-i\theta/3}$$
+$$
+v = r^{1/3}e^{i\theta/3}, \quad w = \bar{v} = r^{1/3}e^{-i\theta/3}
+$$
 
 So
 
-$$u = -(v+w) = -2r^{1/3}\cos\frac{\theta}{3} \in \mathbb{R}$$
+$$
+u = -(v+w) = -2r^{1/3}\cos\frac{\theta}{3} \in \mathbb{R}
+$$
 
 The other two roots corresponding to $\theta$ are replaced by $\theta + 2\pi$ and $\theta + 4\pi$, which are also real numbers. **Complex numbers are just the "intermediate language" of calculations, and eventually the imaginary parts cancel out. **
 

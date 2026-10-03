@@ -199,7 +199,9 @@ $$\begin{gathered}
 
 对于$x=\frac{(2k+1)\pi}{20}(k\in\Z)$,$k\in\Z$均符合条件.
 
-$$\boxed{\{x|x=k\pi\text{ 或 }x=\frac{(2k+1)\pi}{20},k\in\Z\}}$$
+$$
+\boxed{\{x|x=k\pi\text{ 或 }x=\frac{(2k+1)\pi}{20},k\in\Z\}}
+$$
 # 例4.8
 （北京大学）已知 $\sin x, \sin y, \sin z$ 是**递增**的**等差数列**，求证：$\cos x, \cos y, \cos z$ 不是等差数列。
 
@@ -317,7 +319,9 @@ $$\begin{gathered}
 $\cos\frac{\pi}{7} - \cos\frac{2\pi}{7} + \cos\frac{3\pi}{7}=\frac{1}{2}$
 
 或者,考虑用诱导公式去掉讨厌的负号:
-$$\cos\frac{\pi}{7} - \cos\frac{2\pi}{7} + \cos\frac{3\pi}{7}=\cos\frac{\pi}{7} + \cos\frac{3\pi}{7} + \cos\frac{5\pi}{7}$$
+$$
+\cos\frac{\pi}{7} - \cos\frac{2\pi}{7} + \cos\frac{3\pi}{7}=\cos\frac{\pi}{7} + \cos\frac{3\pi}{7} + \cos\frac{5\pi}{7}
+$$
 我们发现,这正是之前讨论过的[经典问题](https://freshmark.sunisalex.org/posts/math/2022-labour-day/5-01-01/#%E4%BE%8B8),剩余两种处理思路(单位根/构造裂项)不加赘述.
 
 # 例4.13

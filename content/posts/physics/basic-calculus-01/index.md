@@ -92,19 +92,29 @@ $\boxed{\lim_{x\to 0}\frac{\sin x}{x}=1}$
 
 计算极限(不一定存在极限)
 
-$$\lim_{x \to 5} \frac{1}{x-5}$$
+$$
+\lim_{x \to 5} \frac{1}{x-5}
+$$
 $x-5\to 0$,不存在极限
-$$\lim_{x \to 0} \frac{x^2}{\sin x}$$
+$$
+\lim_{x \to 0} \frac{x^2}{\sin x}
+$$
 $\lim_{x \to 0} \frac{x^2}{\sin x}=\frac{\lim_{x\to 0}x}{\lim_{x\to 0}\frac{\sin x}{x}}=\frac{0}{1}=0$
-$$\lim_{x \to \infty} \frac{\sin x}{x}$$
+$$
+\lim_{x \to \infty} \frac{\sin x}{x}
+$$
 由夹逼定理:
 
 $\frac{-1}{|x|}\le \frac{\sin x}{x}\le \frac{1}{|x|}$
 
 左右极限等于0,所以所求极限为0.
-$$\lim_{x \to \infty} \frac{10x^2 + 203x}{3x^2 + 5x + 7}$$
+$$
+\lim_{x \to \infty} \frac{10x^2 + 203x}{3x^2 + 5x + 7}
+$$
 $\lim_{x \to \infty} \frac{10x^2 + 203x}{3x^2 + 5x + 7}=\lim_{x \to \infty} \frac{10 + 203\frac{1}{x}}{3 + 5\frac{1}{x} + 7\frac{1}{x^2}}=\frac{\lim_{x \to \infty}(10 + 203\frac{1}{x})}{\lim_{x \to \infty}(3 + 5\frac{1}{x} + 7\frac{1}{x^2})}=\frac{10}{3}1$
-$$\lim_{x\to 0}\frac{1-\cos x}{x^2}$$
+$$
+\lim_{x\to 0}\frac{1-\cos x}{x^2}
+$$
 $\lim_{x\to 0}\frac{1-\cos x}{x^2}=\lim_{x\to 0}\frac{2\sin^2 \frac{x}{2}}{x^2}=\frac{1}{2}\lim_{x\to 0}(\frac{\sin \frac{x}{2}}{\frac{x}{2}})(\frac{\sin \frac{x}{2}}{\frac{x}{2}})=\frac{1}{2}(\lim_{x\to 0}(\frac{\sin \frac{x}{2}}{\frac{x}{2}}))^2=\frac{1}{2}\times1^2=\frac{1}{2}$
 
 ## 导数
@@ -115,7 +125,9 @@ $\lim_{x\to 0}\frac{1-\cos x}{x^2}=\lim_{x\to 0}\frac{2\sin^2 \frac{x}{2}}{x^2}=
 
 我们先考虑从 $x=1$ 到 $x=1+\Delta x$ 的**平均变化率**：
 
-$$\frac{f(1+\Delta x)-f(1)}{\Delta x}=\frac{(1+\Delta x)^2-1}{\Delta x}=2+\Delta x$$
+$$
+\frac{f(1+\Delta x)-f(1)}{\Delta x}=\frac{(1+\Delta x)^2-1}{\Delta x}=2+\Delta x
+$$
 
 当 $\Delta x\to 0$ 时，平均变化率趋近于 $2$，这就是 $f(x)=x^2$ 在 $x=1$ 处的**瞬时变化率**，即**导数**.
 
@@ -129,7 +141,9 @@ $$\frac{f(1+\Delta x)-f(1)}{\Delta x}=\frac{(1+\Delta x)^2-1}{\Delta x}=2+\Delta
 
 若极限
 
-$$\lim_{\Delta x\to 0}\frac{f(x_0+\Delta x)-f(x_0)}{\Delta x}$$
+$$
+\lim_{\Delta x\to 0}\frac{f(x_0+\Delta x)-f(x_0)}{\Delta x}
+$$
 
 存在，则称 $f(x)$ 在 $x_0$ 处**可导**，该极限值称为 $f(x)$ 在 $x_0$ 处的**导数**，记作 $f'(x_0)$ 或 $\left.\dfrac{\mathrm{d}f}{\mathrm{d}x}\right|_{x=x_0}$.
 
@@ -152,7 +166,9 @@ $$\lim_{\Delta x\to 0}\frac{f(x_0+\Delta x)-f(x_0)}{\Delta x}$$
 
 #### 例：由定义推导 $(x^2)'=2x$
 
-$$\lim_{\Delta x\to 0}\frac{(x+\Delta x)^2-x^2}{\Delta x}=\lim_{\Delta x\to 0}\frac{2x\Delta x+(\Delta x)^2}{\Delta x}=\lim_{\Delta x\to 0}(2x+\Delta x)=2x$$
+$$
+\lim_{\Delta x\to 0}\frac{(x+\Delta x)^2-x^2}{\Delta x}=\lim_{\Delta x\to 0}\frac{2x\Delta x+(\Delta x)^2}{\Delta x}=\lim_{\Delta x\to 0}(2x+\Delta x)=2x
+$$
 
 ## 导数的四则运算法则
 
@@ -168,13 +184,19 @@ $$\lim_{\Delta x\to 0}\frac{(x+\Delta x)^2-x^2}{\Delta x}=\lim_{\Delta x\to 0}\f
 
 ### 推导乘法法则
 
-$$[f(x)g(x)]'=\lim_{\Delta x\to 0}\frac{f(x+\Delta x)g(x+\Delta x)-f(x)g(x)}{\Delta x}$$
+$$
+[f(x)g(x)]'=\lim_{\Delta x\to 0}\frac{f(x+\Delta x)g(x+\Delta x)-f(x)g(x)}{\Delta x}
+$$
 
 加减同一项 $f(x)g(x+\Delta x)$：
 
-$$=\lim_{\Delta x\to 0}\frac{f(x+\Delta x)-f(x)}{\Delta x}\cdot g(x+\Delta x)+f(x)\cdot\frac{g(x+\Delta x)-g(x)}{\Delta x}$$
+$$
+=\lim_{\Delta x\to 0}\frac{f(x+\Delta x)-f(x)}{\Delta x}\cdot g(x+\Delta x)+f(x)\cdot\frac{g(x+\Delta x)-g(x)}{\Delta x}
+$$
 
-$$=f'(x)g(x)+f(x)g'(x)$$
+$$
+=f'(x)g(x)+f(x)g'(x)
+$$
 
 ### 例题
 
@@ -184,7 +206,9 @@ $$=f'(x)g(x)+f(x)g'(x)$$
 
 由乘法法则：
 
-$$f'(x)=(x^3)'\sin x+x^3(\sin x)'=3x^2\sin x+x^3\cos x$$
+$$
+f'(x)=(x^3)'\sin x+x^3(\sin x)'=3x^2\sin x+x^3\cos x
+$$
 
 #### 例2
 
@@ -192,7 +216,9 @@ $$f'(x)=(x^3)'\sin x+x^3(\sin x)'=3x^2\sin x+x^3\cos x$$
 
 由除法法则：
 
-$$f'(x)=\frac{(\sin x)'\cdot x-\sin x\cdot(x)'}{x^2}=\frac{x\cos x-\sin x}{x^2}$$
+$$
+f'(x)=\frac{(\sin x)'\cdot x-\sin x\cdot(x)'}{x^2}=\frac{x\cos x-\sin x}{x^2}
+$$
 
 #### 例3
 
@@ -200,11 +226,17 @@ $$f'(x)=\frac{(\sin x)'\cdot x-\sin x\cdot(x)'}{x^2}=\frac{x\cos x-\sin x}{x^2}$
 
 由乘法法则：
 
-$$f'(x)=(e^x)'(\sin x+\cos x)+e^x(\sin x+\cos x)'$$
+$$
+f'(x)=(e^x)'(\sin x+\cos x)+e^x(\sin x+\cos x)'
+$$
 
-$$=e^x(\sin x+\cos x)+e^x(\cos x-\sin x)$$
+$$
+=e^x(\sin x+\cos x)+e^x(\cos x-\sin x)
+$$
 
-$$=2e^x\cos x$$
+$$
+=2e^x\cos x
+$$
 
 #### 例4
 
@@ -212,9 +244,13 @@ $$=2e^x\cos x$$
 
 将 $\tan x=\dfrac{\sin x}{\cos x}$，由除法法则：
 
-$$(\tan x)'=\frac{(\sin x)'\cos x-\sin x(\cos x)'}{\cos^2 x}=\frac{\cos^2 x+\sin^2 x}{\cos^2 x}=\frac{1}{\cos^2 x}=\sec^2 x$$
+$$
+(\tan x)'=\frac{(\sin x)'\cos x-\sin x(\cos x)'}{\cos^2 x}=\frac{\cos^2 x+\sin^2 x}{\cos^2 x}=\frac{1}{\cos^2 x}=\sec^2 x
+$$
 
-$$\boxed{(\tan x)'=\sec^2 x}$$
+$$
+\boxed{(\tan x)'=\sec^2 x}
+$$
 
 ## 导数的物理应用
 

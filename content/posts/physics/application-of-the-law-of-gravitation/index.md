@@ -86,15 +86,21 @@ $$\begin{cases}
 ### 椭圆
 **椭圆第一定义**
 
-$$\boxed{r_1+r_2=2a}$$
+$$
+\boxed{r_1+r_2=2a}
+$$
 
 对于椭圆的一根焦点弦,焦点把焦点弦分为长度为$r_1,r_2$两部分,有:
 
-$$\boxed{\frac{1}{r_1}+\frac{1}{r_2}=C}$$
+$$
+\boxed{\frac{1}{r_1}+\frac{1}{r_2}=C}
+$$
 
 过椭圆内一点做出三条弦,分别交椭圆与六个点,这六个点顺次连接,相邻点的距离分别为$a,d,c,f,b,e$,有:
 
-$$\boxed{abc=edf}$$
+$$
+\boxed{abc=edf}
+$$
 
 **椭圆的光学性质**
 
@@ -276,7 +282,9 @@ $$\begin{gathered}
 
 考虑一个有 $N$ 个质点的体系，其数学表达式为：
 
-$$\langle T \rangle = -\frac{1}{2}\sum_{k=1}^{N}\langle \mathbf{F}_k \cdot \mathbf{r}_k \rangle$$
+$$
+\langle T \rangle = -\frac{1}{2}\sum_{k=1}^{N}\langle \mathbf{F}_k \cdot \mathbf{r}_k \rangle
+$$
 
 其中：
 
@@ -292,11 +300,15 @@ $$\langle T \rangle = -\frac{1}{2}\sum_{k=1}^{N}\langle \mathbf{F}_k \cdot \math
 
 若系统内任意两粒子之间的力来自与粒子间距 $r$ 的 $n$ 次幂成正比的势能
 
-$$V(r) = \alpha r^n \quad (\alpha,\, n \text{ 为常数})$$
+$$
+V(r) = \alpha r^n \quad (\alpha,\, n \text{ 为常数})
+$$
 
 则定理简化为：
 
-$$2\langle T \rangle = n\langle V_{\text{total}} \rangle$$
+$$
+2\langle T \rangle = n\langle V_{\text{total}} \rangle
+$$
 
 即体系总动能的 2 倍等于总势能的 $n$ 倍。
 
@@ -315,7 +327,9 @@ $$2\langle T \rangle = n\langle V_{\text{total}} \rangle$$
 
 特别的,对于稳定的多体运动,若各质点相对位置不变,则系统总动能和总势能不变,恒有:
 
-$$\boxed{2E_k=-E_p}$$
+$$
+\boxed{2E_k=-E_p}
+$$
 
 ### 简单证明
 设n个质量相同的质点组成正n边形,稳定地做半径为$r_0$的匀速圆周运动.
@@ -376,7 +390,9 @@ $$\begin{gathered}
 
 修正系数后得到:
 
-$$d \approx 2.44\, R_M \left(\frac{M_M}{m}\right)^{1/3}$$
+$$
+d \approx 2.44\, R_M \left(\frac{M_M}{m}\right)^{1/3}
+$$
 
 大卫星和小卫星在同一轨道上受到的引潮力虽然不同（大的更强），但大卫星的自引力也按同样比例增大，两者恰好抵消，**洛希极限与卫星尺寸无关**。
 
@@ -408,7 +424,9 @@ $$d \approx 2.44\, R_M \left(\frac{M_M}{m}\right)^{1/3}$$
 
 以地球为惯性系,月球所受的惯性力与月地引力相同:
 
-$$F=\frac{GMm}{R^2}+m\frac{Gm}{R^2}=ma\Longrightarrow a=\frac{G(M+m)}{R^2}$$
+$$
+F=\frac{GMm}{R^2}+m\frac{Gm}{R^2}=ma\Longrightarrow a=\frac{G(M+m)}{R^2}
+$$
 
 以月球为惯性系同理可以算出一样的结果,与伽利略变换不矛盾.
 

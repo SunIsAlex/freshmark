@@ -111,7 +111,9 @@ $$\begin{gathered}
 \end{gathered}$$
 
 由于三个角度的正切值显然各不相同,故它们是方程:
-$$\frac{t^3-3t}{3t^2-1}=\tan3\degree$$
+$$
+\frac{t^3-3t}{3t^2-1}=\tan3\degree
+$$
 的三个不同实根.
 $$\begin{gathered}
     t^3-(3\tan3\degree)t^2-3+\tan3\degree=0
@@ -162,11 +164,21 @@ $$\begin{gathered}
     \tan A\le\frac{\sqrt{3}}{3}
 \end{gathered}$$
 或者考虑$A=\pi-(B+C)$:
-$$3 \sin B \cos C + \sin C \cos B = 0$$
-$$3 \tan B + \tan C = 0$$
-$$- \tan A = \tan ( B + C ) = \frac { \tan B + \tan C } { 1 - \tan B \tan C }$$
-$$= \frac { - 2 \tan B } { 1 + 3 \tan ^ { 2 } B }$$
-$$\therefore \tan A = \frac { 2 } { 3 \tan B + \frac { 1 } { \tan B } } \leq \frac { 2 } { 2 \sqrt { 3 } } = \frac { \sqrt { 3 } } { 3 } .$$
+$$
+3 \sin B \cos C + \sin C \cos B = 0
+$$
+$$
+3 \tan B + \tan C = 0
+$$
+$$
+- \tan A = \tan ( B + C ) = \frac { \tan B + \tan C } { 1 - \tan B \tan C }
+$$
+$$
+= \frac { - 2 \tan B } { 1 + 3 \tan ^ { 2 } B }
+$$
+$$
+\therefore \tan A = \frac { 2 } { 3 \tan B + \frac { 1 } { \tan B } } \leq \frac { 2 } { 2 \sqrt { 3 } } = \frac { \sqrt { 3 } } { 3 } .
+$$
 # 例4.23
 (清华大学) 在三角形 $ABC$ 中，三边长 $a, b, c$ 满足 $a + c = 3b$，则 $\tan\frac{A}{2}\tan\frac{C}{2}$ 的值为
 
@@ -319,7 +331,9 @@ $$\begin{gathered}
 
 考虑正弦函数的有界性,只能有$|T|=1$,又$T\lt0$,故$T=-1$.
 
-$$f(x -1) = -f(x)$$
+$$
+f(x -1) = -f(x)
+$$
 
 这表明$\omega=k\pi(k\in\Z)$,故$\omega\ge\pi$
 

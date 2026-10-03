@@ -31,7 +31,9 @@ $$\begin{gathered}\sinh(x)=\frac{e^x-e^{-x}}{2}\\
 
 顾名思义,双曲三角函数必然与三角函数有瓜葛,而维系三角函数与双曲三角函数之间关系的纽带,就是著名的**欧拉公式**:
 
-$$\begin{gathered}e^{i\theta}=\cos \theta+i\sin\theta(\theta\in\R)\end{gathered}$$
+$$
+\begin{gathered}e^{i\theta}=\cos \theta+i\sin\theta(\theta\in\R)\end{gathered}
+$$
 
 带入双曲三角函数中:
 
@@ -97,7 +99,9 @@ $$\begin{gathered}\tanh(x_2-x_1)=\frac{\tanh x_2-\tanh x_1}{1+\tanh x_2(-\tanh x
 
 熟知$y=\tanh(x)$的反函数为$y=\frac{1}{2}\ln(\frac{1+x}{1-x})$,因此有:
 
-$$\begin{gathered}x_2-x_1\ge\ln\frac{5}{3}\approx0.51\end{gathered}$$
+$$
+\begin{gathered}x_2-x_1\ge\ln\frac{5}{3}\approx0.51\end{gathered}
+$$
 
 > Prove that if $(x + \sqrt{x^2 + 1})(y + \sqrt{y^2 + 1}) = 1$ then $x + y = 0$
 >
@@ -189,7 +193,9 @@ a+b+c\gt0\end{gathered}$$
 
 想要$\min{a+b+c}$,两正一负显然不是最优的情况,我们设法说明之: 不妨设$a,b\gt0,c\lt0$,有: 
 
-$$\begin{gathered}a+b+c+\frac1a+\frac1b+\frac1c=0\\ (a+b)(1+\frac{1}{ab})=-(c+\frac{1}{c})\\ 1+\frac{1}{ab}\gt0\\a+b+c\gt a+b\gt0\end{gathered}$$ 
+$$
+\begin{gathered}a+b+c+\frac1a+\frac1b+\frac1c=0\\ (a+b)(1+\frac{1}{ab})=-(c+\frac{1}{c})\\ 1+\frac{1}{ab}\gt0\\a+b+c\gt a+b\gt0\end{gathered}
+$$
 
 接下来,只需要说明"两负一正"可以给出小于0的最小值即可.
 
@@ -197,6 +203,8 @@ $$\begin{gathered}a+b+c+\frac1a+\frac1b+\frac1c=0\\ (a+b)(1+\frac{1}{ab})=-(c+\f
 
  $|a|,|b|,|c|\le1$,这个条件给出很强的暗示:取得最小值时,有一些数为$\pm1$. 要让$a+b+c$最小,最好$a=b=-1,c\gt0$, 而这个猜出的取等条件,将成为我们放缩的方向标: 
 
-$$\begin{gathered}(-c-\frac1c)=(a+b)(1+\frac{1}{ab})\ge-2(1+\frac{1}{ab})\\ c+\frac{1}{c}\le2(1+\frac{1}{ab})\\ c\ge\frac{2+\frac{2}{ab}-\sqrt{(2+\frac{2}{ab})^2-4}}{2}\\ =\frac{4}{2+\frac{2}{ab}+\sqrt{(2+\frac{2}{ab})^2-4}}\\ \ge2-\sqrt3(ab=1)\end{gathered}$$ 
+$$
+\begin{gathered}(-c-\frac1c)=(a+b)(1+\frac{1}{ab})\ge-2(1+\frac{1}{ab})\\ c+\frac{1}{c}\le2(1+\frac{1}{ab})\\ c\ge\frac{2+\frac{2}{ab}-\sqrt{(2+\frac{2}{ab})^2-4}}{2}\\ =\frac{4}{2+\frac{2}{ab}+\sqrt{(2+\frac{2}{ab})^2-4}}\\ \ge2-\sqrt3(ab=1)\end{gathered}
+$$
 
 .所以,$a+b+c\ge-\sqrt3(a=b=-1,c=2-\sqrt3)$.

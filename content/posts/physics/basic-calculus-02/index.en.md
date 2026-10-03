@@ -65,7 +65,9 @@ Definition: If $F'(x)=f(x)$, then $F(x)$ is called the **original function** of 
 
 It is easy to know that the **original function** is not unique and its constant term is arbitrary.
 
-$$\int f(x)dx=F(x)+C$$
+$$
+\int f(x)dx=F(x)+C
+$$
 
 ### Example 2
 Through observation, find the indefinite integral of the following function.
@@ -130,11 +132,15 @@ $$
 ### Description
 Why is **finding the integral** the process of **finding the original function**?
 
-$$\int_{x_0}^{x_1} f(x)dx=\sum_{x_0}^{x_1}f(x)dx=\sum\Delta S$$
+$$
+\int_{x_0}^{x_1} f(x)dx=\sum_{x_0}^{x_1}f(x)dx=\sum\Delta S
+$$
 
 And $\frac{dF(x)}{dx}=f(x),$ is $dF(x)=f(x)dx$, so:
 
-$$\int_{x_0}^{x_1} f(x)dx=S=\sum dF(x)=F(x_1)-F(x_0)$$
+$$
+\int_{x_0}^{x_1} f(x)dx=S=\sum dF(x)=F(x_1)-F(x_0)
+$$
 
 Noted as:
 

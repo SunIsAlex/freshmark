@@ -109,7 +109,9 @@ Obviously according to Vedic theorem for cubic equations of one variable, $x+y+z
 
 If it is not feasible to solve it rashly, try Veda's theorem or the equal conditions of mean inequality first:
 
-$$(ab)^2+(a^2+4b^2)+9-10ab=0\ge(ab)^2-6ab+9=(ab-3)^2$$
+$$
+(ab)^2+(a^2+4b^2)+9-10ab=0\ge(ab)^2-6ab+9=(ab-3)^2
+$$
 
 So we get $\begin{cases}ab=3,\frac{b}{a}=\frac{1}{2}\end{cases}$
 
@@ -153,7 +155,9 @@ $$\begin{gathered}
 
 Therefore, the result is required to be a perfect square number, so BC is excluded. Only feasible A needs to be found.
 
-$$130=2\times5\times13$$
+$$
+130=2\times5\times13
+$$
 
 Let $\begin{cases}
   x+y=2,\\
@@ -199,7 +203,9 @@ $$\begin{gathered}
 
 This is a three-dimensional cubic symmetry. When $a=b+c$, the left-hand formula is equal to 0, so it can be factored into:
 
-$$(a+b-c)(b+c-a)(c+a-b)=0$$
+$$
+(a+b-c)(b+c-a)(c+a-b)=0
+$$
 
 Let’s assume $a+b=c$, then $z=-1,x=y=1$, and get the same conclusion in the same way.
 ## Example 1.10
@@ -280,7 +286,9 @@ To sum up, choose B
 (Independent enrollment) Given $a+b+c=0$, please ask for $a(\frac{1}{b}+\frac{1}{c})+b(\frac{1}{c}+\frac{1}{a})+c(\frac{1}{a}+\frac{1}{b})$
 
 The original form is equivalent to:
-$$\frac{a^2(b+c)+b^2(c+a)+c^2(a+b)}{abc}=-\frac{a^3+b^3+c^3}{abc}=-3$$
+$$
+\frac{a^2(b+c)+b^2(c+a)+c^2(a+b)}{abc}=-\frac{a^3+b^3+c^3}{abc}=-3
+$$
 ## Example 1.15
 Let \(a, b, c\) be a nonzero constant, and \(a^2 + b^2 + c^2 = 1\),
 \[a\left(\frac{1}{b} + \frac{1}{c}\right) + b\left(\frac{1}{c} + \frac{1}{a}\right) + c\left(\frac{1}{a} + \frac{1}{b}\right) = -3\]  
@@ -297,13 +305,17 @@ D. None of the first three answers are correct
 
 The conditional image is the inverse problem of Example 1.14.
 
-$$\frac{a^2(b+c)+b^2(c+a)+c^2(a+b)}{abc}=-3$$
+$$
+\frac{a^2(b+c)+b^2(c+a)+c^2(a+b)}{abc}=-3
+$$
 
 That is $a^2(b+c)+b^2(c+a)+c^2(a+b)+3abc=0$
 
 Similar to Example 1.9, it can be factorized:
 
-$$(a+b+c)(ab+bc+ca)=0$$
+$$
+(a+b+c)(ab+bc+ca)=0
+$$
 
 ### Scenario One
 $a+b+c=0$

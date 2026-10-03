@@ -144,7 +144,9 @@ $$\begin{cases}
 
 (5)/(6):
 
-$$\boxed{\tanh(\frac{kD}{2})=-\frac{D}{S+2}}$$
+$$
+\boxed{\tanh(\frac{kD}{2})=-\frac{D}{S+2}}
+$$
 
 The above are the necessary conditions for the existence of $x,y$.
 
@@ -175,17 +177,23 @@ Replace "ratio slope at $S\to0$" with a **single variable, global** argument to 
 
 Assume $f(x)=a^{x-1}$ ($0<a<1$), the axis outer pair is the fixed point of $g(x)=f(f(x))$ except $x=1$. inspection
 
-$$\psi(x)=f(f(x))-x,\qquad \psi(1)=0.$$
+$$
+\psi(x)=f(f(x))-x,\qquad \psi(1)=0.
+$$
 
 **Step 1: $\psi$ Up to 3 zero points. ** To calculate the derivative, record $w(x)=f(x)+x-2$, then
 
-$$\psi'(x)=f'(f(x))f'(x)-1=(\ln a)^2\,a^{\,w(x)}-1.$$
+$$
+\psi'(x)=f'(f(x))f'(x)-1=(\ln a)^2\,a^{\,w(x)}-1.
+$$
 
 Moreover, $w'(x)=a^{x-1}\ln a+1$ is strictly increasing, so $w$ first decreases and then increases and has a unique minimum. Therefore, when the base is less than 1, $a^{w(x)}$ first increases and then decreases. Thus $\psi'$ is also unimodal: although it tends to $-1$ at both ends, it may become positive in between. Hence $\psi'$ changes sign at most twice, and $\psi$ has a decrease–increase–decrease profile with **at most three zeros**. By inverse-function symmetry, nontrivial zeros occur in pairs, so there is at most one off-axis pair.
 
 **Step 2: The threshold is exactly $\psi'(1)=0$. ** At the known zero point $x=1$,
 
-$$\psi'(1)=f'(1)^2-1=(\ln a)^2-1.$$
+$$
+\psi'(1)=f'(1)^2-1=(\ln a)^2-1.
+$$
 
 - If $(\ln a)^2\le1$ (i.e. $a\ge\frac1e$): then $\psi'(1)\le0$. Combined with the single-peak structure, it can be verified that $\psi$ no longer crosses zero on both sides of $x=1$ (it crosses down at $1$, and both ends are also facing $-$, and the positive peak in the middle cannot reach to create a new intersection point if it exists), so there is only one zero point** and only one intersection point for $x=1$.
 - If $(\ln a)^2>1$ (that is, $a<\frac1e$, because $\ln a<0$ is $\ln a<-1$): then $\psi'(1)>0$, $\psi$ crosses the zero point at $x=1$. However, $\psi(x)\to+\infty\ (x\to-\infty)$ and $\psi(x)\to-\infty\ (x\to+\infty)$ (use $0<a<1$ to directly test the limits at both ends), combined with the "decrease, increase and decrease" shape caused by a single peak, $x=1$ forces a new zero point on both sides**, which is exactly a pair of off-axis solutions.
@@ -194,7 +202,9 @@ $$\psi'(1)=f'(1)^2-1=(\ln a)^2-1.$$
 
 Therefore, it is important to:
 
-$$\text{three intersections}\iff(\ln a)^2>1\ \text{and}\ 0<a<1\iff \boxed{0<a<\tfrac1e}.$$
+$$
+\text{three intersections}\iff(\ln a)^2>1\ \text{and}\ 0<a<1\iff \boxed{0<a<\tfrac1e}.
+$$
 
 ### Example 3
 (2021 Tsinghua Strong Foundation) defines $x*y=\frac{x+y}{1+xy}$, then $(...(2*3)*4)...)*21=$__.

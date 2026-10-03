@@ -111,7 +111,9 @@ $x^3(3y)=x^3(1-x)$,显然无最小值.
 
 不妨设最大值大于0,则$x,(1-x)$同号,$x\in (0,1)$.
 
-$$9x^3y=3x^3(3y)=x^3(3-3x)\le (\frac{3}{4})^4$$
+$$
+9x^3y=3x^3(3y)=x^3(3-3x)\le (\frac{3}{4})^4
+$$
 
 $x^3y\le \frac{9}{256}\lt \frac{1}{3}$
 
@@ -244,18 +246,26 @@ $$
 
 当 $\Delta < 0$ 时，换一种参数化更直观。此时 $\dfrac{q+\sqrt{-\Delta}i}{2}$ 是一个复数，写成极坐标形式：
 
-$$\frac{q+\sqrt{-\Delta}i}{2} = r e^{i\theta}$$
-$$\frac{q-\sqrt{-\Delta}i}{2} = r e^{-i\theta}$$
+$$
+\frac{q+\sqrt{-\Delta}i}{2} = r e^{i\theta}
+$$
+$$
+\frac{q-\sqrt{-\Delta}i}{2} = r e^{-i\theta}
+$$
 
 其中
 
-$$r = \sqrt{\frac{q^2 - |\Delta|}{4}} = \sqrt{-\frac{p^3}{27}}, \quad \theta = \arctan\frac{\sqrt{-\Delta}}{q}$$
+$$
+r = \sqrt{\frac{q^2 - |\Delta|}{4}} = \sqrt{-\frac{p^3}{27}}, \quad \theta = \arctan\frac{\sqrt{-\Delta}}{q}
+$$
 
 （$\Delta < 0$ 时 $p < 0$，故 $r$ 是实数。）
 
 $u_k=-r^{1/3} e^{i(\theta + 2k\pi)/3}+r^{1/3} e^{i(-\theta + 2k\pi)/3}$，$k=0,1,2$，对应三个根：
 
-$$\boxed{u_k = -2\sqrt{-\frac{p}{3}}\cos\left(\frac{1}{3}\arccos\left(\frac{3q}{2p}\sqrt{-\frac{3}{p}}\right) - \frac{2k\pi}{3}\right), \quad k=0,1,2}$$
+$$
+\boxed{u_k = -2\sqrt{-\frac{p}{3}}\cos\left(\frac{1}{3}\arccos\left(\frac{3q}{2p}\sqrt{-\frac{3}{p}}\right) - \frac{2k\pi}{3}\right), \quad k=0,1,2}
+$$
 
 三个根全部是实数，因为复数部分在 $v+w$ 相加时恰好相消。
 
@@ -265,11 +275,15 @@ $$\boxed{u_k = -2\sqrt{-\frac{p}{3}}\cos\left(\frac{1}{3}\arccos\left(\frac{3q}{
 
 关键在于 $vw = -p/3$ 是实数约束。$v$ 和 $w$ 互为共轭复数：
 
-$$v = r^{1/3}e^{i\theta/3}, \quad w = \bar{v} = r^{1/3}e^{-i\theta/3}$$
+$$
+v = r^{1/3}e^{i\theta/3}, \quad w = \bar{v} = r^{1/3}e^{-i\theta/3}
+$$
 
 所以
 
-$$u = -(v+w) = -2r^{1/3}\cos\frac{\theta}{3} \in \mathbb{R}$$
+$$
+u = -(v+w) = -2r^{1/3}\cos\frac{\theta}{3} \in \mathbb{R}
+$$
 
 另外两个根对应 $\theta$ 替换为 $\theta + 2\pi$、$\theta + 4\pi$，同样是实数。**复数只是计算的"中间语言"，最终虚部两两抵消。**
 

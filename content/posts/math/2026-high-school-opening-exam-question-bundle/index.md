@@ -18,7 +18,9 @@ A. $e - 1$　　B. $e - 2$　　C. $1 - e$　　D. $2 - e$
 
 先对函数求导:
 
-$$f'(x)=\ln(x+1)+1-a$$
+$$
+f'(x)=\ln(x+1)+1-a
+$$
 
 $f'(x)$单调递增，要求$f(x)$在$(1,3)$上存在最小值$m$，即要求$f'(x)$有在$(1,3)$上恰有一个有变号零点:
 
@@ -138,11 +140,15 @@ b^2=12$$
 
 原条件实际上等价于下面两个方程同时成立：
 
-$$\text{①}\ \sin A=\sqrt3\,\frac bc,\qquad \text{②}\ \cos A=\frac{2b^2-c^2}{2bc}\ \text{（由余弦定理和 } a^2=2c^2-b^2 \text{ 得到）}$$
+$$
+\text{①}\ \sin A=\sqrt3\,\frac bc,\qquad \text{②}\ \cos A=\frac{2b^2-c^2}{2bc}\ \text{（由余弦定理和 } a^2=2c^2-b^2 \text{ 得到）}
+$$
 
 上述做法是把 ② 平方，再和 $\sin^2A+\cos^2A=1$ 合并，得到
 
-$$\cos^2A=\left(\frac{2b^2-c^2}{2bc}\right)^2 .$$
+$$
+\cos^2A=\left(\frac{2b^2-c^2}{2bc}\right)^2 .
+$$
 
 这一步丢掉了 $\cos A$ 的符号信息。之后再开方写成"$\pm$"时，负号分支 $\cos A=-\dfrac{2b^2-c^2}{2bc}$ 并不是原来的条件 ②，而是一个新加进来的方程。
 
@@ -160,15 +166,21 @@ $$\cos^2A=\left(\frac{2b^2-c^2}{2bc}\right)^2 .$$
 
 设 $t=\dfrac bc$。保留 ② 的原样，只用平方关系来求 $t$：
 
-$$\sin A=\sqrt3t,\qquad \cos A=\frac{2t^2-1}{2t}$$
+$$
+\sin A=\sqrt3t,\qquad \cos A=\frac{2t^2-1}{2t}
+$$
 
 由 $\sin^2A+\cos^2A=1$ 得
 
-$$3t^2+\frac{(2t^2-1)^2}{4t^2}=1\ \Longrightarrow\ 16t^4-8t^2+1=0\ \Longrightarrow\ (4t^2-1)^2=0$$
+$$
+3t^2+\frac{(2t^2-1)^2}{4t^2}=1\ \Longrightarrow\ 16t^4-8t^2+1=0\ \Longrightarrow\ (4t^2-1)^2=0
+$$
 
 所以 $t=\dfrac12$。再代回 ②，由它直接**确定符号**：
 
-$$\cos A=\frac{2\cdot\frac14-1}{2\cdot\frac12}=-\frac12$$
+$$
+\cos A=\frac{2\cdot\frac14-1}{2\cdot\frac12}=-\frac12
+$$
 
 因此 $A=\dfrac{2\pi}{3}$，外接圆半径 $R=2\sqrt3$，外接圆面积为 $S=\pi R^2=12\pi$。
 
@@ -219,7 +231,9 @@ $$\frac{b}{c}=\frac{\sin A}{\sqrt3}\\a^2=b^2+c^2-2bc\cos A\\
 
 计算前4项：
 
-$$a_1=0,a_2=1,a_3=5,a_4=23$$
+$$
+a_1=0,a_2=1,a_3=5,a_4=23
+$$
 
 我们猜测，$a_n=n!-1$
 
@@ -244,11 +258,15 @@ f(x)=1+\frac1{1!}x+\frac1{2!}x^2+\cdots+\frac1{n!}x^n$$
 
 不难发现，此题的命题背景是$y=e^x$的泰勒展开
 
-$$f'(x)=1+\frac1{1!}x+\frac1{2!}x^2+\cdots+\frac1{(n-1)!}x^{n-1}\lt f(x)$$
+$$
+f'(x)=1+\frac1{1!}x+\frac1{2!}x^2+\cdots+\frac1{(n-1)!}x^{n-1}\lt f(x)
+$$
 
 (ii)
 
-$$b_1 + b_2 + \cdots + b_n =f(1)-1$$
+$$
+b_1 + b_2 + \cdots + b_n =f(1)-1
+$$
 
 其实就是要证明$f(x)\lt e^x$
 
@@ -320,7 +338,9 @@ f(x)+f(0)=3+f(x)\ge0\\
 
 令$x=1,y=0$,则:
 
-$$2f(1)=f(0)=3$$
+$$
+2f(1)=f(0)=3
+$$
 
 令$x=0$,则:
 
@@ -393,7 +413,9 @@ C. $x_3 - x_2 > 2$
 
 D. $f(x_2) > 0$
 
-$$f'(x)=(\ln3)3^{x+1}+3ax^2$$
+$$
+f'(x)=(\ln3)3^{x+1}+3ax^2
+$$
 
 $f'(x)$恰有三个变号零点$x_1,x_2,x_3$，显然有$a\lt 0$
 
@@ -405,7 +427,9 @@ g'(x)=(2x-x^2\ln3)3^{-x}$$
 
 自此，可以判断选项A正确.
 
-$$f'(x)\gt 0 \Longleftrightarrow t\gt g(x)$$
+$$
+f'(x)\gt 0 \Longleftrightarrow t\gt g(x)
+$$
 
 可见$g(x)-t$和$f'(x)$符号相反.
 
@@ -414,7 +438,9 @@ x\in(x_1,x_2),g(x)-t\lt 0,f'(x)\gt 0$$
 
 因此$x_1$是极小值点，选项B错误
 
-$$f(x_2)\gt f(0)=3\gt0$$
+$$
+f(x_2)\gt f(0)=3\gt0
+$$
 
 选项D正确.
 

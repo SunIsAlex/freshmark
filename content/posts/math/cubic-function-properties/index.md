@@ -32,7 +32,9 @@ $$\begin{gathered}ax^2+bx+c=0(a\ne0)\\
 
 为了方便起见,我们只研究首系数为1的三次方程:
 
-$$\begin{gathered}x^3-px^2+qx-d=0\end{gathered}$$
+$$
+\begin{gathered}x^3-px^2+qx-d=0\end{gathered}
+$$
 
 构造$f(x)=x^3-px^2+qx-d$,显然$f(x)$的值域为$R$,我们先取出两个符号不同的端点:
 
@@ -80,7 +82,9 @@ $$\begin{gathered}x_{1,2}=\frac{p\pm\sqrt{p^2-3q}}{3}\\
 
 所以,根据函数单调性可以判断,三次函数有三个不同的实数根等价于:
 
-$$\begin{cases}p^2-3q\gt0,\\f(x_1)f(x_2)\lt0\end{cases}$$
+$$
+\begin{cases}p^2-3q\gt0,\\f(x_1)f(x_2)\lt0\end{cases}
+$$
 
 三次函数有一个实数根和一对重根等价于:
 
@@ -89,11 +93,15 @@ f(x_1)f(x_2)=0\end{cases}$$
 
 三次函数有一个实数根和一对共轭虚根等价于:
 
-$$\begin{gathered}f(x_1)f(x_2)\gt0\text{ or }p^2-3q\lt0\end{gathered}$$
+$$
+\begin{gathered}f(x_1)f(x_2)\gt0\text{ or }p^2-3q\lt0\end{gathered}
+$$
 
 三次函数有一个三重实根等价于:
 
-$$\begin{gathered}f(x_1)f(x_2)=0\text{ and }p^2-3q=0\end{gathered}$$
+$$
+\begin{gathered}f(x_1)f(x_2)=0\text{ and }p^2-3q=0\end{gathered}
+$$
 
 可见,问题的关键是算出$f(x_1)f(x_2)$.
 
@@ -197,17 +205,23 @@ f(x_1)f(x_2)<0
 \]
 化简系数:
 
-$$\begin{gathered}\boxed{\Delta=p^2q^2-4q^3-4p^3d-27d^2+18pqd}\end{gathered}$$
+$$
+\begin{gathered}\boxed{\Delta=p^2q^2-4q^3-4p^3d-27d^2+18pqd}\end{gathered}
+$$
 
 一元二次方程只有一个判别式,而一元三次方程居然有两个判别式,我们不禁思考:$p^2-3q\ge0$和$\Delta=p^2q^2-4q^3-4p^3d-27d^2+18pqd\gt0$是否是两个独立的条件?
 
 研究这个问题,我们把$d$当成主元,$p,q$作为变量,按照$d$的降幂排列:
 
-$$\begin{gathered}\Delta=-27d^2+(18q-4p^2)pd+q^2(p^2-4q)\gt0\end{gathered}$$
+$$
+\begin{gathered}\Delta=-27d^2+(18q-4p^2)pd+q^2(p^2-4q)\gt0\end{gathered}
+$$
 
 这是一个关于$d$的一元二次不等式,要求其有实数解:
 
-$$\begin{gathered}\Delta_\Delta=(18q-4p^2)^2p^2+108q^2(p^2-4q)\gt0\end{gathered}$$
+$$
+\begin{gathered}\Delta_\Delta=(18q-4p^2)^2p^2+108q^2(p^2-4q)\gt0\end{gathered}
+$$
 
 当$p^2=3q$,恰好有$\Delta_\Delta=0$,这说明$p^2-3q$是$\Delta_\Delta$的一个因式:
 
@@ -226,11 +240,15 @@ $$\begin{gathered}\Delta_\Delta=(18q-4p^2)^2p^2+108q^2(p^2-4q)\\
 
 三次方程$x^3-px^2+qx-d=0$的判别式为:
 
-$$\begin{gathered}\boxed{\Delta=p^2q^2-4q^3-4p^3d-27d^2+18pqd}\end{gathered}$$
+$$
+\begin{gathered}\boxed{\Delta=p^2q^2-4q^3-4p^3d-27d^2+18pqd}\end{gathered}
+$$
 
 三次函数有三个不同的单实数根等价于:
 
-$$\begin{gathered}\Delta\gt0\end{gathered}$$
+$$
+\begin{gathered}\Delta\gt0\end{gathered}
+$$
 
 三次函数有一个单实数根和一个二重重根等价于:
 
@@ -239,11 +257,15 @@ $$\begin{cases}p^2-3q\gt0,\\
 
 三次函数有一个单实数根和一对共轭虚根等价于:
 
-$$\begin{gathered}\Delta\lt0\end{gathered}$$
+$$
+\begin{gathered}\Delta\lt0\end{gathered}
+$$
 
 三次函数有一个三重实根等价于:
 
-$$\begin{gathered}p^2-3q=\Delta=0\end{gathered}$$
+$$
+\begin{gathered}p^2-3q=\Delta=0\end{gathered}
+$$
 
 
 

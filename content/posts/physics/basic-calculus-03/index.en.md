@@ -154,20 +154,30 @@ Find the extreme value of function $f(x) = x^3 - 3x$.
 
 **Solution:**
 First find the first derivative:
-$$f'(x) = 3x^2 - 3$$
+$$
+f'(x) = 3x^2 - 3
+$$
 
 Let $f'(x) = 0$, the solution to the stationary point is:
-$$x_1 = 1, \quad x_2 = -1$$
+$$
+x_1 = 1, \quad x_2 = -1
+$$
 
 Then find the second derivative:
-$$f''(x) = 6x$$
+$$
+f''(x) = 6x
+$$
 
 Substitute the stationary point into the second derivative to judge:
 * For $x_1 = 1$:
-  $$f''(1) = 6 > 0$$
+  $$
+f''(1) = 6 > 0
+$$
 So $f(x)$ obtains the **minimum value** at $x = 1$, and the minimum value is $f(1) = -2$.
 * For $x_2 = -1$:
-  $$f''(-1) = -6 < 0$$
+  $$
+f''(-1) = -6 < 0
+$$
 So $f(x)$ obtains the **maximum value** at $x = -1$, and the maximum value is $f(-1) = 2$.
 
 ### Example 5
@@ -280,7 +290,9 @@ Bringing $i\theta$ into $e^x$ Taylor expansion is easy to prove.
 
 Coulomb's law:
 
-$$F = \frac{kQq}{r^2}$$
+$$
+F = \frac{kQq}{r^2}
+$$
 
 - If $Q$ and $q$ have the same sign, then $F > 0$ is the **repulsive force**
 - If $Q$ and $q$ have different signs, then $F < 0$ is **gravity**
@@ -341,7 +353,9 @@ Among them, $v$ is the speed of the object, $c$ is the speed of light, and $m_0$
 
 Call $E_0=m_0c^2$ static energy, and we have
 
-$$\boxed{E_k=E-E_0}$$
+$$
+\boxed{E_k=E-E_0}
+$$
 
 According to classical physics $E_k=\frac{1}{2}mv^2$
 

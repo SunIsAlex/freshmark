@@ -75,7 +75,9 @@ Iodination: $\ce{P + I2}$
 3. Low temperature to avoid rearrangement
 
 ## ROH + SOCl2
-$$\ce{ROH + SOCl2 ->[\triangle] SO2 ^ + HCl ^ + RCl}$$
+$$
+\ce{ROH + SOCl2 ->[\triangle] SO2 ^ + HCl ^ + RCl}
+$$
 
 Reaction advantages: directly obtain alkyl chloride, mild conditions, fast rate, high yield, and the product is easy to purify.
 

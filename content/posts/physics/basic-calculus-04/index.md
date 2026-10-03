@@ -53,7 +53,9 @@ $$\begin{gathered}
 
 构建的微分方程:
 
-$$\frac{d^2\vec{x}}{dt^2}=\frac{-k}{m}x$$
+$$
+\frac{d^2\vec{x}}{dt^2}=\frac{-k}{m}x
+$$
 
 备选的$x(t)$:
 - $A\cos (\omega t+\phi)$
@@ -309,9 +311,13 @@ $$\begin{gathered}
 由此，力对于质心，会产生平动；力的力矩，会导致转动。
 
 ### 质点系牛顿第二定律
-$$\boxed{(\sum m)a_c=\sum{F}}$$
+$$
+\boxed{(\sum m)a_c=\sum{F}}
+$$
 ### 科尼希(质心运动)定理
-$$\boxed{\sum{\frac{1}{2}m_iv_i^2}=\frac{1}{2}Mv^2+\sum{\frac{1}{2}m_iv_{ic}^2}}$$
+$$
+\boxed{\sum{\frac{1}{2}m_iv_i^2}=\frac{1}{2}Mv^2+\sum{\frac{1}{2}m_iv_{ic}^2}}
+$$
 
 通过$a_c$，不难求得$v_c$;我们现在希望能通过合外力的力矩，求得所有质点绕质心旋转的角速度$\omega$.
 
@@ -319,7 +325,9 @@ $$\boxed{\sum{\frac{1}{2}m_iv_i^2}=\frac{1}{2}Mv^2+\sum{\frac{1}{2}m_iv_{ic}^2}}
 
 定义:$M=I\beta$,其中$I$为转动惯量.
 
-$$\boxed{I=\sum{m_ir_i^2}}$$
+$$
+\boxed{I=\sum{m_ir_i^2}}
+$$
 
 计算式如上，其中$r_i$为质点i到质心的距离.
 
@@ -340,7 +348,9 @@ $$\begin{gathered}
 ### 转动惯量平行轴定理
 刚体对**任意转轴**的转动惯量，等于其对**平行质心轴**的转动惯量与刚体总质量和两轴垂直距离平方的乘积之和。
 
-$$\boxed{I=I_c+Md^2}$$
+$$
+\boxed{I=I_c+Md^2}
+$$
 
 对于例11,$I=I_c+m(\frac{1}{2}l)^2=\frac{1}{12}ml^2+\frac{1}{4}ml^2=\frac{1}{3}ml^2$
 

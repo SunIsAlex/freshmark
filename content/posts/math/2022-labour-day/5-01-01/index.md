@@ -122,11 +122,15 @@ $$\begin{gathered}
 \end{cases}$
 
 带入椭圆方程:
-$$(\frac{x-\sqrt{3}y+3}{2})^2+4(\frac{\sqrt{3}x+y-3\sqrt{3}}{2})^2=4$$
+$$
+(\frac{x-\sqrt{3}y+3}{2})^2+4(\frac{\sqrt{3}x+y-3\sqrt{3}}{2})^2=4
+$$
 
 进一步化简系数:
 
-$$(x-\sqrt{3}y+3)^2+4(\sqrt{3}x+y-3\sqrt{3})^2=16$$
+$$
+(x-\sqrt{3}y+3)^2+4(\sqrt{3}x+y-3\sqrt{3})^2=16
+$$
 
 ### 例6
 设 \(x, y \in R\), \(z_1 = 2 - \sqrt{3}x + xi\), \(z_2 = \sqrt{3}y - 1 + (\sqrt{3} - y)i\)，已知 \(|z_1| = |z_2|\)，\(\arg \frac{z_1}{z_2} = \frac{\pi}{2}\)，
@@ -141,7 +145,9 @@ $$(x-\sqrt{3}y+3)^2+4(\sqrt{3}x+y-3\sqrt{3})^2=16$$
 
 所以$z_1=iz_2$
 
-$$(2-\sqrt{3}x)+xi=i[(\sqrt{3}y-1)+(\sqrt{3}-y)i]$$
+$$
+(2-\sqrt{3}x)+xi=i[(\sqrt{3}y-1)+(\sqrt{3}-y)i]
+$$
 
 得:$$\begin{cases}
   2-\sqrt{3}x=y-\sqrt{3},\\
@@ -210,7 +216,9 @@ $\tan2\theta=\frac{\sqrt{3}}{3}$
 
 $\theta=\frac{1}{12}\pi\text{ or }\frac{7}{12}\pi$
 
-$$w=\frac{\sqrt{3}}{3}(\cos\frac{\pi}{6}+i\sin\frac{\pi}{6}),\arg(w)=\frac{\pi}{3}\lt\frac{\pi}{2}$$
+$$
+w=\frac{\sqrt{3}}{3}(\cos\frac{\pi}{6}+i\sin\frac{\pi}{6}),\arg(w)=\frac{\pi}{3}\lt\frac{\pi}{2}
+$$
 
 #### 情况2
 $\tan2\theta=-\frac{\sqrt{3}}{3}$

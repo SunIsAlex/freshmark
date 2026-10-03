@@ -114,7 +114,9 @@ At ultra-high pressure, the ultimate density $\rho_{\infty}=\frac{M}{b}=75.8kg\c
 6.3 Organic liquid hydrogen storage. Organic liquid hydrogen storage carriers (LOHCs) have the advantages of high safety and easy transportation. The reversible transformation between N-ethylcarbazole (NEC) and its fully hydrogenated product 12H-NEC makes it a LOHC system with great application prospects.
 
 6.3.1 The formula quantity of 12H-NEC is 207.36, and the relationship between its density $\rho$ (unit: $\text{g}\cdot\text{cm}^{-3}$) and temperature $T$ (unit: K) is:
-$$ \rho = 1.1482329 - 0.00070927T $$
+$$
+ \rho = 1.1482329 - 0.00070927T
+$$
 , calculate the hydrogen storage density of 12H-NEC at 293.0 K $\text{kg}\cdot\text{m}^{-3}$?
 
 ![alt text](image.png)

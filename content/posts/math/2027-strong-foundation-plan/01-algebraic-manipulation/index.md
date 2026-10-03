@@ -108,7 +108,9 @@ $$\begin{gathered}
 
 贸然求解不可行,先尝试韦达定理或者均值不等式的取等条件:
 
-$$(ab)^2+(a^2+4b^2)+9-10ab=0\ge(ab)^2-6ab+9=(ab-3)^2$$
+$$
+(ab)^2+(a^2+4b^2)+9-10ab=0\ge(ab)^2-6ab+9=(ab-3)^2
+$$
 
 于是得到$\begin{cases}ab=3,\frac{b}{a}=\frac{1}{2}\end{cases}$
 
@@ -152,7 +154,9 @@ $$\begin{gathered}
 
 所以要求结果为完全平方数,故排除BC. 只需要找出可行的A.
 
-$$130=2\times5\times13$$
+$$
+130=2\times5\times13
+$$
 
 令$\begin{cases}
   x+y=2,\\
@@ -198,7 +202,9 @@ $$\begin{gathered}
 
 这是一个三元三次对称式,当$a=b+c$时,左式等于0,所以可以因式分解为:
 
-$$(a+b-c)(b+c-a)(c+a-b)=0$$
+$$
+(a+b-c)(b+c-a)(c+a-b)=0
+$$
 
 不妨设$a+b=c$,则$z=-1,x=y=1$,同理得到相同结论
 ## 例1.10
@@ -279,7 +285,9 @@ $a^2=-4a\ge 0$,于是$a=-4$
 (自主招生)已知$a+b+c=0$,求$a(\frac{1}{b}+\frac{1}{c})+b(\frac{1}{c}+\frac{1}{a})+c(\frac{1}{a}+\frac{1}{b})$
 
 原式相当于:
-$$\frac{a^2(b+c)+b^2(c+a)+c^2(a+b)}{abc}=-\frac{a^3+b^3+c^3}{abc}=-3$$
+$$
+\frac{a^2(b+c)+b^2(c+a)+c^2(a+b)}{abc}=-\frac{a^3+b^3+c^3}{abc}=-3
+$$
 ## 例题 1.15
 设 \(a, b, c\) 为非零常数，且 \(a^2 + b^2 + c^2 = 1\)，  
 \[a\left(\frac{1}{b} + \frac{1}{c}\right) + b\left(\frac{1}{c} + \frac{1}{a}\right) + c\left(\frac{1}{a} + \frac{1}{b}\right) = -3\]  
@@ -296,13 +304,17 @@ D. 前三个答案都不对
 
 条件像是例1.14的反问题.
 
-$$\frac{a^2(b+c)+b^2(c+a)+c^2(a+b)}{abc}=-3$$
+$$
+\frac{a^2(b+c)+b^2(c+a)+c^2(a+b)}{abc}=-3
+$$
 
 也就是$a^2(b+c)+b^2(c+a)+c^2(a+b)+3abc=0$
 
 类似例1.9,可以因式分解:
 
-$$(a+b+c)(ab+bc+ca)=0$$
+$$
+(a+b+c)(ab+bc+ca)=0
+$$
 
 ### Scenario One
 $a+b+c=0$
