@@ -11,6 +11,7 @@ import { buildPostPdfs, findPdfRenderer } from "../lib/pdf.mjs";
 import { defaultLocale, interpolate, locales, localizedPath } from "../lib/i18n.mjs";
 import { parseFrontmatter, renderSummary, searchTextFromMarkdown, summaryFromBody } from "../lib/markdown.mjs";
 import { enhanceResponsiveImages } from "../lib/responsive-images.mjs";
+import { subjectLabel } from "../lib/subjects.mjs";
 import {
   commentsAuthEnabled as resolveCommentsAuthEnabled,
   commentsEnabled as resolveCommentsEnabled,
@@ -32,6 +33,7 @@ const optionValue = (name) => {
   return index >= 0 ? buildArgs[index + 1] : undefined;
 };
 const requestedPost = optionValue("--post");
+const skipPdfs = buildArgs.includes("--no-pdf");
 const requestedPostSource = requestedPost ? (() => {
   const absolute = path.resolve(root, requestedPost);
   const relative = path.relative(contentDir, absolute);
@@ -136,12 +138,15 @@ async function loadPosts(renderOnlySource = "") {
 }
 
 const searchIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+const paletteIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.2 0 1.9-.8 1.9-1.8 0-1.3-1-1.6-1-2.7 0-1 .8-1.7 1.8-1.7h2.1a3.7 3.7 0 0 0 3.7-3.7C20.5 6.8 16.7 3.5 12 3.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="7.8" cy="11.5" r="1.3" fill="currentColor"/><circle cx="10.5" cy="7.6" r="1.3" fill="currentColor"/><circle cx="15.2" cy="8.2" r="1.3" fill="currentColor"/></svg>';
+// The default skin lives in the critical CSS; the others load from skins.css only when chosen.
+const skinNames = ["typora", "github", "news", "paper", "terminal"];
 const moonIcon = '<svg data-theme-icon width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 15.1A8.5 8.5 0 0 1 8.9 4a8.5 8.5 0 1 0 11.1 11.1Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>';
 
 function header(locale, alternatePath = localizedPath(locales[locale].alternate, "/")) {
   const messages = locales[locale];
   const alternate = locales[messages.alternate];
-  return `<header class="container header"><a class="brand" href="${localeHref(locale, "/")}" aria-label="${escapeHtml(config.title)}">${brandIcon}${escapeHtml(config.title)}</a><nav class="nav" aria-label="${escapeHtml(messages.mainNavigation)}"><a href="${localeHref(locale, "/#writing")}">${escapeHtml(messages.writing)}</a><a href="${localeHref(locale, "/about/")}">${escapeHtml(messages.about)}</a><a href="${localeHref(locale, "/rss.xml")}">RSS</a><a class="language-switch" href="${href(alternatePath)}" hreflang="${alternate.language}" lang="${alternate.language}" data-no-spa>${escapeHtml(messages.switchLabel)}</a><button class="icon-btn" type="button" data-search-open aria-label="${escapeHtml(messages.openSearch)}">${searchIcon}</button><button class="icon-btn" type="button" data-theme-toggle aria-label="${escapeHtml(messages.switchTheme)}">${moonIcon}</button></nav></header>`;
+  return `<header class="container header"><a class="brand" href="${localeHref(locale, "/")}" aria-label="${escapeHtml(config.title)}">${brandIcon}${escapeHtml(config.title)}</a><nav class="nav" aria-label="${escapeHtml(messages.mainNavigation)}"><a href="${localeHref(locale, "/#writing")}">${escapeHtml(messages.writing)}</a><a href="${localeHref(locale, "/about/")}">${escapeHtml(messages.about)}</a><a href="${localeHref(locale, "/rss.xml")}">RSS</a><a class="language-switch" href="${href(alternatePath)}" hreflang="${alternate.language}" lang="${alternate.language}" data-no-spa>${escapeHtml(messages.switchLabel)}</a><button class="icon-btn" type="button" data-search-open aria-label="${escapeHtml(messages.openSearch)}">${searchIcon}</button><button class="icon-btn" type="button" data-theme-toggle aria-label="${escapeHtml(messages.switchTheme)}">${moonIcon}</button><div class="skin-picker"><button class="icon-btn" type="button" data-skin-toggle aria-expanded="false" aria-label="${escapeHtml(messages.chooseSkin)}">${paletteIcon}</button></div></nav></header>`;
 }
 
 function footer(locale) {
@@ -166,7 +171,7 @@ function page({ locale = defaultLocale, title, description, content, article = f
   const mathStyles = content.includes('class="katex-html"') ? `<link rel="preload" href="${assetHref("/assets/katex.min.css")}" as="style" data-katex-styles onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="${assetHref("/assets/katex.min.css")}"></noscript>` : "";
   const defaultPath = locale === defaultLocale ? pathName : alternatePath;
   const alternateLink = hasAlternate ? `<link rel="alternate" hreflang="${alternate.language}" href="${absolute(alternatePath)}">` : "";
-  return `<!doctype html><html lang="${escapeHtml(messages.language)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="${escapeHtml(config.themeColor)}"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="${escapeHtml(config.title)}"><meta name="codex-preview" content="development"><title>${fullTitle}</title><meta name="description" content="${escapeHtml(pageDescription)}"><link rel="canonical" href="${absolute(pathName)}"><link rel="alternate" hreflang="${messages.language}" href="${absolute(pathName)}">${alternateLink}<link rel="alternate" hreflang="x-default" href="${absolute(defaultPath)}"><link rel="manifest" href="${localeHref(locale, "/manifest.webmanifest")}"><link rel="icon" href="${href("/favicon.svg")}" type="image/svg+xml"><link rel="apple-touch-icon" href="${href("/icons/apple-touch-icon.png")}"><link rel="alternate" type="application/rss+xml" title="${escapeHtml(config.title)} RSS" href="${localeHref(locale, "/rss.xml")}"><script>try{document.documentElement.dataset.theme=localStorage.getItem('freshmark-theme')||''}catch(e){}</script><style data-critical>${criticalCss}</style>${mathStyles}${deferredStyles}</head><body><div class="site-shell"><div class="ambient"></div>${article ? '<div class="reading-progress" data-reading-progress></div>' : ""}${header(locale, alternatePath)}${content}${footer(locale)}</div>${searchModal(locale)}<script>window.FRESHMARK={basePath:${JSON.stringify(basePath)},title:${JSON.stringify(config.title)},locale:${JSON.stringify(locale)},language:${JSON.stringify(messages.language)},messages:${JSON.stringify(messages)},localeRoot:${JSON.stringify(localeHref(locale, "/"))},alternateRoot:${JSON.stringify(localeHref(alternateLocale, "/"))},postsRoot:${JSON.stringify(localeHref(locale, "/posts/"))},searchIndexPath:${JSON.stringify(localeHref(locale, "/search-index.json"))},assetVersion:${JSON.stringify(assetVersion)},views:${JSON.stringify({ enabled: viewsEnabled, endpoint: viewsEndpoint })},comments:${JSON.stringify({ enabled: commentsEnabled, auth: commentsAuthEnabled, listEndpoint: commentsListEndpoint, submitEndpoint: commentsSubmitEndpoint, authEndpoints: commentsAuthEndpoints })}};</script><script type="module" src="${assetHref("/assets/app.js")}"></script></body></html>`;
+  return `<!doctype html><html lang="${escapeHtml(messages.language)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="${escapeHtml(config.themeColor)}"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="${escapeHtml(config.title)}"><meta name="codex-preview" content="development"><title>${fullTitle}</title><meta name="description" content="${escapeHtml(pageDescription)}"><link rel="canonical" href="${absolute(pathName)}"><link rel="alternate" hreflang="${messages.language}" href="${absolute(pathName)}">${alternateLink}<link rel="alternate" hreflang="x-default" href="${absolute(defaultPath)}"><link rel="manifest" href="${localeHref(locale, "/manifest.webmanifest")}"><link rel="icon" href="${href("/favicon.svg")}" type="image/svg+xml"><link rel="apple-touch-icon" href="${href("/icons/apple-touch-icon.png")}"><link rel="alternate" type="application/rss+xml" title="${escapeHtml(config.title)} RSS" href="${localeHref(locale, "/rss.xml")}"><script>try{var d=document.documentElement,s=localStorage.getItem('freshmark-skin');d.dataset.theme=localStorage.getItem('freshmark-theme')||'';if(/^(${skinNames.join("|")})$/.test(s)){var l=document.createElement('link');l.rel='stylesheet';l.href=${JSON.stringify(assetHref("/assets/skins.css"))};l.setAttribute('blocking','render');l.setAttribute('data-skin-styles','');document.head.appendChild(l);d.dataset.skin=s}}catch(e){}</script><style data-critical>${criticalCss}</style>${mathStyles}${deferredStyles}</head><body><div class="site-shell"><div class="ambient"></div>${article ? '<div class="reading-progress" data-reading-progress></div>' : ""}${header(locale, alternatePath)}${content}${footer(locale)}</div>${searchModal(locale)}<script>window.FRESHMARK={basePath:${JSON.stringify(basePath)},title:${JSON.stringify(config.title)},locale:${JSON.stringify(locale)},language:${JSON.stringify(messages.language)},messages:${JSON.stringify(messages)},localeRoot:${JSON.stringify(localeHref(locale, "/"))},alternateRoot:${JSON.stringify(localeHref(alternateLocale, "/"))},postsRoot:${JSON.stringify(localeHref(locale, "/posts/"))},searchIndexPath:${JSON.stringify(localeHref(locale, "/search-index.json"))},assetVersion:${JSON.stringify(assetVersion)},skinStyles:${JSON.stringify(assetHref("/assets/skins.css"))},views:${JSON.stringify({ enabled: viewsEnabled, endpoint: viewsEndpoint })},comments:${JSON.stringify({ enabled: commentsEnabled, auth: commentsAuthEnabled, listEndpoint: commentsListEndpoint, submitEndpoint: commentsSubmitEndpoint, authEndpoints: commentsAuthEndpoints })}};</script><script type="module" src="${assetHref("/assets/app.js")}"></script></body></html>`;
 }
 
 function webManifest(locale = defaultLocale) {
@@ -198,12 +203,7 @@ function pageFragment(html, { locale = defaultLocale, title, description, pathNa
 
 function displaySubjects(post) {
   if (post.categories.length) return post.categories;
-  const subjects = {
-    math: ["数学", "Mathematics"], physics: ["物理", "Physics"],
-    chemistry: ["化学", "Chemistry"], technology: ["技术", "Technology"],
-    android: ["Android", "Android"], english: ["英语", "English"],
-  };
-  return [(subjects[post.sourceFile.split("/")[0]] || ["笔记", "Notes"])[post.locale === "en" ? 1 : 0]];
+  return [subjectLabel(post.sourceFile.split("/")[0], post.locale)];
 }
 
 async function homePage(locale, posts, { mathOutput = "html", fragment = false } = {}) {
@@ -211,10 +211,11 @@ async function homePage(locale, posts, { mathOutput = "html", fragment = false }
   const featured = posts.find((post) => post.featured) || posts[0];
   const categories = [...new Set(posts.flatMap(displaySubjects))];
   const cardMathOutput = mathOutput === "source" ? "source" : "mathml";
-  const cards = (await Promise.all(posts.map(async (post, index) => `<a class="post-card" href="${localeHref(locale, `/posts/${post.slug}/`)}" data-post-card data-tags="${escapeHtml(displaySubjects(post).join("|"))}"><span class="post-number" aria-hidden="true">${String(index + 1).padStart(2, "0")}</span><div class="post-card-copy"><span class="post-subject">${escapeHtml(displaySubjects(post).join(" / "))}</span><h3>${escapeHtml(post.title)}</h3><p>${await renderSummary(post.summary, { links: false, mathOutput: cardMathOutput })}</p></div><time class="post-date" datetime="${post.date}">${formatDate(locale, post.date)}</time><span class="post-arrow" aria-hidden="true">↗</span></a>`))).join("");
+  const cards = (await Promise.all(posts.map(async (post, index) => `<a class="post-card" href="${localeHref(locale, `/posts/${post.slug}/`)}" data-post-card data-subject="${escapeHtml(post.sourceFile.split("/")[0])}" data-tags="${escapeHtml(displaySubjects(post).join("|"))}"><span class="post-number" aria-hidden="true">${String(index + 1).padStart(2, "0")}</span><div class="post-card-copy"><span class="post-subject">${escapeHtml(displaySubjects(post).join(" / "))}</span><h3>${escapeHtml(post.title)}</h3><p>${await renderSummary(post.summary, { links: false, mathOutput: cardMathOutput })}</p></div><time class="post-date" datetime="${post.date}" data-label="${escapeHtml(messages.dateLabel)}">${formatDate(locale, post.date)}</time><span class="post-arrow" aria-hidden="true">→</span></a>`))).join("");
   const featuredSummary = await renderSummary(featured.summary, { mathOutput: cardMathOutput });
-  const diagram = `<svg viewBox="0 0 480 400" fill="none" aria-hidden="true" focusable="false"><g stroke="currentColor" stroke-width="1"><path opacity=".18" d="M0 80H480M0 160H480M0 240H480M0 320H480M80 0V400M160 0V400M240 0V400M320 0V400M400 0V400"/><path opacity=".45" d="M25 240H455M240 25V375"/><ellipse cx="240" cy="200" rx="178" ry="147.255" transform="rotate(-32 240 200)"/><ellipse cx="240" cy="200" rx="140" ry="97.980" transform="rotate(-32 240 200)"/><circle cx="240" cy="200" r="148" stroke-dasharray="3 7" opacity=".35"/><path d="M89 294L391 106M325 147L391 106" stroke="var(--accent)" stroke-width="1.5"/></g><g fill="var(--accent)"><circle cx="325" cy="147" r="6"/><circle cx="391" cy="106" r="4"/></g><g fill="currentColor" font-family="monospace" font-size="12"><text x="336" y="168">F</text><text x="403" y="101">P</text><text x="35" y="37">e = c / a</text><text x="344" y="373">0 ≤ e &lt; 1</text></g></svg>`;
-  const content = `<main><section class="container hero"><div class="hero-copy"><p class="eyebrow">${escapeHtml(messages.tagline)}</p><h1>${escapeHtml(messages.heroLead)} <em>${escapeHtml(messages.heroEmphasis)}</em></h1><p class="hero-intro">${escapeHtml(messages.intro)}</p><button class="search-trigger" type="button" data-search-open>${searchIcon}<span>${escapeHtml(messages.searchArchive)}</span><kbd>⌘ K</kbd></button><p class="issue-count"><strong>${posts.length}</strong> ${escapeHtml(messages.notebookCount)}</p></div><figure class="lab-diagram">${diagram}<figcaption>${escapeHtml(messages.diagramCaption)}</figcaption></figure></section><section class="container featured" aria-label="${escapeHtml(messages.featuredArticle)}"><div class="featured-label"><span class="eyebrow">01 / ${escapeHtml(messages.featured)}</span><span class="featured-symbol" aria-hidden="true">↗</span></div><div class="featured-copy"><span class="meta">${escapeHtml(displaySubjects(featured).join(" / "))} · ${escapeHtml(interpolate(messages.minuteRead, { minutes: featured.readingTime }))}</span><h2><a href="${localeHref(locale, `/posts/${featured.slug}/`)}">${escapeHtml(featured.title)}</a></h2><p>${featuredSummary}</p><a class="read-link" href="${localeHref(locale, `/posts/${featured.slug}/`)}">${escapeHtml(messages.readEssay)} <span aria-hidden="true">→</span></a></div></section><section class="container post-section" id="writing"><div class="section-head"><div><p class="eyebrow">${escapeHtml(messages.indexLabel)}</p><h2>${escapeHtml(messages.recentWriting)}<span class="archive-count"> / ${String(posts.length).padStart(2, "0")}</span></h2></div><div class="tag-row" aria-label="${escapeHtml(messages.filterByCategory)}"><button class="tag-filter active" type="button" data-tag="__all__">${escapeHtml(messages.all)}</button>${categories.map((category) => `<button class="tag-filter" type="button" data-tag="${escapeHtml(category)}">${escapeHtml(category)}</button>`).join("")}</div></div><div class="post-list" data-post-list>${cards}<p class="empty" data-filter-empty hidden>${escapeHtml(messages.emptyCategory)}</p></div></section></main>`;
+  const diagram = `<svg viewBox="0 0 480 400" fill="none" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><defs><linearGradient id="fm-prism" x1="0" y1="0" x2="1" y2="1"><stop class="g1"/><stop class="g2" offset="1"/></linearGradient></defs><g stroke="currentColor" stroke-width=".8"><path opacity=".12" d="M0 80H480M0 160H480M0 240H480M0 320H480M80 0V400M160 0V400M240 0V400M320 0V400M400 0V400"/><path opacity=".25" d="M25 240H455M240 25V375"/><circle class="spin" cx="240" cy="200" r="168" stroke-dasharray="2 9" opacity=".35"/><ellipse cx="240" cy="200" rx="178" ry="147.255" transform="rotate(-32 240 200)" stroke="url(#fm-prism)" stroke-width="1.6"/><ellipse cx="240" cy="200" rx="140" ry="97.980" transform="rotate(-32 240 200)" opacity=".45"/><ellipse cx="240" cy="200" rx="100" ry="52" transform="rotate(-32 240 200)" opacity=".2"/><path d="M89 294L391 106" stroke="url(#fm-prism)" stroke-dasharray="4 5"/></g><g class="orbit"><circle cx="240" cy="32" r="10" fill="var(--accent-2)" opacity=".25"/><circle cx="240" cy="32" r="4" fill="var(--accent-2)"/></g><g fill="var(--accent-2)"><circle cx="325" cy="147" r="12" opacity=".25"/><circle cx="325" cy="147" r="5"/><circle cx="391" cy="106" r="3.5"/><circle cx="155" cy="253" r="3.5"/></g></svg>`;
+  const featuredHref = localeHref(locale, `/posts/${featured.slug}/`);
+  const content = `<main><section class="container hero"><h1>${escapeHtml(messages.heroLead)} <em>${escapeHtml(messages.heroEmphasis)}</em></h1><div class="hero-copy"><p class="eyebrow">${escapeHtml(messages.tagline)}</p><p class="hero-intro">${escapeHtml(messages.intro)}</p><button class="search-trigger" type="button" data-search-open>${searchIcon}<span>${escapeHtml(messages.searchArchive)}</span><kbd>⌘ K</kbd></button><p class="issue-count"><strong>${posts.length}</strong> ${escapeHtml(messages.notebookCount)}</p></div></section><section class="container featured" aria-label="${escapeHtml(messages.featuredArticle)}"><figure class="lab-diagram">${diagram}<figcaption>${escapeHtml(messages.diagramCaption)}</figcaption></figure><div class="featured-copy"><span class="meta">${escapeHtml(messages.featured)} · ${escapeHtml(displaySubjects(featured).join(" / "))} · ${escapeHtml(interpolate(messages.minuteRead, { minutes: featured.readingTime }))}</span><h2><a href="${featuredHref}">${escapeHtml(featured.title)}</a></h2><p>${featuredSummary}</p><a class="read-link" href="${featuredHref}">${escapeHtml(messages.readEssay)} <span aria-hidden="true">→</span></a></div></section><section class="container post-section" id="writing"><div class="section-head"><div><p class="eyebrow">${escapeHtml(messages.indexLabel)}</p><h2>${escapeHtml(messages.recentWriting)}<span class="archive-count"> / ${String(posts.length).padStart(2, "0")}</span></h2></div><div class="tag-row" aria-label="${escapeHtml(messages.filterByCategory)}"><button class="tag-filter active" type="button" data-tag="__all__">${escapeHtml(messages.all)}</button>${categories.map((category) => `<button class="tag-filter" type="button" data-tag="${escapeHtml(category)}">${escapeHtml(category)}</button>`).join("")}</div></div><div class="post-list" data-post-list>${cards}<p class="empty" data-filter-empty hidden>${escapeHtml(messages.emptyCategory)}</p></div></section></main>`;
   if (fragment) return content;
   const pathName = localizedPath(locale, "/");
   return page({ locale, content, pathName, alternatePath: localizedPath(messages.alternate, "/") });
@@ -292,7 +293,7 @@ const ASSET_VERSION=${JSON.stringify(assetVersion)};
 const LOCALIZED_NOT_FOUND=${JSON.stringify(Object.keys(locales).filter((locale) => locale !== defaultLocale).map((locale) => [`/${locale}/`, localizedPath(locale, "/404.html")]))};
 const at=(path)=>BASE_PATH+path;
 const versioned=(path)=>at(path.replace(/(\\.js|\\.css)$/,"."+ASSET_VERSION+"$1"));
-  const PRECACHE=${JSON.stringify([...localizedPrecache, "/favicon.svg", "/icons/icon-192.png", "/icons/icon-512.png", "/icons/apple-touch-icon.png", "/assets/fonts/anthropic-sans-variable.woff2"])}.map(at).concat([versioned("/assets/styles.css"),versioned("/assets/app.js")]);
+  const PRECACHE=${JSON.stringify([...localizedPrecache, "/favicon.svg", "/icons/icon-192.png", "/icons/icon-512.png", "/icons/apple-touch-icon.png", "/assets/fonts/anthropic-sans-variable.woff2"])}.map(at).concat([versioned("/assets/styles.css"),versioned("/assets/skins.css"),versioned("/assets/app.js")]);
 const removeCachedSearchIndexes=async()=>{const cache=await caches.open(CACHE_NAME);const requests=await cache.keys();await Promise.all(requests.filter((request)=>new URL(request.url).pathname.endsWith("/search-index.json")).map((request)=>cache.delete(request)))};
 self.addEventListener("install",(event)=>event.waitUntil(caches.open(CACHE_NAME).then((cache)=>cache.addAll(PRECACHE)).then(()=>self.skipWaiting())));
 self.addEventListener("activate",(event)=>event.waitUntil(caches.keys().then((names)=>Promise.all(names.filter((name)=>name.startsWith("freshmark-")&&name!==CACHE_NAME).map((name)=>caches.delete(name)))).then(removeCachedSearchIndexes).then(()=>self.clients.claim())));
@@ -375,6 +376,7 @@ async function writePost(post) {
 }
 
 async function writePdfs(posts) {
+  if (skipPdfs) return;
   console.log(`Freshmark preparing ${posts.length} article PDF${posts.length === 1 ? "" : "s"}...`);
   await buildPostPdfs(posts, {
     root,
@@ -407,7 +409,7 @@ async function writeRuntimeFiles() {
 }
 
 // Check mandatory external dependencies before touching the existing output.
-const pdfRenderer = await findPdfRenderer({ root });
+const pdfRenderer = skipPdfs ? null : await findPdfRenderer({ root });
 buildWorkers = new BuildWorkerPool({
   workerUrl: new URL("./build-worker.mjs", import.meta.url),
 });
@@ -419,7 +421,11 @@ if (requestedPostSource && !incrementalBuild) console.log("Freshmark incremental
 const posts = await loadPosts(incrementalBuild ? requestedPostSource : "");
 if (!posts.length) throw new Error("No publishable Markdown posts found.");
 await fs.mkdir(outputDir, { recursive: true });
-if (incrementalBuild) {
+// Saving a draft (for example from the editor) should not look like a failed build in `npm run dev`.
+const skippedDraft = incrementalBuild && !posts.some(({ sourceFile }) => sourceFile === requestedPostSource)
+  && await fs.readFile(path.join(contentDir, requestedPostSource), "utf8").then((source) => parseFrontmatter(source, requestedPostSource).data.draft === true, () => false);
+if (skippedDraft) console.log(`Freshmark skipped draft ${requestedPostSource} (set FRESHMARK_DRAFTS=true to preview drafts).`);
+else if (incrementalBuild) {
   const post = posts.find(({ sourceFile }) => sourceFile === requestedPostSource);
   if (!post) throw new Error(`Post is not publishable: ${requestedPostSource}`);
   await restoreAssetVersion();
@@ -444,7 +450,10 @@ const styles = new CleanCSS({ level: 2 }).minify([
   await fs.readFile(path.join(root, "node_modules", "photoswipe", "dist", "photoswipe.css"), "utf8"),
   await fs.readFile(path.join(themeDir, "styles.css"), "utf8"),
   editorialStyles,
+  await fs.readFile(path.join(themeDir, "flourish.css"), "utf8"),
 ].join("\n"));
+const skinStyles = new CleanCSS({ level: 2 }).minify(await fs.readFile(path.join(themeDir, "skins.css"), "utf8"));
+if (skinStyles.errors.length) throw new Error(`Skin CSS minification failed: ${skinStyles.errors.join(", ")}`);
 const katexStyles = (await fs.readFile(path.join(root, "node_modules", "katex", "dist", "katex.min.css"), "utf8")).replaceAll("font-display:block", "font-display:swap");
 const katexFontDirectory = path.join(root, "node_modules", "katex", "dist", "fonts");
 const katexFonts = (await fs.readdir(katexFontDirectory)).filter((file) => file.endsWith(".woff2"));
@@ -466,11 +475,12 @@ const browserBundles = bundled.outputFiles.map((file) => ({
   file: path.relative(path.join(outputDir, "assets"), file.path).split(path.sep).join("/"),
   code: file.contents,
 }));
-const assetHash = createHash("sha256").update(styles.styles).update(katexStyles);
+const assetHash = createHash("sha256").update(styles.styles).update(skinStyles.styles).update(katexStyles);
 for (const { file, code } of browserBundles) assetHash.update(file).update("\0").update(code).update("\0");
 assetVersion = assetHash.digest("hex").slice(0, 12);
 await Promise.all([
   fs.writeFile(path.join(outputDir, "assets", `styles.${assetVersion}.css`), styles.styles),
+  fs.writeFile(path.join(outputDir, "assets", `skins.${assetVersion}.css`), skinStyles.styles),
   fs.writeFile(path.join(outputDir, "assets", `katex.min.${assetVersion}.css`), katexStyles),
   fs.copyFile(path.join(themeDir, "favicon.svg"), path.join(outputDir, "favicon.svg")),
   fs.cp(path.join(themeDir, "icons"), path.join(outputDir, "icons"), { recursive: true }),

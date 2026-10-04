@@ -7,7 +7,7 @@ export default {
   author: "Your Name",
   baseUrl: "https://freshmark.sunisalex.org",
   basePath: "",
-  themeColor: "#ba3d2a",
-  backgroundColor: "#f5f1e8",
+  themeColor: "#f0eee6",
+  backgroundColor: "#f0eee6",
   postsPerPage: 12,
 };

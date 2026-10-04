@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile, readdir, stat } from "node:fs/promises";
 import test from "node:test";
+import { gzipSync } from "node:zlib";
 import { parseFragment } from "parse5";
 import { openTokenStream, readTokenRecords } from "../lib/token-stream.mjs";
 import { changedCurrentIndexes } from "../lib/content-diff.mjs";
@@ -202,12 +203,12 @@ test("site is installable as a progressive web app", async () => {
   const html = await read("public/index.html");
   const favicon = await read("public/favicon.svg");
   assert.match(html, /<link[^>]+href="\/manifest\.webmanifest"[^>]+rel="manifest"/);
-  assert.match(html, /<meta[^>]+content="#ba3d2a"[^>]+name="theme-color"/);
+  assert.match(html, /<meta[^>]+content="#f0eee6"[^>]+name="theme-color"/);
   assert.match(html, /<link[^>]+href="\/icons\/apple-touch-icon\.png"[^>]+rel="apple-touch-icon"/);
   assert.match(html, /<svg[^>]+class="brand-mark"[^>]*>/);
   assert.match(html, /M18 13h31v9H29v8h16v9H29v14l-5\.5-5-5\.5 5V13Z/);
   assert.doesNotMatch(html, /✦/);
-  assert.match(favicon, /<rect width="64" height="64" rx="4" fill="#ba3d2a"\/>/);
+  assert.match(favicon, /<rect width="64" height="64" rx="14" fill="#141413"\/>/);
   assert.match(favicon, /M18 13h31v9H29v8h16v9H29v14l-5\.5-5-5\.5 5V13Z/);
 
   const manifest = JSON.parse(await read("public/manifest.webmanifest"));
@@ -228,7 +229,7 @@ test("site is installable as a progressive web app", async () => {
 test("generated HTML has no application framework runtime", async () => {
   const html = await read("public/index.html");
   assert.match(html, /搜索文章/);
-  assert.match(html, /<style data-critical>[^<]*--paper:#f5f1e8/);
+  assert.match(html, /<style data-critical>[^<]*--paper:#f0eee6/);
   assert.match(html, /<style data-critical>@font-face\{[^}]*font-family:"Anthropic Sans"[^}]*url\("?\/assets\/fonts\/anthropic-sans-variable\.woff2"?\)[^}]*font-display:swap/);
   const stylesheetLinks = html.match(/<link[^>]+href="\/assets\/styles\.[a-f0-9]{12}\.css"[^>]*>/g);
   assert.equal(stylesheetLinks.length, 2);
@@ -324,8 +325,8 @@ test("editorial typography uses local fonts and a spacious reading scale", async
   assert.match(css, /--text-xs:12px;--text-sm:14px;--text-md:16px;--text-lg:20px/);
   assert.match(css, /--heading-lg:24px;--heading-xl:28px;--heading-2xl:36px;--heading-3xl:52px/);
   assert.match(css, /\.prose\{font-size:18px;line-height:1\.8\}/);
-  assert.match(css, /\.hero h1\{font-size:clamp\(40px,5vw,68px\)/);
-  assert.match(css, /--paper:#171c1a/);
+  assert.match(css, /\.hero h1\{font-size:clamp\(40px,5vw,72px\)/);
+  assert.match(css, /--paper:#141413/);
   assert.doesNotMatch(await read("theme/styles.css"), /\.post-card p\s*\{\s*display:none/);
   assert.doesNotMatch(css, /Iowan Old Style|Baskerville|Times New Roman/);
 });
@@ -964,4 +965,21 @@ test("PDF cache tracks rendered dependencies instead of unrelated articles", asy
   assert.match(builder, /renderer\.version/);
   assert.match(builder, /stylesheetDigest/);
   assert.match(builder, /reused \$\{result\.reused\} from cache/);
+});
+
+test("optional skins load only when a reader has chosen one", async () => {
+  const html = await read("public/index.html");
+  const skins = await read(await assetPath("skins.css"));
+  const head = html.match(/<script>try\{var d=document\.documentElement[^<]*<\/script>/)?.[0];
+  assert.ok(head, "theme bootstrap script must run in the head");
+  assert.ok(html.indexOf(head) < html.indexOf("<style data-critical>"), "skin must be applied before first paint");
+  assert.match(head, /typora\|github\|news\|paper\|terminal/);
+  assert.match(head, /blocking","render"/);
+  assert.doesNotMatch(html, /<link[^>]+skins\.[a-f0-9]{12}\.css/, "default pages must not request the skin stylesheet");
+  assert.match(html, /<button[^>]+data-skin-toggle[^>]*>/);
+  for (const skin of ["typora", "github", "news", "paper", "terminal"]) {
+    assert.match(skins, new RegExp(`html\\[data-skin=${skin}\\]\\{`));
+    assert.match(skins, new RegExp(`html\\[data-skin=${skin}\\]\\[data-theme=dark\\]\\{`));
+  }
+  assert.ok(gzipSync(skins).length < 5 * 1024, "skin stylesheet must stay small");
 });

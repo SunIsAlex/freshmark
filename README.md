@@ -94,6 +94,49 @@ The preview watches the content and theme trees. Changing a post rebuilds only
 that article and its dependent home, search, RSS, sitemap, and runtime files;
 theme, library, configuration, and deleted-post changes trigger a full build.
 
+## Write in the editor
+
+Freshmark includes a minimal Typora-style editor for `content/posts`:
+
+```bash
+npm run editor            # http://127.0.0.1:4321/
+npm run editor -- --open  # also opens the browser
+```
+
+It runs wherever Node runs: Termux on Android (open the URL in Chrome) and
+Windows (PowerShell or Command Prompt). From Chrome or Edge you can install it
+as an app ("Add to Home screen" / "Install app"), and it then opens in its own
+window.
+
+- **Live preview.** Markdown syntax is hidden and rendered in place, and it
+  reappears only where the cursor is. LaTeX renders with KaTeX and the site's
+  own macros and delimiters (`$…$`, `$$…$$`, `\(…\)`, `\[…\]`). While you
+  edit a formula, a live preview sits beside it. Typing `$$` and Enter opens a
+  math block. `Ctrl/Cmd+/` toggles source mode.
+- **Front matter.** The title, date, language, categories, tags, summary,
+  featured and draft fields are edited as properties above the text. YAML is
+  generated with Freshmark's rules: subject categories come from the folder,
+  summaries are derived from the body until you write your own, and new posts
+  come from `templates/post.md`. "Create English/Chinese version" writes the
+  counterpart file and links both through `translationKey` and `alternate`.
+  Other keys, such as fields from an older theme, are kept byte for byte, and
+  saving an untouched post leaves the file unchanged.
+- **Files.** The editor autosaves, keeps an unsaved copy on the device if the
+  server is unreachable, and warns when a file changes on disk (for example
+  after `git pull`). Pasted or dropped images are saved next to the post.
+
+Shortcuts: `Ctrl+B`/`I` emphasis, `Ctrl+K` link, `Ctrl+M` inline math,
+`Ctrl+Shift+M` math block, `` Ctrl+` `` code, `Ctrl+1…6` headings, `Ctrl+F`
+search, `Ctrl+S` save. On touch screens a formatting bar sits above the
+keyboard.
+
+Run `npm run dev` alongside the editor to see the site update as you save. Drafts
+are only built with `FRESHMARK_DRAFTS=true`. The editor listens on loopback only.
+To edit from another device on your network, use `--host 0.0.0.0` and open the
+printed URL. It contains an access token stored in `.freshmark-cache/editor-token`,
+so keep it private. Use `--port` and `--site` to change the editor port and the
+site preview URL.
+
 ## Create a post
 
 Generate a new draft from the built-in post template:
@@ -219,13 +262,19 @@ process is needed after the build.
 
 ## Configuration
 
-### Paper laboratory theme
+### Themes
 
-The interface pairs a paper-colored reading surface with geometric diagrams,
-numbered article indexes, and a dark reading theme. `theme/editorial.css` is
-included in both the critical and deferred styles so the first render uses the
-same layout as the fully loaded page. Explicit article categories take
-precedence; display labels fall back to the article's content directory.
+The default Ivory theme uses warm ivory surfaces, bold sans-serif headlines,
+serif reading text, and a dark featured banner. Article cards are tinted by
+subject. `theme/editorial.css` is included in both the critical and deferred
+styles so the first render uses the same layout as the fully loaded page;
+`theme/flourish.css` adds the deferred, below-the-fold styling.
+
+Readers can switch to the Typora, GitHub, Newsprint, Paper, or Terminal styles
+from the palette button, each in light and dark mode. Those styles live in
+`theme/skins.css`, which is downloaded only after a reader picks one. Explicit
+article categories take precedence; display labels fall back to the article's
+content directory (`lib/subjects.mjs`).
 
 Browser checks require a complete build, Chromium, and ChromeDriver. In separate
 terminals, serve `public/` on loopback port 8767 and start ChromeDriver on port
@@ -361,6 +410,10 @@ site.config.mjs      Site title, URL, author, and path settings
 scripts/build.mjs    Static generator
 scripts/build-worker.mjs  Parallel rendering and minification worker
 scripts/new.mjs      Markdown template generator
+scripts/editor.mjs   Local editor server (npm run editor)
+editor/              Editor app: live preview, math, properties panel
+lib/frontmatter.mjs  Frontmatter reading and minimal-diff writing
+lib/editor-store.mjs Editor file operations inside content/posts
 templates/           Reusable Markdown templates
 netlify/functions/   Optional serverless backends
 netlify/lib/         Shared Functions data helpers
@@ -380,6 +433,7 @@ public/              Portable generated website
 - Responsive AVIF/WebP images, captions, and a PhotoSwipe keyboard/touch-friendly gallery
 - RSS, sitemap, robots.txt, and 404 page
 - Draft support and configurable base paths
+- Typora-style local editor with live LaTeX preview and generated frontmatter
 - Raw Markdown downloads for every published article
 - Installable PWA with versioned offline caching and app icons
 - Optional non-blocking Netlify Functions site/article view counts

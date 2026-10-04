@@ -263,6 +263,8 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   const message = (key, values = {}) => String(messages[key] || key).replace(/\{(\w+)\}/g, (_, name) => values[name] ?? "");
   const setTheme = (theme) => { root.dataset.theme = theme; try { localStorage.setItem("freshmark-theme", theme); } catch {} };
 
+  const toggleSkins = async (button) => (await import("./skins.js")).toggleSkinMenu(button, { messages, setTheme, skinStyles: window.FRESHMARK.skinStyles });
+
   async function shareArticle(button) {
     shareModule ||= import("./share.js");
     (await shareModule).shareArticle(button, { message });
@@ -1083,9 +1085,10 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   document.addEventListener("click", (event) => {
     const answerReveal = event.target.closest("u.answer-reveal");
     if (answerReveal) { event.preventDefault(); toggleAnswerReveal(answerReveal); return; }
-    const command = event.target.closest("[data-search-open], [data-theme-toggle], [data-tag], [data-toc-toggle], [data-comments-more], [data-share-article]");
+    const command = event.target.closest("[data-search-open], [data-theme-toggle], [data-skin-toggle], [data-tag], [data-toc-toggle], [data-comments-more], [data-share-article]");
     if (command?.matches("[data-search-open]")) { event.preventDefault(); openSearch(); return; }
     if (command?.matches("[data-theme-toggle]")) { event.preventDefault(); setTheme(root.dataset.theme === "dark" ? "light" : "dark"); return; }
+    if (command?.matches("[data-skin-toggle]")) { event.preventDefault(); toggleSkins(command); return; }
     if (command?.matches("[data-tag]")) { event.preventDefault(); applyFilter(command); return; }
     if (command?.matches("[data-toc-toggle]")) { event.preventDefault(); toggleToc(command); return; }
     if (command?.matches("[data-share-article]")) { event.preventDefault(); shareArticle(command); return; }

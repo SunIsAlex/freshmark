@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+<meta name="theme-color" content="#f0eee6">
+<title>Freshmark Editor</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/editor.css">
+<script>try{var theme=localStorage.getItem("fm-editor:theme");if(theme)document.documentElement.dataset.theme=theme}catch(e){}window.FRESHMARK_EDITOR=__FRESHMARK_EDITOR_CONFIG__;</script>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-head">
+    <span class="brand"><img src="/icon.svg" alt="" width="22" height="22">Freshmark</span>
+    <button class="new-button" type="button" data-action="new">+ <span data-i18n="newPost">New post</span></button>
+  </div>
+  <div class="tabs" role="tablist">
+    <button type="button" role="tab" data-action="tab" data-tab="files" aria-selected="true" data-i18n="files">Posts</button>
+    <button type="button" role="tab" data-action="tab" data-tab="outline" aria-selected="false" data-i18n="outline">Outline</button>
+  </div>
+  <input id="filter" type="search" autocomplete="off">
+  <nav id="files" class="file-list"></nav>
+  <nav id="outline" class="outline" hidden></nav>
+</aside>
+<div id="scrim"></div>
+<main class="workspace">
+  <header class="topbar">
+    <button class="icon" type="button" data-action="menu" data-i18n-label="menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
+    <span id="status" role="status" aria-live="polite"></span>
+    <span class="spacer"></span>
+    <span id="count"></span>
+    <button class="icon" type="button" data-action="source" aria-pressed="false" data-i18n-label="sourceMode"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M13.5 5l-3 14"/></svg></button>
+    <button class="icon" type="button" data-action="theme" data-i18n-label="theme"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor"/></svg></button>
+  </header>
+  <div id="banner" class="banner" hidden></div>
+  <div class="scroller">
+    <article class="paper">
+      <p class="placeholder" data-i18n="chooseFile"></p>
+      <header id="properties" class="properties"></header>
+      <div id="editor"></div>
+    </article>
+  </div>
+  <div class="touchbar" role="toolbar">
+    <button type="button" data-action="heading" data-i18n-label="heading">H</button>
+    <button type="button" data-action="bold" data-i18n-label="bold"><b>B</b></button>
+    <button type="button" data-action="italic" data-i18n-label="italic"><i>I</i></button>
+    <button type="button" data-action="inlineMath" data-i18n-label="inlineMath">$x$</button>
+    <button type="button" data-action="blockMath" data-i18n-label="blockMath">$$</button>
+    <button type="button" data-action="code" data-i18n-label="code">`</button>
+    <button type="button" data-action="list" data-i18n-label="list">•</button>
+    <button type="button" data-action="quote" data-i18n-label="quote">❝</button>
+    <button type="button" data-action="link" data-i18n-label="link">🔗</button>
+    <button type="button" data-action="image" data-i18n-label="image">🖼</button>
+    <button type="button" data-action="undo" data-i18n-label="undo">↶</button>
+    <button type="button" data-action="redo" data-i18n-label="redo">↷</button>
+  </div>
+</main>
+<dialog id="new-post">
+  <form method="dialog">
+    <h2 data-i18n="newPost">New post</h2>
+    <label><span data-i18n="title">Title</span><input name="title" required autocomplete="off"></label>
+    <div class="form-row">
+      <label><span data-i18n="subject">Subject</span><select name="subject"></select></label>
+      <label><span data-i18n="language">Language</span><select name="locale"><option value="zh" data-i18n="localeName_zh">Chinese</option><option value="en" data-i18n="localeName_en">English</option></select></label>
+    </div>
+    <label><span data-i18n="slug">Slug</span><input name="slug" required pattern="[a-z0-9]+(-[a-z0-9]+)*" autocomplete="off" spellcheck="false"><small data-i18n="slugHint"></small></label>
+    <p class="form-error" role="alert"></p>
+    <div class="form-actions">
+      <button type="submit" value="cancel" formnovalidate data-i18n="cancel">Cancel</button>
+      <button type="submit" value="create" class="primary" data-i18n="create">Create</button>
+    </div>
+  </form>
+</dialog>
+<input id="image-input" type="file" accept="image/*" multiple hidden>
+<div id="toast" class="toast" role="status" hidden></div>
+<script type="module" src="/assets/editor.js"></script>
+</body>
+</html>

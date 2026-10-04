@@ -5,7 +5,7 @@ import test from "node:test";
 import CleanCSS from "clean-css";
 import { build } from "esbuild";
 
-test("paper laboratory stays within critical CSS and initial JS budgets", async () => {
+test("Ivory theme stays within critical CSS and initial JS budgets", async () => {
   const root = new URL("../", import.meta.url);
   const css = (await Promise.all(["theme/critical.css", "theme/editorial.css"].map((file) => readFile(new URL(file, root), "utf8")))).join("\n");
   const minified = new CleanCSS({ level: 2 }).minify(css);
