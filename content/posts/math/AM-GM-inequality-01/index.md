@@ -81,6 +81,13 @@ $36=ad(a+d)^2=ad(5\frac{a}{5}+d)^2\geq ad(6\sqrt[\frac{1}{6}]{(\frac{a}{5})^5d})
 
 所以:$(a^2d)^{\frac{4}{3}}\leq 5^{\frac{5}{3}},a^2d\leq 5^{\frac{5}{4}}$
 
+**勘误（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+第二题最后一步应为 $\frac{6^3\times4^2\times2}{6^6}=\frac{6912}{46656}=\frac{4}{27}$，与要证的结论一致；原文写成了 $\frac{27}{4}$。
+
+
 ## 第三题
 已知$0\lt a,b,c\lt 1$,并且$ab+bc+ca=1$.证明:
 $$
@@ -109,6 +116,25 @@ $c=\frac{1-ab}{a+b}=\frac{1}{\tan(\frac{A+B}{2})}=\tan{\frac{\pi-A-B}{2}}=\tan\f
 而$x-x^3=x(1-x^2)=\sqrt{\frac{2x^2(1-x^2)(1-x^2)}{2}}\leq \sqrt{\frac{(\frac{2}{3})^3}{2}}=\frac{2\sqrt{3}}{9}(x=\frac{\sqrt{3}}{3})$
 
 这个题很耐人寻味,但凡有一个数不一样,放缩就会不成立.
+
+**另解（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+把每一项写成 $\frac{x}{1-x^2}=\frac{x^2}{x(1-x^2)}$。作者已经证明 $x(1-x^2)\le\frac{2\sqrt3}{9}$（$0<x<1$），所以每一项都有
+
+$$
+\frac{x}{1-x^2}\ \ge\ \frac{9}{2\sqrt3}\,x^2=\frac{3\sqrt3}{2}\,x^2 .
+$$
+
+三项相加，再用 $a^2+b^2+c^2\ge ab+bc+ca=1$：
+
+$$
+\frac{a}{1-a^2}+\frac{b}{1-b^2}+\frac{c}{1-c^2}\ \ge\ \frac{3\sqrt3}{2}\,(a^2+b^2+c^2)\ \ge\ \frac{3\sqrt3}{2}.
+$$
+
+这样不需要柯西不等式。两步放缩都允许 $a,b,c$ 互不相等，只是取等要求 $a=b=c=\frac{\sqrt3}{3}$；所以“有一个数不一样，放缩就会不成立”应理解为“此时取不到等号”，不等式本身仍然成立。
+
 
 ## 第四题
 设$a,b,c,d\in \R_+$,满足$abcd=1,a+b+c+d\gt \sum_{cyc}\frac{a}{b}$.

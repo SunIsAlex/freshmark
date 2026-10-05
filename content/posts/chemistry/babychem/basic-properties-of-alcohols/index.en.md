@@ -84,6 +84,11 @@ $$
 -$\ce{EtONa}$: As a small sterically hindered strong base, as a strong nucleophile
 -$\ce{BuOK}$: As a large sterically hindered strong base, as a weak nucleophile
 
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+**Correction (added by Claude)** This should be $t$-$\ce{BuOK}$ (potassium tert-butoxide, $\ce{(CH3)3COK}$). Potassium n-butoxide ($n$-$\ce{BuOK}$) is not bulky and does not act as a hindered base; tert-butoxide is the one that gives the Hofmann product.
+
+
 When carrying out β-elimination reaction of halogenated hydrocarbons, strong bases with large steric hindrance give **anti-Zaitsev product**, and weak bases with small steric hindrance give **Zaitsev product**
 
 ![alt text](image-6.png)

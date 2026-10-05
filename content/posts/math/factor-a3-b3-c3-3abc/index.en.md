@@ -270,6 +270,29 @@ $$
 
 The three roots are all real numbers because the complex parts exactly cancel when $v+w$ is added.
 
+**Corrections and another derivation (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+**Two corrections.**
+
+1. The boxed trigonometric formula above has an extra minus sign. It gives the roots of $u^3+pu-q=0$, i.e. the negatives of the true roots. For example $u^3-3u-2=(u-2)(u+1)^2$ has roots $2,-1,-1$, but the boxed formula gives $-2,1,1$. The correct form is
+
+$$
+u_k=2\sqrt{-\frac p3}\cos\left(\frac13\arccos\left(\frac{3q}{2p}\sqrt{-\frac3p}\right)-\frac{2k\pi}{3}\right),\quad k=0,1,2 .
+$$
+
+2. In the table of root types, "$pq=0$: one triple real root" should be "$p=q=0$". $pq=0$ alone does not give a triple root; for example $u^3+1=0$ ($p=0$) has only one real root. Together with $\Delta=0$, $pq=0$ is exactly $p=q=0$.
+
+**A derivation without complex numbers (Viète's substitution).** When $\Delta<0$, $p<0$. Put $u=m\cos\varphi$ with $m=2\sqrt{-p/3}$, chosen so that $pm=-\frac34m^3$. Then
+
+$$
+u^3+pu+q=\frac{m^3}{4}\left(4\cos^3\varphi-3\cos\varphi\right)+q=\frac{m^3}{4}\cos3\varphi+q .
+$$
+
+Setting it to zero gives $\cos3\varphi=-\dfrac{4q}{m^3}=\dfrac{3q}{2p}\sqrt{-\dfrac3p}$. The condition $\Delta<0$ is exactly what puts the right side in $(-1,1)$, and the three values of $\varphi$ give the three real roots above, with no complex cube roots involved.
+
+
 ---
 
 ### Why do plural numbers disappear?

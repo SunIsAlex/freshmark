@@ -61,6 +61,13 @@ $$\begin{gathered}\sinh(x+y)=i\sin\frac{x+y}{i}\\
 =\frac{i\tan\frac{x}{i}+i\tan\frac{y}{i}}{1+(i\tan\frac{x}{i})(i\tan\frac{y}{i})}\\
 =\frac{\tanh x+\tanh y}{1+\tanh x\tanh y}\end{gathered}$$
 
+**勘误（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+上面 $\cosh(x+y)$ 推导的最后一行应为 $\cosh x\cosh y+\sinh x\sinh y$（由 $\cos\frac xi=\cosh x$ 得到），原文误写成了 $\cos x\cos y$。
+
+
 倘若用指数形式证明诸多的双曲三角函数恒等式,实为舍近求远. "它山之石,可以攻玉",看看眼前已有的三角恒等变换公式,并将其作为有效的"他山之石",才是更简便的方法.
 
 ## 续

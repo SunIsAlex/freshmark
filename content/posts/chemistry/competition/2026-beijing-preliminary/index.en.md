@@ -125,6 +125,11 @@ B: Observing the reaction under the action of DBU, it was found that **hydrogen-
 
 The problem lies here. Since **carbonyl oxygen is basic**: amide > ester (why? Judged by the resonance formula), the carbonyl oxygen of the amide is more likely to coordinate with the Lewis base, thereby forming **oxonium ions**, which greatly enhances the acidity of $\ce{\alpha-H}$, leading to deuteration, not because $\ce{\alpha-H}$ is highly acidic. B error
 
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+**Correction (added by Claude)** The conclusion is right, but "coordinate with the Lewis **base**" should be "coordinate with the Lewis **acid**". The carbonyl oxygen is itself a Lewis base. Once it binds the silyl Lewis acid released from TIPSOTf, the resulting oxonium ion makes the $\alpha$-H much more acidic, and the Lewis base present then removes that proton. The amide carbonyl oxygen is more basic (the nitrogen lone pair donates by resonance, putting more negative charge on the $\ce{C=O}$ oxygen), so the amide is activated first. This is exactly the "Lewis acid–base cooperation" in option C.
+
+
 ![alt text](image-2.png)
 
 What is the Lewis acid-base adduct? According to my understanding, it is the combination of Lewis acid and Lewis base, which coordinates the attack on the substrate. One coordinates the amide carbonyl oxygen, and the other pulls out $\ce{\alpha-H}$, which promotes the deuteration of the amide $\ce{\alpha-H}$ under the catalysis (otherwise, under normal circumstances, it is the ester group $\ce{\alpha-H}$ deuteration). C is correct.
@@ -180,6 +185,15 @@ Note that the ligand in $\ce{[Cu^IO2H]+}$ is not water, but **\(HOO^\bullet\)** 
 2. $\ce{[Cu^IO2H]^+ + SCN^-=[Cu^I(SCN)_n]^{1-n} + HOO.}$
 3. $\ce{H2O2 + SCN^-=OSCN^- + H2O}$
 4. $\ce{OSCN^- + [Cu^I(SCN)_n]^{1-n} + H2O=[Cu^{II}(SCN)_n]^{2-n} + SCN^- + OH. + OH^-}$
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+**Erratum (added by Claude)** The left side of equation 2 needs $n\,\ce{SCN-}$ for the atoms to balance:
+
+$$\ce{[Cu^IO2H]+} + n\,\ce{SCN-} = \ce{[Cu^I(SCN)_n]^{1-n} + HOO.}$$
+
+I also checked equations 1, 3 and 4: charge, atoms and electrons all balance. In equation 1, Cu gains 1 e⁻ and $\ce{H2O2}$ loses 1 e⁻ to give $\ce{HOO.}$. In equation 4, Cu(I) loses 1 e⁻ and $\ce{OSCN-}$ gains 1 e⁻ to give $\ce{HO.}$.
+
 
 For ionic reactions containing **free radical** species, as long as **charge conservation** and **atom conservation** should be enough
 

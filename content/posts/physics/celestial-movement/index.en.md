@@ -181,6 +181,24 @@ $$\begin{gathered}
   \theta=\arccos(-\frac{4G^2M^2-v^4b^2}{4G^2M^2+v^4b^2})
 \end{gathered}$$
 
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+**Erratum (added by Claude)** The text already states $E=\dfrac{GMm}{2a}$ for hyperbolic orbits, but here it uses $E=\dfrac{GMm}{a}$, dropping a factor of $2$. The correct relation is
+
+$$
+\frac{GMm}{2a}=\frac12mv^2\ \Longrightarrow\ a=\frac{GM}{v^2}
+$$
+
+Hence
+
+$$
+\tan\frac{\theta}{2}=\cot\frac{\pi-\theta}{2}=\frac{a}{b}=\frac{GM}{v^2b},\qquad
+\theta=2\arctan\frac{GM}{v^2b}=\arccos\frac{v^4b^2-G^2M^2}{v^4b^2+G^2M^2}
+$$
+
+This is the gravitational version of the Rutherford scattering formula. Check: $\theta\to\pi$ as $b\to0$ (a head-on bounce back) and $\theta\to0$ as $b\to\infty$. The $4G^2M^2$ in the original answer should be $G^2M^2$.
+
+
 ## Three: Parabolic orbit
 Two comets with both masses m move around the sun along their own parabolic orbits. The two orbits are coplanar. When the two comets move to a distance R from the sun, they collide vertically with each other and combine into one celestial body. Discuss the orbit of the combined celestial body at this time.
 
@@ -351,6 +369,11 @@ In fact, $e=\sqrt{1+\frac{2EL^2}{G^2M^2m^3}}$.
 $1year=365day=525600min=31536000s$
 $M_{sun}=1.99\times10^{30}kg,M_{earth}=5.98\times10^{24}kg,M_{moon}=7.35\times10^{22}kg,R_{earth}=6.37\times10^6,R_{moon}=1.74\times10^6m,R_{earth-moon}=3.84\times10^8m,R_{earth-sun}=1.5\times10^{11}m=1A.U.,R_{mars-sun}=1.52A.U.,R_{jupiter-sun}=5.02A.U.$
 
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+**Erratum (added by Claude)** Jupiter's semi-major axis is about $5.20\,\text{A.U.}$, not $5.02\,\text{A.U.}$ (Kepler's third law confirms it: $T=5.20^{3/2}\approx11.86$ years, Jupiter's orbital period). Also, $R_{earth}=6.37\times10^6$ is missing its unit, m.
+
+
 ## Example 4
 Two supernovae with masses $M,m$ are separated by d, and each performs circular motion around its stationary center of mass. In the supernova explosion, the supernova with mass $M$ loses mass $\Delta M$. Assume that the explosion is instantaneous and completely spherically symmetrical, and the direct effect of the explosion debris on the supernova with mass m is ignored.
 
@@ -378,3 +401,19 @@ $$\begin{gathered}
   E'=E_k-E_{kc}+U\lt0\\
   \Longrightarrow \Delta M\lt\frac{M+m}{2}
 \end{gathered}$$
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+**Alternative solution (added by Claude)** There is no need for the centre-of-mass velocity; look at the relative motion directly. With reduced mass $\mu$, the relative motion has energy $\frac12\mu v_{\text{rel}}^2-\dfrac{G M' m}{d}$, where $\mu=\dfrac{M'm}{M'+m}$ and $M'=M-\Delta M$. So the binary stays bound when
+
+$$
+v_{\text{rel}}^2<\frac{2G(M'+m)}{d}
+$$
+
+At the instant of the explosion, both positions and velocities are unchanged, so the relative speed keeps its pre-explosion circular value $v_{\text{rel}}^2=\dfrac{G(M+m)}{d}$. Substituting gives
+
+$$
+M+m<2(M-\Delta M+m)\ \Longrightarrow\ \Delta M<\frac{M+m}{2}
+$$
+
+So losing more than half of the total mass instantly unbinds the pair. This agrees with the author's result in two lines.

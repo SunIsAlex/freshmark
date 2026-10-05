@@ -573,6 +573,13 @@ $$\begin{gathered}\omega=e^{\frac{2\pi}{5}i}\\
 =9+4\frac{\omega^5-\omega}{\omega-1}(\omega\ne1)\\
 =9-4=5\end{gathered}$$
 
+**勘误（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+上面算出的是模的平方：$|2+2e^{0.4\pi i}+e^{1.2\pi i}|^2=5$，所以所求的模为 $\sqrt5$（已数值核对）。
+
+
 ### 例题 7.19
 
 **题目来源：** 清华大学
@@ -663,6 +670,13 @@ $$\begin{gathered}1+\omega+\omega^2+\omega^3+\cdots+\omega^{10}=1\\
 \Re[1+2(\omega^2+\omega^4+\omega^6+\omega^8+\omega^{10})]=1\\
 \cos\frac{2\pi}{11}+\cos\frac{4\pi}{11}+\cos\frac{6\pi}{11}+\cos\frac{8\pi}{11}+\cos\frac{10\pi}{11}\\
 =\Re(\omega^2+\omega^4+\omega^6+\omega^8+\omega^{10})=-\frac{1}{2}\end{gathered}$$
+
+**勘误（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+$11$ 次单位根之和为 $0$：$1+\omega+\cdots+\omega^{10}=\frac{\omega^{11}-1}{\omega-1}=0$，上面两处的“$=1$”应为“$=0$”。由 $1+2\,\Re(\omega^2+\omega^4+\cdots+\omega^{10})=0$ 才得到结论 $-\frac12$；若按“$=1$”计算，结论会变成 $0$。
+
 
 ### 例题 7.21
 
@@ -883,3 +897,30 @@ $$
 $$
 \begin{gathered}\pi\cdot2^2+2\sqrt{2}\cdot4=4(\pi+2\sqrt2)\end{gathered}
 $$
+
+**更正：扫过的区域不是整个“跑道形”（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+$|z_2|=1$ 只表示 $2z_2$ 落在半径为 $2$ 的**圆周**上，不是圆盘。所以 $z_1+2z_2$ 扫过的是一族圆周（圆心 $z_1$ 在线段 $AB$ 上，$A=2,\ B=2i$）的并集，而不是一族圆盘的并集。
+
+点 $P$ 被扫到，当且仅当线段上存在 $c$ 使 $|P-c|=2$。由于 $|P-c|$ 随 $c$ 在线段上连续变化，这等价于
+
+$$
+\operatorname{dist}(P,AB)\le2\le\max\{|PA|,|PB|\}.
+$$
+
+第一个条件给出作者计算的跑道形区域，面积 $4\pi+8\sqrt2$；第二个条件去掉了到 $A,B$ 距离都小于 $2$ 的点，即两个半径为 $2$、圆心距 $|AB|=2\sqrt2$ 的圆盘的公共部分（透镜形），其面积为
+
+$$
+2\cdot2^2\arccos\frac{2\sqrt2}{4}-\frac{2\sqrt2}{2}\sqrt{16-8}=2\pi-4 .
+$$
+
+所以扫过的面积为
+
+$$
+4\pi+8\sqrt2-(2\pi-4)=2\pi+4+8\sqrt2\approx21.60 ,
+$$
+
+而不是 $4\pi+8\sqrt2\approx23.88$。我用蒙特卡罗方法数值核对过（约 $21.60$）。
+

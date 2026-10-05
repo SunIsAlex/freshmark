@@ -154,6 +154,25 @@ $$\begin{gathered}
   =\frac{2\cos40\degree}{\cos^250\degree}
 \end{gathered}$$
 
+**另解：用抛物线定义（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+$C(-1,0)$ 在准线 $x=-1$ 上，所以 $x_A+1$ 正是 $A$ 到准线的距离，由抛物线定义等于 $|AF|$。直线 $FA$ 与 $x$ 轴正方向成 $50^\circ$，$y_A=|AF|\sin50^\circ$，于是
+
+$$
+\tan\angle ACF=\frac{y_A}{x_A+1}=\frac{|AF|\sin50^\circ}{|AF|}=\sin50^\circ .
+$$
+
+对 $B$ 同理有 $\tan\angle BCF=\frac{|y_B|}{x_B+1}=\sin50^\circ$（$FB$ 与 $x$ 轴所成锐角也是 $50^\circ$），即 $CF$ 平分 $\angle ACB$。所以
+
+$$
+\tan\angle ACB=\frac{2\sin50^\circ}{1-\sin^250^\circ}=\frac{2\sin50^\circ}{\cos^250^\circ}=\frac{2\cos40^\circ}{\cos^250^\circ}\approx3.708,
+$$
+
+与上面的结果一致，且不需要联立方程。
+
+
 ## 例5
 求过$y=2x^2-2x-1$和$y=-5x^2+2x+3$交点的直线方程.
 
@@ -323,6 +342,19 @@ $$\begin{gathered}
 \end{gathered}$$
 
 综上,$x\in[-5\sqrt{2},1]$
+
+**另解：先用圆的方程把条件化成直线（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+把 $x^2+y^2=50$ 直接代入数量积：
+
+$$
+\overrightarrow{PA}\cdot\overrightarrow{PB}=x^2+y^2+12x-6y=50+12x-6y\le20\iff y\ge2x+5 .
+$$
+
+所以 $P$ 是圆上位于直线 $y=2x+5$ 上方（含直线）的部分。联立 $x^2+(2x+5)^2=50$ 得 $x^2+4x-5=0$，交点横坐标为 $-5$ 和 $1$。这段圆弧经过最左点 $(-5\sqrt2,0)$（因为 $0\ge-10\sqrt2+5$），所以横坐标范围是 $[-5\sqrt2,1]$。整个过程没有平方，也就不必担心变形是否等价。
+
 
 ## 例9
 在平面直角坐标系xOy中,已知点$A(m,0),B(m+4,0)$,若圆$C:x^2+(y-3m)^2=8$上存在点P,使得$\angle APB=45\degree$,则实数m的取值范围是___.
@@ -539,6 +571,19 @@ $$\begin{gathered}
   3(2-\frac{2}{3}x)^2=(\frac{2}{3}y)^2-4(1-\frac{2}{3}x)\\
   \frac{(x-4)^2}{4}-\frac{y^2}{12}=1
 \end{gathered}$$
+
+**补充：轨迹只是左支（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+上面的方程正确，但轨迹只是双曲线的一部分。$A,B$ 都在直线 $x=3$ 上，所以射线 $OA,OB$ 的方向角都在 $(-90^\circ,90^\circ)$ 内，即 $\theta\in(-30^\circ,90^\circ)$。此时 $\tan\theta\tan(\theta-60^\circ)\ge-\frac13$，在 $\theta=30^\circ$ 时取等，所以
+
+$$
+x=\frac32-\frac32\tan\theta\tan\left(\theta-\frac\pi3\right)\le2 .
+$$
+
+外心的轨迹是左支 $\dfrac{(x-4)^2}{4}-\dfrac{y^2}{12}=1\ (x\le2)$。右支上的点，例如 $(6,0)$，对应 $\theta=120^\circ$，这时射线 $OB$ 与直线 $x=3$ 不相交，不对应题设的三角形。我数值核对了若干个 $\theta$ 的外心。
+
 
 ## 例14
 已知椭圆 \(C: \frac{x^2}{a^2} + \frac{y^2}{b^2} = 1(a > b > 0)\) 的左焦点为 \(F(-1,0)\)，左准线方程为 \(x = -2\)。

@@ -69,6 +69,15 @@ The obtained $|z+6|+|z-3i|$ is equivalent to the sum of the distances from the c
 
 Obviously $\min |z+6|+|z-3i|=\sqrt{6^2+3^2}=3\sqrt{5}$ (the shortest line segment between two points).
 
+**Correction (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+$\arg(z+3)=\frac65\pi$ is the ray from $(-3,0)$ with inclination $\frac65\pi$, i.e. $y=\tan\frac\pi5\,(x+3)\ (x<-3)$, in the third quadrant ($y<0$), not $y=-\frac12(x+3)$. Then $(-6,0)$ and $(0,3)$ lie on the same side of the ray's line, and the sum of distances decreases along the ray toward the endpoint $(-3,0)$, which is not on the locus (the argument of $0$ is undefined). So there is **no minimum**, only an infimum $3+3\sqrt2$ (checked numerically).
+
+The answer $3\sqrt5$ belongs to $\arg(z+3)=\frac34\pi$: the locus is $y=-(x+3)\ (x<-3)$, the segment from $(-6,0)$ to $(0,3)$ meets it at $(-4,1)$, and the minimum is $\sqrt{6^2+3^2}=3\sqrt5$. The angle in the original problem is worth checking.
+
+
 ### Example 3
 Given $|z-2i|\le1$, find $\max\arg(z-4i)$
 Apparently $\max\arg(z-4i)=\frac{5}{3}\pi$
@@ -224,6 +233,13 @@ $\theta=\frac{1}{12}\pi\text{ or }\frac{7}{12}\pi$
 $$
 w=\frac{\sqrt{3}}{3}(\cos\frac{\pi}{6}+i\sin\frac{\pi}{6}),\arg(w)=\frac{\pi}{3}\lt\frac{\pi}{2}
 $$
+
+**Correction (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+Here $w=\frac{\sqrt3}{3}\left(\cos\frac\pi6+i\sin\frac\pi6\right)$, so $\arg w=\frac\pi6$, not $\frac\pi3$; the conclusion $\arg w<\frac\pi2$ and the final answer are unaffected (checked numerically).
+
 
 #### Situation 2
 $\tan2\theta=-\frac{\sqrt{3}}{3}$

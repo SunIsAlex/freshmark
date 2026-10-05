@@ -190,6 +190,17 @@ $$\begin{gathered}
 
 $\rho=\frac{3\pi}{GT^2}\approx 1.3\times10^{15}kg/m^3$
 
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+**勘误（Claude 补充）** 数值算错了一个数量级：$GT^2=6.67\times10^{-11}\times\dfrac{1}{900}\approx7.41\times10^{-14}$，所以
+
+$$
+\rho=\frac{3\pi}{GT^2}\approx\frac{9.42}{7.41\times10^{-14}}\approx1.3\times10^{14}\ \text{kg/m}^3
+$$
+
+严格说这是**下限**：星体表面物质要不被自转甩出，需满足 $\rho\ge\dfrac{3\pi}{GT^2}$。
+
+
 ### 例4
 将一个质点从地表上方R处(R为地球半径)释放,求到达地面的时间$t$.
 
@@ -339,6 +350,17 @@ $$\begin{gathered}
   (r_1\to \infty,r_n=r)
 \end{gathered}$$
 
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+**更正（Claude 补充）** 两种写法里的符号都有疏漏。引力指向 $-\hat r$，径向分量是 $-\dfrac{GMm}{r^2}$，所以
+
+$$
+W=\int_{\infty}^{r}\left(-\frac{GMm}{r'^2}\right)dr'=\frac{GMm}{r}
+$$
+
+原式 $\int_\infty^r\frac{GMm}{r^2}dr$ 实际等于 $-\dfrac{GMm}{r}$。微元法中，从 $r_1$ 移到 $r_2$（$r_1>r_2$）时位移大小为 $r_1-r_2$，所以应为 $\Delta W_1=GMm\left(\dfrac1{r_2}-\dfrac1{r_1}\right)>0$。累加得 $GMm\left(\dfrac1{r_n}-\dfrac1{r_1}\right)\to\dfrac{GMm}{r}$，与结论 $E_p=-W=-\dfrac{GMm}{r}$ 一致。
+
+
 ### 椭圆轨道总能量
 证明:椭圆轨道的总能量
 
@@ -419,6 +441,23 @@ $$\begin{gathered}
 于是不难看出:
 - 近地导弹不是初速度最小的方案
 - 如果初速度小于$v_1$,则$2a\lt R$,椭圆轨道必定与地球相交
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+**补充与更正（Claude 补充）** 把最小速度算到底：
+
+$$
+\frac12v_{\min}^2=\frac{GM}{R}\left(1-\frac{1}{1+\frac{\sqrt2}{2}}\right)=\frac{GM}{R}\cdot\frac{\sqrt2}{2+\sqrt2}=(\sqrt2-1)\frac{GM}{R}
+$$
+
+$$
+v_{\min}=\sqrt{\frac{2(\sqrt2-1)GM}{R}}\approx0.910\,v_1\approx7.2\ \text{km/s}
+$$
+
+此时另一焦点在弦的中点，发射方向与当地水平面成 $22.5^\circ$ 仰角（速度沿椭圆切线，切线平分两条焦半径所成的外角）。
+
+第二条结论应改为：$v<v_1$ 时 $E<-\dfrac{GMm}{2R}$，得到的是 $a<R$（不是 $2a<R$）。本题 $a_{\min}=\dfrac{2+\sqrt2}{4}R\approx0.854R<R$，所以最优轨道恰好对应小于 $v_1$ 的发射速度。
+
 
 ## 写在最后
 

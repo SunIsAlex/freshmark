@@ -78,6 +78,13 @@ $\boxed{\frac{2ab^2}{a^2\sin^2\theta+b^2\cos^2\theta}=\frac{2ab^2}{a^2-c^2\cos^2
 
 This result can withstand scrutiny: if the ellipse degenerates into a circle ($e=1$), then $c=0$, the focus (now degenerated into the origin) chord has constant length $2a=2b$
 
+**Correction (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+A circle has eccentricity $e=0$ ($c=0$), not $e=1$; $e=1$ is a parabola. The check itself is right: with $c=0$ every chord through the center has length $2a$.
+
+
 If you switch to the left focus, it is equivalent to $\theta \to \pi-\theta$, and the formula remains unchanged.
 
 In more detail, the length of the focal chord above and below the x-axis can be calculated.
@@ -156,6 +163,13 @@ $\frac{2ab^2}{-a^2\sin^2\theta+b^2\cos^2\theta}=\frac{8ab^2}{-a^2+3b^2}=4a$
 
 Obtain $a=b,e=1$.
 
+**Correction (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+From $\dfrac{8ab^2}{3b^2-a^2}=4a$ we get $2b^2=3b^2-a^2$, i.e. $b=a$, so $c^2=a^2+b^2=2a^2$ and the eccentricity is $e=\sqrt2$, not $1$ (a hyperbola always has $e>1$). As a check, $T=\frac{3b^2-a^2}{4}=\frac{a^2}{2}>0$, so the line does meet both branches.
+
+
 ### Example 2
 (2025 Guangzhou Preliminary) The left and right foci of the hyperbola $C:x^2-\frac{y^2}{3}=1$ are $F_1$ and $F_2$, respectively. A line $l$ through $F_2$ intersects the right branch of $C$ at $A$ and $B$. If the chord cut from the circumcircle of $\triangle AF_1B$ by the $x$-axis has length 7, find $|AB|$.
 
@@ -215,3 +229,16 @@ $13k^2(24-p^2)=2p(24k^2-p^2+24)$
 By $24-p^2\gt 0,p=1,2,3,4$
 
 After testing, only $p=4,b=2\sqrt{2}$ satisfies the meaning of the question.
+
+**Correction (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+The answer $p=4,\ b=2\sqrt2$ is right, but the two intermediate equations carry an extra factor of $2$. Simplifying $13|AB|=\sqrt6|CD|$ gives
+
+$$
+13b^2k^2=p\,(24k^2+b^2),\qquad 13k^2(24-p^2)=p\,(24k^2+24-p^2).
+$$
+
+Trying $p=1,2,3,4$, only $p=4$ works: $104k^2=96k^2+32$, so $k=2$ is a positive integer and $b^2=24-16=8$. With the factor of $2$ in the original equations, $p=4$ would have no solution.
+

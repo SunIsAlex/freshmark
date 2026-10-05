@@ -46,6 +46,17 @@ repost:
 
 (I)(II) is relatively simple, readers are asked to prove it themselves.
 
+**Solutions to (I) and (II) (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+The recurrence is equivalent to $a_n=|a_{n+1}-a_{n+2}|$, so every term is non-negative.
+
+**(I)** From $a_1=|a_2-a_3|$, $a_3\in\{1,3\}$; from $a_2=|a_3-a_4|$, $a_4=a_3\pm2$. If $a_3=1$, then $a_4\in\{3,-1\}$ and only $3$ is allowed; if $a_3=3$, then $a_4\in\{1,5\}$. So the possible values of $a_4$ are $1,3,5$.
+
+**(II)** Let the maximum be $A=a_k$. If $A=0$ we are done. Otherwise $A=|a_{k+1}-a_{k+2}|$ with $a_{k+1},a_{k+2}\in[0,A]$; two numbers in $[0,A]$ differ by $A$ only if one is $A$ and the other is $0$. So $0$ is a term of the sequence.
+
+
 The original recursion is equivalent to $a_n=|a_{n+1}-a_{n+2}|$. It can be seen that pushing forward from the back (terms with large subscripts) is unique, but it is difficult to push backward from the front (terms with small subscripts). We think "backwards".
 
 From the extreme point of view, the overall trend of the sequence is probably increasing, and there must be some items tending to M and other items tending to 0. Otherwise, if they all tend to M, it will lead to the $a_n=|a_{n+1}-a_{n+2}|$ contradiction. We use this as the starting point for writing (III).

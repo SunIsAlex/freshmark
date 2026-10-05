@@ -66,3 +66,25 @@ $g''(x)=f'(\frac{x+a}{2})+\frac{x-a}{4}f''(\frac{x+a}{2})-f'(x)$
 Because $f(x)$ is a convex function, $f''(x+a)>0,f'(\frac{x+a}{2})\geq f'(x)$, so $g''(x)\geq 0$.
 
 Also $g'(a)=0\leq g'(x),$ so $g(x)\ge g(a)=0$
+
+## Another proof (added by Claude)
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's proof. It is not written by the original author.
+
+**First, a problem in the proof above.** For a convex $f$, $f'$ is increasing and $\frac{x+a}{2}\le x$, so $f'\!\left(\frac{x+a}{2}\right)\le f'(x)$, the opposite of what is written; $g''(x)\ge0$ therefore does not follow. Also, the goal is $(x-a)f\!\left(\frac{x+a}{2}\right)\le F(x)-F(a)$, i.e. $g(x)\le0$, not $g(x)\ge0$.
+
+**A proof without derivatives.** The definition of convexity proves both sides at once. Let $m=\frac{a+b}{2}$ and $h=\frac{b-a}{2}$.
+
+Left side: convexity gives $f(m-t)+f(m+t)\ge 2f(m)$, so
+
+$$
+\int_a^b f(x)\,dx=\int_0^{h}\bigl[f(m-t)+f(m+t)\bigr]dt\ \ge\ 2h\,f(m)=(b-a)f\!\left(\tfrac{a+b}{2}\right).
+$$
+
+Right side: with $x=a+s(b-a)$, $s\in[0,1]$, convexity gives $f(x)\le(1-s)f(a)+sf(b)$, so
+
+$$
+\int_a^b f(x)\,dx=(b-a)\int_0^1 f\bigl(a+s(b-a)\bigr)ds\ \le\ (b-a)\int_0^1\bigl[(1-s)f(a)+sf(b)\bigr]ds=(b-a)\frac{f(a)+f(b)}{2}.
+$$
+
+This proof does not need $f$ to be differentiable, and it matches the two pictures in the figure: the average of two points symmetric about the midpoint is at least the midpoint value, and the chord lies above the curve.

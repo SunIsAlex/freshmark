@@ -73,6 +73,25 @@ The answer is relatively normal, which is equivalent to proving the *sorting ine
 
 Why is it more difficult to write **remove zeros first**? Because if **remove zeros first**, if there are 0s in the middle, then the value of $S$ may be adapted. And **sort first** makes 0s at the end, and removing zeros does not affect $S$.
 
+**Another solution: completing the square makes (i) and (ii) one line each (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+For any sequence of non-negative integers $Q:b_1,\dots,b_m$, since $2kb_k+b_k^2=(b_k+k)^2-k^2$,
+
+$$
+S(Q)=\sum_{k=1}^{m}(b_k+k)^2-\sum_{k=1}^{m}k^2 .
+$$
+
+**(i)** The first term of $T_1(P)$ is $n$ and term $k+1$ is $a_k-1$, contributing $(n+1)^2$ and $(a_k-1+k+1)^2=(a_k+k)^2$:
+
+$$
+S(T_1(P))=(n+1)^2+\sum_{k=1}^{n}(a_k+k)^2-\sum_{k=1}^{n+1}k^2=\sum_{k=1}^{n}(a_k+k)^2-\sum_{k=1}^{n}k^2=S(P).
+$$
+
+**(ii)** $S(Q)=\sum b_k^2+2\sum kb_k$. Sorting leaves $\sum b_k^2$ unchanged, and by the rearrangement inequality $\sum kb_k$ is smallest in decreasing order. The zeros then sit at the end, where each contributes $(0+k)^2-k^2=0$, so removing them does not change $S$. Hence $S(T_2(Q))\le S(Q)$, and with (i), $S(P_{k+1})\le S(P_k)$.
+
+
 Finally, I’ll add one more question, taken from the 2026 Beijing No. 2 Middle School Grade 2 (Part 2) Grade 4 exam:
 
 (III) Prove that for any finite sequence $A_0$ whose terms are positive integers, there exists a positive integer $K$ such that $\text{when }k\ge K,\ S(A_{k+1})=S(A_k)$.
@@ -93,3 +112,11 @@ For a positive integer $n$, define $T(n)$ as the sum of the squares of each digi
 ![Reference answer to part III](zyb_1776502860405.jpg "Reference answer to part III")
 
 (III) of the two questions are exactly the same, both making use of **discreteness** and **boundedness**, leaving it to the readers to think for themselves.
+
+## Solutions to both parts (III) (added by Claude)
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+**Xuzhou problem (III).** By (ii), $S(A_0)\ge S(A_1)\ge S(A_2)\ge\cdots$, and every $S(A_k)$ is a non-negative integer. A non-increasing sequence of non-negative integers can only drop finitely many times (the total drop is at most $S(A_0)$), so there is a $K$ with $S(A_{k+1})=S(A_k)$ for all $k\ge K$.
+
+**Daxing problem (III).** If $n$ has $d\ge4$ digits, then $T(n)\le81d<10^{d-1}\le n$; if $n\le999$, then $T(n)\le3\times81=243$. So once the sequence is below $1000$ it stays there, and until then every step strictly decreases it, so it enters $\{1,2,\dots,999\}$ after finitely many steps. In that finite set the pigeonhole principle gives $p<q$ with $a_p=a_q$, and since $a_{n+1}$ depends only on $a_n$, the sequence repeats with period $q-p$ from $a_p$ on. Take $K=p$ and period $q-p$.

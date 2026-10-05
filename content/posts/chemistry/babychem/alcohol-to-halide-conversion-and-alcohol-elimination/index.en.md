@@ -66,6 +66,13 @@ $$\begin{gathered}
 \end{gathered}$$
 P is a third period element, so the P atom in $\ce{PBr3}$ has a 3d orbital and can be attacked by the oxygen lone pair of electrons of the hydroxyl group, turning the hydroxyl group into a good leaving group and producing the nucleophile $\ce{Br-}$.
 
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+**Correction (added by Claude)** Explaining this step with "P has 3d orbitals" is an older picture. Computational chemistry shows that third-period 3d orbitals are too high in energy to take meaningful part in bonding. What actually happens: the alcohol oxygen attacks P as a nucleophile and **displaces one $\ce{Br-}$** (P stays three-coordinate, so no expanded octet is needed), giving $\ce{RO-PBr2H+}$. The $\ce{Br-}$ then attacks the carbon from the back side ($S_N2$), and $\ce{HOPBr2}$ leaves. This is also why bromination of a chiral secondary alcohol with $\ce{PBr3}$ inverts its configuration.
+
+Also, "Hoffmann" under regioselectivity below should be **Hofmann** (Hofmann's rule).
+
+
 ![alt text](image-6.png)
 Conclusion:
 1. Chlorination: $\ce{PCl3}/\ce{PCl5}$

@@ -65,3 +65,25 @@ $g''(x)=f'(\frac{x+a}{2})+\frac{x-a}{4}f''(\frac{x+a}{2})-f'(x)$
 因为$f(x)$为凸函数,$f''(x+a)>0,f'(\frac{x+a}{2})\geq f'(x)$,所以$g''(x)\geq 0$.
 
 又$g'(a)=0\leq g'(x),$故$g(x)\ge g(a)=0$
+
+## 另一种证法（Claude 补充）
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+**先指出上面证明中的一处问题。** $f$ 为凸函数时 $f'$ 单调递增，而 $\frac{x+a}{2}\le x$，所以应是 $f'\!\left(\frac{x+a}{2}\right)\le f'(x)$，与文中写的方向相反，$g''(x)\ge0$ 因而得不到。另外，要证的是 $(x-a)f\!\left(\frac{x+a}{2}\right)\le F(x)-F(a)$，即 $g(x)\le0$，而不是 $g(x)\ge0$。
+
+**不用导数的证法。** 只用凸性的定义，两侧可以一起证明。记 $m=\frac{a+b}{2}$，$h=\frac{b-a}{2}$。
+
+左侧：凸性给出 $f(m-t)+f(m+t)\ge 2f(m)$，于是
+
+$$
+\int_a^b f(x)\,dx=\int_0^{h}\bigl[f(m-t)+f(m+t)\bigr]dt\ \ge\ 2h\,f(m)=(b-a)f\!\left(\tfrac{a+b}{2}\right).
+$$
+
+右侧：令 $x=a+s(b-a)$，$s\in[0,1]$，凸性给出 $f(x)\le(1-s)f(a)+sf(b)$，于是
+
+$$
+\int_a^b f(x)\,dx=(b-a)\int_0^1 f\bigl(a+s(b-a)\bigr)ds\ \le\ (b-a)\int_0^1\bigl[(1-s)f(a)+sf(b)\bigr]ds=(b-a)\frac{f(a)+f(b)}{2}.
+$$
+
+这个证法不要求 $f$ 可导，也正好对应图中的两层含义：左侧是“关于中点对称的两点平均值不小于中点值”，右侧是“弦在曲线上方”。

@@ -67,6 +67,18 @@ $$\begin{cases}
 
 Obtain $b=c$, and similarly $a=b=c$, then the figure formed by the three is an equilateral triangle.
 
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+**Erratum (added by Claude)** Two intermediate lines contain typos; the final equation and the conclusion are correct:
+
+- $\vec{F_{13}}$ should be $G\dfrac{m_1m_3}{b^3}(\vec{r_3}-\vec{r_1})$ (the $m_2$ should be $m_3$, and the denominator is written as $c^2$ on that line but $b^3$ on the next). The second term of the first equation in the system should likewise carry $m_1m_3$.
+- The centre-of-mass condition is $\vec{r_3}=-\dfrac{m_1\vec{r_1}+m_2\vec{r_2}}{m_3}$; the original has an extra minus sign.
+
+Substituting the corrected forms, $\dfrac{Gm_3}{b^3}\vec{r_3}=-\dfrac{G(m_1\vec{r_1}+m_2\vec{r_2})}{b^3}$, which gives exactly the last line of the derivation.
+
+One more remark: the equilateral points L4 and L5 are stable only if the primary-to-secondary mass ratio exceeds about $24.96$ (Sun–Earth and Earth–Moon both qualify).
+
+
 By the way, get: $\omega=\sqrt{\frac{G(m_1+m_2+m_3)}{a^3}}$
 
 This problem is the famous **Lagrangian point** problem
@@ -102,6 +114,11 @@ Draw three chords through a point in the ellipse, intersecting the ellipse and s
 $$
 \boxed{abc=edf}
 $$
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+**Erratum (added by Claude)** $abc=edf$ holds for a **circle** (the intersecting-chords theorem gives similar adjacent triangles, and multiplying the three similarity ratios gives the result), but it is **false** for a general ellipse. Numerical counterexample: for $\frac{x^2}{9}+\frac{y^2}{4}=1$, take three chords through the focus $(\sqrt5,0)$ at angles $0.3,\ 1.2,\ 2.4$ rad. Then $abc\approx5.77$ while $edf\approx8.53$. An affine map turns the ellipse into a circle, but it does not preserve length ratios between segments in different directions, so the circle result does not carry over.
+
 
 **Optical Properties of Ellipses**
 
@@ -149,6 +166,11 @@ Common physical quantities related to ellipse parameters:
 Cartesian coordinate equation of ellipse: $\frac{x^2}{a^2}+\frac{y^2}{b^2}=1$
 
 Polar coordinate equation: $\rho=\frac{p}{1+e\cos\theta},p=\frac{b^2}{a}$, where p is called the focal radius.
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+**Correction (added by Claude)** $p=\dfrac{b^2}{a}$ is usually called the **semi-latus rectum** (half the chord through a focus perpendicular to the major axis). "Focal radius" normally means the distance $\rho$ from a point on the curve to the focus. The $p=\frac{L^2}{GMm^2}$ mentioned later is also the semi-latus rectum.
+
 
 ![alt text](image-2.png)
 
@@ -396,6 +418,23 @@ d \approx 2.44\, R_M \left(\frac{M_M}{m}\right)^{1/3}
 $$
 
 Although the tidal forces experienced by large satellites and small satellites in the same orbit are different (the larger one is stronger), the self-gravity of the large satellite also increases in the same proportion, and the two exactly offset each other. **The Roche limit has nothing to do with the size of the satellite**.
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+**Correction (added by Claude)** In the derivation above, $R$ is the **satellite's** radius, $m$ the satellite's mass and $M_M$ the primary's mass. From $\dfrac{2GM_M\Delta m\,R}{d^3}=\dfrac{Gm\,\Delta m}{R^2}$,
+
+$$
+d=2^{1/3}\,R\left(\frac{M_M}{m}\right)^{1/3}
+$$
+
+(the original writes the subscripts as $R_M$ and $M_m$). In terms of the primary's radius $R_M$, $R\left(\frac{M_M}{m}\right)^{1/3}=R_M\left(\frac{\rho_M}{\rho_m}\right)^{1/3}$, which gives the standard forms
+
+$$
+d_{\text{rigid}}\approx1.26\,R_M\left(\frac{\rho_M}{\rho_m}\right)^{1/3},\qquad d_{\text{fluid}}\approx2.44\,R_M\left(\frac{\rho_M}{\rho_m}\right)^{1/3}
+$$
+
+So $2.44\,R_M\left(\frac{M_M}{m}\right)^{1/3}$ is wrong: with $R_M$ you need the density ratio, and with the mass ratio the prefactor must be the satellite's radius. Written this way, "independent of the satellite's size" is immediate, since $d$ depends only on the densities.
+
 
 The rings of Saturn are the remnants of satellites or comets that were torn apart by tidal forces and scattered into rings of debris after they crossed the Roche limit.
 

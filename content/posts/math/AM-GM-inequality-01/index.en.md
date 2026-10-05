@@ -82,6 +82,13 @@ $36=ad(a+d)^2=ad(5\frac{a}{5}+d)^2\geq ad(6\sqrt[\frac{1}{6}]{(\frac{a}{5})^5d})
 
 So: $(a^2d)^{\frac{4}{3}}\leq 5^{\frac{5}{3}},a^2d\leq 5^{\frac{5}{4}}$
 
+**Correction (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+The last step of Question 2 should read $\frac{6^3\times4^2\times2}{6^6}=\frac{6912}{46656}=\frac{4}{27}$, which is the bound to be proved; the text above has $\frac{27}{4}$.
+
+
 ## Question 3
 Given $0\lt a,b,c\lt 1$, and $ab+bc+ca=1$. Prove:
 $$
@@ -110,6 +117,25 @@ Past certificate: $\sum_{cyc}(a-a^3)\leq \frac{2\sqrt{3}}{3}$
 And $x-x^3=x(1-x^2)=\sqrt{\frac{2x^2(1-x^2)(1-x^2)}{2}}\leq \sqrt{\frac{(\frac{2}{3})^3}{2}}=\frac{2\sqrt{3}}{9}(x=\frac{\sqrt{3}}{3})$
 
 This question is very intriguing. If one number is different, the scaling will not be valid.
+
+**Another solution (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+Write each term as $\frac{x}{1-x^2}=\frac{x^2}{x(1-x^2)}$. The author has already shown $x(1-x^2)\le\frac{2\sqrt3}{9}$ for $0<x<1$, so every term satisfies
+
+$$
+\frac{x}{1-x^2}\ \ge\ \frac{9}{2\sqrt3}\,x^2=\frac{3\sqrt3}{2}\,x^2 .
+$$
+
+Adding the three terms and using $a^2+b^2+c^2\ge ab+bc+ca=1$:
+
+$$
+\frac{a}{1-a^2}+\frac{b}{1-b^2}+\frac{c}{1-c^2}\ \ge\ \frac{3\sqrt3}{2}\,(a^2+b^2+c^2)\ \ge\ \frac{3\sqrt3}{2}.
+$$
+
+No Cauchy step is needed. Both estimates hold when $a,b,c$ differ; only equality requires $a=b=c=\frac{\sqrt3}{3}$. So "if one number is different, the scaling will not be valid" really means that equality is then not reached; the inequality itself still holds.
+
 
 ## Question 4
 Suppose $a,b,c,d\in \R_+$ satisfies $abcd=1,a+b+c+d\gt \sum_{cyc}\frac{a}{b}$.

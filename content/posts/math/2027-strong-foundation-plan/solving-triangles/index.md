@@ -101,6 +101,13 @@ $$\cos C=\frac{a^2+b^2-c^2}{2ab}\\
 =(2\cos^2A-1)-(2\cos^2B-1)\\
 =2(\cos^2A-\cos^2B)$$
 
+**勘误（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+由第 1 问 $C=\frac{2\pi}{3}$，应有 $\cos C=\frac{3a^2-b^2}{2ab}=-\frac12$，即 $3a^2-b^2+ab=0$（原文写成了 $\frac12$ 和 $-ab$）。这一步后面没有用到，最终答案 $\frac34$ 不受影响。
+
+
 如果直接用边表示余弦,恐怕是复杂的,思路无以为继:
 
 这里我们推导一个新公式:余弦平方差
@@ -579,6 +586,13 @@ $$
 $$\angle ABC=120^\circ\\
 \angle DBC=60^\circ\\
 CD=\tan60^\circ BC=4\sqrt3\approx 6.9$$
+
+**补充说明（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+上面第一个不等式应为 $S_{ABCD}\le\frac12AC\cdot BD$（对角线乘积的一半），取等要求 $AC\perp BD$；第二个不等式是托勒密不等式，取等要求四点共圆。“由对称性 $AB=BC$”可以这样说明：共圆且 $\angle BAD=90^\circ$，所以 $BD$ 是直径；直径 $BD$ 垂直于弦 $AC$，故 $BD$ 垂直平分 $AC$，从而 $AB=BC=4$、$AD=DC$。又 $\angle BCD=90^\circ$、$\angle BDC=\frac12\angle ADC=30^\circ$，所以 $CD=\sqrt3\,BC=4\sqrt3\approx6.9$，答案 A 正确。
+
 
 ![例题 8.15 的面积等号与共圆示意图](example-8-15.svg "例题 8.15 的面积等号与共圆示意图")
 

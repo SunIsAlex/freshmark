@@ -155,6 +155,25 @@ $$\begin{gathered}
   =\frac{2\cos40\degree}{\cos^250\degree}
 \end{gathered}$$
 
+**Another solution: use the definition of the parabola (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+$C(-1,0)$ lies on the directrix $x=-1$, so $x_A+1$ is the distance from $A$ to the directrix, which equals $|AF|$. The line $FA$ makes $50^\circ$ with the positive $x$-axis, so $y_A=|AF|\sin50^\circ$ and
+
+$$
+\tan\angle ACF=\frac{y_A}{x_A+1}=\frac{|AF|\sin50^\circ}{|AF|}=\sin50^\circ .
+$$
+
+Likewise $\tan\angle BCF=\frac{|y_B|}{x_B+1}=\sin50^\circ$ (the acute angle between $FB$ and the axis is also $50^\circ$), so $CF$ bisects $\angle ACB$ and
+
+$$
+\tan\angle ACB=\frac{2\sin50^\circ}{1-\sin^250^\circ}=\frac{2\sin50^\circ}{\cos^250^\circ}=\frac{2\cos40^\circ}{\cos^250^\circ}\approx3.708,
+$$
+
+matching the result above without solving any system.
+
+
 ## Example 5
 Find the equation of the straight line passing through the intersection of $y=2x^2-2x-1$ and $y=-5x^2+2x+3$.
 
@@ -324,6 +343,19 @@ $$\begin{gathered}
 \end{gathered}$$
 
 To sum up, $x\in[-5\sqrt{2},1]$
+
+**Another solution: use the circle to make the condition linear (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+Substitute $x^2+y^2=50$ into the dot product directly:
+
+$$
+\overrightarrow{PA}\cdot\overrightarrow{PB}=x^2+y^2+12x-6y=50+12x-6y\le20\iff y\ge2x+5 .
+$$
+
+So $P$ is the part of the circle on or above the line $y=2x+5$. Solving $x^2+(2x+5)^2=50$ gives $x^2+4x-5=0$, i.e. $x=-5$ or $x=1$. This arc passes through the leftmost point $(-5\sqrt2,0)$ (since $0\ge-10\sqrt2+5$), so the range of the abscissa is $[-5\sqrt2,1]$. Nothing is squared, so there is no question of whether a step is reversible.
+
 
 ## Example 9
 In the plane rectangular coordinate system xOy, the point $A(m,0),B(m+4,0)$ is known. If there is a point P on the circle $C:x^2+(y-3m)^2=8$ such that $\angle APB=45\degree$, then the value range of the real number m is ___.
@@ -540,6 +572,19 @@ $$\begin{gathered}
   3(2-\frac{2}{3}x)^2=(\frac{2}{3}y)^2-4(1-\frac{2}{3}x)\\
   \frac{(x-4)^2}{4}-\frac{y^2}{12}=1
 \end{gathered}$$
+
+**Addition: the locus is only the left branch (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+The equation above is right, but the locus is only part of the hyperbola. Since $A$ and $B$ lie on $x=3$, the directions of rays $OA$ and $OB$ are in $(-90^\circ,90^\circ)$, i.e. $\theta\in(-30^\circ,90^\circ)$. Then $\tan\theta\tan(\theta-60^\circ)\ge-\frac13$, with equality at $\theta=30^\circ$, so
+
+$$
+x=\frac32-\frac32\tan\theta\tan\left(\theta-\frac\pi3\right)\le2 .
+$$
+
+The locus of the circumcenter is the left branch $\dfrac{(x-4)^2}{4}-\dfrac{y^2}{12}=1\ (x\le2)$. Points of the right branch, such as $(6,0)$, come from $\theta=120^\circ$, where the ray $OB$ does not meet $x=3$, so no triangle of the problem corresponds to it. I checked the circumcenter numerically for several values of $\theta$.
+
 
 ## Example 14
 It is known that the left focus of ellipse \(C: \frac{x^2}{a^2} + \frac{y^2}{b^2} = 1(a > b > 0)\) is \(F(-1,0)\), and the left directrix equation is \(x = -2\).

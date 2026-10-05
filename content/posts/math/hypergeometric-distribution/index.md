@@ -114,3 +114,30 @@ $$
 整个过程的关键有两点:一是反复使用恒等式 1 给组合数**降阶**,把带 $i$ 的求和项里的 $i$ 消掉;二是用范德蒙德恒等式把求和**合并**成单个组合数。计算方差时之所以把 $i^2$ 拆成 $(i-1)+1$,正是为了凑出 $i(i-1)$ 这个能再次降两阶的结构,本质上是在求阶乘矩 $E[X(X-1)]$。
 
 记 $p=K/N$,结果可写成 $E(X)=np$、$D(X)=np(1-p)\cdot\dfrac{N-n}{N-1}$。对比二项分布的 $np(1-p)$,多出的因子 $\dfrac{N-n}{N-1}$ 称为**有限总体修正因子**——它小于 1,刻画了不放回抽样让方差变小的事实;当 $N\gg n$ 时该因子趋于 1,超几何分布便近似为二项分布。
+
+## 另一种推导：示性变量（Claude 补充）
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者推导之后，并非原作者所写。
+
+不必展开组合求和。把 $N$ 个物品中 $K$ 个“特殊”物品编号为 $1,\dots,K$，令 $I_j=1$ 表示第 $j$ 个特殊物品被抽中，则
+
+$$
+X=I_1+I_2+\cdots+I_K .
+$$
+
+每个物品被抽中的概率都是 $\frac nN$，任意两个指定物品同时被抽中的概率是 $\frac{n(n-1)}{N(N-1)}$。于是
+
+$$
+E(X)=K\cdot\frac nN,
+$$
+
+$$
+\begin{aligned}
+D(X)&=\sum_j D(I_j)+\sum_{j\ne l}\operatorname{Cov}(I_j,I_l)\\
+&=K\frac nN\Bigl(1-\frac nN\Bigr)+K(K-1)\Bigl[\frac{n(n-1)}{N(N-1)}-\frac{n^2}{N^2}\Bigr]\\
+&=K\frac nN\cdot\frac{N-n}{N}\Bigl[1-\frac{K-1}{N-1}\Bigr]
+=n\frac KN\cdot\frac{N-K}{N}\cdot\frac{N-n}{N-1}.
+\end{aligned}
+$$
+
+协方差项 $\frac{n(n-1)}{N(N-1)}-\frac{n^2}{N^2}<0$ 正是“不放回抽样使方差变小”的来源，也直接解释了有限总体修正因子 $\frac{N-n}{N-1}$。

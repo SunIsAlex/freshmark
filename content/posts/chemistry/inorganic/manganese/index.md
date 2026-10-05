@@ -169,6 +169,11 @@ $\ce{Mn^2+}$在乙醇溶液中生成<span class="chemical-color" data-color="yel
 
 只有 Mn$^{(II)}$ 与一些强的配体才能形成低自旋的有颜色的配合物，如<span class="chemical-color" data-color="blue-violet">蓝紫色</span>的$[Mn(CN)_6]^{4-}$,电子排布为$(e)^5(t2)^0$,$CFSE=(2\Delta-2P)$,此化合物在空气中容易被氧化为<span class="chemical-color" data-color="brown-red">棕红色</span>的$[Mn(CN)_6]^{3-}$.
 
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+**更正（Claude 补充）** 本小节标题应为"**强场**配体：低自旋八面体配位化合物"（$\ce{CN-}$ 是强场配体，正文也写了"强的配体"）。八面体场中 d 轨道分裂为 $t_{2g}$ 和 $e_g$（$e$、$t_2$ 是四面体场的记号），所以电子排布应写作 $(t_{2g})^5(e_g)^0$。与高自旋 $(t_{2g})^3(e_g)^2$ 相比，它多获得 $2\Delta_o$ 的稳定化能，但多了两对成对电子，所以净稳定化为 $2\Delta_o-2P$，与文中数值一致。
+
+
 # $Mn(III)$化合物
 $\mathrm{MnO_2} \xrightarrow{+0.95\ \mathrm{V}} \mathrm{Mn^{3+}} \xrightarrow{+1.51\ \mathrm{V}} \mathrm{Mn^{2+}}$
 

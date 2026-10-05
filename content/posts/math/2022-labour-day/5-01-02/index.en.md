@@ -100,6 +100,13 @@ The establishment of triangle inequality requires that $(a-b)(c-d)$ and $(a-d)(b
 
 That is, $\frac{(a-b)(c-d)}{(a-d)(b-c)}\in\R$ is exactly the necessary and sufficient condition for four points to be a circle.
 
+**Addition: equality needs a positive real ratio (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+Equality in $|u|+|v|\ge|u+v|$ requires $u,v$ to point the **same way**, i.e. $\frac{(a-b)(c-d)}{(a-d)(b-c)}$ must be a **positive** real, not just real. A real ratio only says the four points are concyclic (or collinear); with a negative ratio they are concyclic but not in the order $A,B,C,D$, and equality fails. So "positive real" is exactly the "**convex** cyclic quadrilateral $ABCD$" in the statement.
+
+
 ## Example 4
 Known \(x, y, a, b \in R\), \(x^2 + y^2 \leq 2\), \(a^2 + b^2 \leq 4\). Find the maximum value of \(|b(x^2 - y^2) + 2axy|\).
 
@@ -139,6 +146,13 @@ $$\begin{gathered}
   \cos3\alpha=4\cos\alpha\cos(60\degree-\alpha)\cos(60\degree-\alpha)\\
   \tan3\alpha=\tan\alpha\tan(60\degree-\alpha)\tan(60\degree+\alpha)
 \end{gathered}$$
+
+**Correction (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+The fifth line above should be $\cos3\alpha=4\cos\alpha\cos(60^\circ-\alpha)\cos(60^\circ+\alpha)$; the text repeats $60^\circ-\alpha$. The later "similarly" computation $\cos6^\circ\cos42^\circ\cos66^\circ\cos78^\circ=\frac1{16}$ uses this correct form.
+
 
 Returning to the equation we were looking for, we found:
 
@@ -305,6 +319,13 @@ If \(\alpha, \beta, \gamma \in \left( 0, \frac{\pi}{2} \right)\), and \(\cos^2 \
 Verification: \(\tan \alpha \cdot \tan \beta \cdot \tan \gamma \geq 2\sqrt{2}\)
 
 The conditions for obtaining equality are obvious $\alpha=\beta=\gamma=\arccos\frac{1}{3}$
+
+**Correction (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+Equality holds when $\cos^2\alpha=\cos^2\beta=\cos^2\gamma=\frac13$, i.e. $\alpha=\beta=\gamma=\arccos\frac{\sqrt3}{3}$ (then $\tan\alpha=\sqrt2$ and the product is $2\sqrt2$), not $\arccos\frac13$.
+
 
 Make an identity deformation:
 

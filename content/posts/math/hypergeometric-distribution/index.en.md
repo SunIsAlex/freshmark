@@ -115,3 +115,30 @@ $$
 There are two key points in the whole process: one is to repeatedly use identity 1 to **reduce** the combination number and eliminate $i$ in the summation term with $i$; the other is to use the Vandermonde identity to **merge** the summation into a single combination number. The reason why $i^2$ is split into $(i-1)+1$ when calculating the variance is precisely to create $i(i-1)$, a structure that can be reduced to two orders again. In essence, it is to find the factorial moment $E[X(X-1)]$.
 
 Note $p=K/N$, and the result can be written as $E(X)=np$, $D(X)=np(1-p)\cdot\dfrac{N-n}{N-1}$. Compared with $np(1-p)$ of the binomial distribution, the extra factor $\dfrac{N-n}{N-1}$ is called the **finite population correction factor** - it is less than 1, which depicts the fact that sampling without replacement makes the variance smaller; when $N\gg n$, the factor tends to 1, and the hypergeometric distribution is approximated as a binomial distribution.
+
+## Another derivation: indicator variables (added by Claude)
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's derivation. It is not written by the original author.
+
+No combinatorial sums are needed. Number the $K$ special items among the $N$ as $1,\dots,K$ and let $I_j=1$ when special item $j$ is drawn. Then
+
+$$
+X=I_1+I_2+\cdots+I_K .
+$$
+
+Each item is drawn with probability $\frac nN$, and two given items are both drawn with probability $\frac{n(n-1)}{N(N-1)}$. Hence
+
+$$
+E(X)=K\cdot\frac nN,
+$$
+
+$$
+\begin{aligned}
+D(X)&=\sum_j D(I_j)+\sum_{j\ne l}\operatorname{Cov}(I_j,I_l)\\
+&=K\frac nN\Bigl(1-\frac nN\Bigr)+K(K-1)\Bigl[\frac{n(n-1)}{N(N-1)}-\frac{n^2}{N^2}\Bigr]\\
+&=K\frac nN\cdot\frac{N-n}{N}\Bigl[1-\frac{K-1}{N-1}\Bigr]
+=n\frac KN\cdot\frac{N-K}{N}\cdot\frac{N-n}{N-1}.
+\end{aligned}
+$$
+
+The negative covariance $\frac{n(n-1)}{N(N-1)}-\frac{n^2}{N^2}<0$ is exactly why sampling without replacement lowers the variance, and it explains the finite population correction $\frac{N-n}{N-1}$ directly.

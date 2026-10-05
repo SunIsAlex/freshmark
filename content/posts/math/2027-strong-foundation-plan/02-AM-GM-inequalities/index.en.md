@@ -162,6 +162,13 @@ $$\begin{gathered}
   3a+2b+c=2(a+b)+(a+c)\\\ge2\sqrt{2(a+b)(a+c)}=4\sqrt{3}
 \end{gathered}$$
 
+**Correction (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+Since $(a+b)(a+c)=4$, $2\sqrt{2(a+b)(a+c)}=2\sqrt8=4\sqrt2$, so the minimum is $4\sqrt2$, not $4\sqrt3$. Equality needs $2(a+b)=a+c$, i.e. $a+b=\sqrt2,\ a+c=2\sqrt2$, which is attainable with any $0<a<\sqrt2$ (checked numerically).
+
+
 ## Example 2.7
 Assume \(x, y, z > 0\), then
 
@@ -191,6 +198,13 @@ $$\begin{gathered}
   \sqrt{4c+1}\le\frac{2\sqrt{21}}{7}c+\frac{5\sqrt{21}}{7}\\
   S\le\frac{2\sqrt{21}}{7}(a+b+c)+\frac{5\sqrt{21}}{7}=\sqrt{21}
 \end{gathered}$$
+
+**Correction (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+The constant in each line above should be $\frac{5\sqrt{21}}{21}$ (the three together give $\frac{5\sqrt{21}}{7}$), i.e. $\sqrt{4a+1}\le\frac{2\sqrt{21}}{7}a+\frac{5\sqrt{21}}{21}$; the final result $\sqrt{21}$ is right.
+
 ## Example 2.9
 (Zhejiang University) Suppose the sum of positive numbers \(x_1, x_2, \dots, x_n\) is equal to 1 (\(n \geq 2\)), prove:
 
@@ -254,6 +268,13 @@ $$\begin{gathered}
   =\frac{3^a}{2}+\frac{3^a}{2}+\frac{3^{2b}}{3}+\frac{3^{2b}}{3}+\frac{3^{2b}}{3}\\
   \ge5\sqrt[5]{\frac{3^{2a+6b}}{2^2\cdot3^3}}=5\sqrt[5]{\frac{3^3}{2^2}}=\frac{5}{2}(15)^\frac{3}{5}
 \end{gathered}$$
+
+**Correction (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+The last simplification is off: $5\sqrt[5]{\frac{3^3}{2^2}}=5\cdot\frac{\sqrt[5]{3^3\cdot2^3}}{2}=\frac52\cdot6^{\frac35}\approx7.325$, not $\frac52\cdot15^{\frac35}\approx12.69$. Minimizing $f(b)=3^{3-3b}+9^b$ directly also gives $7.325$ (checked numerically).
+
 ## Example 2.16
 Assume $a > b > 0$, and prove $\sqrt{2a^3} + \frac{3}{ab - b^2} \ge 10$.
 
@@ -266,6 +287,13 @@ $\ge 5\sqrt[5]{32} = 10$
 ② $\ge \sqrt{2}(x+y)^3 + \frac{12}{(x+y)^2}$
 $= \frac{\sqrt{2}}{2}(x+y)^3 + \frac{\sqrt{2}}{2}(x+y)^3 + \frac{4}{(x+y)^2} + \frac{4}{(x+y)^2} + \frac{4}{(x+y)^2}$
 $\ge 5\sqrt[5]{32} = 10$
+
+**Correction to the statement (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+Read literally as $\sqrt{2a^3}$, the inequality is false: $a=2,b=1$ gives $\sqrt{16}+\frac31=7<10$, and $7$ is the actual minimum. Both proofs actually prove $\sqrt2\,a^3+\dfrac{3}{ab-b^2}\ge10$ (the first step $\sqrt2\cdot(2\sqrt{xy})^3$ matches $\sqrt2\,a^3$), with equality at $a=\sqrt2,\ b=\frac{\sqrt2}{2}$. So the statement should read $\sqrt2\,a^3$.
+
 
 ## Example 2.17
 Assume $a,b,c$ is a positive real number, and $a + b + c = 1$, prove: $\frac{1}{a+bc} + \frac{1}{b+ac} + \frac{1}{c+ab} \ge \frac{27}{4}$.
@@ -315,6 +343,13 @@ $$\begin{gathered}
   \Longleftrightarrow 2012-(\frac{1}{2}+\frac{1}{3}+\cdots+\frac{1}{2013})\gt 2012\sqrt[2013]{\frac{1}{2023}}\\
   \Longleftrightarrow \frac{1}{2}+\frac{2}{3}+\frac{3}{4}+\cdots+\frac{2012}{2013}\gt 2012\sqrt[2013]{\frac{1}{2023}}
 \end{gathered}$$
+
+**Correction (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+The right side should be $2012\sqrt[2012]{\frac{1}{2013}}$: the left side has $2012$ terms whose product is $\frac{1}{2013}$, so AM-GM (strict, since the terms differ) gives exactly the original claim.
+
 ## Example 2.21
 It is known that \(m, n\) is a positive integer, and \(1 < m < n\), prove: \((1+m)^n > (1+n)^m\).
 $$\begin{gathered}

@@ -184,6 +184,19 @@ $$\begin{gathered}
 Unfortunately, no reasonable equality conditions can be constructed.
 
 In the same way, $s=169,196,225,256,289$ is not possible, but $s=324(a=-5,b=2,c=4)$ is possible.
+
+**Correction: the minimum is 144 (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+The argument above skips $s=144$, which is attainable: with $a=-3,b=0,c=4$ we have $a+b+c=1$ and
+
+$$
+s=(a+bc)(b+ac)(c+ab)=(-3)\cdot(-12)\cdot4=144>100 .
+$$
+
+And $121$ is impossible. Let $x=b+c,\ y=c+a,\ z=a+b$; then $x+y+z=2(a+b+c)=2$ and $s=(xyz)^2$. If $s=121$, then $|xyz|=11$, so the absolute values are $1,1,11$; but $\pm1\pm1\pm11$ takes only the values $\pm9,\pm11,\pm13$, never $2$. So the minimum of $s$ is **$144$** ($|xyz|=12$, e.g. $(x,y,z)=(4,1,-3)$), not $324$. I also checked by exhaustive search over $|a|,|b|\le60$: the smallest value above $100$ is $144$.
+
 ## Example 1.9
 (2015 Peking University Liberal Arts Program) Assume $x=\frac{b^2+c^2-a^2}{2bc},y=\frac{c^2+a^2-b^2}{2ca},z=\frac{a^2+b^2-c^2}{2ab}$, and $x+y+z=1$, then what is the value of $x^{2015}+y^{2015}+z^{2015}$?
 

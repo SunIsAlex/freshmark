@@ -99,6 +99,13 @@ $$\begin{gathered}
 
 也就是$\frac{(a-b)(c-d)}{(a-d)(b-c)}\in\R$,正好是四点共圆的充要条件.
 
+**补充：取等条件要求比值为正实数（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+三角不等式 $|u|+|v|\ge|u+v|$ 取等要求 $u,v$ **同向**，即 $\frac{(a-b)(c-d)}{(a-d)(b-c)}$ 是**正**实数，而不只是实数。比值为实数只说明四点共圆（或共线）；比值为负时四点虽共圆，但顺序不是 $A,B,C,D$，等号不成立。所以“为正实数”恰好对应题中的“圆内接**凸**四边形 $ABCD$”。
+
+
 ## 例4
 已知 \(x, y, a, b \in R\) ， \(x^2 + y^2 \leq 2\)， \(a^2 + b^2 \leq 4\) ． 求 \(|b(x^2 - y^2) + 2axy|\) 的最大值．
 
@@ -138,6 +145,13 @@ $$\begin{gathered}
   \cos3\alpha=4\cos\alpha\cos(60\degree-\alpha)\cos(60\degree-\alpha)\\
   \tan3\alpha=\tan\alpha\tan(60\degree-\alpha)\tan(60\degree+\alpha)
 \end{gathered}$$
+
+**勘误（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+上面第五行应为 $\cos3\alpha=4\cos\alpha\cos(60^\circ-\alpha)\cos(60^\circ+\alpha)$，原文把第二个因子也写成了 $60^\circ-\alpha$。后面“同理”求 $\cos6^\circ\cos42^\circ\cos66^\circ\cos78^\circ=\frac1{16}$ 用的正是这个正确形式。
+
 
 回到所求式,发现:
 
@@ -304,6 +318,13 @@ $$\begin{gathered}
 求证：\(\tan \alpha \cdot \tan \beta \cdot \tan \gamma \geq 2\sqrt{2}\)
 
 取等条件显而易见$\alpha=\beta=\gamma=\arccos\frac{1}{3}$
+
+**勘误（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+取等时 $\cos^2\alpha=\cos^2\beta=\cos^2\gamma=\frac13$，即 $\alpha=\beta=\gamma=\arccos\frac{\sqrt3}{3}$（此时 $\tan\alpha=\sqrt2$，乘积为 $2\sqrt2$），而不是 $\arccos\frac13$。
+
 
 作恒等变形:
 

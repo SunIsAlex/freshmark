@@ -418,6 +418,19 @@ $$\begin{gathered}
    =5\cdot 5\cdot 1=25
 \end{gathered}$$
 
+**更正（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+答案 $25$ 正确，但上面两处不等号方向反了：减去一个平方项只能得到**上界**。$n$ 个点的一般恒等式是
+
+$$
+\sum_{i<j}|P_iP_j|^2=n\sum_{i}|OP_i|^2-\Bigl|\sum_i\overrightarrow{OP_i}\Bigr|^2\le n\sum_i|OP_i|^2 ,
+$$
+
+对五边形，每个点出现在 $4$ 对中，所以红色系数应为 $4$（$4\sum|OP_i|^2-2\sum_{i<j}\overrightarrow{OP_i}\cdot\overrightarrow{OP_j}=5\sum|OP_i|^2-|\sum\overrightarrow{OP_i}|^2$）。于是平方和 $\le5\cdot5=25$，当 $\sum\overrightarrow{OP_i}=\vec0$（例如正五边形）时取等，最大值为 $25$。三角形的情形同理应为 $AB^2+BC^2+CA^2\le3\sum(x_i^2+y_i^2)$。
+
+
 ![例题 6.12 的单位圆内接五边形](example-6-12.svg "例题 6.12 的单位圆内接五边形")
 
 ## 命题背景

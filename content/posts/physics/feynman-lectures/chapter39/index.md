@@ -166,6 +166,19 @@ $$\begin{gathered}
   F=pA(1-\frac{1}{1-\gamma\frac{Ay}{V}})\approx \frac{\gamma p A^2}{V} y
 \end{gathered}$$
 
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+**勘误（Claude 补充）** 最后一行符号写反了：$p'=\dfrac{p}{1-\gamma\frac{Ay}{V}}>p$，所以
+
+$$
+F=(p'-p)A=pA\left(\frac{1}{1-\gamma\frac{Ay}{V}}-1\right)\approx\frac{\gamma pA^2}{V}\,y
+$$
+
+方向竖直向上，与位移 $y$（向下）相反，即回复力 $F=-ky$，$k=\dfrac{\gamma pA^2}{V}$。原式 $pA\left(1-\frac{1}{1-\gamma Ay/V}\right)\approx-\frac{\gamma pA^2}{V}y$，结果少了负号。
+
+另外，前文"$U=n\langle\frac12mv^2\rangle$"中的 $n$ 是数密度，这样得到的是单位体积的内能；要得到 $PV=\frac23U$，应写成总分子数 $N$：$U=N\langle\frac12mv^2\rangle$。
+
+
 (2)
 
 由简谐运动结论:

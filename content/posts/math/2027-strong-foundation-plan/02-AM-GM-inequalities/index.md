@@ -161,6 +161,13 @@ $$\begin{gathered}
   3a+2b+c=2(a+b)+(a+c)\\\ge2\sqrt{2(a+b)(a+c)}=4\sqrt{3}
 \end{gathered}$$
 
+**更正（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+由 $(a+b)(a+c)=4$ 得 $2\sqrt{2(a+b)(a+c)}=2\sqrt8=4\sqrt2$，所以最小值是 $4\sqrt2$，不是 $4\sqrt3$。取等条件 $2(a+b)=a+c$，即 $a+b=\sqrt2,\ a+c=2\sqrt2$，取 $0<a<\sqrt2$ 时 $b,c$ 均为正数，可以取到（已数值核对）。
+
+
 ## 例2.7
 设 \(x, y, z > 0\)，则  
 
@@ -190,6 +197,13 @@ $$\begin{gathered}
   \sqrt{4c+1}\le\frac{2\sqrt{21}}{7}c+\frac{5\sqrt{21}}{7}\\
   S\le\frac{2\sqrt{21}}{7}(a+b+c)+\frac{5\sqrt{21}}{7}=\sqrt{21}
 \end{gathered}$$
+
+**勘误（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+上面每一项的常数应为 $\frac{5\sqrt{21}}{21}$（三项合计 $\frac{5\sqrt{21}}{7}$），即 $\sqrt{4a+1}\le\frac{2\sqrt{21}}{7}a+\frac{5\sqrt{21}}{21}$；最终结果 $\sqrt{21}$ 正确。
+
 ## 例2.9
 (浙江大学) 设正数 \(x_1, x_2, \dots, x_n\) 之和等于 1 (\(n \geq 2\))，求证：  
 
@@ -253,6 +267,13 @@ $$\begin{gathered}
   =\frac{3^a}{2}+\frac{3^a}{2}+\frac{3^{2b}}{3}+\frac{3^{2b}}{3}+\frac{3^{2b}}{3}\\
   \ge5\sqrt[5]{\frac{3^{2a+6b}}{2^2\cdot3^3}}=5\sqrt[5]{\frac{3^3}{2^2}}=\frac{5}{2}(15)^\frac{3}{5}
 \end{gathered}$$
+
+**勘误（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+最后一步化简有误：$5\sqrt[5]{\frac{3^3}{2^2}}=5\cdot\frac{\sqrt[5]{3^3\cdot2^3}}{2}=\frac52\cdot6^{\frac35}\approx7.325$，不是 $\frac52\cdot15^{\frac35}\approx12.69$。直接对 $f(b)=3^{3-3b}+9^b$ 求最小值也得到 $7.325$（已数值核对）。
+
 ## 例2.16
 设 $a > b > 0$，求证 $\sqrt{2a^3} + \frac{3}{ab - b^2} \ge 10$。
 
@@ -265,6 +286,13 @@ $\ge 5\sqrt[5]{32} = 10$
 ② $\ge \sqrt{2}(x+y)^3 + \frac{12}{(x+y)^2}$
 $= \frac{\sqrt{2}}{2}(x+y)^3 + \frac{\sqrt{2}}{2}(x+y)^3 + \frac{4}{(x+y)^2} + \frac{4}{(x+y)^2} + \frac{4}{(x+y)^2}$
 $\ge 5\sqrt[5]{32} = 10$
+
+**题目勘误（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+按题面 $\sqrt{2a^3}$ 理解，不等式不成立：取 $a=2,b=1$ 得 $\sqrt{16}+\frac31=7<10$，实际最小值就是 $7$。两种证法实际证明的是 $\sqrt2\,a^3+\dfrac{3}{ab-b^2}\ge10$（第一步写成 $\sqrt2\cdot(2\sqrt{xy})^3$ 正对应 $\sqrt2\,a^3$），它在 $a=\sqrt2,\ b=\frac{\sqrt2}{2}$ 时取等，所以题面应为 $\sqrt2\,a^3$。
+
 
 ## 例2.17
 设 $a,b,c$ 是正实数，且 $a + b + c = 1$，求证：$\frac{1}{a+bc} + \frac{1}{b+ac} + \frac{1}{c+ab} \ge \frac{27}{4}$。
@@ -314,6 +342,13 @@ $$\begin{gathered}
   \Longleftrightarrow 2012-(\frac{1}{2}+\frac{1}{3}+\cdots+\frac{1}{2013})\gt 2012\sqrt[2013]{\frac{1}{2023}}\\
   \Longleftrightarrow \frac{1}{2}+\frac{2}{3}+\frac{3}{4}+\cdots+\frac{2012}{2013}\gt 2012\sqrt[2013]{\frac{1}{2023}}
 \end{gathered}$$
+
+**勘误（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+右边应为 $2012\sqrt[2012]{\frac{1}{2013}}$：左边共 $2012$ 项，乘积为 $\frac{1}{2013}$，由均值不等式（各项不全相等，故严格）即得，与原题一致。
+
 ## 例2.21
 已知 \(m, n\) 是正整数，且 \(1 < m < n\)，求证：\((1+m)^n > (1+n)^m\)。
 $$\begin{gathered}

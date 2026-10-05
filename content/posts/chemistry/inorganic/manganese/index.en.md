@@ -192,6 +192,11 @@ In ethanol, $\ce{Mn^2+}$ forms <span class="chemical-color" data-color="yellow">
 
 Only $\ce{Mn(II)}$ with certain strong-field ligands forms colored, low-spin complexes. An example is <span class="chemical-color" data-color="blue-violet">blue-violet</span>$\ce{[Mn(CN)6]^4-}$, with electron arrangement $(e)^5(t_2)^0$ and $CFSE=(2\Delta-2P)$. In air, this compound is readily oxidized to <span class="chemical-color" data-color="brown-red">brownish-red</span>$\ce{[Mn(CN)6]^3-}$.
 
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+**Correction (added by Claude)** In an octahedral field the d orbitals split into $t_{2g}$ and $e_g$ ($e$ and $t_2$ are the tetrahedral labels), so the configuration should be written $(t_{2g})^5(e_g)^0$. Compared with high-spin $(t_{2g})^3(e_g)^2$, it gains $2\Delta_o$ of stabilisation but adds two electron pairs, so the net stabilisation is $2\Delta_o-2P$, matching the value given. (In the Chinese version, the subsection heading also says "weak-field" where it should say "strong-field".)
+
+
 # $\ce{Mn(III)}$ Compounds
 
 $$

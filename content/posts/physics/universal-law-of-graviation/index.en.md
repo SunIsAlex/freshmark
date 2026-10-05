@@ -191,6 +191,17 @@ The period of the neutron star pulse is about $T=\frac{1}{30}s$, estimate its de
 
 $\rho=\frac{3\pi}{GT^2}\approx 1.3\times10^{15}kg/m^3$
 
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+**Erratum (added by Claude)** The number is off by an order of magnitude: $GT^2=6.67\times10^{-11}\times\dfrac{1}{900}\approx7.41\times10^{-14}$, so
+
+$$
+\rho=\frac{3\pi}{GT^2}\approx\frac{9.42}{7.41\times10^{-14}}\approx1.3\times10^{14}\ \text{kg/m}^3
+$$
+
+Strictly speaking this is a **lower bound**: for surface matter not to be flung off by the rotation, the star needs $\rho\ge\dfrac{3\pi}{GT^2}$.
+
+
 ### Example 4
 Release a particle from a point R above the earth's surface (R is the radius of the earth), and find the time to reach the ground $t$.
 
@@ -340,6 +351,17 @@ $$\begin{gathered}
   (r_1\to \infty,r_n=r)
 \end{gathered}$$
 
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+**Correction (added by Claude)** Both versions have a sign slip. Gravity points along $-\hat r$, so its radial component is $-\dfrac{GMm}{r^2}$:
+
+$$
+W=\int_{\infty}^{r}\left(-\frac{GMm}{r'^2}\right)dr'=\frac{GMm}{r}
+$$
+
+As written, $\int_\infty^r\frac{GMm}{r^2}dr$ actually equals $-\dfrac{GMm}{r}$. In the summation, moving from $r_1$ to $r_2$ ($r_1>r_2$) is a displacement of $r_1-r_2$, so $\Delta W_1=GMm\left(\dfrac1{r_2}-\dfrac1{r_1}\right)>0$. Summing gives $GMm\left(\dfrac1{r_n}-\dfrac1{r_1}\right)\to\dfrac{GMm}{r}$, consistent with $E_p=-W=-\dfrac{GMm}{r}$.
+
+
 ### Total energy of elliptical orbit
 Proof: The total energy of an elliptical orbit
 
@@ -420,6 +442,23 @@ $$\begin{gathered}
 So it is not difficult to see:
 - Close-to-ground missiles are not the solution with the smallest initial velocity
 - If the initial velocity is less than $v_1$, then $2a\lt R$, the elliptical orbit must intersect the earth
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+**Completion and correction (added by Claude)** Carrying the minimum speed through to a number:
+
+$$
+\frac12v_{\min}^2=\frac{GM}{R}\left(1-\frac{1}{1+\frac{\sqrt2}{2}}\right)=\frac{GM}{R}\cdot\frac{\sqrt2}{2+\sqrt2}=(\sqrt2-1)\frac{GM}{R}
+$$
+
+$$
+v_{\min}=\sqrt{\frac{2(\sqrt2-1)GM}{R}}\approx0.910\,v_1\approx7.2\ \text{km/s}
+$$
+
+The second focus then lies at the midpoint of the chord, and the launch direction is $22.5^\circ$ above the local horizontal (the velocity is tangent to the ellipse, and the tangent bisects the external angle between the two focal radii).
+
+The second bullet should read: $v<v_1$ means $E<-\dfrac{GMm}{2R}$, which gives $a<R$ (not $2a<R$). Here $a_{\min}=\dfrac{2+\sqrt2}{4}R\approx0.854R<R$, so the optimal orbit indeed needs a launch speed below $v_1$.
+
 
 ## Write at the end
 

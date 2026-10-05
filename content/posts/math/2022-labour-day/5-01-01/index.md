@@ -68,6 +68,15 @@ repost:
 
 显然$\min |z+6|+|z-3i|=\sqrt{6^2+3^2}=3\sqrt{5}$(两点之间线段最短).
 
+**更正（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+$\arg(z+3)=\frac65\pi$ 表示从 $(-3,0)$ 出发、倾斜角为 $\frac65\pi$ 的射线，即 $y=\tan\frac\pi5\,(x+3)\ (x<-3)$，位于第三象限（$y<0$），而不是 $y=-\frac12(x+3)$。此时 $(-6,0)$ 与 $(0,3)$ 在这条射线所在直线的同一侧，距离和沿射线向端点 $(-3,0)$ 单调减小，而端点本身不在轨迹上（$z=-3$ 时辐角无意义），所以**没有最小值**，只有下确界 $3+3\sqrt2$（我已数值核对）。
+
+答案 $3\sqrt5$ 对应的题目应是 $\arg(z+3)=\frac34\pi$：轨迹为 $y=-(x+3)\ (x<-3)$，线段 $(-6,0)$—$(0,3)$ 与它交于 $(-4,1)$，最小值为 $\sqrt{6^2+3^2}=3\sqrt5$。建议核对原题的辐角。
+
+
 ### 例3
 已知$|z-2i|\le1$,求$\max\arg(z-4i)$
 显然$\max\arg(z-4i)=\frac{5}{3}\pi$
@@ -219,6 +228,13 @@ $\theta=\frac{1}{12}\pi\text{ or }\frac{7}{12}\pi$
 $$
 w=\frac{\sqrt{3}}{3}(\cos\frac{\pi}{6}+i\sin\frac{\pi}{6}),\arg(w)=\frac{\pi}{3}\lt\frac{\pi}{2}
 $$
+
+**勘误（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+此处 $w=\frac{\sqrt3}{3}\left(\cos\frac\pi6+i\sin\frac\pi6\right)$，所以 $\arg w=\frac\pi6$，不是 $\frac\pi3$；结论 $\arg w<\frac\pi2$ 及最终答案不受影响（已数值核对）。
+
 
 #### 情况2
 $\tan2\theta=-\frac{\sqrt{3}}{3}$

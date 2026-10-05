@@ -180,6 +180,24 @@ $$\begin{gathered}
   \theta=\arccos(-\frac{4G^2M^2-v^4b^2}{4G^2M^2+v^4b^2})
 \end{gathered}$$
 
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+**勘误（Claude 补充）** 前文已写出双曲线轨道 $E=\dfrac{GMm}{2a}$，这里却写成了 $E=\dfrac{GMm}{a}$，少了因子 $2$。应为
+
+$$
+\frac{GMm}{2a}=\frac12mv^2\ \Longrightarrow\ a=\frac{GM}{v^2}
+$$
+
+于是
+
+$$
+\tan\frac{\theta}{2}=\cot\frac{\pi-\theta}{2}=\frac{a}{b}=\frac{GM}{v^2b},\qquad
+\theta=2\arctan\frac{GM}{v^2b}=\arccos\frac{v^4b^2-G^2M^2}{v^4b^2+G^2M^2}
+$$
+
+这就是卢瑟福散射公式的引力版本。检验：$b\to0$ 时 $\theta\to\pi$（正面"弹回"），$b\to\infty$ 时 $\theta\to0$。原答案中的 $4G^2M^2$ 应为 $G^2M^2$。
+
+
 ## 三:抛物线轨道
 两个质量均为m的彗星沿各自的抛物线轨道绕太阳运动,两轨道共面,当两彗星运动到离太阳距离为R处时,相互**垂直相碰**,并结合成一个天体,讨论此时结合天体以后的轨道.
 
@@ -350,6 +368,11 @@ $$\begin{gathered}
 $1year=365day=525600min=31536000s$
 $M_{sun}=1.99\times10^{30}kg,M_{earth}=5.98\times10^{24}kg,M_{moon}=7.35\times10^{22}kg,R_{earth}=6.37\times10^6,R_{moon}=1.74\times10^6m,R_{earth-moon}=3.84\times10^8m,R_{earth-sun}=1.5\times10^{11}m=1A.U.,R_{mars-sun}=1.52A.U.,R_{jupiter-sun}=5.02A.U.$
 
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+**勘误（Claude 补充）** 木星轨道半长轴约为 $5.20\,\text{A.U.}$，不是 $5.02\,\text{A.U.}$（可用开普勒第三定律核对：$T=5.20^{3/2}\approx11.86$ 年，与木星公转周期一致）。另外 $R_{earth}=6.37\times10^6$ 后面漏了单位 m。
+
+
 ## 例4
 两颗质量分别为$M,m$的超新星相距d,绕其不动的质心各自做圆周运动.在超新星爆炸中,质量为$M$的超新星损失质量为$\Delta M$. 设爆炸是瞬时的,且完全球对称,忽略爆炸碎物对质量为m的超新星的直接作用.
 
@@ -377,3 +400,19 @@ $$\begin{gathered}
   E'=E_k-E_{kc}+U\lt0\\
   \Longrightarrow \Delta M\lt\frac{M+m}{2}
 \end{gathered}$$
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+**另解（Claude 补充）** 不必求质心速度，直接看两星的相对运动。约化质量为 $\mu$ 的相对运动能量为 $\frac12\mu v_{\text{rel}}^2-\dfrac{G M' m}{d}$，其中 $\mu=\dfrac{M'm}{M'+m}$，$M'=M-\Delta M$。所以束缚条件是
+
+$$
+v_{\text{rel}}^2<\frac{2G(M'+m)}{d}
+$$
+
+爆炸瞬间，两星的位置和速度都不变，所以相对速度仍为爆炸前圆周运动的值 $v_{\text{rel}}^2=\dfrac{G(M+m)}{d}$。代入得
+
+$$
+M+m<2(M-\Delta M+m)\ \Longrightarrow\ \Delta M<\frac{M+m}{2}
+$$
+
+即瞬时丢失超过一半总质量，双星就会解体。与作者结果一致，但只需两行。

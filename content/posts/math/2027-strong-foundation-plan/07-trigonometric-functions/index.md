@@ -94,6 +94,29 @@ $$\begin{gathered}
     =\frac{12}{5}
 \end{gathered}$$
 
+**另解：两式相减（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+不必引入反正弦和分类。把 $\alpha,\beta$ 分别代入后相减：
+
+$$
+3(\cos\alpha-\cos\beta)+2(\sin\alpha-\sin\beta)=0 ,
+$$
+
+和差化积得
+
+$$
+2\sin\frac{\alpha-\beta}{2}\left(-3\sin\frac{\alpha+\beta}{2}+2\cos\frac{\alpha+\beta}{2}\right)=0 .
+$$
+
+由 $\alpha-\beta\ne k\pi$ 知 $\sin\frac{\alpha-\beta}{2}\ne0$（若 $\alpha-\beta=2k\pi$，$\alpha,\beta$ 只是同一个角），所以 $\tan\frac{\alpha+\beta}{2}=\frac23$，
+
+$$
+\tan(\alpha+\beta)=\frac{2\cdot\frac23}{1-\frac49}=\frac{12}{5}.
+$$
+
+
 # 例4.4
 2026 北京大学）在 $\triangle ABC$ 中，已知 $\frac{\sin A + \sqrt{3} \cos A}{\cos A - \sqrt{3} \sin A} = \tan \frac{7\pi}{12}$，则 $\sin 2B + 2 \cos C$ 的取值范围为\_\_\_\_\_\_\_\_\_\_。
 

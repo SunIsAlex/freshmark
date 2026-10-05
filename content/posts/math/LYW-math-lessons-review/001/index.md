@@ -76,6 +76,26 @@ $$\begin{gathered}
   n\le -(2^{x_0}+2^{-x_0})\le -\frac{5}{2}
 \end{gathered}$$
 
+**更正与另解（Claude 补充）**
+
+> 本节由 Claude（Anthropic 开发的 AI 模型）补充，附在作者解答之后，并非原作者所写。
+
+上式最后一步需要 $2^{x_0}+2^{-x_0}\ge\frac52$，即 $x_0\ge1$；但前面由（$\alpha$）推出的是 $x_0\le1$，方向相反。$n$ 的最大值确实是 $-\frac52$（$m=2$、$x_0=1$ 时取到），只是要换一种收尾方式。正如作者在后文提示的，可以把（4）（5）平方后相减：
+
+$$
+(-2n)^2-(2y_0)^2=m^2\Bigl[(m^{x_0}+m^{-x_0})^2-(m^{x_0}-m^{-x_0})^2\Bigr]=4m^2
+\quad\Longrightarrow\quad n^2=m^2+y_0^2 .
+$$
+
+作者的（$\alpha$）对所有 $m\ge2$ 都给出 $x_0\le1$，于是 $y_0=\sqrt3\sqrt{1-\frac{x_0^2}{4}}\ge\sqrt3\cdot\frac{\sqrt3}{2}=\frac32$。又 $n<0$，所以
+
+$$
+n=-\sqrt{m^2+y_0^2}\le-\sqrt{4+\tfrac94}=-\frac52,
+$$
+
+当且仅当 $m=2,\ x_0=1,\ y_0=\frac32$ 时取等。我也用数值求解核对过：$m$ 从 $2$ 增大时 $n$ 单调减小。
+
+
 ## 数学背景:双曲三角函数
 ![alt text](image.png)
 

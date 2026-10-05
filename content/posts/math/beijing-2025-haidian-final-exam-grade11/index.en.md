@@ -123,3 +123,20 @@ It’s not difficult to calculate $\frac{b_{2k}}{b_{2k-1}}=4$
 $\frac{b_{2k+1}}{b_{2k}}=4-\frac{2}{k}\lt 4$
 
 Therefore, the maximum value of $\frac{b_{n+1}}{b_n}$ is 4, which is obtained if and only if $n=3,5,7,...$.
+
+## Another write-up of part (2) (added by Claude)
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+The condition $|a_j-a_i|=2$ only links numbers of the same parity, so treat the odd class $\{1,3,\dots\}$ and the even class $\{2,4,\dots\}$ separately.
+
+**Step 1: the last two terms are one odd and one even.** The last-positioned number of each class has no later number of its class, so it cannot sit in the first $n-2$ positions; it must be at position $n-1$ or $n$. There is one such number per class, so the last two terms are one odd and one even, and every other number needs a later same-class number differing by 2.
+
+**Step 2: read backwards, each class grows outward from a run.** Read one class in reverse order of position, starting with its last number. Each newly read number $v$ sits at position at most $n-2$, so $v+2$ or $v-2$ appears after it, i.e. has already been read. By induction the numbers read so far always form a run of consecutive members of the class (adjacent ones differ by 2), and each new number attaches at one end of the run.
+
+Hence the **first** number of each class to appear is the class minimum or maximum. Since $a_1$ is the first number of its class,
+
+- for $n\ge4$, $a_1\in\{1,2,n-1,n\}$, and all four occur, e.g. $1,2,\dots,n$, $2,1,3,4,\dots,n$ and their images under $a\mapsto n+1-a$;
+- for $n=3$ the even class is just $\{2\}$, which is its own last number and must be in the last two positions, so $a_1\in\{1,3\}$.
+
+Step 2 also gives the count in (3): a class of $m$ numbers grows left or right at each step until only one choice is left, which gives $2^{m-1}$ orders, matching the author's count (I checked the author's $b_n$ formula by exhaustive search for $n\le9$).

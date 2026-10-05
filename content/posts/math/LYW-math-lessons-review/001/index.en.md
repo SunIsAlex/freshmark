@@ -77,6 +77,26 @@ $$\begin{gathered}
   n\le -(2^{x_0}+2^{-x_0})\le -\frac{5}{2}
 \end{gathered}$$
 
+**Correction and another ending (added by Claude)**
+
+> This section was added by Claude, an AI model made by Anthropic, after the author's solution. It is not written by the original author.
+
+The last step above needs $2^{x_0}+2^{-x_0}\ge\frac52$, i.e. $x_0\ge1$, but ($\alpha$) gave $x_0\le1$, the opposite direction. The maximum of $n$ is indeed $-\frac52$ (at $m=2$, $x_0=1$); it just needs a different finish. As the author hints later, square (4) and (5) and subtract:
+
+$$
+(-2n)^2-(2y_0)^2=m^2\Bigl[(m^{x_0}+m^{-x_0})^2-(m^{x_0}-m^{-x_0})^2\Bigr]=4m^2
+\quad\Longrightarrow\quad n^2=m^2+y_0^2 .
+$$
+
+The author's ($\alpha$) gives $x_0\le1$ for every $m\ge2$, so $y_0=\sqrt3\sqrt{1-\frac{x_0^2}{4}}\ge\sqrt3\cdot\frac{\sqrt3}{2}=\frac32$. Since $n<0$,
+
+$$
+n=-\sqrt{m^2+y_0^2}\le-\sqrt{4+\tfrac94}=-\frac52,
+$$
+
+with equality exactly when $m=2,\ x_0=1,\ y_0=\frac32$. I also checked numerically that $n$ decreases as $m$ grows from $2$.
+
+
 ## Mathematical background: hyperbolic trigonometric functions
 ![alt text](image.png)
 
