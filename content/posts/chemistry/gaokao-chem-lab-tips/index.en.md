@@ -1,5 +1,5 @@
 ---
-title: "Gaokao Chemistry Lab Essentials: A 32-Minute Revision Animation Checked Line by Line Against the Textbooks"
+title: "Gaokao Chemistry Lab Essentials: A 37-Minute Revision Animation Checked Line by Line Against the Textbooks"
 date: "2026-10-04"
 summary: "Five core lab skills and all 87 experiments in the five PEP senior-high chemistry textbooks. Every step comes with the correct action and its reason, and every claim is sourced to a textbook page and quote. The bilingual animation was made entirely in code on an Android phone."
 lang: "en"
@@ -22,7 +22,7 @@ featured: false
 <iframe src="https://player.bilibili.com/player.html?bvid=BV..." width="100%" height="480" frameborder="0" allowfullscreen></iframe>
 -->
 
-**Gaokao Chemistry · Lab Technique Essentials** (高考化学 · 实验操作要点) is a 32-minute 2D animated revision video for students preparing for China's national college entrance exam. It has two halves. The first teaches the five lab skills that are examined most often. The second goes through the experiments in all five current People's Education Press (PEP, 人教版) senior-high chemistry textbooks, one card per experiment, 87 cards in total. It is 16:9, 1080p at 30 fps, with an original score and bilingual subtitles (Simplified Chinese above, English below).
+**Gaokao Chemistry · Lab Technique Essentials** (高考化学 · 实验操作要点) is a 37-minute 2D animated revision video for students preparing for China's national college entrance exam. It has two halves. The first teaches the five lab skills that are examined most often. The second goes through the experiments in all five current People's Education Press (PEP, 人教版) senior-high chemistry textbooks, one card per experiment, 87 cards in total. It is 16:9, 1080p at 30 fps, with an original score and bilingual subtitles (Simplified Chinese above, English below).
 
 One rule came before everything else: **safety content must be correct.** Every procedure and every reason had to be found in a textbook first and written into a sourced fact sheet. Only then could it appear on screen. A wrong or unsafe practice is never animated as a step to follow. It appears only as a still inside a red "✗ 错误 WRONG" frame, always next to the correct version.
 
@@ -34,18 +34,20 @@ Every frame was drawn by Python code and rendered on the CPU of an Android phone
 |---|---|
 | 0:00 | Title |
 | 0:07 | **Part 1** Order of adding chemicals (making ethyl acetate) |
-| 1:14 | **Part 2** Diluting concentrated sulfuric acid |
-| 2:09 | **Part 3** Heating a test tube safely |
-| 3:12 | **Part 4** Collecting and testing gases |
-| 5:12 | **Part 5** Using and reading a burette and a balance |
-| 6:45 | **Part 6** Textbook experiments · Compulsory Book 1 (24) |
-| 12:33 | **Part 7** Textbook experiments · Compulsory Book 2 (21) |
-| 19:04 | **Part 8** Textbook experiments · Elective 1 (17) |
-| 24:21 | **Part 9** Textbook experiments · Elective 2 (5) |
-| 25:48 | **Part 10** Textbook experiments · Elective 3 (20) |
-| 31:48 | Recap |
+| 1:19 | **Part 2** Diluting concentrated sulfuric acid |
+| 2:19 | **Part 3** Heating a test tube safely |
+| 3:26 | **Part 4** Collecting and testing gases |
+| 5:31 | **Part 5** Using and reading a burette and a balance |
+| 7:09 | **Part 6** Textbook experiments · Compulsory Book 1 (24) |
+| 14:28 | **Part 7** Textbook experiments · Compulsory Book 2 (21) |
+| 22:12 | **Part 8** Textbook experiments · Elective 1 (17) |
+| 28:16 | **Part 9** Textbook experiments · Elective 2 (5) |
+| 30:07 | **Part 10** Textbook experiments · Elective 3 (20) |
+| 37:04 | Recap |
 
 Parts 1–5 each end with a short **实拍** (real footage) segment: clips of real experiments taken from Bilibili, muted and credited on screen. Most are re-uploads of PEP's own textbook companion videos, and only segments showing the correct procedure were used.
+
+After every demo whose experiment has a figure in the textbook, a short **教材原图** (textbook figure) scene shows that figure itself for about five seconds, labelled with the book, printed page and figure number, so students can find it in their own copy. There are 65 of these scenes, with 78 figures.
 
 ## Part 1: The order of adding chemicals
 
@@ -147,7 +149,11 @@ $$\ce{3NO2 + H2O = 2HNO3 + NO}$$
 
 ![The methane and chlorine card](ch4-cl2.jpg "Compulsory Book 2, Experiment 7-1: no light, no reaction")
 
-**Ethyne from calcium carbide (Elective 3).** Calcium carbide reacts very violently with water, so **saturated brine** is used instead to slow the reaction down. The gas is passed through CuSO₄ solution to remove H₂S and other impurities, and tested for purity before it is lit.
+**Ethyne from calcium carbide (Elective 3).** Calcium carbide reacts very violently with water, so **saturated brine** is used instead to slow the reaction down. The gas is passed through CuSO₄ solution to remove H₂S and other impurities, then **separately** into acidified KMnO₄ and into bromine in CCl₄: first one tube, then the delivery tube is moved to the other. Both decolourise. The gas is tested for purity before it is lit. Making ethene from ethanol (Experiment 3-2) works the same way: NaOH solution removes the impurities, then the gas goes separately into each solution.
+
+![The ethyne card](ethyne.jpg "Elective 3: after the wash, separately into acidified KMnO₄ and Br₂ in CCl₄")
+
+![Textbook figure 2-6](ethyne-textbook.jpg "The textbook figure that follows: Elective 3, p. 38, Fig. 2-6")
 
 $$\ce{CaC2 + 2H2O -> Ca(OH)2 + CH#CH ^}$$
 
@@ -172,14 +178,14 @@ All the sources are published by People's Education Press: the senior-high chemi
 ## How it was made
 
 - **A fixed tempo.** The score runs at 100 beats per minute, so one beat is exactly 0.6 s, or 18 frames. Every scene starts on a bar, and every key action lands on a beat with a chime accent.
-- **Bilingual subtitles.** There are 394 cues. The Chinese line has at most 8 characters per second, the English line at most 16 characters per second, and every cue stays on screen for at least 1.2 s. A separate .srt file and a clean version without subtitles are also provided.
+- **Bilingual subtitles.** There are 459 cues. The Chinese line has at most 8 characters per second, the English line at most 16 characters per second, and every cue stays on screen for at least 1.2 s. A separate .srt file and a clean version without subtitles are also provided.
 - **Resumable chunked rendering.** Each scene is rendered as its own chunk, along with a hash of the code and data it depends on. After an interruption, only missing or changed chunks are rendered again. When three more textbooks and dozens of experiments were added to a finished version, the existing chunks did not need to be rendered again.
 - **Automated quality checks.** All 22 checks pass:
   - subtitles stay inside the title-safe area, never overlap, and meet the reading-speed limits;
   - the video is BT.709-encoded and tagged as such;
-  - loudness is −16 LUFS integrated, with a true peak of −1.5 dBTP;
+  - loudness is −16.1 LUFS integrated, with a true peak of −1.8 dBTP;
   - audio–video sync is within 0 ms;
-  - the running time is exactly 1920 s (57,600 frames).
+  - the running time is exactly 2236.8 s (67,104 frames).
 
 ![Recap](recap.jpg "The closing recap: five skills, one line each")
 
@@ -187,13 +193,13 @@ All the sources are published by People's Education Press: the senior-high chemi
 
 | | |
 |---|---|
-| Running time | 32:00 (30 fps, 57,600 frames) |
-| Scenes | 120 |
+| Running time | 37:17 (30 fps, 67,104 frames) |
+| Scenes | 185 (including 65 textbook-figure scenes) |
 | Textbook experiment cards | 87, covering all five PEP senior-high chemistry books |
 | Real-footage clips | 22, muted and credited |
-| Subtitles | 394 bilingual cues |
+| Subtitles | 459 bilingual cues |
 | Fact sheet | Claims F1–F5 for the basic skills, plus 254 textbook quotes (T) and 50 derived claims (D) |
 
 ## Credits and rights
 
-The score, animation and graphics are original. The real-footage clips are excerpts of other people's Bilibili uploads, most of them re-uploads of PEP textbook companion videos, and the rights belong to their owners. They play muted and credited, which suits private study and classroom use. Before publishing the full video, get permission from the rights holders or replace those segments.
+The score, animation and graphics are original. The 教材原图 scenes reproduce figures from People's Education Press textbooks, which hold the rights to them. The real-footage clips are excerpts of other people's Bilibili uploads, most of them re-uploads of PEP textbook companion videos, and the rights belong to their owners. They play muted and credited, which suits private study and classroom use. Before publishing the full video, get permission from the rights holders or replace those segments.
