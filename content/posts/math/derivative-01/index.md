@@ -7,7 +7,7 @@ tags: []
 categories:
   - "数学"
 featured: false
-draft: true
+draft: false
 ---
 
 9. 已知函数 $f(x)=\ln x+\dfrac{1}{x}-1-a(x-1)\ (a\in\mathbf{R})$，则下列四个结论不正确的是（　　）

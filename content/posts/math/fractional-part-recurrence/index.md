@@ -7,7 +7,7 @@ tags: []
 categories:
   - "数学"
 featured: false
-draft: true
+draft: false
 ---
 
 6. 已知实数 $x_0\in[0,1)$，数列 $\{x_n\}$ 满足对任意的 $n\in\mathbf{N}^*$，有
