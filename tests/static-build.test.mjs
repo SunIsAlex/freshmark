@@ -482,11 +482,17 @@ test("articles render math and colocated Markdown images", async () => {
   assert.doesNotMatch(spacedImageHtml, /src="&lt;Screenshot/);
 });
 
+test("minified pages keep the space after inline math", async () => {
+  // Source: "In Problem 1, \"$A$ and $B$ are acute\" was deduced from ..."
+  const html = await read("public/en/posts/math/sin-squared-sum-equals-sin-c/index.html");
+  assert.match(html, /aria-label="A"[\s\S]*?<\/span><\/span>&#32;and <span class="math-expression math-inline" aria-label="B"[\s\S]*?<\/span><\/span>&#32;are acute/);
+});
+
 test("summaries render inline Markdown and pre-render math as KaTeX HTML", async () => {
   const renderedSummary = await renderSummary("Use **AM-GM** for $a_4$ and `code`.");
   assert.match(renderedSummary, /^Use <strong>AM-GM<\/strong> for <span class="math-expression math-inline"[^>]+aria-label="a_4"/);
   assert.match(renderedSummary, /class="katex-mathml"><math[\s\S]*<annotation encoding="application\/x-tex">a_4<\/annotation>/);
-  assert.match(renderedSummary, /class="katex-html" aria-hidden="true"[\s\S]*<\/span><\/span><\/span> and <code>code<\/code>\.$/);
+  assert.match(renderedSummary, /class="katex-html" aria-hidden="true"[\s\S]*<\/span><\/span><\/span>&#32;and <code>code<\/code>\.$/);
   assert.equal(
     await renderSummary("[Reference](https://example.com) with *emphasis*", { links: false }),
     "Reference with <em>emphasis</em>",
@@ -503,7 +509,7 @@ test("summaries render inline Markdown and pre-render math as KaTeX HTML", async
   assert.doesNotMatch(longFormulaSummary, /FRESHMARKMATH/);
   assert.equal(
     await renderSummary("Use $a_4$ and \\[b_5\\].", { mathOutput: "source" }),
-    'Use <span class="math-expression math-inline" data-math-source="a_4"></span> and <span class="math-expression math-display" data-math-source="b_5" data-math-display></span>.',
+    'Use <span class="math-expression math-inline" data-math-source="a_4"></span>&#32;and <span class="math-expression math-display" data-math-source="b_5" data-math-display></span>.',
   );
   const html = await read("public/posts/math/max-minus-min-sequence/index.html");
   assert.match(html, /<p class="article-dek">第\(I\)问枚举 <span class="math-expression math-inline"[^>]+aria-label="a_4"/);
