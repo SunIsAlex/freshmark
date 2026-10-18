@@ -1,6 +1,7 @@
 // Math support for the editor: a Lezer Markdown extension that mirrors Freshmark's delimiters
 // (lib/markdown.mjs protectMath) and a cached KaTeX renderer using the site's macros.
 import katex from "katex";
+import "katex/contrib/mhchem";
 import { tags } from "@lezer/highlight";
 import { katexOptions } from "../lib/math-config.mjs";
 
