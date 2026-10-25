@@ -1,6 +1,6 @@
 // Typora-style live preview: Markdown syntax is hidden and rendered in place, except on the
 // lines or spans the cursor is touching, where the source reappears for editing.
-import { StateEffect, StateField } from "@codemirror/state";
+import { EditorSelection, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, EditorView, WidgetType } from "@codemirror/view";
 import { ensureSyntaxTree, syntaxTree } from "@codemirror/language";
 import { mathSource, renderMath } from "./math.js";
@@ -18,6 +18,28 @@ const focused = StateField.define({
   update: (value, transaction) => transaction.effects.reduce((current, effect) => (effect.is(setFocused) ? effect.value : current), value),
 });
 const focusTracking = EditorView.focusChangeEffect.of((_, focusing) => setFocused.of(focusing));
+
+// A click reveals source around the new cursor and hides it around the old one, so the text moves
+// under the pointer. CodeMirror re-reads the pointer on every mousemove, and the slightest wobble
+// during a click would then land on whatever character has moved there. Keep the position taken
+// at mousedown until the pointer really starts a drag.
+const dragThreshold = 5;
+const stableClicks = EditorView.mouseSelectionStyle.of((view, start) => {
+  if (start.button !== 0 || start.detail > 1 || start.shiftKey || start.ctrlKey || start.metaKey || start.altKey) return null;
+  let anchor = view.posAtCoords({ x: start.clientX, y: start.clientY }, false);
+  let dragging = false;
+  return {
+    get(event) {
+      dragging ||= Math.max(Math.abs(event.clientX - start.clientX), Math.abs(event.clientY - start.clientY)) >= dragThreshold;
+      if (!dragging) return EditorSelection.single(anchor);
+      return EditorSelection.single(anchor, view.posAtCoords({ x: event.clientX, y: event.clientY }, false));
+    },
+    update(update) {
+      if (update.docChanged) anchor = update.changes.mapPos(anchor);
+      return false;
+    },
+  };
+});
 
 // Resolves image paths relative to the open post; replaced by the app when a file opens.
 export const imageResolver = { resolve: (src) => src };
@@ -180,10 +202,37 @@ class TableWidget extends WidgetType {
     wrapper.addEventListener("mousedown", (event) => {
       if (event.target.closest("a")) return;
       event.preventDefault();
-      view.dispatch({ selection: { anchor: view.posAtDOM(wrapper) } });
+      view.dispatch({ selection: { anchor: view.posAtDOM(wrapper) + this.sourceOffset(event) } });
       view.focus();
     });
     return wrapper;
+  }
+  // Where in the table source the click belongs: the clicked cell, and the clicked character when
+  // the cell renders as its own source text.
+  sourceOffset(event) {
+    const cell = event.target.closest("th, td");
+    if (!cell) return 0;
+    const lines = this.source.split("\n");
+    const row = cell.closest("thead") ? 0 : cell.parentElement.rowIndex + 1; // skip the alignment row
+    if (row >= lines.length) return 0;
+    const text = lines[row];
+    const pipes = [...text.matchAll(/(?<!\\)\|/g)].map((match) => match.index);
+    const leading = text.trimStart().startsWith("|");
+    const bounds = leading ? pipes : [-1, ...pipes];
+    if (cell.cellIndex >= bounds.length) return 0;
+    const from = bounds[cell.cellIndex] + 1;
+    const to = bounds[cell.cellIndex + 1] ?? text.length;
+    const raw = text.slice(from, to);
+    const content = from + raw.length - raw.trimStart().length;
+    let within = 0;
+    const caret = document.caretPositionFromPoint?.(event.clientX, event.clientY);
+    if (caret && raw.trim() === cell.textContent && cell.contains(caret.offsetNode)) {
+      const range = document.createRange();
+      range.setStart(cell, 0);
+      range.setEnd(caret.offsetNode, caret.offset);
+      within = range.toString().length;
+    }
+    return lines.slice(0, row).reduce((sum, line) => sum + line.length + 1, 0) + content + within;
   }
   ignoreEvent() { return false; }
 }
@@ -254,7 +303,10 @@ function decorate(state) {
           const { source, display } = mathSource(text);
           const asDisplay = display || alone;
           if (touches(from, to)) {
-            add(from, from, Decoration.widget({ widget: new MathPeekWidget(source, asDisplay, false), side: -1 }));
+            // The preview must never cover the source: display formulas get a block below their last
+            // line; inline ones float from the end of the formula, below wherever its source ends.
+            if (asDisplay) add(doc.lineAt(to).to, doc.lineAt(to).to, Decoration.widget({ widget: new MathPeekWidget(source, true, true), side: 1, block: true }));
+            else add(to, to, Decoration.widget({ widget: new MathPeekWidget(source, false, false), side: 1 }));
             add(from, to, mark("cm-math-source"));
           } else add(from, to, Decoration.replace({ widget: new MathWidget(source, asDisplay) }));
           return false;
@@ -336,7 +388,7 @@ export const livePreview = StateField.define({
   provide: (field) => EditorView.decorations.from(field),
 });
 
-export const livePreviewExtension = [focused, focusTracking, livePreview];
+export const livePreviewExtension = [focused, focusTracking, stableClicks, livePreview];
 
 export function headings(state) {
   const result = [];

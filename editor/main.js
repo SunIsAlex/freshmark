@@ -8,6 +8,7 @@ import { closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
 import { tags } from "@lezer/highlight";
 import { mathSyntax } from "./math.js";
 import { headings, imageResolver, livePreviewExtension, setSourceMode, sourceMode } from "./live-preview.js";
+import { invisibles, setInvisibles } from "./invisibles.js";
 import { PropertiesPanel } from "./properties.js";
 import { t } from "./i18n.js";
 
@@ -116,6 +117,24 @@ const toggleSource = (view) => {
   return true;
 };
 
+// Formatting marks (¶ for Enter, · for spaces) are on unless turned off; the choice is remembered.
+let showInvisibles = true;
+try { showInvisibles = localStorage.getItem("fm-editor:invisibles") !== "off"; } catch {}
+const toggleInvisibles = (view) => {
+  showInvisibles = !showInvisibles;
+  setInvisibles(view, showInvisibles);
+  $("[data-action=invisibles]").setAttribute("aria-pressed", String(showInvisibles));
+  try { localStorage.setItem("fm-editor:invisibles", showInvisibles ? "on" : "off"); } catch {}
+  return true;
+};
+
+// "$" is never auto-paired (a lone "$" is usually the start of something you are about to type),
+// but typing it over a selection still wraps the selection in inline math.
+const dollarWrap = EditorView.inputHandler.of((view, from, to, text) => {
+  if (text !== "$" || view.state.selection.ranges.some((range) => range.empty)) return false;
+  return wrap("$")(view);
+});
+
 const editorKeymap = [
   { key: "Mod-s", run: () => { save(); return true; }, preventDefault: true },
   { key: "Mod-b", run: wrap("**") },
@@ -126,6 +145,7 @@ const editorKeymap = [
   { key: "Mod-Shift-m", run: insertBlock("$$", "$$") },
   { key: "Mod-k", run: insertLink },
   { key: "Mod-/", run: toggleSource },
+  { key: "Mod-Shift-8", run: toggleInvisibles },
   { key: "Mod-0", run: setHeading(0) },
   ...[1, 2, 3, 4, 5, 6].map((level) => ({ key: `Mod-${level}`, run: setHeading(level) })),
   { key: "Enter", run: closeMathBlock },
@@ -137,25 +157,51 @@ const view = new EditorView({
 });
 window.freshmarkEditor = view; // automation hook for UI checks
 
+// Clicks in the blank space around the text (the margins beside it, the gap above the first line,
+// the empty half page below the last) go to the nearest spot in the text, as in a word processor.
+// The click is handed to CodeMirror at that spot, so dragging from the margin selects too.
+$(".scroller").addEventListener("mousedown", (event) => {
+  if (event.button !== 0 || !document.body.classList.contains("has-file")) return;
+  if (![event.currentTarget, $(".paper"), $("#editor")].includes(event.target)) return;
+  const first = view.lineBlockAt(0).top + view.documentTop;
+  const last = view.lineBlockAt(view.state.doc.length).bottom + view.documentTop;
+  if (event.clientY < first - 40) return; // leave the title and properties alone
+  const content = view.contentDOM.getBoundingClientRect();
+  const x = event.clientY > last ? content.right - 1 : Math.min(Math.max(event.clientX, content.left + 1), content.right - 1);
+  const y = Math.min(Math.max(event.clientY, first + 1), last - 1);
+  const target = document.elementFromPoint(x, y);
+  event.preventDefault();
+  if (target && view.contentDOM.contains(target)) {
+    const { button, buttons, detail, shiftKey, ctrlKey, metaKey, altKey, screenX, screenY } = event;
+    target.dispatchEvent(new MouseEvent("mousedown", { bubbles: true, cancelable: true, view: window, clientX: x, clientY: y, screenX, screenY, button, buttons, detail, shiftKey, ctrlKey, metaKey, altKey }));
+  } else {
+    view.dispatch({ selection: { anchor: view.posAtCoords({ x, y }, false) } });
+    view.focus();
+  }
+});
+
 function editorExtensions() {
   return [
     undoHistory(),
     drawSelection(),
     dropCursor(),
     closeBrackets(),
+    dollarWrap,
     search({ top: true }),
     highlightSelectionMatches(),
     EditorView.lineWrapping,
-    EditorState.languageData.of(() => [{ closeBrackets: { brackets: ["(", "[", "{", "'", '"', "$", "`"] } }]),
+    EditorState.languageData.of(() => [{ closeBrackets: { brackets: ["(", "[", "{", "'", '"', "`"] } }]),
     markdown({ base: markdownLanguage, extensions: [mathSyntax], addKeymap: true }),
     syntaxHighlighting(highlight),
     sourceMode,
     livePreviewExtension,
+    invisibles(showInvisibles),
     keymap.of([...editorKeymap, ...closeBracketsKeymap, ...searchKeymap, ...historyKeymap, ...defaultKeymap, indentWithTab]),
     EditorView.contentAttributes.of({ spellcheck: "false", autocorrect: "off", "aria-label": "Markdown" }),
     EditorView.updateListener.of((update) => {
       if (update.docChanged) { markDirty(); scheduleSummary(); }
       if (update.docChanged || update.selectionSet) scheduleOutline();
+      if (update.selectionSet && !update.docChanged) updateCount();
     }),
     EditorView.domEventHandlers({
       paste: (event) => uploadFiles([...(event.clipboardData?.files || [])], event),
@@ -338,10 +384,18 @@ function toast(text) {
   toastTimer = setTimeout(() => { element.hidden = true; }, 3200);
 }
 
+// Counts CJK characters and Latin words, leaving formulas out.
+const countWords = (value) => {
+  const text = value.replace(/\$\$[\s\S]*?\$\$|\$[^$\n]*\$/g, " ");
+  return (text.match(/[㐀-鿿]/g) || []).length + (text.replace(/[㐀-鿿]/g, " ").match(/[A-Za-z0-9]+(?:['’-][A-Za-z0-9]+)*/g) || []).length;
+};
+
+// The whole post, or "selected / whole" while text is selected.
 function updateCount() {
-  const text = view.state.doc.toString().replace(/\$\$[\s\S]*?\$\$|\$[^$\n]*\$/g, " ");
-  const count = (text.match(/[㐀-鿿]/g) || []).length + (text.replace(/[㐀-鿿]/g, " ").match(/[A-Za-z0-9]+(?:['’-][A-Za-z0-9]+)*/g) || []).length;
-  $("#count").textContent = t("words", { count: count.toLocaleString() });
+  const { state: editorState } = view;
+  const count = countWords(editorState.doc.toString()).toLocaleString();
+  const selected = editorState.selection.ranges.filter((range) => !range.empty).map((range) => editorState.sliceDoc(range.from, range.to));
+  $("#count").textContent = selected.length ? t("selectedWords", { selected: countWords(selected.join("\n")).toLocaleString(), count }) : t("words", { count });
 }
 
 // ---------- Sidebar ----------
@@ -463,6 +517,7 @@ const actions = {
   menu: () => document.body.classList.toggle("drawer-open"),
   new: openNewPost,
   source: () => toggleSource(view),
+  invisibles: () => toggleInvisibles(view),
   theme: () => {
     const dark = document.documentElement.dataset.theme ? document.documentElement.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
     document.documentElement.dataset.theme = dark ? "light" : "dark";
@@ -512,6 +567,7 @@ if (window.visualViewport) {
 document.querySelectorAll("[data-i18n]").forEach((node) => { node.textContent = t(node.dataset.i18n); });
 document.querySelectorAll("[data-i18n-label]").forEach((node) => { node.setAttribute("aria-label", t(node.dataset.i18nLabel)); node.title = t(node.dataset.i18nLabel); });
 $("#filter").placeholder = t("filter");
+$("[data-action=invisibles]").setAttribute("aria-pressed", String(showInvisibles));
 document.documentElement.lang = navigator.language?.toLowerCase().startsWith("zh") ? "zh-CN" : "en";
 
 (async () => {
