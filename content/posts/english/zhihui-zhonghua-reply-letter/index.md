@@ -219,3 +219,16 @@ Li Hua
 | I'll send you the video / link soon. | 我很快把视频 / 链接发给你。 |
 | I hope you can try it when you visit Beijing. | 希望你来北京时能亲自体验。 |
 | I can't wait to hear what you think. | 迫不及待想听听你的看法。 |
+
+### 学生习作
+Dear Jim,
+
+  I'm delighted to share my prize-winning entry for the "Paint China with Technology" event, which is an AI-powered interactive demostration.
+    Its name's ember, which is a metaphor for the technological development of China over 5000 years. Using advanced web technology, I was able to create a commercial-level animation documenting the inventions made by our ancestors in chronological order. For instance, it dived into the Four Great Inventions in ancient China, showing the prosperity that we once achieved.
+        While making it, I relied heavily on domestic AI for coding. However, I did all the research myself to write a well-rounded script. I realized that technology can facilitate the expression of our rich heritage. If you're interested, I can help you make similar videos about your country.
+ ### AI修改
+ Dear Jim,
+
+Thanks for asking about the “Smart Painting China” contest! I’m excited to tell you about my entry, an interactive web animation called Ember. The name stands for the spark of innovation that has kept glowing in China for over 5,000 years. Following a timeline, it presents our ancestors’ inventions, with a special focus on the Four Great Inventions and how they shaped the world.
+
+Although AI tools helped me with the coding, I did all the research and wrote the script myself. The whole process made me really proud of our culture, and it showed me that technology can bring heritage to life. If you like, we could make one about your country together!
