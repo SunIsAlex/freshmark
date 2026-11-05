@@ -60,11 +60,16 @@ Here is a Socratic dialogue (产婆术 / Maieutics) dissecting, testing, and pro
 **Li Hua:** Here is my attempt:
 
 > **[Iteration 1]**
+>
 > *Dear Jim,*
+>
 > *I'm thrilled to tell you about my entry for the "Love in My Family" exhibition. It is a smart voice box that I built with my family.*
+>
 > *Inside this white box, it doesn't just run AI code. Instead, it holds hundreds of audio clips from us. For my brother, my mother recorded bedtime tales in her own gentle tone. For my grandfather, my father and I recorded daily summaries of neighborhood news. When I feel stressed, I listen to messages of encouragement left by my parents.*
+>
 > *I submitted this piece because technology shouldn't replace family members. I want to show my classmates that we can use gadgets to store genuine warmth and keep each other company.*
-> *Yours,*
+>
+> *Yours,*  
 > *Li Hua*
 
 **Socrates:** Look at what you have done: the artificial intellect has stepped back, and your parents' actual voices have stepped forward. But tell me: did you write this letter to an examination board, or to your foreign friend, Jim?
@@ -96,12 +101,18 @@ Here is a Socratic dialogue (产婆术 / Maieutics) dissecting, testing, and pro
 **Li Hua:** Let me try:
 
 > **[Iteration 2]**
+>
 > *Dear Jim,*
+>
 > *How have you been? I'm writing to share a special piece I submitted to our school's "Love in My Family" exhibition last week.*
+>
 > *It's a digital soundbox called "Family Echoes." Rather than filling it with canned internet downloads, my family and I turned it into an archive of our voices. Loaded inside are bedtime fairy tales whispered by my mother for my little brother, community bulletins my father and I recorded for my near-blind grandfather, and snippets of dinner table banter.*
+>
 > *I chose to submit this because senior year often leaves us little time for long conversations. This little gadget bridges our busy schedules, proving that true affection lives in ordinary words.*
+>
 > *How do you keep memories with your folks? Drop me a line soon!*
-> *Yours,*
+>
+> *Yours,*  
 > *Li Hua*
 
 ---
@@ -127,16 +138,15 @@ Here is a Socratic dialogue (产婆术 / Maieutics) dissecting, testing, and pro
 
 ### Final Polish (Exemplary Version)
 
-Dear Jim,
-
-How have you been? I'm writing to share a meaningful piece I submitted to our school's "Love in My Family" exhibition last week.
-
-It is a compact audio archive called "Family Echoes." Instead of using synthesized computer speech, my family and I filled it with our own voices. Inside are bedtime stories whispered by my mother for my younger brother, local news my father and I read aloud for my aging grandfather, and candid conversations captured during our weekend dinners.
-
-I chose to enter this piece because hectic school days often rob us of quality time together. This project reminded me that family love doesn't require grand gestures—our everyday voices are enough to keep each other anchored.
-
-How do you preserve sweet moments with your family? Hope to hear from you soon.
-
-Yours,
-
-Li Hua
+> Dear Jim,
+>
+> How have you been? I'm writing to share a meaningful piece I submitted to our school's "Love in My Family" exhibition last week.
+>
+> It is a compact audio archive called "Family Echoes." Instead of using synthesized computer speech, my family and I filled it with our own voices. Inside are bedtime stories whispered by my mother for my younger brother, local news my father and I read aloud for my aging grandfather, and candid conversations captured during our weekend dinners.
+>
+> I chose to enter this piece because hectic school days often rob us of quality time together. This project reminded me that family love doesn't require grand gestures—our everyday voices are enough to keep each other anchored.
+>
+> How do you preserve sweet moments with your family? Hope to hear from you soon.
+>
+> Yours,  
+> Li Hua

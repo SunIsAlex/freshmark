@@ -64,11 +64,16 @@ draft: false
 **李华：** 这是我修改后的初稿：
 
 > **【初稿 · Iteration 1】**
+>
 > *Dear Jim,*
+>
 > *I'm thrilled to tell you about my entry for the "Love in My Family" exhibition. It is a smart voice box that I built with my family.*
+>
 > *Inside this white box, it doesn't just run AI code. Instead, it holds hundreds of audio clips from us. For my brother, my mother recorded bedtime tales in her own gentle tone. For my grandfather, my father and I recorded daily summaries of neighborhood news. When I feel stressed, I listen to messages of encouragement left by my parents.*
+>
 > *I submitted this piece because technology shouldn't replace family members. I want to show my classmates that we can use gadgets to store genuine warmth and keep each other company.*
-> *Yours,*
+>
+> *Yours,*  
 > *Li Hua*
 
 **苏格拉底：** 很好，人工智能退居幕后，家人的真实声音走上了前台。但告诉我：你这封信是写给考试评分委员会的报告，还是写给异国好友 Jim 的书信？
@@ -100,12 +105,18 @@ draft: false
 **李华：** 我再试一次：
 
 > **【二稿 · Iteration 2】**
+>
 > *Dear Jim,*
+>
 > *How have you been? I'm writing to share a special piece I submitted to our school's "Love in My Family" exhibition last week.*
+>
 > *It's a digital soundbox called "Family Echoes." Rather than filling it with canned internet downloads, my family and I turned it into an archive of our voices. Loaded inside are bedtime fairy tales whispered by my mother for my little brother, community bulletins my father and I recorded for my near-blind grandfather, and snippets of dinner table banter.*
+>
 > *I chose to submit this because senior year often leaves us little time for long conversations. This little gadget bridges our busy schedules, proving that true affection lives in ordinary words.*
+>
 > *How do you keep memories with your folks? Drop me a line soon!*
-> *Yours,*
+>
+> *Yours,*  
 > *Li Hua*
 
 ---
@@ -141,8 +152,7 @@ draft: false
 >
 > How do you preserve sweet moments with your family? Hope to hear from you soon.
 >
-> Yours,
->
+> Yours,  
 > Li Hua
 
 ---
@@ -154,6 +164,7 @@ draft: false
    * *whispered by my mother*（妈妈轻声细语的睡前故事）
    * *read aloud for my aging grandfather*（为年迈爷爷大声朗读的社区新闻）
    * *candid conversations captured during our weekend dinners*（周末晚餐时真诚谈心的欢声笑语）
+
    三组分词后置修饰，层层递进，既有家庭各成员的参与，又展现了真实的生活细节。
 3. **立意升华：**
    * *hectic school days often rob us of quality time together* 点出高中学子现实生活的痛点。
