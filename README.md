@@ -124,6 +124,19 @@ window.
 - **Files.** The editor autosaves, keeps an unsaved copy on the device if the
   server is unreachable, and warns when a file changes on disk (for example
   after `git pull`). Pasted or dropped images are saved next to the post.
+- **Paths.** "New post" lets you choose the folder (any path under
+  `content/posts`, starting with a subject), the slug and the file name, and
+  add tags up front. Leave the slug empty to create a single file such as
+  `chemistry/organic/aldol.md`. The **Location** field in the properties panel
+  moves or renames a post: an `index.md` post moves with its whole folder, so
+  its images and translation go along and `alternate` links are updated.
+- **Commit & push.** The branch button in the top bar shows how many files in
+  `content/posts` have changed. It opens a list of those files (backups such as
+  `*.bak` start unticked), a suggested commit message, and **Commit** /
+  **Commit & push** buttons. Only the ticked files are committed, even if other
+  files are staged. Pushing uses your normal git credentials (for example
+  `gh auth setup-git`) and never prompts, so a missing login shows an error
+  instead of hanging.
 
 Shortcuts: `Ctrl+B`/`I` emphasis, `Ctrl+K` link, `Ctrl+M` inline math,
 `Ctrl+Shift+M` math block, `` Ctrl+` `` code, `Ctrl+1…6` headings, `Ctrl+F`
@@ -414,6 +427,7 @@ scripts/editor.mjs   Local editor server (npm run editor)
 editor/              Editor app: live preview, math, properties panel
 lib/frontmatter.mjs  Frontmatter reading and minimal-diff writing
 lib/editor-store.mjs Editor file operations inside content/posts
+lib/editor-git.mjs   Git status, commit and push for the editor
 templates/           Reusable Markdown templates
 netlify/functions/   Optional serverless backends
 netlify/lib/         Shared Functions data helpers

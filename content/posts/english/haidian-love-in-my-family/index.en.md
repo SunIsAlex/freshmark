@@ -1,7 +1,7 @@
 ---
-title: '[海淀期中]"爱在我家"'
+title: '[Haidian Midterm] "Love in My Family"'
 date: "2026-11-05"
-summary: "Here is a Socratic dialogue (产婆术 / Maieutics) dissecting, testing, and progressively polishing the composition from its initial draft to an exam-ready submission. --- Dramatis Pers"
+summary: "Here is a Socratic dialogue (Maieutics) dissecting, testing, and progressively polishing the composition from its initial draft to an exam-ready submission."
 lang: "en"
 tags: []
 categories:
@@ -10,7 +10,7 @@ featured: false
 draft: false
 ---
 
-Here is a Socratic dialogue (产婆术 / Maieutics) dissecting, testing, and progressively polishing the composition from its initial draft to an exam-ready submission.
+Here is a Socratic dialogue (Maieutics) dissecting, testing, and progressively polishing the composition from its initial draft to an exam-ready submission.
 
 ---
 
@@ -123,7 +123,7 @@ Here is a Socratic dialogue (产婆术 / Maieutics) dissecting, testing, and pro
 
 1. *Did you introduce the work?* Yes: "Family Echoes," a voice archive.
 2. *Did you state the reason for submitting it?* Yes: bridging busy schedules in senior year.
-3. *Is the word count disciplined?* Around 110 words—right on the target of "100 左右."
+3. *Is the word count disciplined?* Around 110 words—right on the target of "around 100 words."
 4. *Can any examiner claim you missed the theme?*
 
 **Li Hua:** No, because every sound in the box originates from a family member, and the rationale directly addresses the emotional strain of high school life.

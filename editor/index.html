@@ -33,6 +33,7 @@
     <span class="spacer"></span>
     <span id="count"></span>
     <button class="icon" type="button" data-action="invisibles" aria-pressed="true" data-i18n-label="invisibles"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 20V4M17 20V4M19 4h-9a4 4 0 0 0 0 8h3"/></svg></button>
+    <button class="icon git-button" type="button" data-action="commit" data-i18n-label="commitTitle" hidden><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.2"/><circle cx="6" cy="18" r="2.2"/><circle cx="18" cy="8" r="2.2"/><path d="M6 8.2v7.6M18 10.2c0 4-6 3.2-11 6"/></svg><span class="badge" hidden></span></button>
     <button class="icon" type="button" data-action="source" aria-pressed="false" data-i18n-label="sourceMode"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M13.5 5l-3 14"/></svg></button>
     <button class="icon" type="button" data-action="theme" data-i18n-label="theme"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor"/></svg></button>
   </header>
@@ -67,11 +68,32 @@
       <label><span data-i18n="subject">Subject</span><select name="subject"></select></label>
       <label><span data-i18n="language">Language</span><select name="locale"><option value="zh" data-i18n="localeName_zh">Chinese</option><option value="en" data-i18n="localeName_en">English</option></select></label>
     </div>
-    <label><span data-i18n="slug">Slug</span><input name="slug" required pattern="[a-z0-9]+(-[a-z0-9]+)*" autocomplete="off" spellcheck="false"><small data-i18n="slugHint"></small></label>
+    <label><span data-i18n="folder">Folder</span><input name="folder" list="folder-list" autocomplete="off" spellcheck="false" autocapitalize="off"><datalist id="folder-list"></datalist></label>
+    <div class="form-row">
+      <label><span data-i18n="slug">Slug</span><input name="slug" autocomplete="off" spellcheck="false" autocapitalize="off"></label>
+      <label><span data-i18n="filename">File name</span><input name="filename" value="index.md" required autocomplete="off" spellcheck="false" autocapitalize="off"></label>
+    </div>
+    <small class="form-hint" data-i18n="slugHint"></small>
+    <div class="field"><span data-i18n="tags">Tags</span><div id="new-tags"></div></div>
+    <p class="path-preview"><code></code></p>
     <p class="form-error" role="alert"></p>
     <div class="form-actions">
       <button type="submit" value="cancel" formnovalidate data-i18n="cancel">Cancel</button>
       <button type="submit" value="create" class="primary" data-i18n="create">Create</button>
+    </div>
+  </form>
+</dialog>
+<dialog id="commit">
+  <form method="dialog">
+    <h2 data-i18n="commitTitle">Commit &amp; push</h2>
+    <p class="git-branch"></p>
+    <div class="git-files" role="group" data-i18n-label="changedFiles"></div>
+    <label><span data-i18n="commitMessage">Message</span><textarea name="message" rows="3" spellcheck="false"></textarea></label>
+    <p class="form-error" role="alert"></p>
+    <div class="form-actions">
+      <button type="submit" value="cancel" formnovalidate data-i18n="cancel">Cancel</button>
+      <button type="submit" value="commit" data-i18n="commitOnly">Commit</button>
+      <button type="submit" value="push" class="primary" data-i18n="commitPush">Commit &amp; push</button>
     </div>
   </form>
 </dialog>

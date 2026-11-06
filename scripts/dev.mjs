@@ -16,7 +16,7 @@ const valueFor = (name, fallback) => {
 const host = valueFor("--host", "127.0.0.1");
 const port = Number(valueFor("--port", "3000"));
 const shouldWatch = !args.includes("--no-watch");
-const pdfArgs = args.includes("--no-pdf") ? ["--no-pdf"] : [];
+const pdfArgs = args.includes("--pdf") ? [] : ["--no-pdf"];
 const types = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
@@ -42,7 +42,8 @@ function build(buildArgs = []) {
   if (result.status !== 0) console.error("Build failed; keeping the last successful preview.");
 }
 
-build();
+const skipInitialBuild = args.includes("--no-build");
+if (!skipInitialBuild) build();
 if (shouldWatch) {
   let timer;
   let rebuildAll = false;
