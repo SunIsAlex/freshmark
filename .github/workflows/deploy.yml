@@ -1,0 +1,78 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - vps
+  workflow_dispatch:
+
+concurrency:
+  group: vps-release
+  cancel-in-progress: true
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Cache generated images
+        uses: actions/cache@v4
+        with:
+          path: .freshmark-cache/images
+          key: images-${{ runner.os }}-${{ hashFiles('content/**') }}
+          restore-keys: |
+            images-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        env:
+          FRESHMARK_BASE_URL: https://freshmark.sunisalex.org
+          FRESHMARK_NETLIFY_FUNCTIONS: 'true'
+          FRESHMARK_COMMENTS: 'true'
+          FRESHMARK_COMMENTS_AUTH: 'true'
+        run: npm run build
+
+      - name: Verify build output
+        run: |
+          node -e '
+            const fs = require("node:fs");
+            const appBundle = fs.readdirSync("public/assets").find((file) => /^app\.[a-f0-9]{12}\.js$/.test(file));
+            if (!appBundle) throw new Error("Missing hashed app bundle in public/assets");
+            const required = [
+              "public/index.html",
+              "public/en/index.html",
+              "public/search-index.json",
+              `public/assets/${appBundle}`,
+              "public/version.json",
+            ];
+            for (const file of required) {
+              if (!fs.statSync(file).isFile()) throw new Error(`Missing build output: ${file}`);
+            }
+            JSON.parse(fs.readFileSync("public/search-index.json", "utf8"));
+            JSON.parse(fs.readFileSync("public/version.json", "utf8"));
+          '
+
+      - name: Publish release branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B vps-release
+          git add -f public/
+          short_sha=$(echo "${GITHUB_SHA}" | cut -c1-12)
+          git commit -m "release: build ${short_sha} [skip ci]"
+          git push --force origin vps-release

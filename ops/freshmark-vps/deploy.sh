@@ -3,12 +3,19 @@
 set -eu
 umask 022
 
+build_env_file=${FRESHMARK_BUILD_ENV_FILE:-/etc/freshmark-build.env}
+if [ -f "$build_env_file" ]; then
+  set -a
+  # The file is root-controlled and contains shell-style KEY=value entries.
+  . "$build_env_file"
+  set +a
+fi
+
 repository=${FRESHMARK_REPOSITORY:-/opt/freshmark}
 release_root=${FRESHMARK_RELEASE_ROOT:-/var/www/freshmark}
 remote=${FRESHMARK_GIT_REMOTE:-origin}
-branch=${FRESHMARK_GIT_BRANCH:-vps}
+branch=${FRESHMARK_GIT_BRANCH:-vps-release}
 keep_releases=${FRESHMARK_KEEP_RELEASES:-3}
-build_env_file=${FRESHMARK_BUILD_ENV_FILE:-/etc/freshmark-build.env}
 api_service=${FRESHMARK_API_SERVICE:-freshmark-api.service}
 api_health_url=${FRESHMARK_API_HEALTH_URL:-http://127.0.0.1:8790/api/health}
 lock_file=${FRESHMARK_DEPLOY_LOCK:-/run/lock/freshmark-deploy.lock}
@@ -31,7 +38,7 @@ Environment overrides:
   FRESHMARK_REPOSITORY       Git checkout used as the deployment source
   FRESHMARK_RELEASE_ROOT     Directory containing releases/ and current
   FRESHMARK_GIT_REMOTE       Git remote to fetch (default: origin)
-  FRESHMARK_GIT_BRANCH       Branch to deploy (default: vps)
+  FRESHMARK_GIT_BRANCH       Branch to deploy (default: vps-release)
   FRESHMARK_KEEP_RELEASES    Number of complete releases to retain (default: 3)
   FRESHMARK_BUILD_ENV_FILE   Root-readable build environment file
   FRESHMARK_API_SERVICE      systemd API unit
@@ -264,8 +271,14 @@ if ! git -C "$repository" diff --quiet || ! git -C "$repository" diff --cached -
   echo "Tracked changes exist in $repository; refusing to update the deployment checkout." >&2
   exit 1
 fi
-git -C "$repository" checkout "$branch"
-git -C "$repository" merge --ff-only "$remote/$branch"
+if git -C "$repository" show-ref --verify --quiet "refs/heads/$branch"; then
+  git -C "$repository" checkout "$branch"
+  if ! git -C "$repository" merge --ff-only "$remote/$branch" 2>/dev/null; then
+    git -C "$repository" reset --hard "$remote/$branch"
+  fi
+else
+  git -C "$repository" checkout -b "$branch" "$remote/$branch"
+fi
 
 revision=$(git -C "$repository" rev-parse HEAD)
 active_name=$(current_release_name)
@@ -289,12 +302,6 @@ chmod 0755 "$stage"
 
 git -C "$repository" archive "$revision" | tar -x -C "$stage"
 
-if [ -f "$build_env_file" ]; then
-  set -a
-  # The file is root-controlled and contains shell-style KEY=value entries.
-  . "$build_env_file"
-  set +a
-fi
 : "${FRESHMARK_BASE_URL:=https://freshmark.sunisalex.org}"
 : "${FRESHMARK_NETLIFY_FUNCTIONS:=true}"
 : "${FRESHMARK_COMMENTS:=true}"
@@ -306,8 +313,13 @@ export NPM_CONFIG_UPDATE_NOTIFIER=false
 
 (
   cd "$stage"
-  npm ci --include=dev
-  npm run build
+  if [ -f "public/index.html" ] && [ -f "public/version.json" ]; then
+    npm ci --omit=dev
+  else
+    npm ci --include=dev
+    npm run build
+    npm prune --omit=dev
+  fi
   node -e '
     const fs = require("node:fs");
     const appBundle = fs.readdirSync("public/assets").find((file) => /^app\.[a-f0-9]{12}\.js$/.test(file));
@@ -325,7 +337,6 @@ export NPM_CONFIG_UPDATE_NOTIFIER=false
     JSON.parse(fs.readFileSync("public/search-index.json", "utf8"));
     JSON.parse(fs.readFileSync("public/version.json", "utf8"));
   '
-  npm prune --omit=dev
 )
 
 printf '%s\n' "$revision" >"$stage/.freshmark-release"
