@@ -61,7 +61,18 @@ class FileStore {
       const target = this.file(key);
       const temporary = `${target}.${randomUUID()}.tmp`;
       await writeFile(temporary, JSON.stringify({ key, etag, data }), { mode: 0o600 });
-      await rename(temporary, target);
+      for (let attempt = 0; attempt < 8; attempt += 1) {
+        try {
+          await rename(temporary, target);
+          break;
+        } catch (error) {
+          if ((error?.code === "EPERM" || error?.code === "EBUSY") && attempt < 7) {
+            await new Promise((resolve) => setTimeout(resolve, 15 * (attempt + 1)));
+            continue;
+          }
+          throw error;
+        }
+      }
       return { modified: true, etag };
     });
   }

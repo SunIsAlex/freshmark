@@ -16,13 +16,11 @@ const valueFor = (name, fallback) => {
 const host = valueFor("--host", "127.0.0.1");
 const port = Number(valueFor("--port", "3000"));
 const shouldWatch = !args.includes("--no-watch");
-const pdfArgs = args.includes("--no-pdf") ? ["--no-pdf"] : [];
 const types = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".json": "application/json; charset=utf-8",
-  ".bin": "application/x-freshmark-tokens",
   ".webmanifest": "application/manifest+json; charset=utf-8",
   ".xml": "application/xml; charset=utf-8",
   ".txt": "text/plain; charset=utf-8",
@@ -38,7 +36,7 @@ const types = {
 };
 
 function build(buildArgs = []) {
-  const result = spawnSync(process.execPath, [path.join(root, "scripts", "build.mjs"), ...buildArgs, ...pdfArgs], { cwd: root, stdio: "inherit" });
+  const result = spawnSync(process.execPath, [path.join(root, "scripts", "build.mjs"), ...buildArgs], { cwd: root, stdio: "inherit" });
   if (result.status !== 0) console.error("Build failed; keeping the last successful preview.");
 }
 

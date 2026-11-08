@@ -40,7 +40,6 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   let commentAuthModule;
   let commentSubmitModule;
   let shareModule;
-  let tokenizerModule;
   let navigationController;
   const preparedGalleryImages = new WeakSet();
   const preparedAnswerReveals = new WeakSet();
@@ -374,7 +373,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     for (const contentRoot of roots) {
       const walker = document.createTreeWalker(contentRoot, NodeFilter.SHOW_TEXT, {
         acceptNode(node) {
-          return node.nodeValue.trim() && !node.parentElement?.closest(`${ignored}, [data-ai-token]`)
+          return node.nodeValue.trim() && !node.parentElement?.closest(ignored)
             ? NodeFilter.FILTER_ACCEPT
             : NodeFilter.FILTER_REJECT;
         },
@@ -383,7 +382,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     }
 
     const needle = term.toLowerCase();
-    const matches = tokenizerModule?.highlightTokenText(scope, term, ignored) || [];
+    const matches = [];
     const bareFormulaNeedle = needle
       .replace(/^(?:\${1,2}|\\\(|\\\[)\s*/, "")
       .replace(/\s*(?:\${1,2}|\\\)|\\\])$/, "");
@@ -924,7 +923,6 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   }
 
   function queueArticlePrefetch(anchor) {
-    if (tokenizerModule) return;
     const postsBase = new URL(postsRoot, location.origin).pathname;
     const url = pageContentUrl(new URL(anchor.href, location.href));
     const key = `${url.pathname}${url.search}`;
@@ -975,22 +973,18 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     return true;
   }
 
-  async function navigate(url, { push = true, restoreScroll = null, useTokens = true } = {}) {
+  async function navigate(url, { push = true, restoreScroll = null } = {}) {
     navigationController?.abort();
     const controller = navigationController = new AbortController();
     const { signal } = controller;
     const previousScroll = scrollY;
-    let tokenStream;
     let committed = false;
     viewRequest += 1;
     commentsRequest += 1;
     closeGallery({ restoreFocus: false });
     shell.setAttribute("aria-busy", "true");
     try {
-      if (useTokens && tokenizerModule && url.pathname.startsWith(new URL(postsRoot, location.origin).pathname) && url.pathname.endsWith("/")) {
-        try { tokenStream = await tokenizerModule.openPage(pageContentUrl(url), signal); } catch { signal.throwIfAborted(); }
-      }
-      const nextPage = tokenStream?.page || await getPage(url);
+      const nextPage = await getPage(url);
       signal.throwIfAborted();
       const nextDocument = new DOMParser().parseFromString(nextPage.html, "text/html");
       const nextMain = nextDocument.querySelector("main");
@@ -1003,7 +997,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
       const swap = () => {
         signal.throwIfAborted();
         currentMain.replaceWith(nextMain);
-        if (nextPage.article && !tokenStream) applyArticleContentDiff(url, nextMain).catch(() => {});
+        if (nextPage.article) applyArticleContentDiff(url, nextMain).catch(() => {});
         observeInlineMath(nextMain);
         updateInlineMathOverflow(nextMain);
         document.fonts?.ready.then(() => updateInlineMathOverflow(nextMain));
@@ -1035,34 +1029,18 @@ import { searchableLatexText } from "../lib/search-text.mjs";
         }
       } else swap();
       signal.throwIfAborted();
-      if (tokenStream) {
-        closeSearch();
-        if (restoreScroll === null) scrollTo(0, 0);
-        await tokenStream.render(nextMain, async (block) => {
-          rebaseMainUrls(block, url);
-          await renderSpaMath(block);
-          prepareAnswerReveals(block);
-          prepareGallery(block);
-          scheduleArticlePrefetch(block);
-        });
-        signal.throwIfAborted();
-        await applyArticleContentDiff(url, nextMain).catch(() => {});
-        signal.throwIfAborted();
-        observeInlineMath(nextMain);
-        updateInlineMathOverflow(nextMain);
-        preloadPhotoSwipe(nextMain);
-      }
+
       const searchMatch = highlightSearchTerm(url, nextMain);
 
       closeSearch();
       if (restoreScroll !== null) scrollTo(0, restoreScroll);
       else if (searchMatch) scrollToSearchHighlight(searchMatch);
       else if (url.hash) document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView();
-      else if (!tokenStream) scrollTo(0, 0);
+      else scrollTo(0, 0);
       updateReadingState();
       const main = document.querySelector("main");
       main.setAttribute("tabindex", "-1");
-      if (!tokenStream || document.activeElement === document.body) main.focus({ preventScroll: true });
+      if (document.activeElement === document.body) main.focus({ preventScroll: true });
       main.addEventListener("blur", () => main.removeAttribute("tabindex"), { once: true });
       afterFirstPaint(() => {
         if (signal.aborted) return;
@@ -1071,13 +1049,9 @@ import { searchableLatexText } from "../lib/search-text.mjs";
       });
     } catch {
       if (!signal.aborted) {
-        if (tokenStream) {
-          await tokenStream.close();
-          await navigate(url, { push: committed ? false : push, restoreScroll, useTokens: false });
-        } else location.href = url.href;
+        location.href = url.href;
       }
     } finally {
-      await tokenStream?.close();
       if (navigationController === controller) shell.removeAttribute("aria-busy");
     }
   }
@@ -1149,7 +1123,6 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   (navigator.connection || navigator.mozConnection || navigator.webkitConnection)?.addEventListener("change", drainPrefetchQueue);
   const initialUrl = new URL(location.href);
   afterFirstPaint(() => {
-    import("./tokenizer.js").then((module) => { tokenizerModule = module; }).catch(() => {});
     recordView(initialUrl);
     prepareComments();
     if ("serviceWorker" in navigator) {

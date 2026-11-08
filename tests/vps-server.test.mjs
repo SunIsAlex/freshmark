@@ -5,10 +5,11 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { request } from "node:http";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 test("mailer rejects oversized UTF-8 streams before the client finishes sending", { timeout: 10000 }, async (context) => {
-  const child = spawn(process.execPath, [new URL("../ops/freshmark-mailer/server.mjs", import.meta.url).pathname], {
+  const child = spawn(process.execPath, [fileURLToPath(new URL("../ops/freshmark-mailer/server.mjs", import.meta.url))], {
     env: { ...process.env, MAILER_PORT: "0", MAILER_TOKEN: "local-test-token" },
     stdio: ["ignore", "pipe", "pipe"],
   });
@@ -49,7 +50,7 @@ test("mailer rejects oversized UTF-8 streams before the client finishes sending"
 
 test("VPS API returns 413 for oversized streamed bodies and stays healthy", { timeout: 10000 }, async (context) => {
   const directory = await mkdtemp(path.join(tmpdir(), "freshmark-api-test-"));
-  const child = spawn(process.execPath, [new URL("../server/server.mjs", import.meta.url).pathname], {
+  const child = spawn(process.execPath, [fileURLToPath(new URL("../server/server.mjs", import.meta.url))], {
     env: { ...process.env, FRESHMARK_API_HOST: "127.0.0.1", FRESHMARK_API_PORT: "0", FRESHMARK_DATA_DIR: directory, FRESHMARK_NETLIFY_FUNCTIONS: "true" },
     stdio: ["ignore", "pipe", "pipe"],
   });

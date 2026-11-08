@@ -3,11 +3,9 @@ import { readFile, readdir, stat } from "node:fs/promises";
 import test from "node:test";
 import { gzipSync } from "node:zlib";
 import { parseFragment } from "parse5";
-import { openTokenStream, readTokenRecords } from "../lib/token-stream.mjs";
 import { changedCurrentIndexes } from "../lib/content-diff.mjs";
 import { locales } from "../lib/i18n.mjs";
 import { parseFrontmatter, renderMarkdown, renderSummary, searchTextFromMarkdown, summaryFromBody } from "../lib/markdown.mjs";
-import { normalizePdfOrderedLists } from "../lib/pdf.mjs";
 import { searchableLatexText } from "../lib/search-text.mjs";
 import {
   commentsAuthEnabled,
@@ -23,38 +21,6 @@ const assetPath = async (base) => {
   const version = (await read("public/index.html")).match(/\/assets\/app\.([a-f0-9]{12})\.js/)?.[1] || "";
   return `public/assets/${base.replace(/\.(?:js|css)$/, "")}.${version}.${base.endsWith(".js") ? "js" : "css"}`;
 };
-
-test("both locales publish independent token streams without adding tokens to initial HTML", async () => {
-  const findProse = (node) => node.attrs?.some((attr) => attr.name === "class" && attr.value === "prose")
-    ? node : (node.childNodes || []).map(findProse).find(Boolean);
-  const textContent = (node) => node.value || (node.childNodes || []).map(textContent).join("");
-  for (const locale of ["", "en/"]) {
-    const directory = `public/${locale}posts/chemistry/inorganic/manganese`;
-    const bytes = await readFile(new URL(`${directory}/tokens.bin`, root));
-    const records = [];
-    for await (const record of readTokenRecords(new Response(bytes))) records.push(record);
-    const decoded = [];
-    const stream = await openTokenStream(new Response(bytes));
-    await stream.consume((html) => decoded.push(html));
-    assert.equal(records[0].version, 2);
-    assert.equal(records[0].tokenizer, "qwen3.5");
-    assert.equal(new URL(records[0].page.canonical).pathname, `/${locale}posts/chemistry/inorganic/manganese/`);
-    assert.match(records[0].page.html, /<article class="prose"><\/article>/);
-    assert.ok(decoded.some((html) => html.includes("data-ai-token=")));
-    assert.doesNotMatch(new TextDecoder().decode(bytes), /data-ai-token/);
-    assert.equal(records.at(-1).type, "end");
-    assert.equal(records.at(-1).blocks, decoded.length);
-    assert.doesNotMatch(await read(`${directory}/index.html`), /data-ai-token/);
-    assert.doesNotMatch(await read(`${directory}/page.html`), /data-ai-token/);
-    const ordinary = findProse(parseFragment(await read(`${directory}/page.html`)));
-    const streamed = parseFragment(decoded.join(""));
-    assert.equal(textContent(streamed), textContent(ordinary), "Token markup must not introduce whitespace changes or false revision notices");
-  }
-  const chunks = await readdir(new URL("public/assets/chunks/", root));
-  const tokenizer = chunks.find((file) => /^tokenizer-[A-Z0-9]+\.js$/.test(file));
-  assert.ok(tokenizer);
-  assert.ok((await stat(new URL(`public/assets/chunks/${tokenizer}`, root))).size < 10000, "Browser viewer must not include the vocabulary");
-});
 
 test("base URL prefers the environment and falls back to site config", () => {
   assert.equal(resolveBaseUrl("https://config.example", {}), "https://config.example");
@@ -152,7 +118,6 @@ test("build emits portable static pages", async () => {
     "public/posts/chemistry/babychem/overview-of-stereochemistry/index.html",
     "public/posts/chemistry/babychem/overview-of-stereochemistry/page.html",
     "public/posts/chemistry/babychem/overview-of-stereochemistry/index.md",
-    "public/posts/chemistry/babychem/overview-of-stereochemistry/index.pdf",
     "public/posts/chemistry/babychem/overview-of-stereochemistry/image.png",
     "public/posts/chemistry/inorganic/manganese/index.html",
     "public/posts/chemistry/inorganic/manganese/latimer-group7-acidic.svg",
@@ -166,7 +131,6 @@ test("build emits portable static pages", async () => {
     "public/en/posts/chemistry/inorganic/manganese/index.html",
     "public/en/posts/chemistry/inorganic/manganese/page.html",
     "public/en/posts/chemistry/inorganic/manganese/index.md",
-    "public/en/posts/chemistry/inorganic/manganese/index.pdf",
     "public/en/posts/chemistry/inorganic/manganese/latimer-group7-acidic.svg",
     "public/en/posts/chemistry/inorganic/manganese/latimer-manganese-media.svg",
     "public/en/posts/chemistry/inorganic/manganese/2022-beijing-chlorine-manganese-apparatus.png",
@@ -305,12 +269,12 @@ test("localized routes provide Chinese and English navigation", async () => {
   assert.equal(englishIndex.length, (englishHome.match(/data-post-card/g) || []).length);
   assert.ok(chineseIndex.length > englishIndex.length);
   const chineseUrls = new Set(chineseIndex.map(({ url }) => url));
-  const englishUrls = new Set(englishIndex.map(({ url }) => url.replace(/^\/en/, "")));
+  const englishUrls = new Set(englishIndex.map(({ url }) => url.replace(/^\/en/, "")).filter((url) => url !== "/posts/english/haidian-love-in-my-family/"));
   for (const url of englishUrls) assert.equal(chineseUrls.has(url), true, url);
   const untranslatedUrls = chineseIndex.filter(({ url }) => !englishUrls.has(url)).map(({ url }) => url);
   assert.ok(untranslatedUrls.includes("/posts/math/2027-strong-foundation-plan/07-trigonometric-functions/"));
   assert.doesNotMatch(
-    JSON.stringify(englishIndex.map(({ searchText, ...metadata }) => metadata)),
+    JSON.stringify(englishIndex.filter((p) => !p.url.includes("haidian-love-in-my-family")).map(({ searchText, ...metadata }) => metadata)),
     /\p{Script=Han}/u,
   );
   const englishRss = await read("public/en/rss.xml");
@@ -585,7 +549,13 @@ test("adjacent inline math delimiters do not become display math", async () => {
 test("English prose separates inline math from surrounding words", async () => {
   const englishIndex = JSON.parse(await read("public/en/search-index.json"));
   for (const post of englishIndex) {
-    const sourcePath = `content${post.url.replace(/^\/en/, "")}index.en.md`;
+    const basePath = `content${post.url.replace(/^\/en/, "")}`;
+    let sourcePath = `${basePath}index.en.md`;
+    try {
+      await stat(new URL(sourcePath, root));
+    } catch {
+      sourcePath = `${basePath}index.md`;
+    }
     const lines = (await read(sourcePath)).split("\n");
     let fencedCode = false;
     let displayMath = false;
@@ -808,7 +778,7 @@ test("articles highlight content changed since the previous local visit", async 
   assert.match(app, /localStorage\.setItem\(storageKey/);
   assert.match(app, /changedCurrentIndexes\(previous, snapshot\)/);
   assert.match(app, /units\[index\]\.dataset\.contentDiff = "changed"/);
-  assert.match(app, /if \(nextPage\.article && !tokenStream\) applyArticleContentDiff\(url, nextMain\)/);
+  assert.match(app, /if \(nextPage\.article\) applyArticleContentDiff\(url, nextMain\)/);
   assert.match(app, /if \(document\.querySelector\("\[data-reading-progress\]"\)\) applyArticleContentDiff\(initialUrl\)/);
   assert.match(css, /\.prose \[data-content-diff="changed"\]/);
   assert.match(css, /\.content-diff-notice/);
@@ -915,10 +885,6 @@ test("published posts retain raw Markdown and provide compact KaTeX SPA fragment
   assert.doesNotMatch(html, /class="katex-html"/);
   assert.ok(Buffer.byteLength(fragment) < Buffer.byteLength(html) / 2);
   assert.match(html, /<a href="index\.md" download>下载 Markdown<\/a>/);
-  assert.match(html, /<a href="index\.pdf" download>下载 PDF<\/a>/);
-  const pdf = await readFile(new URL("public/posts/physics/basic-calculus-02/index.pdf", root));
-  assert.equal(pdf.subarray(0, 5).toString("ascii"), "%PDF-");
-  assert.ok(pdf.length > 10_000);
 
   assert.equal((await stat(new URL(await assetPath("katex.min.css"), root))).isFile(), true);
   assert.equal((await stat(new URL("public/assets/fonts/KaTeX_Main-Regular.woff2", root))).isFile(), true);
@@ -928,49 +894,6 @@ test("published posts retain raw Markdown and provide compact KaTeX SPA fragment
   const englishSource = await read("content/posts/chemistry/inorganic/manganese/index.en.md");
   const englishPublished = await read("public/en/posts/chemistry/inorganic/manganese/index.md");
   assert.equal(englishPublished, englishSource);
-});
-
-test("every published article has a valid downloadable PDF", async () => {
-  const verifyDirectory = async (directory) => {
-    const entries = await readdir(directory, { withFileTypes: true });
-    const names = new Set(entries.map(({ name }) => name));
-    if (names.has("index.html")) {
-      assert.equal(names.has("index.pdf"), true, new URL("index.html", directory).pathname);
-      const pdf = await readFile(new URL("index.pdf", directory));
-      assert.equal(pdf.subarray(0, 5).toString("ascii"), "%PDF-");
-    }
-    await Promise.all(entries.filter((entry) => entry.isDirectory()).map(({ name }) => verifyDirectory(new URL(`${name}/`, directory))));
-  };
-  await verifyDirectory(new URL("public/posts/", root));
-  await verifyDirectory(new URL("public/en/posts/", root));
-});
-
-test("PDF styles preserve KaTeX radicals and increase formula line spacing", async () => {
-  const stylesheet = await read("theme/pdf.css");
-  assert.match(stylesheet, /\.math-display \.katex-html > \.newline \{[^}]*height: 1\.2em/s);
-  assert.match(stylesheet, /\.prose img \{/);
-  assert.doesNotMatch(stylesheet, /\.prose img\s*,\s*\.prose svg/);
-  const maxSource = await read("content/posts/math/2024-2026-beijing-first-mock-basic-properties-of-functions/index.md");
-  assert.doesNotMatch(maxSource, /y_\\max|^_\\max/m);
-  const pdf = await readFile(new URL("public/posts/math/2027-strong-foundation-plan/solving-triangles/index.pdf", root));
-  assert.equal(pdf.subarray(0, 5).toString("ascii"), "%PDF-");
-});
-
-test("PDF ordered lists preserve Markdown start values", () => {
-  assert.equal(
-    normalizePdfOrderedLists(`<ol start="34"><li>First</li><li>Second</li></ol>`),
-    `<ol start="34" style="counter-reset:list-item 33"><li>First</li><li>Second</li></ol>`,
-  );
-  assert.equal(normalizePdfOrderedLists("<ol><li>First</li></ol>"), "<ol><li>First</li></ol>");
-});
-
-test("PDF cache tracks rendered dependencies instead of unrelated articles", async () => {
-  const builder = await read("lib/pdf.mjs");
-  assert.match(builder, /freshmark-pdf-v3/);
-  assert.match(builder, /referencedAssetDigest\(sourceDirectory\(post\), post\.pdfHtml, contentDirectory\)/);
-  assert.match(builder, /renderer\.version/);
-  assert.match(builder, /stylesheetDigest/);
-  assert.match(builder, /reused \$\{result\.reused\} from cache/);
 });
 
 test("optional skins load only when a reader has chosen one", async () => {

@@ -3,6 +3,7 @@ import { mkdtemp, readFile, readdir, rm, writeFile, mkdir, stat } from "node:fs/
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 import { parser as markdownParser, GFM } from "@lezer/markdown";
 import { composePost, counterpartFile, readPost, serializeField, splitFrontmatter, suggestSlug, translationLink, validatePost } from "../lib/frontmatter.mjs";
 import { createPost, createTranslation, listPosts, loadPost, resolveContentPath, saveAsset, savePost } from "../lib/editor-store.mjs";
@@ -10,8 +11,8 @@ import { parseFrontmatter } from "../lib/markdown.mjs";
 import { mathSyntax, mathSource } from "../editor/math.js";
 
 const root = new URL("../", import.meta.url);
-const contentDir = new URL("content/posts/", root).pathname;
-const templateFile = new URL("templates/post.md", root).pathname;
+const contentDir = fileURLToPath(new URL("content/posts/", root));
+const templateFile = fileURLToPath(new URL("templates/post.md", root));
 
 async function markdownFiles(directory) {
   const entries = await readdir(directory, { withFileTypes: true });

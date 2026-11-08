@@ -7,7 +7,6 @@ import CleanCSS from "clean-css";
 import { minify as minifyJavaScript } from "terser";
 import config from "../site.config.mjs";
 import { BuildWorkerPool } from "../lib/build-worker-pool.mjs";
-import { buildPostPdfs, findPdfRenderer } from "../lib/pdf.mjs";
 import { defaultLocale, interpolate, locales, localizedPath } from "../lib/i18n.mjs";
 import { parseFrontmatter, renderSummary, searchTextFromMarkdown, summaryFromBody } from "../lib/markdown.mjs";
 import { enhanceResponsiveImages } from "../lib/responsive-images.mjs";
@@ -24,7 +23,6 @@ const contentDir = path.join(root, "content", "posts");
 const themeDir = path.join(root, "theme");
 const outputDir = path.join(root, "public");
 const imageCacheDir = path.resolve(process.env.FRESHMARK_IMAGE_CACHE_DIR || path.join(root, ".freshmark-cache", "images"));
-const pdfCacheDir = path.resolve(process.env.FRESHMARK_PDF_CACHE_DIR || path.join(root, ".freshmark-cache", "pdfs"));
 const buildArgs = process.argv.slice(2);
 const optionValue = (name) => {
   const inline = buildArgs.find((argument) => argument.startsWith(`${name}=`));
@@ -33,7 +31,6 @@ const optionValue = (name) => {
   return index >= 0 ? buildArgs[index + 1] : undefined;
 };
 const requestedPost = optionValue("--post");
-const skipPdfs = buildArgs.includes("--no-pdf");
 const requestedPostSource = requestedPost ? (() => {
   const absolute = path.resolve(root, requestedPost);
   const relative = path.relative(contentDir, absolute);
@@ -108,16 +105,16 @@ async function loadPosts(renderOnlySource = "") {
     const suffix = localizedFile && locales[localizedFile[1]] ? `.${localizedFile[1]}.md` : ".md";
     const date = String(data.date).slice(0, 10);
     const shouldRender = !renderOnlySource || sourceFile === renderOnlySource;
-    const { html, headings, pdfHtml, spaHtml, spaHeadings } = shouldRender
+    const { html, headings, spaHtml, spaHeadings } = shouldRender
       ? await buildWorkers.run("render-markdown", { body, sourceFile })
-      : { html: "", headings: [], pdfHtml: "", spaHtml: "", spaHeadings: [] };
+      : { html: "", headings: [], spaHtml: "", spaHeadings: [] };
     const words = body.replace(/[#*`>\[\]()_-]/g, " ").split(/\s+/).filter(Boolean).length;
     const relativeSlug = sourceFile.slice(0, -suffix.length).replace(/(^|\/)index$/, "");
     const summary = data.summary || data.description || summaryFromBody(body);
     return {
       slug: relativeSlug, sourceFile, locale, translationKey: data.translationKey || relativeSlug, alternate: data.alternate || "", title: data.title, date, summary,
       tags: Array.isArray(data.tags) ? data.tags : [], categories: Array.isArray(data.categories) ? data.categories : [], featured: data.featured === true,
-      readingTime: Math.max(1, Math.ceil(words / 220)), html, headings, pdfHtml, spaHtml, spaHeadings,
+      readingTime: Math.max(1, Math.ceil(words / 220)), html, headings, spaHtml, spaHeadings,
       searchText: searchTextFromMarkdown(body),
     };
   }));
@@ -236,7 +233,7 @@ async function postPage(post, { mathOutput = "hybrid", fragment = false } = {}) 
     : `<div class="comment-fields"><label>${escapeHtml(messages.commentName)}<input name="name" required maxlength="40" autocomplete="name"></label><label>${escapeHtml(messages.commentEmail)}<input name="email" type="email" maxlength="254" autocomplete="email"></label></div>`;
   const commentsIntro = commentsAuthEnabled ? messages.commentsAuthIntro : messages.commentsIntro;
   const comments = commentsEnabled ? `<section class="comments container" data-comments data-comments-path="${escapeHtml(localizedPath(post.locale, `/posts/${post.slug}/`))}"><div class="comments-head"><div><p class="eyebrow">${escapeHtml(messages.commentsTitle)}</p><h2 data-comments-title>${escapeHtml(messages.commentsTitle)}</h2></div><p>${escapeHtml(commentsIntro)}</p></div><div class="comment-list" data-comment-list aria-live="polite"><p class="comment-state" data-comment-state>${escapeHtml(messages.commentsLoading)}</p></div><button class="comment-more" type="button" data-comments-more hidden>${escapeHtml(messages.loadOlderComments)}</button>${authPanel}<form class="comment-form" data-comment-form${commentsAuthEnabled ? " hidden" : ""}>${identityFields}<label>${escapeHtml(messages.commentBody)}<textarea name="body" required minlength="2" maxlength="2000" rows="5" placeholder="${escapeHtml(messages.commentPlaceholder)}"></textarea></label><p class="comment-markdown-hint">${escapeHtml(messages.commentMarkdownHint)}</p><label class="comment-honeypot" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label><div class="comment-form-foot"><p class="comment-form-status" data-comment-form-status role="status"></p><button type="submit" data-comment-submit>${escapeHtml(messages.submitComment)}</button></div></form></section>` : "";
-  const content = `<main><header class="container article-header"><a class="back-link" href="${localeHref(post.locale, "/")}">${escapeHtml(messages.backToWriting)}</a><p class="eyebrow article-subject">${escapeHtml(displaySubjects(post).join(" / "))}</p><h1>${escapeHtml(post.title)}</h1><p class="article-dek">${await renderSummary(post.summary, { mathOutput })}</p><div class="article-meta"><time datetime="${post.date}">${formatLongDate(post.locale, post.date)}</time><span>${escapeHtml(interpolate(messages.minuteRead, { minutes: post.readingTime }))}</span>${tags ? `<span>${tags}</span>` : ""}${views}<a href="index.md" download>${escapeHtml(messages.downloadMarkdown)}</a><a href="index.pdf" download>${escapeHtml(messages.downloadPdf)}</a><button class="article-share" type="button" data-share-article data-share-title="${escapeHtml(post.title)}" data-share-text="${escapeHtml(post.summary)}"><span data-share-label>${escapeHtml(messages.shareArticle)}</span></button><output class="visually-hidden" data-share-status role="status" aria-live="polite"></output></div></header><div class="article-wrap"><aside class="toc"><div class="toc-head"><p>${escapeHtml(messages.onThisPage)}</p><button class="toc-toggle" type="button" data-toc-toggle aria-expanded="false" aria-label="${escapeHtml(messages.toggleToc)}"><span class="toc-toggle-label">${escapeHtml(messages.tableOfContents)}</span><span class="toc-toggle-icon" aria-hidden="true"></span></button></div><nav class="toc-links" data-toc-links aria-label="${escapeHtml(messages.tableOfContents)}">${toc}</nav></aside><article class="prose">${articleHtml}</article></div>${comments}</main>`;
+  const content = `<main><header class="container article-header"><a class="back-link" href="${localeHref(post.locale, "/")}">${escapeHtml(messages.backToWriting)}</a><p class="eyebrow article-subject">${escapeHtml(displaySubjects(post).join(" / "))}</p><h1>${escapeHtml(post.title)}</h1><p class="article-dek">${await renderSummary(post.summary, { mathOutput })}</p><div class="article-meta"><time datetime="${post.date}">${formatLongDate(post.locale, post.date)}</time><span>${escapeHtml(interpolate(messages.minuteRead, { minutes: post.readingTime }))}</span>${tags ? `<span>${tags}</span>` : ""}${views}<a href="index.md" download>${escapeHtml(messages.downloadMarkdown)}</a><button class="article-share" type="button" data-share-article data-share-title="${escapeHtml(post.title)}" data-share-text="${escapeHtml(post.summary)}"><span data-share-label>${escapeHtml(messages.shareArticle)}</span></button><output class="visually-hidden" data-share-status role="status" aria-live="polite"></output></div></header><div class="article-wrap"><aside class="toc"><div class="toc-head"><p>${escapeHtml(messages.onThisPage)}</p><button class="toc-toggle" type="button" data-toc-toggle aria-expanded="false" aria-label="${escapeHtml(messages.toggleToc)}"><span class="toc-toggle-label">${escapeHtml(messages.tableOfContents)}</span><span class="toc-toggle-icon" aria-hidden="true"></span></button></div><nav class="toc-links" data-toc-links aria-label="${escapeHtml(messages.tableOfContents)}">${toc}</nav></aside><article class="prose">${articleHtml}</article></div>${comments}</main>`;
   if (fragment) return content;
   const pathName = localizedPath(post.locale, `/posts/${post.slug}/`);
   return page({ locale: post.locale, title: post.title, description: post.summary, content, article: true, pathName, alternatePath: post.alternatePath, hasAlternate: post.hasTranslation });
@@ -303,7 +300,7 @@ const networkOnly=(request)=>fetch(request,{cache:"no-store"});
 const networkFirst=async(request)=>{try{return await cacheResponse(request,await fetch(request))}catch{const path=new URL(request.url).pathname.slice(BASE_PATH.length);const fallback=LOCALIZED_NOT_FOUND.find(([prefix])=>path.startsWith(prefix))?.[1]||"/404.html";return (await caches.match(request))||(request.mode==="navigate"?caches.match(at(fallback)):Response.error())}};
 const staleWhileRevalidate=async(request)=>{const cached=await caches.match(request);const fresh=fetch(request).then((response)=>cacheResponse(request,response)).catch(()=>null);return cached||await fresh||Response.error()};
 const navigationResponse=(request,event)=>{const cached=caches.match(request);const network=fetch(request);const cacheUpdate=network.then((response)=>response.ok?caches.open(CACHE_NAME).then((cache)=>cache.put(request,response.clone())):undefined).catch(()=>undefined);event.waitUntil(cacheUpdate);return cached.then(async(response)=>{if(response)return response;try{return await network}catch{const path=new URL(request.url).pathname.slice(BASE_PATH.length);const fallback=LOCALIZED_NOT_FOUND.find(([prefix])=>path.startsWith(prefix))?.[1]||"/404.html";return caches.match(at(fallback))}})};
-self.addEventListener("fetch",(event)=>{const request=event.request;if(request.method!=="GET")return;const url=new URL(request.url);if(url.origin!==self.location.origin||!url.pathname.startsWith(BASE_PATH||"/"))return;const path=url.pathname.slice(BASE_PATH.length);if(request.mode==="navigate")event.respondWith(navigationResponse(request,event));else if(path.endsWith("/search-index.json"))event.respondWith(networkOnly(request));else if(path.endsWith(".html")||path.endsWith("/rss.xml")||path==="/sitemap.xml")event.respondWith(networkFirst(request));else if(path.endsWith(".md")||path.endsWith(".pdf"))event.respondWith(staleWhileRevalidate(request));else if(path.startsWith("/assets/")||/\.(?:png|jpe?g|gif|webp|svg|avif|ttf|woff2?)$/i.test(path))event.respondWith(cacheFirst(request));});
+self.addEventListener("fetch",(event)=>{const request=event.request;if(request.method!=="GET")return;const url=new URL(request.url);if(url.origin!==self.location.origin||!url.pathname.startsWith(BASE_PATH||"/"))return;const path=url.pathname.slice(BASE_PATH.length);if(request.mode==="navigate")event.respondWith(navigationResponse(request,event));else if(path.endsWith("/search-index.json"))event.respondWith(networkOnly(request));else if(path.endsWith(".html")||path.endsWith("/rss.xml")||path==="/sitemap.xml")event.respondWith(networkFirst(request));else if(path.endsWith(".md"))event.respondWith(staleWhileRevalidate(request));else if(path.startsWith("/assets/")||/\.(?:png|jpe?g|gif|webp|svg|avif|ttf|woff2?)$/i.test(path))event.respondWith(cacheFirst(request));});
 `;
 }
 
@@ -338,17 +335,6 @@ async function writeLocaleIndexes(locale, localePosts) {
   ]);
 }
 
-async function writeArticleTokens(post, spaHtml) {
-  const fragment = pageFragment(spaHtml, {
-    locale: post.locale, title: post.title, description: post.summary,
-    pathName: localizedPath(post.locale, `/posts/${post.slug}/`),
-    article: true, alternatePath: post.alternatePath,
-  });
-  const data = await buildWorkers.run("article-tokens", { fragment });
-  await write(localeOutput(post.locale, `posts/${post.slug}/tokens.bin`), data);
-  await fs.rm(path.join(outputDir, localeOutput(post.locale, `posts/${post.slug}/tokens.ndjson`)), { force: true });
-}
-
 async function writePost(post) {
   const html = await postPage(post);
   const spaHtml = await postPage(post, { mathOutput: "source", fragment: true });
@@ -357,7 +343,6 @@ async function writePost(post) {
   const sourceDirectory = path.dirname(path.join(contentDir, post.sourceFile));
   await fs.mkdir(outputDirectory, { recursive: true });
   await Promise.all([
-    writeArticleTokens(post, spaHtml),
     write(`${directory}/index.html`, html),
     write(`${directory}/page.html`, pageFragment(spaHtml, {
       locale: post.locale,
@@ -375,26 +360,6 @@ async function writePost(post) {
   ]);
 }
 
-async function writePdfs(posts) {
-  if (skipPdfs) return;
-  console.log(`Freshmark preparing ${posts.length} article PDF${posts.length === 1 ? "" : "s"}...`);
-  await buildPostPdfs(posts, {
-    root,
-    renderer: pdfRenderer,
-    contentDirectory: contentDir,
-    outputDirectory: outputDir,
-    cacheDirectory: pdfCacheDir,
-    katexStylesheet: path.join(outputDir, "assets", `katex.min.${assetVersion}.css`),
-    pdfStylesheet: path.join(themeDir, "pdf.css"),
-    fontDirectory: path.join(outputDir, "assets", "fonts"),
-    articleOutputDirectory: (post) => path.join(outputDir, localeOutput(post.locale, `posts/${post.slug}`)),
-    sourceDirectory: (post) => path.dirname(path.join(contentDir, post.sourceFile)),
-    renderSummary,
-    formatDate: formatLongDate,
-    sectionLabel: (post) => post.categories[0] || post.tags[0] || (post.locale === "zh" ? "文章" : "ARTICLE"),
-  });
-}
-
 async function writeSitemap(posts) {
   const sitemapPages = Object.keys(locales).flatMap((locale) => [localizedPath(locale, "/"), localizedPath(locale, "/about/")]);
   await write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${sitemapPages.map((pathName) => `<url><loc>${absolute(pathName)}</loc></url>`).join("")}${posts.map((post) => `<url><loc>${localeAbsolute(post.locale, `/posts/${post.slug}/`)}</loc><lastmod>${post.date}</lastmod></url>`).join("")}</urlset>`);
@@ -408,8 +373,6 @@ async function writeRuntimeFiles() {
   await write("sw.js", minifiedWorker.code);
 }
 
-// Check mandatory external dependencies before touching the existing output.
-const pdfRenderer = skipPdfs ? null : await findPdfRenderer({ root });
 buildWorkers = new BuildWorkerPool({
   workerUrl: new URL("./build-worker.mjs", import.meta.url),
 });
@@ -439,12 +402,11 @@ else if (incrementalBuild) {
     writePost(post),
     writeLocaleIndexes(post.locale, posts.filter(({ locale }) => locale === post.locale)),
   ]);
-  await writePdfs([post]);
   await writeSitemap(posts);
   await writeRuntimeFiles();
   console.log(`Freshmark rebuilt ${requestedPostSource} and its indexes.`);
 } else {
-await Promise.all((await fs.readdir(outputDir)).map((entry) => fs.rm(path.join(outputDir, entry), { recursive: true, force: true })));
+await Promise.all((await fs.readdir(outputDir)).map((entry) => fs.rm(path.join(outputDir, entry), { recursive: true, force: true, maxRetries: 5, retryDelay: 25 })));
 await fs.mkdir(path.join(outputDir, "assets", "fonts"), { recursive: true });
 const styles = new CleanCSS({ level: 2 }).minify([
   await fs.readFile(path.join(root, "node_modules", "photoswipe", "dist", "photoswipe.css"), "utf8"),
@@ -543,7 +505,6 @@ await Promise.all(posts.map(async (post) => {
   const directory = localeOutput(post.locale, `posts/${post.slug}`);
   await fs.mkdir(path.join(outputDir, directory), { recursive: true });
   const writes = [
-    writeArticleTokens(post, spaHtml),
     write(`${directory}/index.html`, html),
     write(`${directory}/page.html`, pageFragment(spaHtml, {
       locale: post.locale,
@@ -564,7 +525,6 @@ await Promise.all(posts.map(async (post) => {
   }
   await Promise.all(writes);
 }));
-await writePdfs(posts);
 
 const sitemapPages = Object.keys(locales).flatMap((locale) => [localizedPath(locale, "/"), localizedPath(locale, "/about/")]);
 await write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${sitemapPages.map((pathName) => `<url><loc>${absolute(pathName)}</loc></url>`).join("")}${posts.map((post) => `<url><loc>${localeAbsolute(post.locale, `/posts/${post.slug}/`)}</loc><lastmod>${post.date}</lastmod></url>`).join("")}</urlset>`);

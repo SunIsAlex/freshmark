@@ -1,13 +1,28 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 const read = (file) => readFile(new URL(`../${file}`, import.meta.url), "utf8");
+const findSh = () => {
+  if (process.platform !== "win32") return "sh";
+  for (const candidate of ["sh", "C:\\Git\\bin\\sh.exe", "C:\\Git\\usr\\bin\\sh.exe", "C:\\Program Files\\Git\\bin\\sh.exe"]) {
+    try {
+      if (candidate === "sh" || existsSync(candidate)) {
+        const res = spawnSync(candidate, ["-c", "exit 0"]);
+        if (res.status === 0) return candidate;
+      }
+    } catch {}
+  }
+  return "sh";
+};
+const shCommand = findSh();
 
 test("VPS deployment switches complete releases atomically", async () => {
   const scriptPath = new URL("../ops/freshmark-vps/deploy.sh", import.meta.url);
-  const syntax = spawnSync("sh", ["-n", scriptPath.pathname], { encoding: "utf8" });
+  const syntax = spawnSync(shCommand, ["-n", fileURLToPath(scriptPath)], { encoding: "utf8" });
   assert.equal(syntax.status, 0, syntax.stderr);
 
   const script = await read("ops/freshmark-vps/deploy.sh");
@@ -34,7 +49,7 @@ test("deployment health checks bound each request and stop after 20 failures", a
   const script = await read("ops/freshmark-vps/deploy.sh");
   const waitFunction = script.match(/^wait_for_api\(\) \{\n[\s\S]*?^\}/m)?.[0];
   assert.ok(waitFunction);
-  const result = spawnSync("sh", [], {
+  const result = spawnSync(shCommand, [], {
     encoding: "utf8",
     timeout: 5000,
     input: `

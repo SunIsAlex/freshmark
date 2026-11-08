@@ -29,7 +29,7 @@ test("CLI arguments produce draft-safe defaults and custom values", () => {
 });
 
 test("output paths support custom names without escaping the project", () => {
-  const project = path.join(path.sep, "workspace", "freshmark");
+  const project = path.resolve(path.sep, "workspace", "freshmark");
   assert.equal(resolveOutput("content/notes/custom-name", "ignored", project), path.join(project, "content", "notes", "custom-name.md"));
   assert.equal(resolveOutput(undefined, "generated", project), path.join(project, "content", "posts", "generated.md"));
   assert.throws(() => resolveOutput("../outside.md", "ignored", project), /must stay inside/);

@@ -2,3 +2,8 @@ public/
 node_modules/
 .freshmark-cache/
 .freshmark-data/
+tmp/
+.claude/
+video_frames/
+video_frames_slide9/
+video_info.json

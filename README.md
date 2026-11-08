@@ -9,57 +9,10 @@ framework runtime. The build produces ordinary HTML, CSS, JavaScript, XML, and
 JSON in `public/`. The `vps` branch also includes a small self-hosted Node
 runtime for views, accounts, and comments.
 
-## AI Tokenizer Beta
-
-After the first paint, Freshmark loads a small tokenizer viewer in the background.
-The current page keeps its original rendering. Subsequent article navigations fetch
-`tokens.bin` and display complete Markdown blocks as they arrive, preserving links,
-tables, images and math. A failed or interrupted stream falls back to ordinary HTML;
-navigating elsewhere cancels the old stream. No model API or API key is required.
-
-On streamed articles, **AI Tokenizer Beta** (中文：**AI 分词器 Beta**) toggles alternating
-token background colors. Highlighting defaults to off and the preference is saved
-locally. Hover a token to inspect its IDs. Initial direct article loads remain ordinary
-HTML, including when JavaScript is unavailable.
-
-Build workers use the **Qwen3.5** tokenizer (`Qwen/Qwen3.5-9B`) through
-`@huggingface/tokenizers` to tokenize each prose text node. It was selected by comparing
-five tokenizers on 60 idioms, 60 technical terms and this site's article corpus; see
-[the evaluation and its limitations](TOKENIZER_BENCHMARK.md). Token IDs describe those text nodes, not a single encoding of the
-raw Markdown document. Code, formulas and hidden non-content markup are excluded.
-Tokens that split one Unicode grapheme (for example a rare character or joined emoji)
-share a display span containing all their IDs so the original text remains intact.
-The model's NFC normalization also preserves the author's original displayed text.
-The vocabulary is pinned to a model revision, compressed under `vendor/tokenizer/`,
-and checked with SHA-256 at build time. Normal builds require no tokenizer download.
-Both full builds and `--post` builds generate a self-contained binary stream: HTML
-structure, compact local token IDs, and only the token-to-byte entries used in that
-article. Dictionary entries are sent before their first use, so the first paragraph
-can display before the rest downloads. Local IDs map back to the genuine Qwen IDs.
-The browser generates token spans, colors and tooltips; the file contains no repeated
-annotation markup and needs no full vocabulary download. See [the binary format](TOKEN_FORMAT.md).
-Token files use normal HTTP revalidation and are not precached by the
-service worker; offline navigation can fall back to previously cached HTML.
-
-With a local preview and ChromeDriver running, `npm run test:tokenizer-ui` checks
-progressive rendering, fallback, cancellation, search and the annotation toggle.
-To repeat the comparison, run `npm run benchmark:tokenizers` after a build. This
-downloads only pinned tokenizer files on its first run and saves measurements under
-`.freshmark-cache/tokenizer-benchmark/`; it never downloads model weights.
-
 ## Requirements
 
 - Node.js 20.9 or newer
-- WeasyPrint 61 or newer
-- A CJK font such as Noto Sans CJK when publishing Chinese articles
 
-On Ubuntu or Debian, install the PDF renderer and font with:
-
-```bash
-sudo apt install weasyprint fonts-noto-cjk
-```
-
-On macOS, use `brew install weasyprint`; on Windows, use WeasyPrint from WSL.
 Install the JavaScript build dependencies with `npm install`.
 
 ## VPS deployment
@@ -226,35 +179,19 @@ original full-resolution image. Generated variants are cached in
 npm run build
 ```
 
-Every published article is rendered to both HTML and a print-ready A4 `index.pdf`.
-The article header links to the generated PDF and the original `index.md`; formulas,
-images, tables, headings, page numbers, and running headers are laid out at build time.
-A single-post incremental build refreshes its PDF as well:
+The article header links to the original `index.md`; formulas, images, tables, headings, and responsive variants are laid out at build time.
+A single-post incremental build refreshes that article as well:
 
 ```bash
 npm run build -- --post content/posts/my-first-note.md
 ```
 
-PDFs use a content-addressed cache under `.freshmark-cache/pdfs`. An article reuses
-its cached PDF unless its rendered content, referenced local assets, PDF styles, fonts,
-metadata, or WeasyPrint version changed. Set `FRESHMARK_PDF_CACHE_DIR` to keep this
-cache in another persistent location.
-
-The build uses up to four worker threads for Markdown/KaTeX rendering and HTML
-minification, plus up to four resource-aware WeasyPrint processes for PDF generation.
-Override them with `FRESHMARK_WORKERS` and `FRESHMARK_PDF_WORKERS` when tuning for
-the available CPU and memory:
+The build uses worker threads for Markdown/KaTeX rendering and HTML minification.
+Override the worker count with `FRESHMARK_WORKERS` when tuning for available CPU and memory:
 
 ```bash
-# macOS or Linux
 FRESHMARK_WORKERS=2 npm run build
-
-# PowerShell
-$env:FRESHMARK_WORKERS=2; $env:FRESHMARK_PDF_WORKERS=1; npm run build
 ```
-
-If WeasyPrint is installed under a non-standard executable name or path, set
-`FRESHMARK_WEASYPRINT` to that executable before running the build.
 
 Upload the resulting `public/` directory to any static host, including GitHub
 Pages, Cloudflare Pages, Netlify, Vercel, S3, or a basic web server. No Node.js

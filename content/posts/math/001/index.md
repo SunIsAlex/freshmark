@@ -2,7 +2,7 @@
 title: "数列难题001"
 date: "2026-11-01"
 summary: '例 11 若无穷数列 $\{a_n\}$ 满足：$a_1 \geq 0$，$n \in \mathbf{N}^*$，当 $n \geq 2$ 时，$|a_n - a_{n-1}| = \max\{a_1, a_2, \cdots, a_{n-1}\}$（其中 $\max\{a_1, a_2, \cdots, a_{n-1}\}$ 表示 $a_1, a_2, \cdots, a_{n-1}$ 中的最大项），有以下结论： ① 若数列 $\{a_n\}$'
-lang: "en"
+lang: "zh"
 tags: []
 categories:
   - "Mathematics"
