@@ -2,7 +2,7 @@
 // metadata, and an expandable panel. The server turns these values into YAML (lib/frontmatter.mjs).
 import { t } from "./i18n.js";
 
-const element = (tag, attributes = {}, children = []) => {
+export const element = (tag, attributes = {}, children = []) => {
   const node = document.createElement(tag);
   for (const [key, value] of Object.entries(attributes)) {
     if (key === "class") node.className = value;
@@ -12,6 +12,41 @@ const element = (tag, attributes = {}, children = []) => {
   node.append(...[].concat(children).filter((child) => child !== null && child !== undefined));
   return node;
 };
+
+// A row of removable chips with an input that adds on Enter or comma; used for tags and categories.
+let chipListCount = 0;
+export function chipEditor({ label, values, suggestions, onChange }) {
+  const wrapper = element("div", { class: "chips" });
+  const listId = `chip-suggest-${(chipListCount += 1)}`;
+  const set = (next) => { onChange(next); draw(); wrapper.querySelector("input").focus(); };
+  const draw = () => {
+    const current = values();
+    const input = element("input", {
+      class: "chip-input", list: listId, placeholder: t("addTag"), "aria-label": label, enterkeyhint: "done",
+      onkeydown: (event) => {
+        const value = event.target.value.trim().replace(/[,，]$/, "");
+        if ((event.key === "Enter" || event.key === "," || event.key === "，") && value) {
+          event.preventDefault();
+          if (!current.includes(value)) set([...current, value]);
+        } else if (event.key === "Enter") event.preventDefault();
+        else if (event.key === "Backspace" && !event.target.value && current.length) set(current.slice(0, -1));
+      },
+      // Picking a suggestion, or typing a comma on a phone keyboard that sends no key events.
+      oninput: (event) => {
+        const value = event.target.value;
+        if (/[,，]$/.test(value) && value.slice(0, -1).trim()) { const item = value.slice(0, -1).trim(); if (!current.includes(item)) set([...current, item]); else draw(); }
+        else if (suggestions.includes(value) && event.inputType !== "insertText" && !current.includes(value)) set([...current, value]);
+      },
+    });
+    wrapper.replaceChildren(
+      ...current.map((value) => element("span", { class: "chip" }, [value, element("button", { type: "button", "aria-label": `× ${value}`, onclick: () => set(current.filter((item) => item !== value)) }, "×")])),
+      input,
+      element("datalist", { id: listId }, suggestions.filter((value) => !current.includes(value)).slice(0, 80).map((value) => element("option", { value }))),
+    );
+  };
+  draw();
+  return wrapper;
+}
 
 export class PropertiesPanel {
   constructor(root, { onChange, onTitleEnter, requestSummary, vocabulary }) {
@@ -23,7 +58,7 @@ export class PropertiesPanel {
     this.expanded = false;
   }
 
-  load(post, { site, onOpenTranslation, onCreateTranslation }) {
+  load(post, { site, onOpenTranslation, onCreateTranslation, onMove }) {
     this.post = post;
     this.data = structuredClone(post.data);
     this.autoSummary = post.autoSummary;
@@ -31,6 +66,7 @@ export class PropertiesPanel {
     this.site = site;
     this.onOpenTranslation = onOpenTranslation;
     this.onCreateTranslation = onCreateTranslation;
+    this.onMove = onMove;
     this.render();
   }
 
@@ -108,40 +144,30 @@ export class PropertiesPanel {
   }
 
   chips(key, suggestions) {
-    const wrapper = element("div", { class: "chips" });
-    const listId = `suggest-${key}`;
-    const draw = () => {
-      const input = element("input", {
-        class: "chip-input", list: listId, placeholder: t("addTag"), "aria-label": t(key),
-        onkeydown: (event) => {
-          const value = event.target.value.trim().replace(/,$/, "");
-          if ((event.key === "Enter" || event.key === ",") && value) {
-            event.preventDefault();
-            if (!this.data[key].includes(value)) this.change(key, [...this.data[key], value]);
-            draw();
-            wrapper.querySelector("input").focus();
-          } else if (event.key === "Backspace" && !event.target.value && this.data[key].length) {
-            this.change(key, this.data[key].slice(0, -1));
-            draw();
-            wrapper.querySelector("input").focus();
-          }
-        },
-        onchange: (event) => {
-          const value = event.target.value.trim();
-          if (value && suggestions.includes(value) && !this.data[key].includes(value)) {
-            this.change(key, [...this.data[key], value]);
-            draw();
-          }
-        },
-      });
-      wrapper.replaceChildren(
-        ...this.data[key].map((value) => element("span", { class: "chip" }, [value, element("button", { type: "button", "aria-label": `× ${value}`, onclick: () => { this.change(key, this.data[key].filter((item) => item !== value)); draw(); } }, "×")])),
-        input,
-        element("datalist", { id: listId }, suggestions.filter((value) => !this.data[key].includes(value)).slice(0, 80).map((value) => element("option", { value }))),
-      );
+    return chipEditor({ label: t(key), values: () => this.data[key], suggestions, onChange: (values) => this.change(key, values) });
+  }
+
+  // The post's path under content/posts; editing it moves or renames the file (and its folder).
+  locationControl() {
+    const { post } = this;
+    const error = element("span", { class: "location-error", role: "alert" });
+    const move = async () => {
+      const to = input.value.trim();
+      if (!to || to === post.file) return;
+      button.disabled = true;
+      error.textContent = "";
+      try { await this.onMove(to); } catch (failure) { error.textContent = failure.message; button.disabled = false; }
     };
-    draw();
-    return wrapper;
+    const input = element("input", {
+      class: "location-input", value: post.file, spellcheck: "false", autocapitalize: "off", autocomplete: "off", "aria-label": t("location"), title: t("locationHint"),
+      oninput: () => { button.disabled = !input.value.trim() || input.value.trim() === post.file; error.textContent = ""; },
+      onkeydown: (event) => {
+        if (event.key === "Enter") { event.preventDefault(); move(); }
+        if (event.key === "Escape") { input.value = post.file; button.disabled = true; error.textContent = ""; }
+      },
+    });
+    const button = element("button", { type: "button", class: "small-button", disabled: true, onclick: move }, t("move"));
+    return element("div", { class: "location" }, [element("div", { class: "location-row" }, [element("span", { class: "location-root" }, "content/posts/"), input, button]), element("small", { class: "location-hint" }, t("locationHint")), error]);
   }
 
   renderPanel() {
@@ -197,8 +223,8 @@ export class PropertiesPanel {
       element("div", { class: "prop prop-summary" }, [element("span", { class: "prop-label" }, [t("summary"), autoToggle]), this.summaryField]),
       row(t("featured"), featured),
       row(t("translation"), translationControl),
+      row(t("location"), this.locationControl()),
       element("div", { class: "prop-foot" }, [
-        element("code", { class: "prop-path" }, `content/posts/${post.file}`),
         element("a", { href: siteUrl, target: "_blank", rel: "noopener", title: t("openOnSiteHint") }, `${t("openOnSite")} ↗`),
         post.extraKeys.length ? element("span", { class: "prop-extra", title: post.extraKeys.join(", ") }, t("extraFields", { count: post.extraKeys.length })) : null,
       ]),

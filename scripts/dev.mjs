@@ -40,7 +40,8 @@ function build(buildArgs = []) {
   if (result.status !== 0) console.error("Build failed; keeping the last successful preview.");
 }
 
-build();
+const skipInitialBuild = args.includes("--no-build");
+if (!skipInitialBuild) build();
 if (shouldWatch) {
   let timer;
   let rebuildAll = false;

@@ -5,7 +5,7 @@ summary: '例 11 若无穷数列 $\{a_n\}$ 满足：$a_1 \geq 0$，$n \in \mathb
 lang: "zh"
 tags: []
 categories:
-  - "Mathematics"
+  - "数学"
 featured: false
 draft: false
 ---

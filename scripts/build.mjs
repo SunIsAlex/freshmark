@@ -79,6 +79,9 @@ const brandIcon = (await fs.readFile(path.join(themeDir, "favicon.svg"), "utf8")
 const escapeHtml = (text = "") => String(text).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
 const formatDate = (locale, value) => new Intl.DateTimeFormat(locales[locale].language, { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(`${value}T00:00:00Z`));
 const formatLongDate = (locale, value) => new Intl.DateTimeFormat(locales[locale].language, { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(`${value}T00:00:00Z`));
+const formatMonth = (locale, value) => new Intl.DateTimeFormat(locales[locale].language, { year: "numeric", month: "long", timeZone: "UTC" }).format(new Date(`${value}-01T00:00:00Z`));
+const formatMonthShort = (locale, value) => new Intl.DateTimeFormat(locales[locale].language, { month: "short", timeZone: "UTC" }).format(new Date(`${value}-01T00:00:00Z`));
+const formatDay = (locale, value) => new Intl.DateTimeFormat(locales[locale].language, { month: "short", day: "numeric", timeZone: "UTC" }).format(new Date(`${value}T00:00:00Z`));
 
 async function findMarkdownFiles(directory, relative = "") {
   const entries = await fs.readdir(path.join(directory, relative), { withFileTypes: true });
@@ -143,13 +146,13 @@ const moonIcon = '<svg data-theme-icon width="18" height="18" viewBox="0 0 24 24
 function header(locale, alternatePath = localizedPath(locales[locale].alternate, "/")) {
   const messages = locales[locale];
   const alternate = locales[messages.alternate];
-  return `<header class="container header"><a class="brand" href="${localeHref(locale, "/")}" aria-label="${escapeHtml(config.title)}">${brandIcon}${escapeHtml(config.title)}</a><nav class="nav" aria-label="${escapeHtml(messages.mainNavigation)}"><a href="${localeHref(locale, "/#writing")}">${escapeHtml(messages.writing)}</a><a href="${localeHref(locale, "/about/")}">${escapeHtml(messages.about)}</a><a href="${localeHref(locale, "/rss.xml")}">RSS</a><a class="language-switch" href="${href(alternatePath)}" hreflang="${alternate.language}" lang="${alternate.language}" data-no-spa>${escapeHtml(messages.switchLabel)}</a><button class="icon-btn" type="button" data-search-open aria-label="${escapeHtml(messages.openSearch)}">${searchIcon}</button><button class="icon-btn" type="button" data-theme-toggle aria-label="${escapeHtml(messages.switchTheme)}">${moonIcon}</button><div class="skin-picker"><button class="icon-btn" type="button" data-skin-toggle aria-expanded="false" aria-label="${escapeHtml(messages.chooseSkin)}">${paletteIcon}</button></div></nav></header>`;
+  return `<header class="container header"><a class="brand" href="${localeHref(locale, "/")}" aria-label="${escapeHtml(config.title)}">${brandIcon}${escapeHtml(config.title)}</a><nav class="nav" aria-label="${escapeHtml(messages.mainNavigation)}"><a href="${localeHref(locale, "/#writing")}">${escapeHtml(messages.writing)}</a><a href="${localeHref(locale, "/timeline/")}">${escapeHtml(messages.timeline)}</a><a href="${localeHref(locale, "/about/")}">${escapeHtml(messages.about)}</a><a href="${localeHref(locale, "/rss.xml")}">RSS</a><a class="language-switch" href="${href(alternatePath)}" hreflang="${alternate.language}" lang="${alternate.language}" data-no-spa>${escapeHtml(messages.switchLabel)}</a><button class="icon-btn" type="button" data-search-open aria-label="${escapeHtml(messages.openSearch)}">${searchIcon}</button><button class="icon-btn" type="button" data-theme-toggle aria-label="${escapeHtml(messages.switchTheme)}">${moonIcon}</button><div class="skin-picker"><button class="icon-btn" type="button" data-skin-toggle aria-expanded="false" aria-label="${escapeHtml(messages.chooseSkin)}">${paletteIcon}</button></div></nav></header>`;
 }
 
 function footer(locale) {
   const messages = locales[locale];
   const views = viewsEnabled ? `<span class="view-count" data-site-view-count hidden>${escapeHtml(messages.siteViews)} <strong data-site-views></strong></span>` : "";
-  return `<footer class="container footer"><div class="footer-copy"><span>© ${currentYear} ${escapeHtml(config.title)}. ${escapeHtml(messages.footerNote)}</span>${views}</div><div class="footer-links"><a href="${localeHref(locale, "/about/")}">${escapeHtml(messages.about)}</a><a href="${localeHref(locale, "/rss.xml")}">RSS</a><a href="#">${escapeHtml(messages.top)}</a></div></footer>`;
+  return `<footer class="container footer"><div class="footer-copy"><span>© ${currentYear} ${escapeHtml(config.title)}. ${escapeHtml(messages.footerNote)}</span>${views}</div><div class="footer-links"><a href="${localeHref(locale, "/timeline/")}">${escapeHtml(messages.timeline)}</a><a href="${localeHref(locale, "/about/")}">${escapeHtml(messages.about)}</a><a href="${localeHref(locale, "/rss.xml")}">RSS</a><a href="#">${escapeHtml(messages.top)}</a></div></footer>`;
 }
 
 function searchModal(locale) {
@@ -212,10 +215,48 @@ async function homePage(locale, posts, { mathOutput = "html", fragment = false }
   const featuredSummary = await renderSummary(featured.summary, { mathOutput: cardMathOutput });
   const diagram = `<svg viewBox="0 0 480 400" fill="none" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><defs><linearGradient id="fm-prism" x1="0" y1="0" x2="1" y2="1"><stop class="g1"/><stop class="g2" offset="1"/></linearGradient></defs><g stroke="currentColor" stroke-width=".8"><path opacity=".12" d="M0 80H480M0 160H480M0 240H480M0 320H480M80 0V400M160 0V400M240 0V400M320 0V400M400 0V400"/><path opacity=".25" d="M25 240H455M240 25V375"/><circle class="spin" cx="240" cy="200" r="168" stroke-dasharray="2 9" opacity=".35"/><ellipse cx="240" cy="200" rx="178" ry="147.255" transform="rotate(-32 240 200)" stroke="url(#fm-prism)" stroke-width="1.6"/><ellipse cx="240" cy="200" rx="140" ry="97.980" transform="rotate(-32 240 200)" opacity=".45"/><ellipse cx="240" cy="200" rx="100" ry="52" transform="rotate(-32 240 200)" opacity=".2"/><path d="M89 294L391 106" stroke="url(#fm-prism)" stroke-dasharray="4 5"/></g><g class="orbit"><circle cx="240" cy="32" r="10" fill="var(--accent-2)" opacity=".25"/><circle cx="240" cy="32" r="4" fill="var(--accent-2)"/></g><g fill="var(--accent-2)"><circle cx="325" cy="147" r="12" opacity=".25"/><circle cx="325" cy="147" r="5"/><circle cx="391" cy="106" r="3.5"/><circle cx="155" cy="253" r="3.5"/></g></svg>`;
   const featuredHref = localeHref(locale, `/posts/${featured.slug}/`);
-  const content = `<main><section class="container hero"><h1>${escapeHtml(messages.heroLead)} <em>${escapeHtml(messages.heroEmphasis)}</em></h1><div class="hero-copy"><p class="eyebrow">${escapeHtml(messages.tagline)}</p><p class="hero-intro">${escapeHtml(messages.intro)}</p><button class="search-trigger" type="button" data-search-open>${searchIcon}<span>${escapeHtml(messages.searchArchive)}</span><kbd>⌘ K</kbd></button><p class="issue-count"><strong>${posts.length}</strong> ${escapeHtml(messages.notebookCount)}</p></div></section><section class="container featured" aria-label="${escapeHtml(messages.featuredArticle)}"><figure class="lab-diagram">${diagram}<figcaption>${escapeHtml(messages.diagramCaption)}</figcaption></figure><div class="featured-copy"><span class="meta">${escapeHtml(messages.featured)} · ${escapeHtml(displaySubjects(featured).join(" / "))} · ${escapeHtml(interpolate(messages.minuteRead, { minutes: featured.readingTime }))}</span><h2><a href="${featuredHref}">${escapeHtml(featured.title)}</a></h2><p>${featuredSummary}</p><a class="read-link" href="${featuredHref}">${escapeHtml(messages.readEssay)} <span aria-hidden="true">→</span></a></div></section><section class="container post-section" id="writing"><div class="section-head"><div><p class="eyebrow">${escapeHtml(messages.indexLabel)}</p><h2>${escapeHtml(messages.recentWriting)}<span class="archive-count"> / ${String(posts.length).padStart(2, "0")}</span></h2></div><div class="tag-row" aria-label="${escapeHtml(messages.filterByCategory)}"><button class="tag-filter active" type="button" data-tag="__all__">${escapeHtml(messages.all)}</button>${categories.map((category) => `<button class="tag-filter" type="button" data-tag="${escapeHtml(category)}">${escapeHtml(category)}</button>`).join("")}</div></div><div class="post-list" data-post-list>${cards}<p class="empty" data-filter-empty hidden>${escapeHtml(messages.emptyCategory)}</p></div></section></main>`;
+  const content = `<main><section class="container hero"><h1>${escapeHtml(messages.heroLead)} <em>${escapeHtml(messages.heroEmphasis)}</em></h1><div class="hero-copy"><p class="eyebrow">${escapeHtml(messages.tagline)}</p><p class="hero-intro">${escapeHtml(messages.intro)}</p><button class="search-trigger" type="button" data-search-open>${searchIcon}<span>${escapeHtml(messages.searchArchive)}</span><kbd>⌘ K</kbd></button><p class="issue-count"><strong>${posts.length}</strong> ${escapeHtml(messages.notebookCount)} · <a class="timeline-entry-link" href="${localeHref(locale, "/timeline/")}">${escapeHtml(messages.timeline)} →</a></p></div></section><section class="container featured" aria-label="${escapeHtml(messages.featuredArticle)}"><figure class="lab-diagram">${diagram}<figcaption>${escapeHtml(messages.diagramCaption)}</figcaption></figure><div class="featured-copy"><span class="meta">${escapeHtml(messages.featured)} · ${escapeHtml(displaySubjects(featured).join(" / "))} · ${escapeHtml(interpolate(messages.minuteRead, { minutes: featured.readingTime }))}</span><h2><a href="${featuredHref}">${escapeHtml(featured.title)}</a></h2><p>${featuredSummary}</p><a class="read-link" href="${featuredHref}">${escapeHtml(messages.readEssay)} <span aria-hidden="true">→</span></a></div></section><section class="container post-section" id="writing"><div class="section-head"><div><p class="eyebrow">${escapeHtml(messages.indexLabel)}</p><h2>${escapeHtml(messages.recentWriting)}<span class="archive-count"> / ${String(posts.length).padStart(2, "0")}</span></h2></div><div class="tag-row" aria-label="${escapeHtml(messages.filterByCategory)}"><button class="tag-filter active" type="button" data-tag="__all__">${escapeHtml(messages.all)}</button>${categories.map((category) => `<button class="tag-filter" type="button" data-tag="${escapeHtml(category)}">${escapeHtml(category)}</button>`).join("")}</div></div><div class="post-list" data-post-list>${cards}<p class="empty" data-filter-empty hidden>${escapeHtml(messages.emptyCategory)}</p></div></section></main>`;
   if (fragment) return content;
   const pathName = localizedPath(locale, "/");
   return page({ locale, content, pathName, alternatePath: localizedPath(messages.alternate, "/") });
+}
+
+async function timelinePage(locale, posts, { mathOutput = "html", fragment = false } = {}) {
+  const messages = locales[locale];
+  const categories = [...new Set(posts.flatMap(displaySubjects))];
+  const cardMathOutput = mathOutput === "source" ? "source" : "mathml";
+  const byYear = new Map();
+  let totalMonths = 0;
+  for (const post of posts) {
+    const year = post.date.slice(0, 4);
+    const yearMonth = post.date.slice(0, 7);
+    if (!byYear.has(year)) byYear.set(year, new Map());
+    const months = byYear.get(year);
+    if (!months.has(yearMonth)) {
+      months.set(yearMonth, []);
+      totalMonths += 1;
+    }
+    months.get(yearMonth).push(post);
+  }
+  const tocLinks = [];
+  const yearSections = [];
+  for (const [year, months] of byYear) {
+    let yearTotal = 0;
+    for (const items of months.values()) yearTotal += items.length;
+    tocLinks.push(`<a class="toc-level-2" href="#year-${year}">${escapeHtml(year)} <span class="timeline-toc-count">(${yearTotal})</span></a>`);
+    const monthBlocks = [];
+    for (const [yearMonth, monthPosts] of months) {
+      tocLinks.push(`<a class="toc-level-3" href="#month-${yearMonth}">${escapeHtml(formatMonthShort(locale, yearMonth))} <span class="timeline-toc-count">(${monthPosts.length})</span></a>`);
+      const items = (await Promise.all(monthPosts.map(async (post) => `<li class="timeline-item" data-post-card data-subject="${escapeHtml(post.sourceFile.split("/")[0])}" data-tags="${escapeHtml(displaySubjects(post).join("|"))}"><a class="timeline-card" href="${localeHref(locale, `/posts/${post.slug}/`)}"><time class="timeline-date" datetime="${post.date}">${escapeHtml(formatDay(locale, post.date))}</time><div class="timeline-body"><div class="timeline-meta"><span class="post-subject">${escapeHtml(displaySubjects(post).join(" / "))}</span><span>${escapeHtml(interpolate(messages.minuteRead, { minutes: post.readingTime }))}</span></div><h4>${escapeHtml(post.title)}</h4><p>${await renderSummary(post.summary, { links: false, mathOutput: cardMathOutput })}</p></div></a></li>`))).join("");
+      monthBlocks.push(`<div class="timeline-month" data-timeline-group><h3 class="timeline-month-title" id="month-${yearMonth}"><span>${escapeHtml(formatMonth(locale, yearMonth))}</span><span class="timeline-count">${escapeHtml(interpolate(messages.timelineCount, { count: monthPosts.length }))}</span></h3><ol class="timeline-list">${items}</ol></div>`);
+    }
+    yearSections.push(`<section class="timeline-year" data-timeline-group><header class="timeline-year-head"><h2 id="year-${year}">${escapeHtml(year)}</h2><span class="timeline-count">${escapeHtml(interpolate(messages.timelineCount, { count: yearTotal }))}</span></header>${monthBlocks.join("")}</section>`);
+  }
+  const dek = interpolate(messages.timelineDek, { count: posts.length, months: totalMonths });
+  const content = `<main><header class="container article-header"><a class="back-link" href="${localeHref(locale, "/")}">${escapeHtml(messages.backToWriting)}</a><p class="eyebrow article-subject">${escapeHtml(messages.timelineEyebrow)}</p><h1>${escapeHtml(messages.timelineTitle)}</h1><p class="article-dek">${escapeHtml(dek)}</p><div class="tag-row timeline-filters" aria-label="${escapeHtml(messages.filterByCategory)}"><button class="tag-filter active" type="button" data-tag="__all__">${escapeHtml(messages.all)}</button>${categories.map((category) => `<button class="tag-filter" type="button" data-tag="${escapeHtml(category)}">${escapeHtml(category)}</button>`).join("")}</div></header><div class="article-wrap timeline-wrap"><aside class="toc"><div class="toc-head"><p>${escapeHtml(messages.timelineJump)}</p><button class="toc-toggle" type="button" data-toc-toggle aria-expanded="false" aria-label="${escapeHtml(messages.toggleToc)}"><span class="toc-toggle-label">${escapeHtml(messages.timelineJump)}</span><span class="toc-toggle-icon" aria-hidden="true"></span></button></div><nav class="toc-links" data-toc-links aria-label="${escapeHtml(messages.timelineJump)}">${tocLinks.join("")}</nav></aside><div class="timeline" data-post-list>${yearSections.join("")}<p class="empty" data-filter-empty hidden>${escapeHtml(messages.emptyCategory)}</p></div></div></main>`;
+  if (fragment) return content;
+  const pathName = localizedPath(locale, "/timeline/");
+  return page({ locale, title: messages.timeline, description: dek, content, pathName, alternatePath: localizedPath(messages.alternate, "/timeline/") });
 }
 
 async function postPage(post, { mathOutput = "hybrid", fragment = false } = {}) {
@@ -277,8 +318,10 @@ function serviceWorker(version) {
   const localizedPrecache = Object.keys(locales).flatMap((locale) => [
     localizedPath(locale, "/"),
     localizedPath(locale, "/404.html"),
+    localizedPath(locale, "/timeline/"),
     localizedPath(locale, "/about/"),
     localizedPath(locale, "/page.html"),
+    localizedPath(locale, "/timeline/page.html"),
     localizedPath(locale, "/about/page.html"),
     localizedPath(locale, "/rss.xml"),
     localizedPath(locale, "/manifest.webmanifest"),
@@ -316,7 +359,11 @@ async function writeLocaleIndexes(locale, localePosts) {
   if (!localePosts.length) throw new Error(`No publishable Markdown posts found for locale ${locale}.`);
   const homeHtml = await homePage(locale, localePosts);
   const homeSpaHtml = await homePage(locale, localePosts, { mathOutput: "source", fragment: true });
+  const timelineHtml = await timelinePage(locale, localePosts);
+  const timelineSpaHtml = await timelinePage(locale, localePosts, { mathOutput: "source", fragment: true });
   const homePath = localizedPath(locale, "/");
+  const timelinePath = localizedPath(locale, "/timeline/");
+  const timelineDek = interpolate(messages.timelineDek, { count: localePosts.length, months: new Set(localePosts.map((post) => post.date.slice(0, 7))).size });
   const searchIndex = localePosts.map(({ slug, title, summary, tags, categories, readingTime, searchText }) => ({
     title,
     summary: searchTextFromMarkdown(summary),
@@ -330,6 +377,8 @@ async function writeLocaleIndexes(locale, localePosts) {
   await Promise.all([
     write(localeOutput(locale, "index.html"), homeHtml),
     write(localeOutput(locale, "page.html"), pageFragment(homeSpaHtml, { locale, pathName: homePath, alternatePath: localizedPath(messages.alternate, "/") })),
+    write(localeOutput(locale, "timeline/index.html"), timelineHtml),
+    write(localeOutput(locale, "timeline/page.html"), pageFragment(timelineSpaHtml, { locale, title: messages.timeline, description: timelineDek, pathName: timelinePath, alternatePath: localizedPath(messages.alternate, "/timeline/") })),
     write(localeOutput(locale, "search-index.json"), JSON.stringify(searchIndex)),
     write(localeOutput(locale, "rss.xml"), rss),
   ]);
@@ -361,7 +410,7 @@ async function writePost(post) {
 }
 
 async function writeSitemap(posts) {
-  const sitemapPages = Object.keys(locales).flatMap((locale) => [localizedPath(locale, "/"), localizedPath(locale, "/about/")]);
+  const sitemapPages = Object.keys(locales).flatMap((locale) => [localizedPath(locale, "/"), localizedPath(locale, "/timeline/"), localizedPath(locale, "/about/")]);
   await write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${sitemapPages.map((pathName) => `<url><loc>${absolute(pathName)}</loc></url>`).join("")}${posts.map((post) => `<url><loc>${localeAbsolute(post.locale, `/posts/${post.slug}/`)}</loc><lastmod>${post.date}</lastmod></url>`).join("")}</urlset>`);
 }
 
@@ -473,8 +522,12 @@ await Promise.all(Object.keys(locales).map(async (locale) => {
   const homeHtml = await homePage(locale, localePosts);
   const homeSpaHtml = await homePage(locale, localePosts, { mathOutput: "source", fragment: true });
   const aboutHtml = aboutPage(locale);
+  const timelineHtml = await timelinePage(locale, localePosts);
+  const timelineSpaHtml = await timelinePage(locale, localePosts, { mathOutput: "source", fragment: true });
   const homePath = localizedPath(locale, "/");
   const aboutPath = localizedPath(locale, "/about/");
+  const timelinePath = localizedPath(locale, "/timeline/");
+  const timelineDek = interpolate(messages.timelineDek, { count: localePosts.length, months: new Set(localePosts.map((post) => post.date.slice(0, 7))).size });
   const notFoundPath = localizedPath(locale, "/404.html");
   const notFound = `<main class="container article-header"><p class="eyebrow">404</p><h1>${escapeHtml(messages.notFoundTitle)}</h1><p class="article-dek"><a class="read-link" href="${localeHref(locale, "/")}">${escapeHtml(messages.returnToWriting)}</a></p></main>`;
   const searchIndex = localePosts.map(({ slug, title, summary, tags, categories, readingTime, searchText }) => ({
@@ -490,6 +543,8 @@ await Promise.all(Object.keys(locales).map(async (locale) => {
   await Promise.all([
     write(localeOutput(locale, "index.html"), homeHtml),
     write(localeOutput(locale, "page.html"), pageFragment(homeSpaHtml, { locale, pathName: homePath, alternatePath: localizedPath(messages.alternate, "/") })),
+    write(localeOutput(locale, "timeline/index.html"), timelineHtml),
+    write(localeOutput(locale, "timeline/page.html"), pageFragment(timelineSpaHtml, { locale, title: messages.timeline, description: timelineDek, pathName: timelinePath, alternatePath: localizedPath(messages.alternate, "/timeline/") })),
     write(localeOutput(locale, "about/index.html"), aboutHtml),
     write(localeOutput(locale, "about/page.html"), pageFragment(aboutHtml, { locale, title: messages.about, description: messages.aboutDek, pathName: aboutPath, alternatePath: localizedPath(messages.alternate, "/about/") })),
     write(localeOutput(locale, "404.html"), page({ locale, title: "404", description: messages.notFoundDescription, content: notFound, pathName: notFoundPath, alternatePath: localizedPath(messages.alternate, "/404.html") })),
@@ -526,7 +581,7 @@ await Promise.all(posts.map(async (post) => {
   await Promise.all(writes);
 }));
 
-const sitemapPages = Object.keys(locales).flatMap((locale) => [localizedPath(locale, "/"), localizedPath(locale, "/about/")]);
+const sitemapPages = Object.keys(locales).flatMap((locale) => [localizedPath(locale, "/"), localizedPath(locale, "/timeline/"), localizedPath(locale, "/about/")]);
 await write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${sitemapPages.map((pathName) => `<url><loc>${absolute(pathName)}</loc></url>`).join("")}${posts.map((post) => `<url><loc>${localeAbsolute(post.locale, `/posts/${post.slug}/`)}</loc><lastmod>${post.date}</lastmod></url>`).join("")}</urlset>`);
 await write("robots.txt", `User-agent: *\nAllow: /\nSitemap: ${absolute("/sitemap.xml")}\n`);
 const version = await outputVersion();

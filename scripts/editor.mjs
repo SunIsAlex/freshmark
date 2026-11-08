@@ -10,7 +10,8 @@ import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { build } from "esbuild";
 import { summaryFromBody } from "../lib/markdown.mjs";
-import { EditorError, createPost, createTranslation, imageTypes, listPosts, loadPost, resolveContentPath, saveAsset, savePost, vocabulary } from "../lib/editor-store.mjs";
+import { EditorError, createPost, createTranslation, imageTypes, listPosts, loadPost, movePost, resolveContentPath, saveAsset, savePost, vocabulary } from "../lib/editor-store.mjs";
+import { gitCommit, gitStatus } from "../lib/editor-git.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const editorDir = path.join(root, "editor");
@@ -104,6 +105,9 @@ async function handleApi(request, response, url) {
     case "GET /api/post": return json(response, 200, await loadPost(contentDir, file));
     case "PUT /api/post": return json(response, 200, await savePost(contentDir, await readJson(request)));
     case "POST /api/post": return json(response, 201, await createPost(contentDir, { ...(await readJson(request)), templateFile: path.join(root, "templates", "post.md") }));
+    case "POST /api/move": return json(response, 200, await movePost(contentDir, await readJson(request)));
+    case "GET /api/git": return json(response, 200, await gitStatus(contentDir));
+    case "POST /api/git/commit": return json(response, 200, await gitCommit(contentDir, await readJson(request)));
     case "POST /api/translation": return json(response, 201, await createTranslation(contentDir, (await readJson(request)).file));
     case "POST /api/summary": return json(response, 200, { summary: summaryFromBody(String((await readJson(request)).body || "").trim()) });
     case "POST /api/asset": return json(response, 201, await saveAsset(contentDir, file, url.searchParams.get("name"), await readBody(request, 20 * 1024 * 1024 + 1)));

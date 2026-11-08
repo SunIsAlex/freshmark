@@ -115,6 +115,8 @@ test("build emits portable static pages", async () => {
   const files = [
     "public/index.html",
     "public/about/index.html",
+    "public/timeline/index.html",
+    "public/timeline/page.html",
     "public/posts/chemistry/babychem/overview-of-stereochemistry/index.html",
     "public/posts/chemistry/babychem/overview-of-stereochemistry/page.html",
     "public/posts/chemistry/babychem/overview-of-stereochemistry/index.md",
@@ -128,6 +130,8 @@ test("build emits portable static pages", async () => {
     "public/posts/chemistry/inorganic/manganese/2022-haidian-concentration-curves.png",
     "public/en/index.html",
     "public/en/about/index.html",
+    "public/en/timeline/index.html",
+    "public/en/timeline/page.html",
     "public/en/posts/chemistry/inorganic/manganese/index.html",
     "public/en/posts/chemistry/inorganic/manganese/page.html",
     "public/en/posts/chemistry/inorganic/manganese/index.md",
@@ -281,6 +285,22 @@ test("localized routes provide Chinese and English navigation", async () => {
   assert.match(englishRss, /<language>en<\/language>/);
   assert.match(englishRss, /https:\/\/freshmark\.sunisalex\.org\/en\/posts\/chemistry\/inorganic\/manganese\//);
   assert.match(englishRss, /https:\/\/freshmark\.sunisalex\.org\/en\/posts\/physics\/basic-calculus-02\//);
+});
+
+test("timeline page arranges posts chronologically by year and month with jump navigation", async () => {
+  const chineseTimeline = await read("public/timeline/index.html");
+  const englishTimeline = await read("public/en/timeline/index.html");
+  const chineseTimelinePage = await read("public/timeline/page.html");
+  assert.match(chineseTimeline, /<h1[^>]*>按时间展开的探索轨迹。<\/h1>/);
+  assert.match(chineseTimeline, /class="timeline-year-head"/);
+  assert.match(chineseTimeline, /class="timeline-month-title"/);
+  assert.match(chineseTimeline, /class="timeline-card"/);
+  assert.match(chineseTimeline, /href="#year-2026"/);
+  assert.match(chineseTimeline, /href="\/en\/timeline\/" class="language-switch"/);
+  assert.match(chineseTimelinePage, /data-freshmark-page/);
+  assert.match(chineseTimelinePage, /data-canonical="https:\/\/freshmark\.sunisalex\.org\/timeline\/"/);
+  assert.match(englishTimeline, /<h1[^>]*>Notes arranged in time.<\/h1>/);
+  assert.match(englishTimeline, /href="\/timeline\/" class="language-switch"/);
 });
 
 test("editorial typography uses local fonts and a spacious reading scale", async () => {

@@ -749,6 +749,9 @@ import { searchableLatexText } from "../lib/search-text.mjs";
       card.hidden = !visible;
       if (visible) shown += 1;
     });
+    document.querySelectorAll("[data-timeline-group]").forEach((group) => {
+      group.hidden = !group.querySelector("[data-post-card]:not([hidden])");
+    });
     const empty = document.querySelector("[data-filter-empty]");
     if (empty) empty.hidden = shown !== 0;
   }

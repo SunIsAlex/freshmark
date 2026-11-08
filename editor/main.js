@@ -9,12 +9,13 @@ import { tags } from "@lezer/highlight";
 import { mathSyntax } from "./math.js";
 import { headings, imageResolver, livePreviewExtension, setSourceMode, sourceMode } from "./live-preview.js";
 import { invisibles, setInvisibles } from "./invisibles.js";
-import { PropertiesPanel } from "./properties.js";
+import { PropertiesPanel, chipEditor, element } from "./properties.js";
 import { t } from "./i18n.js";
 
 const config = window.FRESHMARK_EDITOR;
 const $ = (selector) => document.querySelector(selector);
-const state = { file: "", post: null, hash: "", dirty: false, saving: false, timer: 0, posts: [], vocabulary: { subjects: [], tags: [], categories: [], locales: ["zh", "en"] } };
+const state = { file: "", post: null, hash: "", dirty: false, saving: false, timer: 0, posts: [], vocabulary: { subjects: [], folders: [], tags: [], categories: [], locales: ["zh", "en"] } };
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function api(path, { method = "GET", json, body, headers = {} } = {}) {
   const response = await fetch(path, {
@@ -235,6 +236,7 @@ function uploadFiles(files, event) {
         const range = view.state.selection.main;
         const insert = `![](${saved})`;
         view.dispatch({ changes: { from: range.from, to: range.to, insert }, selection: { anchor: range.from + insert.length } });
+        scheduleGit();
       } catch {
         toast(t("uploadFailed"));
       }
@@ -300,6 +302,7 @@ async function save({ force = false } = {}) {
     properties.update(saved);
     hideBanner();
     refreshList();
+    scheduleGit();
   } catch (error) {
     if (error.status === 409) showConflict();
     else setStatus("offline", t("offline"));
@@ -329,7 +332,7 @@ async function open(file, { recover = true } = {}) {
       post.autoSummary = recovered.autoSummary;
     } else recovered = null;
   }
-  properties.load(post, { site: config.site, onOpenTranslation: (other) => open(other), onCreateTranslation: createTranslation });
+  properties.load(post, { site: config.site, onOpenTranslation: (other) => open(other), onCreateTranslation: createTranslation, onMove: moveCurrent });
   view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: body }, selection: { anchor: 0 }, scrollIntoView: true });
   state.loading = false;
   document.body.classList.add("has-file");
@@ -345,15 +348,37 @@ async function open(file, { recover = true } = {}) {
   if (recovered) { state.dirty = true; setStatus("dirty", t("unsaved")); toast(t("recovered")); save(); }
 }
 
+// Waits for pending autosaves; anything still unsaved afterwards blocks moving or committing.
+async function flushSave() {
+  while (state.saving) await sleep(100);
+  if (state.dirty) await save();
+  while (state.saving) await sleep(100);
+  if (state.dirty) throw new Error(t("unsaved"));
+}
+
+async function moveCurrent(to) {
+  await flushSave();
+  const from = state.file;
+  const { file } = await api("/api/move", { method: "POST", json: { file: from, to } });
+  try { localStorage.removeItem(draftKey(from)); } catch {}
+  state.vocabulary = await api("/api/vocabulary").catch(() => state.vocabulary);
+  await refreshList();
+  await open(file, { recover: false });
+  toast(t("moved", { file }));
+  scheduleGit();
+}
+
 async function createTranslation() {
   await save();
   const { file } = await api("/api/translation", { method: "POST", json: { file: state.file } });
   await refreshList();
   await open(file, { recover: false });
+  scheduleGit();
 }
 
 // Pick up edits made outside the editor (git pull, another device) when the window regains focus.
 async function checkExternal() {
+  refreshGit();
   if (!state.file || state.saving) return;
   try {
     const post = await api(`/api/post?file=${encodeURIComponent(state.file)}`);
@@ -471,16 +496,35 @@ function renderOutline() {
 }
 
 // ---------- New post ----------
+const newPost = { tags: [] };
+const uiLocale = () => (document.documentElement.lang.startsWith("zh") ? "zh" : "en");
+
+function newPostPath(form) {
+  return [form.elements.folder.value.trim().replace(/^\/+|\/+$/g, ""), form.elements.slug.value.trim(), form.elements.filename.value.trim()].filter(Boolean).join("/");
+}
+
+function updateNewPostPreview(form) {
+  form.querySelector(".path-preview code").textContent = `content/posts/${newPostPath(form)}`;
+}
+
 function openNewPost() {
   const dialog = $("#new-post");
   const form = dialog.querySelector("form");
   form.reset();
+  for (const name of ["slug", "folder", "filename"]) delete form.elements[name].dataset.touched;
   const subjects = form.elements.subject;
-  subjects.replaceChildren(...state.vocabulary.subjects.map((subject) => new Option(subject.labels[document.documentElement.lang.startsWith("zh") ? "zh" : "en"], subject.id)));
+  subjects.replaceChildren(...state.vocabulary.subjects.map((subject) => new Option(subject.labels[uiLocale()], subject.id)));
   const current = state.file.split("/")[0];
   if (current) subjects.value = current;
-  form.elements.locale.value = document.documentElement.lang.startsWith("zh") ? "zh" : "en";
+  form.elements.folder.value = subjects.value;
+  form.elements.filename.value = "index.md";
+  $("#folder-list").replaceChildren(...(state.vocabulary.folders || []).map((folder) => new Option("", folder)));
+  newPost.tags = [];
+  const mountTags = () => $("#new-tags").replaceChildren(chipEditor({ label: t("tags"), values: () => newPost.tags, suggestions: state.vocabulary.tags, onChange: (values) => { newPost.tags = values; } }));
+  mountTags();
+  form.elements.locale.value = uiLocale();
   dialog.querySelector(".form-error").textContent = "";
+  updateNewPostPreview(form);
   dialog.showModal();
   form.elements.title.focus();
 }
@@ -492,22 +536,157 @@ function suggestSlug(title) {
 
 $("#new-post form").addEventListener("input", (event) => {
   const form = event.currentTarget;
-  if (event.target.name === "title" && !form.elements.slug.dataset.touched) form.elements.slug.value = suggestSlug(form.elements.title.value);
-  if (event.target.name === "slug") form.elements.slug.dataset.touched = "1";
+  const { name } = event.target;
+  if (["slug", "folder", "filename"].includes(name)) form.elements[name].dataset.touched = "1";
+  if (name === "title" && !form.elements.slug.dataset.touched) form.elements.slug.value = suggestSlug(form.elements.title.value);
+  updateNewPostPreview(form);
+});
+$("#new-post form").addEventListener("change", (event) => {
+  const form = event.currentTarget;
+  // A new subject moves the folder along unless the folder was typed by hand.
+  if (event.target.name === "subject" && !form.elements.folder.dataset.touched) form.elements.folder.value = form.elements.subject.value;
+  updateNewPostPreview(form);
 });
 $("#new-post form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = event.currentTarget;
   if (event.submitter?.value === "cancel") { form.closest("dialog").close(); return; }
+  const pending = $("#new-tags .chip-input")?.value.trim();
+  const tags = pending && !newPost.tags.includes(pending) ? [...newPost.tags, pending] : newPost.tags;
   try {
-    const { file } = await api("/api/post", { method: "POST", json: { title: form.elements.title.value, subject: form.elements.subject.value, slug: form.elements.slug.value, locale: form.elements.locale.value } });
+    const { file } = await api("/api/post", { method: "POST", json: {
+      title: form.elements.title.value, folder: form.elements.folder.value.trim(), slug: form.elements.slug.value.trim(),
+      filename: form.elements.filename.value.trim(), locale: form.elements.locale.value, tags,
+    } });
     form.closest("dialog").close();
-    delete form.elements.slug.dataset.touched;
+    state.vocabulary = await api("/api/vocabulary").catch(() => state.vocabulary);
     await refreshList();
     await open(file, { recover: false });
+    scheduleGit();
     view.focus();
   } catch (error) {
     form.querySelector(".form-error").textContent = error.message;
+  }
+});
+
+// ---------- Commit & push ----------
+const git = { status: null, timer: 0, messageTouched: false };
+const ignoredByDefault = (file) => /(\.bak|\.tmp|\.swp|~)$/i.test(file) || /(^|\/)\./.test(file);
+
+async function refreshGit() {
+  const status = await api("/api/git").catch(() => null);
+  if (!status) return;
+  git.status = status;
+  const button = $(".git-button");
+  button.hidden = !status.available;
+  const badge = button.querySelector(".badge");
+  const count = status.changes.length;
+  badge.textContent = count ? String(count) : status.ahead ? `↑${status.ahead}` : "";
+  badge.hidden = !badge.textContent;
+}
+function scheduleGit() {
+  clearTimeout(git.timer);
+  git.timer = setTimeout(refreshGit, 1200);
+}
+
+// The key that groups a post's files: its folder for index.md posts, else the file itself.
+const postKey = (file) => (/\.md$/.test(file) ? file.replace(/(\.[a-z]{2})?\.md$/, "").replace(/(^|\/)index$/, "") : file.split("/").slice(0, -1).join("/"));
+
+function suggestMessage(files) {
+  const keys = [...new Set(files.map(postKey))];
+  if (keys.length === 1) {
+    const post = state.posts.find((candidate) => postKey(candidate.file) === keys[0] && candidate.locale === uiLocale()) || state.posts.find((candidate) => postKey(candidate.file) === keys[0]);
+    if (post?.title) return t("updatePost", { title: post.title });
+  }
+  const posts = new Set(files.filter((file) => file.endsWith(".md")).map(postKey));
+  return t("updatePosts", { count: Math.max(posts.size, 1) });
+}
+
+function selectedFiles(form) {
+  return [...form.querySelectorAll("input[name=file]:checked")].map((input) => input.value);
+}
+
+function syncCommitForm(form) {
+  const files = selectedFiles(form);
+  const status = git.status;
+  const [cancel, commit, push] = form.querySelectorAll(".form-actions button");
+  void cancel;
+  commit.disabled = !files.length;
+  push.textContent = files.length || !status.ahead ? t("commitPush") : t("pushOnly");
+  push.disabled = (!files.length && !status.ahead) || (!status.upstream && !status.remote);
+  if (!git.messageTouched) form.elements.message.value = files.length ? suggestMessage(files) : "";
+  const all = form.querySelector(".git-select-all input");
+  if (all) {
+    const boxes = form.querySelectorAll("input[name=file]");
+    all.checked = files.length === boxes.length;
+    all.indeterminate = files.length > 0 && files.length < boxes.length;
+  }
+}
+
+function renderCommit(form) {
+  const status = git.status;
+  const target = status.upstream ? `→ ${status.upstream}` : status.remote && status.branch ? t("newUpstream", { remote: status.remote, branch: status.branch }) : t("noRemote");
+  form.querySelector(".git-branch").textContent = [`${status.branch || "HEAD"} ${target}`, status.ahead ? t("toPush", { count: status.ahead }) : "", status.behind ? t("behind", { count: status.behind }) : ""].filter(Boolean).join(" · ");
+  const list = form.querySelector(".git-files");
+  if (!status.changes.length) {
+    list.replaceChildren(element("p", { class: "empty" }, t("noChanges")));
+  } else {
+    const all = element("label", { class: "git-select-all" }, [element("input", { type: "checkbox", onchange: (event) => { form.querySelectorAll("input[name=file]").forEach((box) => { box.checked = event.target.checked; }); syncCommitForm(form); } }), t("selectAll")]);
+    list.replaceChildren(all, ...status.changes.map((change) => element("label", { class: "git-file" }, [
+      element("input", { type: "checkbox", name: "file", value: change.file, checked: !ignoredByDefault(change.file), onchange: () => syncCommitForm(form) }),
+      element("span", { class: `git-change change-${change.change}` }, t(`change_${change.change}`)),
+      element("span", { class: "git-path", title: change.file }, change.from ? `${change.from} → ${change.file}` : change.file),
+    ])));
+  }
+  syncCommitForm(form);
+}
+
+async function openCommit() {
+  try { await flushSave(); } catch (error) { toast(error.message); return; }
+  const status = await api("/api/git").catch((error) => ({ available: false, error: error.message }));
+  if (!status.available) { toast(status.error || t("noRemote")); return; }
+  git.status = status;
+  git.messageTouched = false;
+  const dialog = $("#commit");
+  const form = dialog.querySelector("form");
+  form.querySelector(".form-error").textContent = "";
+  form.querySelector(".form-error").dataset.kind = "";
+  renderCommit(form);
+  dialog.showModal();
+}
+
+$("#commit form").elements.message.addEventListener("input", () => { git.messageTouched = true; });
+$("#commit form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const action = event.submitter?.value;
+  if (action === "cancel") { form.closest("dialog").close(); return; }
+  const buttons = [...form.querySelectorAll(".form-actions button")];
+  const message = form.querySelector(".form-error");
+  buttons.forEach((button) => { button.disabled = true; });
+  message.dataset.kind = "progress";
+  message.textContent = t("gitWorking");
+  try {
+    const result = await api("/api/git/commit", { method: "POST", json: { files: selectedFiles(form), message: form.elements.message.value, push: action === "push" } });
+    git.status = result.status;
+    refreshGit();
+    const done = [result.commit ? t("committed", { hash: result.commit.hash }) : "", result.pushed?.ok ? t("pushed", { upstream: result.status.upstream || result.status.remote }) : ""].filter(Boolean).join(" · ");
+    if (result.pushed && !result.pushed.ok) {
+      git.messageTouched = false;
+      renderCommit(form);
+      message.dataset.kind = "";
+      message.textContent = `${done ? `${done}. ` : ""}${t("pushFailed")}${result.pushed.error}`;
+      return;
+    }
+    form.closest("dialog").close();
+    toast(done);
+  } catch (error) {
+    message.dataset.kind = "";
+    message.textContent = error.message;
+    syncCommitForm(form);
+    buttons[0].disabled = false;
+  } finally {
+    if (form.closest("dialog").open) { buttons[0].disabled = false; syncCommitForm(form); }
   }
 });
 
@@ -516,6 +695,7 @@ function closeDrawer() { document.body.classList.remove("drawer-open"); }
 const actions = {
   menu: () => document.body.classList.toggle("drawer-open"),
   new: openNewPost,
+  commit: openCommit,
   source: () => toggleSource(view),
   invisibles: () => toggleInvisibles(view),
   theme: () => {
@@ -575,6 +755,7 @@ document.documentElement.lang = navigator.language?.toLowerCase().startsWith("zh
   state.posts = posts;
   state.vocabulary = vocabulary;
   renderList();
+  refreshGit();
   const requested = new URLSearchParams(location.search).get("file") || localStorage.getItem("fm-editor:last");
   if (requested && posts.some((post) => post.file === requested)) await open(requested);
   else document.body.classList.add("drawer-open");
