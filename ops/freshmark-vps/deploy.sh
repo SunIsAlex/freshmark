@@ -266,19 +266,12 @@ if [ "$mode" = rollback ]; then
   exit 0
 fi
 
-git -C "$repository" fetch "$remote" "$branch"
+git -C "$repository" fetch "$remote" "+refs/heads/$branch:refs/remotes/$remote/$branch"
 if ! git -C "$repository" diff --quiet || ! git -C "$repository" diff --cached --quiet; then
   echo "Tracked changes exist in $repository; refusing to update the deployment checkout." >&2
   exit 1
 fi
-if git -C "$repository" show-ref --verify --quiet "refs/heads/$branch"; then
-  git -C "$repository" checkout "$branch"
-  if ! git -C "$repository" merge --ff-only "$remote/$branch" 2>/dev/null; then
-    git -C "$repository" reset --hard "$remote/$branch"
-  fi
-else
-  git -C "$repository" checkout -b "$branch" "$remote/$branch"
-fi
+git -C "$repository" checkout -B "$branch" "refs/remotes/$remote/$branch"
 
 revision=$(git -C "$repository" rev-parse HEAD)
 active_name=$(current_release_name)
