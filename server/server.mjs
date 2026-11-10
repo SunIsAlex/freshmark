@@ -11,6 +11,7 @@ import verifyRegistration from "../netlify/functions/auth-register-verify.mjs";
 import login from "../netlify/functions/auth-login.mjs";
 import logout from "../netlify/functions/auth-logout.mjs";
 import session from "../netlify/functions/auth-session.mjs";
+import poll from "../netlify/functions/poll.mjs";
 
 const host = process.env.FRESHMARK_API_HOST || "127.0.0.1";
 const port = Number(process.env.FRESHMARK_API_PORT || 8790);
@@ -32,6 +33,8 @@ const routes = new Map([
   ["/api/auth/login", login],
   ["/api/auth/logout", logout],
   ["/api/auth/session", session],
+  ["/api/poll", poll],
+  ["/.netlify/functions/poll", poll],
 ]);
 
 const json = (response, status, body) => {

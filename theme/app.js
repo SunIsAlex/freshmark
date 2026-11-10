@@ -39,6 +39,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   let commentsRequest = 0;
   let commentAuthModule;
   let commentSubmitModule;
+  let pollModule;
   let shareModule;
   let navigationController;
   const preparedGalleryImages = new WeakSet();
@@ -583,6 +584,13 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     setAnswerRevealState(answer, !answer.classList.contains("is-revealed"));
   }
 
+  function preparePolls(scope = document) {
+    if (scope.querySelector(".freshmark-poll")) {
+      pollModule ||= import("./poll.js");
+      pollModule.then(({ initPolls }) => initPolls(scope));
+    }
+  }
+
   function gallerySource(image) {
     return image.dataset.gallerySrc || image.currentSrc || image.src;
   }
@@ -1005,6 +1013,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
         updateInlineMathOverflow(nextMain);
         document.fonts?.ready.then(() => updateInlineMathOverflow(nextMain));
         prepareAnswerReveals(nextMain);
+        preparePolls(nextMain);
         prepareGallery(nextMain);
         preloadPhotoSwipe(nextMain);
         scheduleArticlePrefetch(nextMain);
@@ -1137,6 +1146,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     updateInlineMathOverflow();
     document.fonts?.ready.then(() => updateInlineMathOverflow());
     prepareAnswerReveals();
+    preparePolls();
     prepareGallery();
     const initialSearchMatch = highlightSearchTerm(initialUrl);
     if (initialSearchMatch) requestAnimationFrame(() => scrollToSearchHighlight(initialSearchMatch));

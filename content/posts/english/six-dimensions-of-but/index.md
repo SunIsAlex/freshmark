@@ -242,6 +242,36 @@ draft: false
 
 ---
 
+## 实战盲测：你能一眼识破这道题的对立维度吗？
+
+在高考或模拟题的七选五语篇中，假设空前句子为：
+> *"Many educators instinctively believe that longer class hours directly produce better academic retention..."*
+
+随后空格后紧接着出现了：
+> *"...extensive longitudinal surveys in Finland demonstrate that shorter instruction periods accompanied by structured play yield significantly higher cognitive endurance."*
+
+请问：此处设空所依托的 **but 对立维度** 是哪一种？
+
+:::poll but-dimension-quiz
+在此题语境中，空格最核心的语用对立维度是？
+
+- [ ] A. 真值 / 纠正型（not...but）
+- [ ] B. 重要性 / 权重型（A 成立但次要，B 才是关键）
+- [x] C. 预期 / 认知对立型（按 A 推出常规直觉，实际科研给出反预期）
+- [ ] D. 话语转向型（掐断前文，换到新分论点）
+
+:::reveal 💡 盲测答案与深度解析
+**正确答案**：**C. 预期 / 认知对立型**！
+
+**试题逻辑拆解**：
+1. **空前预设（A）**：*Many educators instinctively believe...*（很多教育者凭直觉以为课时越长记忆越牢）。出题人在此处埋下了大众常理的“思维定势与直觉预期”。
+2. **反常识数据（B）**：*...extensive longitudinal surveys demonstrate...*（实证调查表明更短课时配合结构化游戏，学生的认知耐力反而明显更高）。
+3. **空格使命**：正是连接“大众默认直觉”与“实证反常识真相”的**预期对立**枢纽。因此选项中必然包含以 *but / however* 打头且引出客观调查数据的句子！
+:::
+:::
+
+---
+
 ## 结语：从“翻译词汇”到“透视思维”
 
 做题与阅读的高手，从不把精力浪费在词典级别的死记硬背上。
