@@ -932,3 +932,21 @@ test("optional skins load only when a reader has chosen one", async () => {
   }
   assert.ok(gzipSync(skins).length < 5 * 1024, "skin stylesheet must stay small");
 });
+
+test("CJK bold with Chinese quotes and punctuation renders strong tags", async () => {
+  const { html } = await renderMarkdown([
+    "北京高考作文的一类文评分核心在于**“透过现象看本质的理性洞察力”**。",
+    "",
+    "请就**“微信朋友圈点赞现象”**写一段议论性文字。",
+    "",
+    "**现象：**这表明实验成功。",
+    "",
+    "**“设而不求”**与**“参数分离”**",
+  ].join("\n"));
+
+  assert.match(html, /核心在于<strong>“透过现象看本质的理性洞察力”<\/strong>。/);
+  assert.match(html, /请就<strong>“微信朋友圈点赞现象”<\/strong>写一段/);
+  assert.match(html, /<strong>现象：<\/strong>这表明/);
+  assert.match(html, /<strong>“设而不求”<\/strong>与<strong>“参数分离”<\/strong>/);
+  assert.doesNotMatch(html, /\*\*[^*]+\*\*/);
+});
