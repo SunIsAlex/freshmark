@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="420" viewBox="0 0 760 420" role="img" aria-labelledby="title desc">
+  <title id="title">例题 6.2 的椭圆模型</title>
+  <desc id="desc">点 B 到两个焦点 O 和 F 的距离和为八，形成长半轴四、短半轴二的椭圆；目标向量的长度是 B 到椭圆中心 C 的距离。</desc>
+  <defs>
+    <style>.s{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif}.m{font-family:"Cambria Math","Times New Roman",serif;font-style:italic}.l{font-size:18px;fill:#17252f}.u{font-size:15px;fill:#65747d}</style>
+  </defs>
+  <rect width="760" height="420" rx="18" fill="#f7faf9"/><rect x="22" y="22" width="716" height="376" rx="14" fill="#fff" stroke="#dce8e4"/>
+  <g>
+    <ellipse cx="270" cy="222" rx="190" ry="95" fill="#eef7fb" stroke="#3273b9" stroke-width="2.6"/>
+    <path d="M65 222H475M270 112V332" stroke="#b6c3c9" stroke-width="1.4"/>
+    <circle cx="105.5" cy="222" r="4.5" fill="#df5c4f"/><circle cx="434.5" cy="222" r="4.5" fill="#df5c4f"/><circle cx="270" cy="222" r="4.5" fill="#17252f"/><circle cx="344" cy="309.5" r="5" fill="#0f8a72"/>
+    <path d="M105.5 222 344 309.5 434.5 222" fill="none" stroke="#df5c4f" stroke-width="2"/>
+    <path d="M270 222 344 309.5" fill="none" stroke="#0f8a72" stroke-width="4"/>
+    <text x="91" y="211" class="m l">F</text><text x="442" y="211" class="m l">O</text><text x="256" y="212" class="m l">C</text><text x="351" y="326" class="m l">B</text>
+    <text x="150" y="270" class="s u" fill="#c9473d">|4a+b|</text><text x="390" y="278" class="s u" fill="#c9473d">|b|</text><text x="286" y="283" class="s u" fill="#0f8a72">|2a+b|</text>
+    <text x="236" y="122" class="s u">长半轴 4</text><text x="278" y="176" class="s u">短半轴 2</text>
+  </g>
+  <g class="s">
+    <rect x="500" y="73" width="208" height="273" rx="14" fill="#f1f6fa" stroke="#d8e3ea"/>
+    <text x="525" y="111" font-size="18" font-weight="700" fill="#17252f">距离和固定为 8</text>
+    <text x="525" y="145" class="u">焦距：4√3</text><text x="525" y="174" class="u">半长轴：4</text><text x="525" y="203" class="u">半短轴：2</text>
+    <line x1="525" y1="226" x2="682" y2="226" stroke="#cedbe1"/>
+    <text x="525" y="260" font-size="17" font-weight="700" fill="#17252f">中心到椭圆的距离</text>
+    <text x="525" y="295" font-size="19" fill="#0f8a72" font-family="Cambria Math,Times New Roman,serif">2 ≤ |CB| ≤ 4</text>
+    <text x="525" y="324" class="u">因此答案为 [2, 4]</text>
+  </g>
+</svg>

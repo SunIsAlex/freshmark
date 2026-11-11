@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 240" width="360" height="240" font-family="'Times New Roman', serif" font-style="italic" font-size="18">
+  <style>
+    .ink { stroke: #222; fill: none; }
+    .txt { fill: #222; }
+    .acc { stroke: #2563eb; fill: none; }
+    .acc-txt { fill: #2563eb; }
+    .block { fill: #e5e7eb; stroke: #222; }
+    .ball { fill: #fff; stroke: #222; }
+    @media (prefers-color-scheme: dark) {
+      .ink { stroke: #ddd; }
+      .txt { fill: #ddd; }
+      .acc { stroke: #60a5fa; }
+      .acc-txt { fill: #60a5fa; }
+      .block { fill: #374151; stroke: #ddd; }
+      .ball { fill: #1f2937; stroke: #ddd; }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+
+  <!-- 光滑水平导轨 -->
+  <line class="ink" x1="20" y1="50" x2="340" y2="50" stroke-width="2"/>
+
+  <!-- 滑块 M -->
+  <rect class="block" x="128" y="28" width="44" height="22" stroke-width="1.5"/>
+  <text class="txt" x="108" y="44" text-anchor="middle">M</text>
+
+  <!-- 竖直参考线 -->
+  <line class="ink" x1="150" y1="50" x2="150" y2="140" stroke-width="1" stroke-dasharray="4 4"/>
+
+  <!-- 轻绳，θ = 30° -->
+  <line class="ink" x1="150" y1="50" x2="230.5" y2="189.4" stroke-width="1.5"/>
+  <circle class="txt" cx="150" cy="50" r="2.5"/>
+
+  <!-- 夹角 θ -->
+  <path class="ink" d="M150 82 A32 32 0 0 0 166 77.7" stroke-width="1"/>
+  <text class="txt" x="160" y="104" text-anchor="middle">θ</text>
+
+  <!-- 绳长 L -->
+  <text class="txt" x="206" y="118" text-anchor="middle">L</text>
+
+  <!-- 小球 m -->
+  <circle class="ball" cx="235" cy="197.2" r="9" stroke-width="1.5"/>
+  <text class="txt" x="214" y="224" text-anchor="middle">m</text>
+
+  <!-- 角速度 ω（θ 增大方向） -->
+  <path class="acc" d="M264.6 207.8 A195 195 0 0 0 290.3 185.5" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text class="acc-txt" x="304" y="188" text-anchor="middle">ω</text>
+</svg>

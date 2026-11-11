@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="410" viewBox="0 0 760 410" role="img" aria-labelledby="title desc">
+  <title id="title">例题 6.7 的向量投影图</title><desc id="desc">把所有向量平移到共同起点 O。te 的端点在 e 所在直线上移动，a 的端点为 A。题设说明 t 等于负一时距离最短，因此 A 到负 e 端点的线段垂直于 e。</desc>
+  <defs><marker id="at" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 9 4.5 0 9Z" fill="#0f8a72"/></marker><marker id="aa" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 9 4.5 0 9Z" fill="#df5c4f"/></marker><style>.s{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif}.m{font-family:"Cambria Math","Times New Roman",serif;font-style:italic}.l{font-size:18px;fill:#17252f}.u{font-size:15px;fill:#65747d}</style></defs>
+  <rect width="760" height="410" rx="18" fill="#f7faf9"/><rect x="22" y="22" width="716" height="366" rx="14" fill="#fff" stroke="#dce8e4"/>
+  <g>
+    <path d="M55 305H445" stroke="#aebbc0" stroke-width="2"/><path d="M220 305H345" stroke="#0f8a72" stroke-width="3" marker-end="url(#at)"/><path d="M220 305 95 305" stroke="#0f8a72" stroke-width="2.4" marker-end="url(#at)"/>
+    <path d="M220 305 95 112" stroke="#df5c4f" stroke-width="3" marker-end="url(#aa)"/><path d="M95 305V112" stroke="#3273b9" stroke-width="5"/>
+    <path d="M95 287H113V305" fill="none" stroke="#17252f" stroke-width="1.7"/>
+    <circle cx="220" cy="305" r="4.5"/><circle cx="95" cy="305" r="4.5" fill="#0f8a72"/><circle cx="95" cy="112" r="4.5" fill="#df5c4f"/>
+    <text x="207" y="332" class="m l">O</text><text x="80" y="330" class="m l">−e</text><text x="79" y="99" class="m l">A</text><text x="280" y="294" class="m l" fill="#0f8a72">e</text><text x="135" y="198" class="m l" fill="#df5c4f">a</text>
+    <text x="112" y="195" class="s u" fill="#3273b9">a+e</text><text x="282" y="340" class="s u">端点 te 沿直线移动</text>
+  </g>
+  <g class="s"><rect x="480" y="70" width="228" height="270" rx="14" fill="#f1f6fa" stroke="#d8e3ea"/>
+    <text x="505" y="108" font-size="18" font-weight="700" fill="#17252f">把模长看成点到直线</text><text x="505" y="148" class="u">|a−te| 是 A 到 te 的距离</text><text x="505" y="180" class="u">题设给出的最短点是 t=−1</text>
+    <line x1="505" y1="207" x2="682" y2="207" stroke="#cedbe1"/><text x="505" y="246" font-size="18" fill="#3273b9" font-family="Cambria Math,Times New Roman,serif">a+e ⟂ e</text><text x="505" y="289" font-size="19" font-weight="700" fill="#0f8a72">选择 C</text>
+  </g>
+</svg>

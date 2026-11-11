@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="780" viewBox="0 0 1400 780" role="img" aria-labelledby="title desc">
+  <title id="title">Latimer diagrams for manganese in acidic and alkaline solution</title>
+  <desc id="desc">Standard reduction potentials versus the standard hydrogen electrode at 25 degrees Celsius. The acidic panel uses one molar hydrogen ion and the alkaline panel uses one molar hydroxide ion. Reduction proceeds from left to right.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#334155"/>
+    </marker>
+    <style>
+      text{font-family:Inter,"Noto Sans",Arial,sans-serif;fill:#172033}
+      .title{font-size:34px;font-weight:700}
+      .subtitle{font-size:18px;fill:#526176}
+      .panel-title{font-size:23px;font-weight:750;fill:#ff4500}
+      .species{font-size:24px;font-weight:600}
+      .potential{font-size:18px;font-weight:700;fill:#334155}
+      .summary{font-size:16px;fill:#42526a}
+      .note{font-size:15px;fill:#64748b}
+      .panel{fill:#f8fafc;stroke:#e2e8f0;stroke-width:1.5}
+      .node{fill:#fff;stroke:#cbd5e1;stroke-width:1.5}
+      .arrow{stroke:#334155;stroke-width:2;marker-end:url(#arrow)}
+    </style>
+  </defs>
+
+  <rect width="1400" height="780" fill="#fff"/>
+  <text class="title" x="55" y="55">Manganese Latimer diagrams / 锰元素电势图</text>
+  <text class="subtitle" x="55" y="87">E° versus SHE at 25 °C, in volts · reduction proceeds from left to right · values rounded to 0.01 V</text>
+
+  <rect class="panel" x="40" y="115" width="1320" height="280" rx="16"/>
+  <text class="panel-title" x="70" y="155">Acidic standard state / 酸性标准态 · a(H⁺) = 1</text>
+  <rect class="node" x="70" y="195" width="160" height="56" rx="9"/>
+  <rect class="node" x="295" y="195" width="160" height="56" rx="9"/>
+  <rect class="node" x="520" y="195" width="160" height="56" rx="9"/>
+  <rect class="node" x="745" y="195" width="160" height="56" rx="9"/>
+  <rect class="node" x="970" y="195" width="160" height="56" rx="9"/>
+  <rect class="node" x="1195" y="195" width="130" height="56" rx="9"/>
+  <text class="species" x="150" y="231" text-anchor="middle">MnO₄⁻</text>
+  <text class="species" x="375" y="231" text-anchor="middle">MnO₄²⁻</text>
+  <text class="species" x="600" y="231" text-anchor="middle">MnO₂(s)</text>
+  <text class="species" x="825" y="231" text-anchor="middle">Mn³⁺</text>
+  <text class="species" x="1050" y="231" text-anchor="middle">Mn²⁺</text>
+  <text class="species" x="1260" y="231" text-anchor="middle">Mn(s)</text>
+  <line class="arrow" x1="232" y1="223" x2="287" y2="223"/>
+  <line class="arrow" x1="457" y1="223" x2="512" y2="223"/>
+  <line class="arrow" x1="682" y1="223" x2="737" y2="223"/>
+  <line class="arrow" x1="907" y1="223" x2="962" y2="223"/>
+  <line class="arrow" x1="1132" y1="223" x2="1187" y2="223"/>
+  <text class="potential" x="260" y="207" text-anchor="middle">+0.56</text>
+  <text class="potential" x="485" y="207" text-anchor="middle">+2.26</text>
+  <text class="potential" x="710" y="207" text-anchor="middle">+0.95</text>
+  <text class="potential" x="935" y="207" text-anchor="middle">+1.51</text>
+  <text class="potential" x="1160" y="207" text-anchor="middle">−1.18</text>
+  <rect x="120" y="286" width="330" height="50" rx="25" fill="#fff0eb"/>
+  <rect x="535" y="286" width="330" height="50" rx="25" fill="#fff0eb"/>
+  <rect x="950" y="286" width="330" height="50" rx="25" fill="#fff0eb"/>
+  <text class="summary" x="285" y="317" text-anchor="middle">E°(MnO₄⁻/MnO₂) = +1.69 V</text>
+  <text class="summary" x="700" y="317" text-anchor="middle">E°(MnO₂/Mn²⁺) = +1.23 V</text>
+  <text class="summary" x="1115" y="317" text-anchor="middle">E°(MnO₄⁻/Mn²⁺) = +1.51 V</text>
+  <text class="note" x="70" y="372">Aqueous ions unless otherwise marked; MnO₂ and Mn are solids.</text>
+
+  <rect class="panel" x="40" y="420" width="1320" height="280" rx="16"/>
+  <text class="panel-title" x="70" y="460">Alkaline standard state / 碱性标准态 · a(OH⁻) = 1</text>
+  <rect class="node" x="70" y="500" width="160" height="56" rx="9"/>
+  <rect class="node" x="295" y="500" width="160" height="56" rx="9"/>
+  <rect class="node" x="520" y="500" width="160" height="56" rx="9"/>
+  <rect class="node" x="745" y="500" width="160" height="56" rx="9"/>
+  <rect class="node" x="970" y="500" width="160" height="56" rx="9"/>
+  <rect class="node" x="1195" y="500" width="130" height="56" rx="9"/>
+  <text class="species" x="150" y="536" text-anchor="middle">MnO₄⁻</text>
+  <text class="species" x="375" y="536" text-anchor="middle">MnO₄²⁻</text>
+  <text class="species" x="600" y="536" text-anchor="middle">MnO₂(s)</text>
+  <text class="species" x="825" y="536" text-anchor="middle">Mn(OH)₃(s)</text>
+  <text class="species" x="1050" y="536" text-anchor="middle">Mn(OH)₂(s)</text>
+  <text class="species" x="1260" y="536" text-anchor="middle">Mn(s)</text>
+  <line class="arrow" x1="232" y1="528" x2="287" y2="528"/>
+  <line class="arrow" x1="457" y1="528" x2="512" y2="528"/>
+  <line class="arrow" x1="682" y1="528" x2="737" y2="528"/>
+  <line class="arrow" x1="907" y1="528" x2="962" y2="528"/>
+  <line class="arrow" x1="1132" y1="528" x2="1187" y2="528"/>
+  <text class="potential" x="260" y="512" text-anchor="middle">+0.56</text>
+  <text class="potential" x="485" y="512" text-anchor="middle">+0.60</text>
+  <text class="potential" x="710" y="512" text-anchor="middle">+0.10</text>
+  <text class="potential" x="935" y="512" text-anchor="middle">−0.20</text>
+  <text class="potential" x="1160" y="512" text-anchor="middle">−1.58</text>
+  <rect x="270" y="591" width="350" height="50" rx="25" fill="#effaf3"/>
+  <rect x="780" y="591" width="350" height="50" rx="25" fill="#effaf3"/>
+  <text class="summary" x="445" y="622" text-anchor="middle">E°(MnO₄⁻/MnO₂) = +0.59 V</text>
+  <text class="summary" x="955" y="622" text-anchor="middle">E°(MnO₂/Mn(OH)₂) = −0.05 V</text>
+  <text class="note" x="70" y="677">The +0.10 V and −0.20 V steps are shown in their correct order; their two-electron average is −0.05 V.</text>
+
+  <line x1="55" y1="730" x2="1345" y2="730" stroke="#e2e8f0"/>
+  <text class="note" x="55" y="758">Sources: standard-potential compilations cited by Chemistry LibreTexts; D. A. Stynes, York University, “Latimer Diagrams” (1 M H⁺ / 1 M OH⁻).</text>
+</svg>

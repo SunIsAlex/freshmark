@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="600" viewBox="0 0 1000 600" role="img" aria-labelledby="title desc">
+  <title id="title">抛物线焦点准线几何与 P 点角度关系</title>
+  <desc id="desc">左侧主图显示抛物线、焦点、准线、垂足和位置角；右侧放大图分别标注切线半角 alpha over two 与位矢速度夹角 theta。</desc>
+  <defs>
+    <marker id="blue-arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0 0 9 3 0 6Z" fill="#2563eb"/>
+    </marker>
+    <marker id="orange-arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0 0 9 3 0 6Z" fill="#ea580c"/>
+    </marker>
+    <style>
+      text{font-family:"Noto Sans SC","Microsoft YaHei",Arial,sans-serif;fill:#172033}
+      .math{font-family:"Cambria Math","Times New Roman",serif;font-style:italic}
+      .label{font-size:19px;font-weight:650}
+      .small{font-size:16px;fill:#526176}
+      .formula{font-size:21px;font-family:"Cambria Math","Times New Roman",serif}
+      .green{fill:#0f766e}.purple{fill:#7c3aed}
+    </style>
+  </defs>
+  <rect width="1000" height="600" fill="#f7faf9"/>
+  <rect x="22" y="22" width="956" height="556" rx="20" fill="#fff" stroke="#dce8e4" stroke-width="2"/>
+  <text x="54" y="64" font-size="26" font-weight="750">抛物线 · 到焦点与准线等距</text>
+  <text x="54" y="93" class="small">左侧读 PF = PH，右侧只看 P 点的角度关系。</text>
+
+  <!-- Main construction -->
+  <rect x="52" y="116" width="590" height="350" rx="16" fill="#fbfdff" stroke="#e2e8f0"/>
+  <line x1="78" y1="300" x2="616" y2="300" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="7 7"/>
+  <text x="81" y="288" class="small">对称轴</text>
+  <line x1="560" y1="139" x2="560" y2="444" stroke="#7c3aed" stroke-width="3"/>
+  <text x="575" y="161" class="math label purple">准线 d</text>
+  <path d="M366 145 Q405 222.5 405 300 Q405 377.5 366 455"
+        fill="none" stroke="#2563eb" stroke-width="3"/>
+  <circle cx="250" cy="300" r="7" fill="#dc2626"/>
+  <circle cx="378" cy="170" r="8" fill="#0f766e"/>
+  <circle cx="560" cy="170" r="7" fill="#7c3aed"/>
+  <text x="226" y="330" class="math label">F</text>
+  <text x="389" y="165" class="math label">P</text>
+  <text x="573" y="179" class="math label">H</text>
+  <line x1="378" y1="170" x2="250" y2="300" stroke="#dc2626" stroke-width="2.5"/>
+  <line x1="378" y1="170" x2="560" y2="170" stroke="#dc2626" stroke-width="2.5"/>
+  <text x="287" y="216" class="math label">PF = r</text>
+  <text x="444" y="158" class="math label">PH = r</text>
+  <path d="M542 170V188H560" fill="none" stroke="#0f766e" stroke-width="2.5"/>
+  <line x1="354" y1="116" x2="500" y2="466" stroke="#ea580c" stroke-width="3"/>
+  <line x1="378" y1="170" x2="356" y2="118" stroke="#ea580c" stroke-width="4" marker-end="url(#orange-arrow)"/>
+  <text x="331" y="144" class="math label">v</text>
+  <line x1="250" y1="300" x2="368" y2="180" stroke="#2563eb" stroke-width="4" marker-end="url(#blue-arrow)"/>
+  <text x="292" y="263" class="math label">r</text>
+  <path d="M284 300 A34 34 0 0 0 274 276" fill="none" stroke="#0f766e" stroke-width="3"/>
+  <text x="290" y="290" class="math label green">ν</text>
+  <line x1="250" y1="344" x2="560" y2="344" stroke="#64748b" stroke-width="1.6"/>
+  <path d="M250 337V351M560 337V351" stroke="#64748b" stroke-width="1.6"/>
+  <text x="397" y="369" class="math label">p</text>
+
+  <!-- Angle inset -->
+  <rect x="670" y="116" width="278" height="350" rx="16" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="696" y="149" font-size="19" font-weight="700">P 点局部放大</text>
+  <text x="696" y="173" class="small">上方看 θ，下方看 α/2</text>
+  <circle cx="808" cy="292" r="7" fill="#0f766e"/>
+  <text x="818" y="286" class="math label">P</text>
+  <line x1="808" y1="292" x2="718" y2="382" stroke="#dc2626" stroke-width="2.5"/>
+  <line x1="808" y1="292" x2="916" y2="292" stroke="#dc2626" stroke-width="2.5"/>
+  <text x="684" y="401" class="math label">PF</text>
+  <text x="900" y="282" class="math label">PH</text>
+  <line x1="737" y1="221" x2="879" y2="363" stroke="#ea580c" stroke-width="3"/>
+  <line x1="808" y1="292" x2="746" y2="230" stroke="#ea580c" stroke-width="4" marker-end="url(#orange-arrow)"/>
+  <text x="724" y="223" class="math label">v</text>
+  <line x1="808" y1="292" x2="872" y2="228" stroke="#2563eb" stroke-width="3" marker-end="url(#blue-arrow)"/>
+  <text x="881" y="226" class="math label">r</text>
+  <path d="M781 265 A38 38 0 0 1 835 265" fill="none" stroke="#7c3aed" stroke-width="3"/>
+  <text x="800" y="240" class="math label purple">θ</text>
+  <path d="M845 292 A37 37 0 0 1 834 318" fill="none" stroke="#0f766e" stroke-width="3"/>
+  <text x="849" y="331" class="math label green">α/2</text>
+  <text x="694" y="420" class="small">α/2：切线平分角</text>
+  <text x="694" y="446" class="small">θ：位矢—速度夹角</text>
+
+  <rect x="52" y="490" width="896" height="60" rx="14" fill="#f1f5f9" stroke="#dbe4ea"/>
+  <text x="78" y="527" class="formula">PF = PH = r　　p = r(1 + cos ν)　　sin²θ = cos²(ν/2) = p/(2r)</text>
+</svg>
