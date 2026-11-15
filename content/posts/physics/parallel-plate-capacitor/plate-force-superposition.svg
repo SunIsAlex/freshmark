@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 440" width="880" height="440" role="img" aria-labelledby="title desc">
+  <title id="title">平行板电容器两极板间的电场叠加与受力分析</title>
+  <desc id="desc">展示正极板和负极板各自产生的匀强场强 E_s 在板外左侧、两板之间、板外右侧的矢量叠加结果，以及正极板所受吸引力 F = Q·E_s = ½QE。</desc>
+  <style>
+    .card { fill: #ffffff; stroke: #cbd5e1; }
+    .divider { stroke: #cbd5e1; }
+    .zone-bg { fill: #f8fafc; }
+    .summary-bg { fill: #f1f5f9; stroke: #cbd5e1; }
+    .title { fill: #0f172a; font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif; font-size: 21px; font-weight: 700; }
+    .subtitle { fill: #475569; font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif; font-size: 13.5px; }
+    .label { fill: #1e293b; font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif; font-size: 15px; font-weight: 600; }
+    .zone-title { fill: #475569; font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif; font-size: 14px; font-weight: 600; }
+    .math { font-family: "Cambria Math", "Times New Roman", serif; font-style: italic; }
+    .formula { fill: #0f172a; font-family: "Cambria Math", "Times New Roman", "Noto Sans SC", sans-serif; font-size: 16px; font-weight: 600; }
+    .pos-plate { fill: #fee2e2; stroke: #dc2626; }
+    .neg-plate { fill: #dbeafe; stroke: #2563eb; }
+    .pos-vec { stroke: #dc2626; fill: none; }
+    .pos-txt { fill: #dc2626; }
+    .neg-vec { stroke: #2563eb; fill: none; }
+    .neg-txt { fill: #2563eb; }
+    .sum-vec { stroke: #059669; fill: none; }
+    .sum-txt { fill: #059669; }
+    .force-vec { stroke: #ea580c; fill: none; }
+    .force-txt { fill: #ea580c; }
+    .muted { fill: #64748b; }
+
+    @media (prefers-color-scheme: dark) {
+      .card { fill: #0f172a; stroke: #334155; }
+      .divider { stroke: #334155; }
+      .zone-bg { fill: #1e293b; }
+      .summary-bg { fill: #1e293b; stroke: #334155; }
+      .title { fill: #f1f5f9; }
+      .subtitle { fill: #94a3b8; }
+      .label { fill: #e2e8f0; }
+      .zone-title { fill: #cbd5e1; }
+      .formula { fill: #f8fafc; }
+      .pos-plate { fill: #450a0a; stroke: #f87171; }
+      .neg-plate { fill: #172554; stroke: #60a5fa; }
+      .pos-vec { stroke: #f87171; }
+      .pos-txt { fill: #f87171; }
+      .neg-vec { stroke: #60a5fa; }
+      .neg-txt { fill: #60a5fa; }
+      .sum-vec { stroke: #34d399; }
+      .sum-txt { fill: #34d399; }
+      .force-vec { stroke: #fb923c; }
+      .force-txt { fill: #fb923c; }
+      .muted { fill: #94a3b8; }
+    }
+  </style>
+  <defs>
+    <marker id="arr-pos" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M0 1 L9 5 L0 9 z" fill="#dc2626"/>
+    </marker>
+    <marker id="arr-neg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M0 1 L9 5 L0 9 z" fill="#2563eb"/>
+    </marker>
+    <marker id="arr-sum" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 1 L9 5 L0 9 z" fill="#059669"/>
+    </marker>
+    <marker id="arr-force" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 1 L9 5 L0 9 z" fill="#ea580c"/>
+    </marker>
+  </defs>
+
+  <!-- Outer card -->
+  <rect class="card" x="12" y="12" width="856" height="416" rx="16" stroke-width="1.5"/>
+  <text class="title" x="36" y="48">两极板间的电场叠加与受力分析</text>
+  <text class="subtitle" x="36" y="72">无限大带电平面模型：单块极板在两侧产生对称场强 Eₛ = ½ E；带电体自身不受自身电场力</text>
+
+  <!-- Middle zone highlight -->
+  <rect class="zone-bg" x="352" y="112" width="246" height="218" rx="10"/>
+
+  <!-- Zone Headers -->
+  <text class="zone-title" x="240" y="106" text-anchor="middle">板外左侧</text>
+  <text class="zone-title" x="475" y="106" text-anchor="middle">两板之间</text>
+  <text class="zone-title" x="710" y="106" text-anchor="middle">板外右侧</text>
+
+  <!-- Row Labels -->
+  <text class="label pos-txt" x="36" y="164">正板场强 <tspan class="math">E₊</tspan></text>
+  <text class="label neg-txt" x="36" y="214">负板场强 <tspan class="math">E₋</tspan></text>
+  <text class="label sum-txt" x="36" y="276">合场强 <tspan class="math">E</tspan><tspan font-size="11" dy="3">合</tspan></text>
+
+  <!-- Plates -->
+  <rect class="pos-plate" x="330" y="114" width="16" height="212" rx="3" stroke-width="2"/>
+  <text class="label pos-txt math" x="338" y="102" text-anchor="middle">+Q</text>
+
+  <rect class="neg-plate" x="604" y="114" width="16" height="212" rx="3" stroke-width="2"/>
+  <text class="label neg-txt math" x="612" y="102" text-anchor="middle">−Q</text>
+
+  <!-- Track 1: E+ (away from +Q) -->
+  <line class="pos-vec" x1="282" y1="159" x2="198" y2="159" stroke-width="2.4" marker-end="url(#arr-pos)"/>
+  <text class="label pos-txt math" x="240" y="147" text-anchor="middle" font-size="14">Eₛ</text>
+
+  <line class="pos-vec" x1="432" y1="159" x2="516" y2="159" stroke-width="2.4" marker-end="url(#arr-pos)"/>
+  <text class="label pos-txt math" x="475" y="147" text-anchor="middle" font-size="14">Eₛ</text>
+
+  <line class="pos-vec" x1="668" y1="159" x2="752" y2="159" stroke-width="2.4" marker-end="url(#arr-pos)"/>
+  <text class="label pos-txt math" x="710" y="147" text-anchor="middle" font-size="14">Eₛ</text>
+
+  <!-- Track 2: E- (toward -Q) -->
+  <line class="neg-vec" x1="198" y1="209" x2="282" y2="209" stroke-width="2.4" marker-end="url(#arr-neg)"/>
+  <text class="label neg-txt math" x="240" y="197" text-anchor="middle" font-size="14">Eₛ</text>
+
+  <line class="neg-vec" x1="432" y1="209" x2="516" y2="209" stroke-width="2.4" marker-end="url(#arr-neg)"/>
+  <text class="label neg-txt math" x="475" y="197" text-anchor="middle" font-size="14">Eₛ</text>
+
+  <line class="neg-vec" x1="752" y1="209" x2="668" y2="209" stroke-width="2.4" marker-end="url(#arr-neg)"/>
+  <text class="label neg-txt math" x="710" y="197" text-anchor="middle" font-size="14">Eₛ</text>
+
+  <!-- Dashed separator -->
+  <line class="divider" x1="36" y1="238" x2="830" y2="238" stroke-width="1" stroke-dasharray="5 5"/>
+
+  <!-- Track 3: Total E -->
+  <text class="label muted" x="240" y="276" text-anchor="middle"><tspan class="math">E</tspan><tspan font-size="11" dy="3">合</tspan><tspan dy="-3"> = 0（抵消）</tspan></text>
+
+  <line class="sum-vec" x1="390" y1="272" x2="560" y2="272" stroke-width="3.2" marker-end="url(#arr-sum)"/>
+  <text class="label sum-txt" x="475" y="259" text-anchor="middle"><tspan class="math">E = E₊ + E₋ = 2Eₛ</tspan></text>
+
+  <text class="label muted" x="710" y="276" text-anchor="middle"><tspan class="math">E</tspan><tspan font-size="11" dy="3">合</tspan><tspan dy="-3"> = 0（抵消）</tspan></text>
+
+  <!-- Force acting on +Q plate -->
+  <line class="force-vec" x1="346" y1="312" x2="416" y2="312" stroke-width="3" marker-end="url(#arr-force)"/>
+  <text class="label force-txt" x="424" y="317"><tspan class="math">F = Q · Eₛ = ½ Q E</tspan>（仅受负板引力）</text>
+
+  <!-- Bottom summary -->
+  <rect class="summary-bg" x="36" y="346" width="808" height="62" rx="10" stroke-width="1"/>
+  <text class="formula" x="56" y="374">关键结论：正极板所在处的有效施力场强只是负极板单独激发的 <tspan class="neg-txt math">Eₛ = ½ E</tspan></text>
+  <text class="subtitle" x="56" y="397">因此两板相互吸引的作用力大小为  <tspan class="force-txt formula" font-size="15">F = ½ Q E = Q² / (2ε₀εᵣ S) = 2πkQ² / (εᵣ S)</tspan>（与板间距 d 无关）</text>
+</svg>
