@@ -45,8 +45,11 @@ body { line-height:1.6; }
 .lab-diagram svg { display:block; width:100%; height:100%; }
 .lab-diagram figcaption { position:absolute; left:28px; bottom:24px; font:11px/1.5 var(--font-mono); color:var(--banner-soft); }
 .g1 { stop-color:var(--accent-2); } .g2 { stop-color:var(--banner-ink); }
-.orbit,.spin { transform-box:view-box; transform-origin:240px 200px; animation:fm-spin 40s linear infinite; }
-.spin { animation-duration:100s; animation-direction:reverse; }
+.orbit,.spin { transform-box:view-box; transform-origin:240px 200px; }
+@media(hover:hover) {
+  .featured:hover :is(.orbit,.spin) { animation:fm-spin 40s linear infinite; }
+  .featured:hover .spin { animation-duration:100s; animation-direction:reverse; }
+}
 @keyframes fm-spin { to { transform:rotate(1turn); } }
 .featured-copy { align-items:center; max-width:900px; padding:80px 40px; }
 .meta { font-family:var(--font-mono); font-size:12px; font-weight:400; letter-spacing:.06em; }
@@ -127,4 +130,4 @@ body { line-height:1.6; }
   .timeline-month { padding-left:14px; }
 }
 @media(max-width:420px) { .nav>[data-theme-toggle] { display:none; } }
-@media(prefers-reduced-motion:reduce) { .orbit,.spin { animation:none; } }
+@media(prefers-reduced-motion:reduce) { .featured:hover :is(.orbit,.spin) { animation:none; } }

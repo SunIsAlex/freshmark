@@ -950,3 +950,33 @@ test("CJK bold with Chinese quotes and punctuation renders strong tags", async (
   assert.match(html, /<strong>“设而不求”<\/strong>与<strong>“参数分离”<\/strong>/);
   assert.doesNotMatch(html, /\*\*[^*]+\*\*/);
 });
+
+test("lean runtime trims server-only messages, draft assets, and eager precache", async () => {
+  const html = await read("public/index.html");
+  const worker = await read("public/sw.js");
+  const app = await read("theme/app.js");
+  const css = await read(await assetPath("styles.css"));
+  const manganeseHtml = await read("public/posts/chemistry/inorganic/manganese/index.html");
+
+  const runtimeScript = html.match(/<script>window\.FRESHMARK=[\s\S]*?<\/script>/)?.[0] || "";
+  assert.ok(runtimeScript, "window.FRESHMARK bootstrap script must exist");
+  assert.doesNotMatch(html, /name="codex-preview"/);
+  assert.doesNotMatch(runtimeScript, /aboutBody|principleItems|contactBody|authInvalidCredentials/);
+  assert.match(runtimeScript, /searchPlaceholder:/);
+
+  const precacheList = worker.match(/PRECACHE=(\[[^\]]+\])/)?.[1] || "";
+  assert.ok(precacheList, "PRECACHE array must exist in sw.js");
+  assert.doesNotMatch(precacheList, /rss\.xml|timeline|page\.html|anthropic-sans-variable\.woff2/);
+  assert.doesNotMatch(worker, /versioned\("\/assets\/skins\.css"\)/);
+
+  await assert.rejects(stat(new URL("public/posts/biology/population-dynamics/survivorship-curves.jpg", root)), { code: "ENOENT" });
+  await assert.rejects(stat(new URL("public/posts/biology/population-dynamics", root)), { code: "ENOENT" });
+
+  assert.match(manganeseHtml, /<img[^>]+height="\d+"[^>]+src="latimer-group7-acidic\.svg"[^>]+width="\d+"/);
+  assert.doesNotMatch(manganeseHtml, /<picture[^>]*>[\s\S]{0,200}latimer-group7-acidic\.svg/);
+
+  assert.match(app, /if \(!term\) \{\s*if \(loadedSearchIndex\)/);
+  assert.match(app, /image\.addEventListener\("pointerenter", warm/);
+  assert.match(app, /progress\.style\.transform = `scaleX\(/);
+  assert.match(css, /\.reading-progress\{[^}]*transform:scaleX\(0\)/);
+});

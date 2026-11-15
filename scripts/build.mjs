@@ -69,10 +69,37 @@ const assetHref = (value) => {
 const absolute = (value) => new URL(href(value), baseUrl).href;
 const localeHref = (locale, value = "/") => href(localizedPath(locale, value));
 const localeAbsolute = (locale, value = "/") => absolute(localizedPath(locale, value));
+const cleanCssOptions = { level: { 1: { specialComments: 0 }, 2: {} } };
 const editorialStyles = await fs.readFile(path.join(themeDir, "editorial.css"), "utf8");
-const criticalResult = new CleanCSS({ level: 2 }).minify(`${await fs.readFile(path.join(themeDir, "critical.css"), "utf8")}\n${editorialStyles}`);
+const criticalResult = new CleanCSS(cleanCssOptions).minify(`${await fs.readFile(path.join(themeDir, "critical.css"), "utf8")}\n${editorialStyles}`);
 if (criticalResult.errors.length) throw new Error(`Critical CSS minification failed: ${criticalResult.errors.join(", ")}`);
 const criticalCss = criticalResult.styles.replace("__FRESHMARK_ANTHROPIC_FONT__", href("/assets/fonts/anthropic-sans-variable.woff2"));
+const coreClientMessageKeys = [
+  "chooseSkin", "skinHeading", "modeHeading", "modeLight", "modeDark", "skinLabels",
+  "searchPlaceholder", "noResults", "searchFailed", "minuteRead",
+  "shareArticle", "shareCopied", "shareFailed",
+  "articleImage", "openGallery", "revealAnswer", "hideAnswer", "contentDiffNotice",
+];
+const commentClientMessageKeys = [
+  "commentsTitle", "submitComment", "submittingComment", "commentsLoading",
+  "commentsEmpty", "commentsFailed", "commentPublished", "commentPending",
+  "commentInvalid", "commentRateLimited", "commentSubmitFailed", "loadOlderComments",
+  "authRequired",
+];
+const commentAuthClientMessageKeys = [
+  "authLoggingIn", "authRegistering", "authVerifying", "authInvalidCredentials",
+  "authAccountExists", "authCodeInvalid", "authCodeExpired", "authRateLimited",
+  "authInvalid", "authUnavailable",
+];
+const serializedClientMessages = Object.fromEntries(Object.keys(locales).map((locale) => {
+  const source = locales[locale];
+  const keys = [
+    ...coreClientMessageKeys,
+    ...(commentsEnabled ? commentClientMessageKeys : []),
+    ...(commentsEnabled && commentsAuthEnabled ? commentAuthClientMessageKeys : []),
+  ];
+  return [locale, JSON.stringify(Object.fromEntries(keys.map((key) => [key, source[key]])))];
+}));
 const brandIcon = (await fs.readFile(path.join(themeDir, "favicon.svg"), "utf8"))
   .replace("<svg ", '<svg class="brand-mark" width="28" height="28" aria-hidden="true" focusable="false" ');
 
@@ -171,7 +198,7 @@ function page({ locale = defaultLocale, title, description, content, article = f
   const mathStyles = content.includes('class="katex-html"') ? `<link rel="preload" href="${assetHref("/assets/katex.min.css")}" as="style" data-katex-styles onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="${assetHref("/assets/katex.min.css")}"></noscript>` : "";
   const defaultPath = locale === defaultLocale ? pathName : alternatePath;
   const alternateLink = hasAlternate ? `<link rel="alternate" hreflang="${alternate.language}" href="${absolute(alternatePath)}">` : "";
-  return `<!doctype html><html lang="${escapeHtml(messages.language)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="${escapeHtml(config.themeColor)}"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="${escapeHtml(config.title)}"><meta name="codex-preview" content="development"><title>${fullTitle}</title><meta name="description" content="${escapeHtml(pageDescription)}"><link rel="canonical" href="${absolute(pathName)}"><link rel="alternate" hreflang="${messages.language}" href="${absolute(pathName)}">${alternateLink}<link rel="alternate" hreflang="x-default" href="${absolute(defaultPath)}"><link rel="manifest" href="${localeHref(locale, "/manifest.webmanifest")}"><link rel="icon" href="${href("/favicon.svg")}" type="image/svg+xml"><link rel="apple-touch-icon" href="${href("/icons/apple-touch-icon.png")}"><link rel="alternate" type="application/rss+xml" title="${escapeHtml(config.title)} RSS" href="${localeHref(locale, "/rss.xml")}"><script>try{var d=document.documentElement,s=localStorage.getItem('freshmark-skin');d.dataset.theme=localStorage.getItem('freshmark-theme')||'';if(/^(${skinNames.join("|")})$/.test(s)){var l=document.createElement('link');l.rel='stylesheet';l.href=${JSON.stringify(assetHref("/assets/skins.css"))};l.setAttribute('blocking','render');l.setAttribute('data-skin-styles','');document.head.appendChild(l);d.dataset.skin=s}}catch(e){}</script><style data-critical>${criticalCss}</style>${mathStyles}${deferredStyles}</head><body><div class="site-shell"><div class="ambient"></div>${article ? '<div class="reading-progress" data-reading-progress></div>' : ""}${header(locale, alternatePath)}${content}${footer(locale)}</div>${searchModal(locale)}<script>window.FRESHMARK={basePath:${JSON.stringify(basePath)},title:${JSON.stringify(config.title)},locale:${JSON.stringify(locale)},language:${JSON.stringify(messages.language)},messages:${JSON.stringify(messages)},localeRoot:${JSON.stringify(localeHref(locale, "/"))},alternateRoot:${JSON.stringify(localeHref(alternateLocale, "/"))},postsRoot:${JSON.stringify(localeHref(locale, "/posts/"))},searchIndexPath:${JSON.stringify(localeHref(locale, "/search-index.json"))},assetVersion:${JSON.stringify(assetVersion)},skinStyles:${JSON.stringify(assetHref("/assets/skins.css"))},views:${JSON.stringify({ enabled: viewsEnabled, endpoint: viewsEndpoint })},comments:${JSON.stringify({ enabled: commentsEnabled, auth: commentsAuthEnabled, listEndpoint: commentsListEndpoint, submitEndpoint: commentsSubmitEndpoint, authEndpoints: commentsAuthEndpoints })},poll:${JSON.stringify({ endpoint: "/api/poll" })}};</script><script type="module" src="${assetHref("/assets/app.js")}"></script></body></html>`;
+  return `<!doctype html><html lang="${escapeHtml(messages.language)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="${escapeHtml(config.themeColor)}"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="${escapeHtml(config.title)}"><title>${fullTitle}</title><meta name="description" content="${escapeHtml(pageDescription)}"><link rel="canonical" href="${absolute(pathName)}"><link rel="alternate" hreflang="${messages.language}" href="${absolute(pathName)}">${alternateLink}<link rel="alternate" hreflang="x-default" href="${absolute(defaultPath)}"><link rel="manifest" href="${localeHref(locale, "/manifest.webmanifest")}"><link rel="icon" href="${href("/favicon.svg")}" type="image/svg+xml"><link rel="apple-touch-icon" href="${href("/icons/apple-touch-icon.png")}"><link rel="alternate" type="application/rss+xml" title="${escapeHtml(config.title)} RSS" href="${localeHref(locale, "/rss.xml")}"><script>try{var d=document.documentElement,s=localStorage.getItem('freshmark-skin');d.dataset.theme=localStorage.getItem('freshmark-theme')||'';if(/^(${skinNames.join("|")})$/.test(s)){var l=document.createElement('link');l.rel='stylesheet';l.href=${JSON.stringify(assetHref("/assets/skins.css"))};l.setAttribute('blocking','render');l.setAttribute('data-skin-styles','');document.head.appendChild(l);d.dataset.skin=s}}catch(e){}</script><style data-critical>${criticalCss}</style>${mathStyles}${deferredStyles}</head><body><div class="site-shell"><div class="ambient"></div>${article ? '<div class="reading-progress" data-reading-progress></div>' : ""}${header(locale, alternatePath)}${content}${footer(locale)}</div>${searchModal(locale)}<script>window.FRESHMARK={basePath:${JSON.stringify(basePath)},title:${JSON.stringify(config.title)},locale:${JSON.stringify(locale)},language:${JSON.stringify(messages.language)},messages:${serializedClientMessages[locale]},localeRoot:${JSON.stringify(localeHref(locale, "/"))},alternateRoot:${JSON.stringify(localeHref(alternateLocale, "/"))},postsRoot:${JSON.stringify(localeHref(locale, "/posts/"))},searchIndexPath:${JSON.stringify(localeHref(locale, "/search-index.json"))},assetVersion:${JSON.stringify(assetVersion)},skinStyles:${JSON.stringify(assetHref("/assets/skins.css"))},views:${JSON.stringify({ enabled: viewsEnabled, endpoint: viewsEndpoint })},comments:${JSON.stringify({ enabled: commentsEnabled, auth: commentsAuthEnabled, listEndpoint: commentsListEndpoint, submitEndpoint: commentsSubmitEndpoint, authEndpoints: commentsAuthEndpoints })},poll:${JSON.stringify({ endpoint: "/api/poll" })}};</script><script type="module" src="${assetHref("/assets/app.js")}"></script></body></html>`;
 }
 
 function webManifest(locale = defaultLocale) {
@@ -316,14 +343,7 @@ async function outputVersion() {
 
 function serviceWorker(version) {
   const localizedPrecache = Object.keys(locales).flatMap((locale) => [
-    localizedPath(locale, "/"),
     localizedPath(locale, "/404.html"),
-    localizedPath(locale, "/timeline/"),
-    localizedPath(locale, "/about/"),
-    localizedPath(locale, "/page.html"),
-    localizedPath(locale, "/timeline/page.html"),
-    localizedPath(locale, "/about/page.html"),
-    localizedPath(locale, "/rss.xml"),
     localizedPath(locale, "/manifest.webmanifest"),
   ]);
   return `const VERSION=${JSON.stringify(version)};
@@ -333,9 +353,10 @@ const ASSET_VERSION=${JSON.stringify(assetVersion)};
 const LOCALIZED_NOT_FOUND=${JSON.stringify(Object.keys(locales).filter((locale) => locale !== defaultLocale).map((locale) => [`/${locale}/`, localizedPath(locale, "/404.html")]))};
 const at=(path)=>BASE_PATH+path;
 const versioned=(path)=>at(path.replace(/(\\.js|\\.css)$/,"."+ASSET_VERSION+"$1"));
-  const PRECACHE=${JSON.stringify([...localizedPrecache, "/favicon.svg", "/icons/icon-192.png", "/icons/icon-512.png", "/icons/apple-touch-icon.png", "/assets/fonts/anthropic-sans-variable.woff2"])}.map(at).concat([versioned("/assets/styles.css"),versioned("/assets/skins.css"),versioned("/assets/app.js")]);
+const PRECACHE=${JSON.stringify([...localizedPrecache, "/favicon.svg", "/icons/icon-192.png", "/icons/icon-512.png", "/icons/apple-touch-icon.png"])}.map(at).concat([versioned("/assets/styles.css"),versioned("/assets/app.js")]);
+const warmPrecache=async()=>{const cache=await caches.open(CACHE_NAME);await Promise.all(PRECACHE.map(async(url)=>{const hit=(url.includes("/assets/")||url.includes("/icons/")||url.endsWith("/favicon.svg"))&&await caches.match(url);if(hit)await cache.put(url,hit.clone());else await cache.add(url)}))};
 const removeCachedSearchIndexes=async()=>{const cache=await caches.open(CACHE_NAME);const requests=await cache.keys();await Promise.all(requests.filter((request)=>new URL(request.url).pathname.endsWith("/search-index.json")).map((request)=>cache.delete(request)))};
-self.addEventListener("install",(event)=>event.waitUntil(caches.open(CACHE_NAME).then((cache)=>cache.addAll(PRECACHE)).then(()=>self.skipWaiting())));
+self.addEventListener("install",(event)=>event.waitUntil(warmPrecache().then(()=>self.skipWaiting())));
 self.addEventListener("activate",(event)=>event.waitUntil(caches.keys().then((names)=>Promise.all(names.filter((name)=>name.startsWith("freshmark-")&&name!==CACHE_NAME).map((name)=>caches.delete(name)))).then(removeCachedSearchIndexes).then(()=>self.clients.claim())));
 const cacheResponse=async(request,response)=>{if(response&&response.ok){const cache=await caches.open(CACHE_NAME);await cache.put(request,response.clone())}return response};
 const cacheFirst=async(request)=>(await caches.match(request))||cacheResponse(request,await fetch(request));
@@ -384,12 +405,24 @@ async function writeLocaleIndexes(locale, localePosts) {
   ]);
 }
 
+const isBundlePost = (post) => /(?:^|\/)index(?:\.[a-z]{2})?\.md$/i.test(post.sourceFile);
+
+async function copyPostAssets(post) {
+  if (!isBundlePost(post)) return;
+  const sourceDirectory = path.dirname(path.join(contentDir, post.sourceFile));
+  const outputDirectory = path.join(outputDir, localeOutput(post.locale, `posts/${post.slug}`));
+  await fs.mkdir(outputDirectory, { recursive: true });
+  await fs.cp(sourceDirectory, outputDirectory, {
+    recursive: true,
+    filter: (source) => source === sourceDirectory || (!source.endsWith(".md") && !source.endsWith(".md.bak")),
+  });
+}
+
 async function writePost(post) {
   const html = await postPage(post);
   const spaHtml = await postPage(post, { mathOutput: "source", fragment: true });
   const directory = localeOutput(post.locale, `posts/${post.slug}`);
   const outputDirectory = path.join(outputDir, directory);
-  const sourceDirectory = path.dirname(path.join(contentDir, post.sourceFile));
   await fs.mkdir(outputDirectory, { recursive: true });
   await Promise.all([
     write(`${directory}/index.html`, html),
@@ -402,10 +435,7 @@ async function writePost(post) {
       alternatePath: post.alternatePath,
     })),
     fs.copyFile(path.join(contentDir, post.sourceFile), path.join(outputDirectory, "index.md")),
-    fs.cp(sourceDirectory, outputDirectory, {
-      recursive: true,
-      filter: (source) => source === sourceDirectory || (!source.endsWith(".md") && !source.endsWith(".md.bak")),
-    }),
+    copyPostAssets(post),
   ]);
 }
 
@@ -457,13 +487,13 @@ else if (incrementalBuild) {
 } else {
 await Promise.all((await fs.readdir(outputDir)).map((entry) => fs.rm(path.join(outputDir, entry), { recursive: true, force: true, maxRetries: 5, retryDelay: 25 })));
 await fs.mkdir(path.join(outputDir, "assets", "fonts"), { recursive: true });
-const styles = new CleanCSS({ level: 2 }).minify([
+const styles = new CleanCSS(cleanCssOptions).minify([
   await fs.readFile(path.join(root, "node_modules", "photoswipe", "dist", "photoswipe.css"), "utf8"),
   await fs.readFile(path.join(themeDir, "styles.css"), "utf8"),
   editorialStyles,
   await fs.readFile(path.join(themeDir, "flourish.css"), "utf8"),
 ].join("\n"));
-const skinStyles = new CleanCSS({ level: 2 }).minify(await fs.readFile(path.join(themeDir, "skins.css"), "utf8"));
+const skinStyles = new CleanCSS(cleanCssOptions).minify(await fs.readFile(path.join(themeDir, "skins.css"), "utf8"));
 if (skinStyles.errors.length) throw new Error(`Skin CSS minification failed: ${skinStyles.errors.join(", ")}`);
 const katexStyles = (await fs.readFile(path.join(root, "node_modules", "katex", "dist", "katex.min.css"), "utf8")).replaceAll("font-display:block", "font-display:swap");
 const katexFontDirectory = path.join(root, "node_modules", "katex", "dist", "fonts");
@@ -475,6 +505,7 @@ const bundled = await bundle({
   chunkNames: "chunks/[name]-[hash]",
   entryNames: "[name]",
   format: "esm",
+  legalComments: "none",
   minify: true,
   outdir: path.join(outputDir, "assets"),
   platform: "browser",
@@ -504,10 +535,7 @@ await Promise.all(browserBundles.map(async ({ file, code }) => {
   await fs.mkdir(path.dirname(target), { recursive: true });
   await fs.writeFile(target, code);
 }));
-await fs.cp(contentDir, path.join(outputDir, "posts"), {
-  recursive: true,
-  filter: (source) => !source.endsWith(".md") && !source.endsWith(".md.bak"),
-});
+await Promise.all(posts.map(copyPostAssets));
 await enhanceResponsiveImages(posts, {
   contentDirectory: contentDir,
   outputDirectory: outputDir,
@@ -571,13 +599,6 @@ await Promise.all(posts.map(async (post) => {
     })),
     fs.copyFile(path.join(contentDir, post.sourceFile), path.join(outputDir, directory, "index.md")),
   ];
-  if (post.locale !== defaultLocale) {
-    const sourceDirectory = path.dirname(path.join(contentDir, post.sourceFile));
-    writes.push(fs.cp(sourceDirectory, path.join(outputDir, directory), {
-      recursive: true,
-      filter: (source) => source === sourceDirectory || (!source.endsWith(".md") && !source.endsWith(".md.bak")),
-    }));
-  }
   await Promise.all(writes);
 }));
 

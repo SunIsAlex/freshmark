@@ -7,8 +7,6 @@
 }
 :root {
   --font-sans:"Anthropic Sans",ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  --font-serif:var(--font-sans);
-  --font-mono:ui-monospace,"SFMono-Regular",Consolas,"Liberation Mono",monospace;
   --text-xs:12px; --text-sm:14px; --text-md:16px; --text-lg:20px;
 }
 * { box-sizing:border-box; }
@@ -22,25 +20,19 @@ button { color:inherit; }
 .header { display:flex; align-items:center; justify-content:space-between; }
 .brand { display:inline-flex; align-items:center; gap:10px; font-weight:750; }
 .brand-mark { display:block; flex:0 0 auto; }
-.nav { display:flex; align-items:center; color:var(--ink-soft); font-size:var(--text-sm); }
-.icon-btn { border:1px solid var(--line); display:grid; place-items:center; }
-.hero { display:grid; }
-.eyebrow { text-transform:uppercase; font-weight:700; }
-.hero h1 { margin:0; }
+.nav { display:flex; align-items:center; }
+.hero,.featured { display:grid; }
+.eyebrow,.meta { text-transform:uppercase; }
+.hero h1,.post-card h3,.post-card p { margin:0; }
 .search-trigger { width:100%; display:flex; align-items:center; gap:12px; border:1px solid var(--line); color:var(--ink-soft); text-align:left; }
 .search-trigger kbd { margin-left:auto; font-family:var(--font-mono); font-size:var(--text-xs); }
-.featured { display:grid; }
 .featured-copy { display:flex; flex-direction:column; justify-content:center; }
-.meta { color:var(--ink-soft); text-transform:uppercase; }
-.featured p,.article-dek,.back-link,.article-meta { color:var(--ink-soft); }
+.back-link,.article-meta { color:var(--ink-soft); }
 .section-head { display:flex; justify-content:space-between; }
-.tag-row { display:flex; }
+.tag-row,.article-meta { display:flex; flex-wrap:wrap; }
 .post-card { content-visibility:auto; contain-intrinsic-size:auto 130px; }
-.post-card h3,.post-card p { margin:0; }
-.post-card p { color:var(--ink-soft); }
-.article-meta { display:flex; flex-wrap:wrap; }
 .article-wrap { margin:0 auto 100px; display:grid; justify-content:center; }
-.prose { min-width:0; max-width:100%; overflow-wrap:anywhere; }
+.prose { min-width:0; max-width:100%; overflow-wrap:anywhere; font-family:var(--font-serif); }
 .prose > :nth-child(n+8) { content-visibility:auto; contain-intrinsic-size:auto 72px; }
 .prose img { max-width:100%; height:auto; }
 .math-inline { display:inline-block; max-width:100%; }

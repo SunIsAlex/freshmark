@@ -34,18 +34,27 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   let mathOverflowFrame;
   let inlineMathObserver;
   let readingStateFrame;
+  let anchorSyncTimer;
+  let cachedProgressEl = null;
+  let cachedHeadings = null;
+  let loadedSearchIndex = null;
   let searchScrollRequest = 0;
   let viewRequest = 0;
-  let commentsRequest = 0;
   let commentAuthModule;
   let commentSubmitModule;
   let pollModule;
   let shareModule;
   let navigationController;
   const preparedGalleryImages = new WeakSet();
+  const preparedPhotoSwipePreloads = new WeakSet();
   const preparedAnswerReveals = new WeakSet();
   const observedInlineMath = new WeakSet();
   const nearbyInlineMath = new Set();
+
+  function resetReadingCache() {
+    cachedProgressEl = null;
+    cachedHeadings = null;
+  }
 
   function afterFirstPaint(task) {
     requestAnimationFrame(() => requestAnimationFrame(() => {
@@ -90,89 +99,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
       .catch(() => {});
   }
 
-  function commentDate(value) {
-    try {
-      return new Intl.DateTimeFormat(window.FRESHMARK?.language, {
-        dateStyle: "medium",
-        timeStyle: "short",
-      }).format(new Date(value));
-    } catch {
-      return "";
-    }
-  }
-
-  function commentElement(comment) {
-    const article = document.createElement("article");
-    article.className = "comment";
-    article.dataset.commentId = comment.id;
-    const header = document.createElement("header");
-    const author = document.createElement("strong");
-    author.textContent = comment.name;
-    const time = document.createElement("time");
-    time.dateTime = comment.createdAt;
-    time.textContent = commentDate(comment.createdAt);
-    const body = document.createElement("div");
-    body.className = "comment-body";
-    if (typeof comment.bodyHtml === "string") body.innerHTML = comment.bodyHtml;
-    else body.textContent = comment.body;
-    header.append(author, time);
-    article.append(header, body);
-    return article;
-  }
-
-  function updateCommentsTitle(section, count) {
-    const title = section.querySelector("[data-comments-title]");
-    if (title) title.textContent = `${message("commentsTitle")} (${count})`;
-  }
-
-  function renderComments(section, payload, { prepend = false } = {}) {
-    const list = section.querySelector("[data-comment-list]");
-    const more = section.querySelector("[data-comments-more]");
-    if (!list || !more) return;
-    const elements = (payload.comments || []).map(commentElement);
-    if (prepend) {
-      const fragment = document.createDocumentFragment();
-      fragment.append(...elements);
-      list.prepend(fragment);
-    } else if (elements.length) {
-      list.replaceChildren(...elements);
-    } else {
-      const empty = document.createElement("p");
-      empty.className = "comment-state";
-      empty.textContent = message("commentsEmpty");
-      list.replaceChildren(empty);
-    }
-    more.dataset.cursor = payload.nextCursor || "";
-    more.hidden = !payload.nextCursor;
-    more.disabled = false;
-    more.textContent = message("loadOlderComments");
-    updateCommentsTitle(section, Number(payload.count) || 0);
-  }
-
-  async function loadComments(section, { cursor = "", prepend = false } = {}) {
-    if (!comments.enabled || !comments.listEndpoint || !section?.isConnected) return;
-    const request = ++commentsRequest;
-    const endpoint = new URL(comments.listEndpoint, location.origin);
-    endpoint.searchParams.set("path", section.dataset.commentsPath);
-    if (cursor) endpoint.searchParams.set("cursor", cursor);
-    try {
-      const response = await fetch(endpoint, {
-        cache: "no-store",
-        credentials: "same-origin",
-        headers: { accept: "application/json" },
-      });
-      if (!response.ok) throw new Error("comments");
-      const payload = await response.json();
-      if (request !== commentsRequest || !section.isConnected) return;
-      renderComments(section, payload, { prepend });
-    } catch {
-      if (request !== commentsRequest || !section.isConnected) return;
-      const state = section.querySelector("[data-comment-state]");
-      if (state) state.textContent = message("commentsFailed");
-      const more = section.querySelector("[data-comments-more]");
-      if (more) more.hidden = true;
-    }
-  }
+  const getCommentsModule = () => (commentSubmitModule ||= import("./comment-submit.js"));
 
   function prepareComments() {
     const section = document.querySelector("[data-comments]");
@@ -186,12 +113,11 @@ import { searchableLatexText } from "../lib/search-text.mjs";
       commentAuthModule ||= import("./comment-auth.js");
       commentAuthModule.then((module) => module.prepareCommentAuth({ section, comments, message }));
     }
-    loadComments(section);
+    getCommentsModule().then((module) => module.loadComments({ section, comments, message }));
   }
 
   async function submitComment(form) {
-    commentSubmitModule ||= import("./comment-submit.js");
-    (await commentSubmitModule).submitComment({ form, comments, message, loadComments });
+    (await getCommentsModule()).submitComment({ form, comments, message });
   }
 
   function loadKaTeXStyles() {
@@ -219,6 +145,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   }
 
   function upgradeInitialMath() {
+    if ((navigator.connection || navigator.mozConnection || navigator.webkitConnection)?.saveData) return;
     const formulas = [...document.querySelectorAll("[data-math-source]")];
     if (!formulas.length) return;
     if (!("IntersectionObserver" in window)) {
@@ -274,7 +201,15 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     return searchCache.get(searchIndexPath, async () => {
       const response = await fetch(searchIndexPath);
       if (!response.ok) throw new Error("Could not load search index");
-      return response.json();
+      const items = await response.json();
+      for (const item of items) {
+        item._title = String(item.title || "").toLowerCase();
+        item._meta = [...(item.categories || []), ...(item.tags || [])].join(" ").toLowerCase();
+        item._summary = String(item.summary || "").toLowerCase();
+        item._body = String(item.searchText || "").toLowerCase();
+      }
+      loadedSearchIndex = items;
+      return items;
     });
   }
 
@@ -485,12 +420,29 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     }
   }
 
-  function articleUnitSignature(element, pageUrl) {
-    const textCopy = element.cloneNode(true);
-    for (const formula of textCopy.querySelectorAll(".math-expression")) {
-      formula.replaceWith(document.createTextNode(` ${formula.getAttribute("aria-label") || formula.dataset.mathSource || ""} `));
+  function hashSignature(value) {
+    let h1 = 0xdeadbeef;
+    let h2 = 0x41c6ce57;
+    for (let i = 0; i < value.length; i += 1) {
+      const code = value.charCodeAt(i);
+      h1 = Math.imul(h1 ^ code, 2654435761);
+      h2 = Math.imul(h2 ^ code, 1597334677);
     }
-    const text = textCopy.textContent.replace(/\s+/g, " ").trim();
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    return ((4294967296 * (2097151 & h2)) + (h1 >>> 0)).toString(36);
+  }
+
+  function articleUnitSignature(element, pageUrl) {
+    let rawText = element.textContent;
+    if (element.querySelector(".math-expression")) {
+      const textCopy = element.cloneNode(true);
+      for (const formula of textCopy.querySelectorAll(".math-expression")) {
+        formula.replaceWith(document.createTextNode(` ${formula.getAttribute("aria-label") || formula.dataset.mathSource || ""} `));
+      }
+      rawText = textCopy.textContent;
+    }
+    const text = rawText.replace(/\s+/g, " ").trim();
     const resources = [element, ...element.querySelectorAll("a[href], img[src], video[src], source[src], iframe[src], .math-expression[aria-label], .math-expression[data-math-source]")]
       .map((item) => {
         const mathSource = item.getAttribute("aria-label") || item.dataset.mathSource;
@@ -505,7 +457,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
         ].join(":");
       })
       .filter(Boolean);
-    return `${element.tagName}\u0000${text}\u0000${resources.join("\u0001")}`;
+    return hashSignature(`${element.tagName}\u0000${text}\u0000${resources.join("\u0001")}`);
   }
 
   async function applyArticleContentDiff(url, scope = document) {
@@ -514,6 +466,9 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     prose.querySelector(":scope > .content-diff-notice")?.remove();
     for (const element of prose.querySelectorAll("[data-content-diff]")) delete element.dataset.contentDiff;
 
+    await new Promise((resolve) => idle(resolve));
+    if (!prose.isConnected) return 0;
+
     const pageUrl = pageContentUrl(url);
     const storageKey = `${contentSnapshotPrefix}${pageUrl.pathname}`;
     const units = articleContentUnits(prose);
@@ -521,11 +476,11 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     let previous = null;
     try {
       const stored = JSON.parse(localStorage.getItem(storageKey));
-      if (stored?.version === 2 && Array.isArray(stored.units)) previous = stored.units;
+      if (stored?.version === 3 && Array.isArray(stored.units)) previous = stored.units;
     } catch {}
 
     let changed = 0;
-    if (previous && JSON.stringify(previous) !== JSON.stringify(snapshot)) {
+    if (previous && (previous.length !== snapshot.length || previous.some((value, index) => value !== snapshot[index]))) {
       const { changedCurrentIndexes } = await import("../lib/content-diff.mjs");
       if (!prose.isConnected) return 0;
       const changedIndexes = changedCurrentIndexes(previous, snapshot);
@@ -534,7 +489,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     }
 
     try {
-      localStorage.setItem(storageKey, JSON.stringify({ version: 2, units: snapshot }));
+      localStorage.setItem(storageKey, JSON.stringify({ version: 3, units: snapshot }));
     } catch {}
     if (changed) {
       const notice = document.createElement("div");
@@ -615,9 +570,16 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   }
 
   function preloadPhotoSwipe(scope = document) {
-    if (scope.querySelector(".prose img") && canPrefetch()) idle(() => {
+    const warm = () => {
       if (canPrefetch()) loadPhotoSwipe().catch(() => {});
-    });
+    };
+    for (const image of scope.querySelectorAll(".prose img")) {
+      if (preparedPhotoSwipePreloads.has(image)) continue;
+      preparedPhotoSwipePreloads.add(image);
+      image.addEventListener("pointerenter", warm, { once: true, passive: true });
+      image.addEventListener("touchstart", warm, { once: true, passive: true });
+      image.addEventListener("focus", warm, { once: true });
+    }
   }
 
   async function openGallery(image) {
@@ -724,14 +686,39 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
   });
+  function rankSearchMatches(posts, needle) {
+    const scored = [];
+    for (const post of posts) {
+      let score = 0;
+      const titleIdx = post._title.indexOf(needle);
+      if (titleIdx === 0) score += 12;
+      else if (titleIdx > 0) score += 8;
+      if (post._meta.includes(needle)) score += 4;
+      if (post._summary.includes(needle)) score += 2;
+      if (post._body.includes(needle)) score += 1;
+      if (score) scored.push({ post, score });
+    }
+    scored.sort((a, b) => b.score - a.score);
+    return scored.slice(0, 24).map(({ post }) => post);
+  }
+
   async function updateSearch() {
     const request = ++searchRequest;
     const term = input.value.trim();
+    if (!term) {
+      if (loadedSearchIndex) draw(loadedSearchIndex.slice(0, 12), "");
+      else results.innerHTML = `<p class="search-hint">${escape(message("searchPlaceholder"))}</p>`;
+      return;
+    }
     const needle = searchNeedle(term);
+    if (!needle) {
+      draw([], term);
+      return;
+    }
     try {
       const posts = await loadIndex();
       if (request !== searchRequest || modal.hidden) return;
-      draw(!needle ? (term ? [] : posts) : posts.filter((post) => `${post.title} ${post.summary} ${(post.categories || []).join(" ")} ${(post.tags || []).join(" ")} ${post.searchText}`.toLowerCase().includes(needle)), term);
+      draw(rankSearchMatches(posts, needle), term);
     } catch {
       if (request === searchRequest && !modal.hidden) results.innerHTML = `<p class="search-hint">${escape(message("searchFailed"))}</p>`;
     }
@@ -770,15 +757,15 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   }
 
   function updateProgress() {
-    const progress = document.querySelector("[data-reading-progress]");
+    const progress = cachedProgressEl?.isConnected ? cachedProgressEl : (cachedProgressEl = document.querySelector("[data-reading-progress]"));
     if (!progress) return;
     const total = document.documentElement.scrollHeight - innerHeight;
-    progress.style.width = `${total > 0 ? Math.min(100, scrollY / total * 100) : 0}%`;
+    progress.style.transform = `scaleX(${total > 0 ? Math.min(1, Math.max(0, scrollY / total)) : 0})`;
   }
 
   function syncReadingAnchor() {
-    if (!document.querySelector("[data-reading-progress]")) return;
-    const headings = document.querySelectorAll(".prose h1[id], .prose h2[id], .prose h3[id], .prose h4[id], .prose h5[id], .prose h6[id]");
+    if (!(cachedProgressEl?.isConnected || (cachedProgressEl = document.querySelector("[data-reading-progress]")))) return;
+    const headings = cachedHeadings || (cachedHeadings = [...document.querySelectorAll(".prose h1[id], .prose h2[id], .prose h3[id], .prose h4[id], .prose h5[id], .prose h6[id]")]);
     const threshold = Math.min(160, innerHeight * 0.25);
     let heading = null;
     for (const candidate of headings) {
@@ -791,11 +778,13 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     history.replaceState({ ...(history.state || {}), spa: true, scrollY }, "", `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`);
   }
 
-  function updateReadingState() {
+  function updateReadingState(immediateAnchor) {
     cancelAnimationFrame(readingStateFrame);
     readingStateFrame = requestAnimationFrame(() => {
       updateProgress();
-      syncReadingAnchor();
+      clearTimeout(anchorSyncTimer);
+      if (immediateAnchor === true) syncReadingAnchor();
+      else anchorSyncTimer = setTimeout(syncReadingAnchor, 120);
     });
   }
 
@@ -991,7 +980,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     const previousScroll = scrollY;
     let committed = false;
     viewRequest += 1;
-    commentsRequest += 1;
+    commentSubmitModule?.then((module) => module.abortComments());
     closeGallery({ restoreFocus: false });
     shell.setAttribute("aria-busy", "true");
     try {
@@ -1024,6 +1013,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
           progress.dataset.readingProgress = "";
           document.querySelector(".header")?.before(progress);
         }
+        resetReadingCache();
         updateMetadata(nextPage);
         if (push) {
           history.replaceState({ ...(history.state || {}), scrollY: previousScroll }, "", location.href);
@@ -1049,7 +1039,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
       else if (searchMatch) scrollToSearchHighlight(searchMatch);
       else if (url.hash) document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView();
       else scrollTo(0, 0);
-      updateReadingState();
+      updateReadingState(true);
       const main = document.querySelector("main");
       main.setAttribute("tabindex", "-1");
       if (document.activeElement === document.body) main.focus({ preventScroll: true });
@@ -1082,7 +1072,13 @@ import { searchableLatexText } from "../lib/search-text.mjs";
       event.preventDefault();
       command.disabled = true;
       command.textContent = message("commentsLoading");
-      loadComments(command.closest("[data-comments]"), { cursor: command.dataset.cursor, prepend: true });
+      getCommentsModule().then((module) => module.loadComments({
+        section: command.closest("[data-comments]"),
+        comments,
+        message,
+        cursor: command.dataset.cursor,
+        prepend: true,
+      }));
       return;
     }
     const anchor = event.target.closest("a[href]");
@@ -1130,7 +1126,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   addEventListener("scroll", updateReadingState, { passive: true });
   addEventListener("resize", () => {
     updateInlineMathOverflow();
-    updateReadingState();
+    updateReadingState(true);
   }, { passive: true });
   (navigator.connection || navigator.mozConnection || navigator.webkitConnection)?.addEventListener("change", drainPrefetchQueue);
   const initialUrl = new URL(location.href);
@@ -1150,7 +1146,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     prepareGallery();
     const initialSearchMatch = highlightSearchTerm(initialUrl);
     if (initialSearchMatch) requestAnimationFrame(() => scrollToSearchHighlight(initialSearchMatch));
-    updateReadingState();
+    updateReadingState(true);
     scheduleArticlePrefetch();
   });
 })();
