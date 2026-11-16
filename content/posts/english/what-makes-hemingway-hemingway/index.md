@@ -21,6 +21,49 @@ draft: false
 
 ---
 
+## 原文
+
+**Passage 2**（2025·北京模拟）
+
+**[P1]** Years after my art history class, I am insufferable at museums. "That's definitely a Matisse," I say. "You can tell because of the brushwork and the use of colour." Sometimes it is not a Matisse but oftentimes it is.
+
+**[P2]** It is unsettling to learn, then, that for all of my carefully won art appreciation, I am in danger of being surpassed by an insect. In a recent study, honeybees—whose brains are the size of grass seeds—were shown Picassos and Monets paired side by side. Below the prints were two small containers, one containing sugar water and the other nothing at all.
+
+**[P3]** Which to enter? Bees couldn't see or smell whether a given container held the treat until they'd already flown inside it. But they could let the masterpieces guide them: for some bees, the reward was always under the Picasso, while for the rest it was under the Monet. Over the course of many trials, the bees learned to fly straight for the correct container. Indeed, they even performed slightly better than chance when faced with pairs of paintings they'd never seen before. The bees had learned to discriminate, however modestly, between the two artists' styles.
+
+**[P4]** To be sure, humans still have the edge. A team of researchers led by Liane Gabora found that art students were perfectly capable of identifying which well-known artist was behind which unknown painting. Creative writing students were similarly excellent at spotting little-read passages by Hemingway or Dickens—a skill I can only assume no honeybee has yet demonstrated.
+
+**[P5]** Even more impressively, though, the students could recognize as-yet-unseen samples of each other's work, including work in entirely different mediums. Creative writers could identify their fellow writers' paintings and sketches; painters had a pretty good idea who'd brought which poem or clay pot.
+
+**[P6]** It's clear what the bees were doing: picking up and categorizing complex visual patterns in the pairs of images. But recognizing differences across mediums is altogether different. Whether we're writing poems or building sculptures, Gabora argues, we're doing so with the same mind: one that structures information in the same way, has been shaped by the same experiences, and longs to express the same ideas. Naturally, our techniques and preoccupations in one domain should "<u>out</u>" us in another.
+
+**[P7]** But still I wonder: Just what about these techniques and preoccupations did the trick? The researchers did their best to keep subject matter from ruling the day by instructing, for instance, artists who happened to be surfers not to bring in art that depicted (描绘) surfing. But what of less obvious subject matter like Western landscapes? And what of the obsessions that come into our work unawares? A correlational study like this one will not answer these questions.
+
+**[P8]** Perhaps my biggest question has to do with people who don't identify as artists, and haven't settled—or at least would claim so—on a personal style. Are their creations also a reflection of their worldview? It seems likely that, at least to some extent, bad art is all alike, while only good art is good in its own way.
+
+**1. Why does the author mention bees?**  
+A. To present an example.  
+B. To put forward a theory.  
+C. To draw out a comparison.  
+D. To highlight a research finding.
+
+**2. Why does the author think humans still have the edge?**  
+A. Because we can transfer our experiences.  
+B. Because we can discriminate styles.  
+C. Because we can categorize patterns.  
+D. Because we can learn from trials.
+
+**3. What does the underlined word "out" in paragraph 6 probably mean?**  
+A. Assist.　　B. Trick.　　C. Beat.　　D. Expose.  
+
+**4. What might be the best title for the passage?**  
+A. Will Bees Beat Humans?  
+B. How Will You View a View?  
+C. Why Good Art Works Wonders?  
+D. What Makes Hemingway Hemingway?
+
+---
+
 ## 一、文章脉络一览
 
 | 段落 | 内容 | 作用 |
