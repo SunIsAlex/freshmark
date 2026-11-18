@@ -155,7 +155,7 @@ Notice the pattern in both upgrades: **`Since / When / If [premise], it stands t
 Vote on each question below to lock in your answer and reveal the explanation:
 
 :::poll it-stands-to-reason-q1
-**1. Spot the error:** *"It stands to the reason that practicing aloud improves pronunciation."* — What needs fixing?
+**Q1 · Spot the error:** *"It stands to the reason that practicing aloud improves pronunciation."* — What needs fixing?
 
 - [x] A. Remove `the` before `reason`
 - [ ] B. Change `reason` to `reasons`
@@ -170,7 +170,7 @@ It should be *"It stands to reason that..."* Here **reason** is uncountable ("lo
 :::
 
 :::poll it-stands-to-reason-q2
-**2. Choose the better fit:** *"If you never back up your phone, it ______ that you risk losing your photos."*
+**Q2 · Choose the better fit:** *"If you never back up your phone, it ______ that you risk losing your photos."*
 
 - [ ] A. goes without saying
 - [x] B. stands to reason
@@ -184,7 +184,7 @@ The sentence builds a clear *if-premise → logical consequence* chain. (*A* sta
 :::
 
 :::poll it-stands-to-reason-q3
-**3. Predict the author's move:** Suppose an article begins: *"It stands to reason that offering students cash for good grades would boost test scores, right?"* What kind of sentence most likely follows?
+**Q3 · Predict the author's move:** Suppose an article begins: *"It stands to reason that offering students cash for good grades would boost test scores, right?"* What kind of sentence most likely follows?
 
 - [ ] A. A simple list of cash prize amounts
 - [x] B. A contrast or counter-intuitive twist (e.g., *"Yet studies reveal the opposite..."*)

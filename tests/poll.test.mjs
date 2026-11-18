@@ -34,6 +34,22 @@ It negates the misconception and confirms the true fact.
   assert.ok(parsed.reveal?.includes("The correct answer is **B**!"));
 });
 
+test("poll parser keeps bold and italic question lines out of options", () => {
+  const body = `
+**Question 1:** *Choose the better fit:* "If you skip sleep, it ______ that you feel tired."
+
+- [ ] A. goes without saying
+- [x] B. stands to reason
+- [ ] C. is a no-brainer
+  `.trim();
+
+  const parsed = parsePollBody(body);
+  assert.equal(parsed.question, '**Question 1:** *Choose the better fit:* "If you skip sleep, it ______ that you feel tired."');
+  assert.equal(parsed.options.length, 3);
+  assert.equal(parsed.options[0].text, "A. goes without saying");
+  assert.equal(parsed.options[1].isCorrect, true);
+});
+
 test("renderMarkdown renders interactive poll container and KaTeX math formulas", async () => {
   const source = `
 # Quiz Post
