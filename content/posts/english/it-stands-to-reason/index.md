@@ -152,18 +152,48 @@ Notice the pattern in both upgrades: **`Since / When / If [premise], it stands t
 
 ## 7. 30-Second Self-Check
 
-Test your instinct on these three quick questions before you move on:
+Vote on each question below to lock in your answer and reveal the explanation:
 
-1. **Spot the error:** *"It stands to the reason that practicing aloud improves pronunciation."* — What needs fixing, and why?
-2. **Choose the better fit:** *"If you never back up your phone, it ______ that you risk losing your photos."*  
-   A. goes without saying &nbsp;&nbsp; B. stands to reason &nbsp;&nbsp; C. is a no-brainer
-3. **Predict the author's move:** Suppose an article begins: *"It stands to reason that offering students cash for good grades would boost test scores, right?"* What kind of sentence most likely follows?
+:::poll it-stands-to-reason-q1
+**1. Spot the error:** *"It stands to the reason that practicing aloud improves pronunciation."* — What needs fixing?
 
-<details>
-<summary>Check Answers（点击查看解析）</summary>
+- [x] A. Remove `the` before `reason`
+- [ ] B. Change `reason` to `reasons`
+- [ ] C. Replace `to` with `for`
+- [ ] D. The sentence is already correct
 
-1. Remove **`the`** → *"It stands to reason that..."* Here *reason* is uncountable ("logic / common sense"), not one specific cause.
-2. **B (`stands to reason`)**. The sentence has a clear *if-premise → logical consequence* chain. (*A* doesn't fit an *if*-deduction well, and *C* is slangy and used for easy decisions, not logical risks.)
-3. A **contrast / counter-intuitive twist** (e.g., *"Yet studies reveal the opposite..."* or *"In reality, rewards often backfire..."*). That combo—*it stands to reason* + *, right?*—is classic **setup-and-twist** rhetoric!
+:::reveal Answer & Explanation
+**Correct Answer: A. Remove `the` before `reason`**
 
-</details>
+It should be *"It stands to reason that..."* Here **reason** is uncountable ("logic / common sense"), not one specific cause, so no article is used.
+:::
+:::
+
+:::poll it-stands-to-reason-q2
+**2. Choose the better fit:** *"If you never back up your phone, it ______ that you risk losing your photos."*
+
+- [ ] A. goes without saying
+- [x] B. stands to reason
+- [ ] C. is a no-brainer
+
+:::reveal Answer & Explanation
+**Correct Answer: B. `stands to reason`**
+
+The sentence builds a clear *if-premise → logical consequence* chain. (*A* states an undisputed backdrop rather than an *if*-deduction, and *C* is casual slang for an easy choice, not a logical risk.)
+:::
+:::
+
+:::poll it-stands-to-reason-q3
+**3. Predict the author's move:** Suppose an article begins: *"It stands to reason that offering students cash for good grades would boost test scores, right?"* What kind of sentence most likely follows?
+
+- [ ] A. A simple list of cash prize amounts
+- [x] B. A contrast or counter-intuitive twist (e.g., *"Yet studies reveal the opposite..."*)
+- [ ] C. A dictionary definition of the word *cash*
+- [ ] D. A personal story about winning a trophy
+
+:::reveal Answer & Explanation
+**Correct Answer: B. A contrast or counter-intuitive twist**
+
+That combo—*it stands to reason* + *, right?*—is classic **setup-and-twist** rhetoric: the author invites you to nod along with common sense right before flipping it with *actually / yet / however*.
+:::
+:::
