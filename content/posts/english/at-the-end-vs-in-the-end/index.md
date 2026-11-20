@@ -178,13 +178,49 @@ draft: false
 1. ❌ *~~In the end of~~ the semester, we had five exams.* → 只要后面跟 `of`，99% 都是 **`At the end of`**。
 2. ❌ *We got lost twice, and ~~at the end~~ we took a taxi.* → 表示折腾之后的最终结果，用 **`in the end`**。
 
-**自测一下（答案在最下方）：**
+**自测一下（投票即可解锁答案与解析）：**
 
-1. We waited for him for nearly an hour, and ______ we decided to leave without him.
-2. There's a small coffee shop ______ the lane.
-3. People complain about the noise, but ______, it's still the most convenient neighborhood in town.
+:::poll at-end-in-end-q1
+**Q1 · 最终决定：** *"We waited for him for nearly an hour, and ______ we decided to leave without him."*
 
-> **参考答案：**  
-> 1. **in the end**（等了一小时之后的最终决定）  
-> 2. **at the end of**（小巷尽头的物理空间位置）  
-> 3. **at the end of the day**（口语里权衡利弊后的核心结论；用 *in the end* 语法也对，但 *at the end of the day* 最地道）
+- [ ] A. at the end
+- [x] B. in the end
+- [ ] C. at the end of
+- [ ] D. at the end of the day
+
+:::reveal 答案与解析
+**正确答案：B. `in the end`**
+
+强调经过近一小时等待后的**最终结果/决定**（= *eventually / finally*）。`at the end of` 后面缺少宾语；`at the end of the day` 侧重权衡后的底线结论，不用于叙述“最后做了某件事”。
+:::
+:::
+
+:::poll at-end-in-end-q2
+**Q2 · 空间尽头：** *"There's a small coffee shop ______ the lane."*
+
+- [x] A. at the end of
+- [ ] B. in the end of
+- [ ] C. in the end
+- [ ] D. at the end
+
+:::reveal 答案与解析
+**正确答案：A. `at the end of`**
+
+小巷尽头是具体的**物理空间坐标**，必须用 `at the end of + 名词`。注意英文中绝没有 `in the end of` 这种搭配。
+:::
+:::
+
+:::poll at-end-in-end-q3
+**Q3 · 权衡底线：** *"People complain about the noise, but ______, it's still the most convenient neighborhood in town."*
+
+- [ ] A. at the end
+- [ ] B. at the end of
+- [x] C. at the end of the day
+- [ ] D. in the end of the day
+
+:::reveal 答案与解析
+**正确答案：C. `at the end of the day`**
+
+口语里最地道的“说到底、归根结底”，用来在权衡利弊后给出核心结论（≈ *when all is said and done*）。如果换成 `in the end` 语法也成立，但 `at the end of the day` 更符合日常美剧式劝说语感。
+:::
+:::
