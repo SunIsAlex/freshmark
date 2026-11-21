@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="440" viewBox="0 0 760 440" role="img" aria-labelledby="title desc">
+  <title id="title">例题 6.9 与 6.10 的重心截线图</title><desc id="desc">三角形 ABC 的重心 M 位于截线 EF 上。极值位置中 EF 平行 BC，AE 与 AB、AF 与 AC 的比均为三分之二；上方三角形与下方四边形的面积比为四比五。</desc>
+  <defs><style>.s{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif}.m{font-family:"Cambria Math","Times New Roman",serif;font-style:italic}.l{font-size:18px;fill:#17252f}.u{font-size:15px;fill:#65747d}</style></defs>
+  <rect width="760" height="440" rx="18" fill="#f7faf9"/><rect x="22" y="22" width="716" height="396" rx="14" fill="#fff" stroke="#dce8e4"/>
+  <g>
+    <path d="M250 62 65 360 435 360Z" fill="#eef7fb" stroke="#3273b9" stroke-width="2.5"/>
+    <path d="M126.7 260.7H373.3L250 62Z" fill="#eaf7f3" stroke="#0f8a72" stroke-width="2.5"/>
+    <path d="M250 62V360M65 360 342.5 211M435 360 157.5 211" stroke="#a7b4ba" stroke-width="1.5" stroke-dasharray="5 5"/>
+    <circle cx="250" cy="260.7" r="5" fill="#df5c4f"/>
+    <text x="239" y="50" class="m l">A</text><text x="47" y="382" class="m l">B</text><text x="442" y="382" class="m l">C</text><text x="111" y="252" class="m l">E</text><text x="380" y="252" class="m l">F</text><text x="259" y="282" class="m l">M</text>
+    <text x="193" y="178" class="s u" fill="#0f8a72">S△AEF = 4/9 S△ABC</text><text x="184" y="330" class="s u" fill="#3273b9">SBEFC = 5/9 S△ABC</text>
+  </g>
+  <g class="s"><rect x="475" y="69" width="233" height="304" rx="14" fill="#f1f6fa" stroke="#d8e3ea"/>
+    <text x="500" y="107" font-size="18" font-weight="700" fill="#17252f">重心截线关系</text><text x="500" y="146" font-size="18" fill="#3273b9" font-family="Cambria Math,Times New Roman,serif">1/k + 1/h = 3</text>
+    <text x="500" y="180" class="u">其中 AE=k·AB，AF=h·AC</text><line x1="500" y1="205" x2="682" y2="205" stroke="#cedbe1"/>
+    <text x="500" y="241" font-size="17" font-weight="700" fill="#17252f">面积比达到极值</text><text x="500" y="276" class="u">当 k=h=2/3，即 EF ∥ BC</text>
+    <text x="500" y="313" font-size="19" fill="#0f8a72" font-family="Cambria Math,Times New Roman,serif">S小 : S大 = 4 : 5</text><text x="500" y="344" class="u">最小比值为 4/5</text>
+  </g>
+</svg>

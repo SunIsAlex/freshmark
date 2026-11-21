@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 650" role="img" aria-labelledby="title desc">
+  <title id="title">椭圆中心的四段圆弧轨迹</title>
+  <desc id="desc">一个椭圆在第一象限内旋转并始终与横纵坐标轴相切。椭圆中心沿蒙日圆的一段圆弧往返运动，另外三个象限内的对称圆弧同时高亮。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.2" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10Z" class="ink-fill"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#172126" flood-opacity=".12"/>
+    </filter>
+    <style>
+      .paper{fill:#fff}.ink{stroke:#172126}.ink-fill{fill:#172126}.muted{stroke:#9aa4a8}.muted-fill{fill:#657176}
+      .locus{stroke:#ff5a36}.locus-fill{fill:#ff5a36}.ellipse{fill:#35a7ff;fill-opacity:.13;stroke:#1677b8}
+      text{font-family:Inter,"Noto Sans SC","Microsoft YaHei",sans-serif;fill:#172126}
+      .math{font-family:"Times New Roman","STIX Two Math",serif;font-style:italic}
+      @media (prefers-color-scheme:dark){.paper{fill:#11181c}.ink{stroke:#e8edef}.ink-fill{fill:#e8edef}.muted{stroke:#66747a}.muted-fill{fill:#aeb9bd}.locus{stroke:#ff795e}.locus-fill{fill:#ff795e}.ellipse{fill:#58b8ff;fill-opacity:.17;stroke:#65c0ff}text{fill:#e8edef}}
+    </style>
+  </defs>
+
+  <rect class="paper" width="760" height="650" rx="26"/>
+  <text x="380" y="42" text-anchor="middle" font-size="22" font-weight="650">保持与两坐标轴相切，中心只经过四段圆弧</text>
+  <text x="380" y="70" text-anchor="middle" font-size="15" class="muted-fill">示意取 a = 2.4，b = 1.35</text>
+
+  <!-- coordinate axes -->
+  <g class="ink" fill="none" stroke-width="2.4" stroke-linecap="round">
+    <path d="M88 335H682" marker-end="url(#arrow)"/>
+    <path d="M380 616V89" marker-end="url(#arrow)"/>
+  </g>
+  <g font-size="19">
+    <text x="691" y="342" class="math">x</text>
+    <text x="390" y="99" class="math">y</text>
+    <text x="360" y="359" class="math">O</text>
+  </g>
+
+  <!-- complete Monge circle and the four attainable arcs -->
+  <circle cx="380" cy="335" r="179.109" fill="none" class="muted" stroke-width="2" stroke-dasharray="7 9" opacity=".65"/>
+  <g fill="none" class="locus" stroke-width="8" stroke-linecap="round">
+    <path id="arc" d="M536 247A179.109 179.109 0 0 0 468 179"/>
+    <use href="#arc" transform="rotate(90 380 335)"/>
+    <use href="#arc" transform="rotate(180 380 335)"/>
+    <use href="#arc" transform="rotate(270 380 335)"/>
+  </g>
+
+  <!-- moving ellipse; nested transforms keep its center and rotation in sync -->
+  <g filter="url(#shadow)">
+    <g transform="translate(536 247)">
+      <animateTransform attributeName="transform" type="translate" dur="8s" repeatCount="indefinite"
+        keyTimes="0;.0833;.1667;.25;.3333;.4167;.5;.5833;.6667;.75;.8333;.9167;1"
+        values="536 247;532.396 240.897;522.084 225.95;506.649 208.351;489.05 192.916;474.103 182.604;468 179;474.103 182.604;489.05 192.916;506.649 208.351;522.084 225.95;532.396 240.897;536 247"/>
+      <g transform="rotate(0)">
+        <animateTransform attributeName="transform" type="rotate" dur="8s" repeatCount="indefinite"
+          keyTimes="0;.0833;.1667;.25;.3333;.4167;.5;.5833;.6667;.75;.8333;.9167;1"
+          values="0; -15; -30; -45; -60; -75; -90; -75; -60; -45; -30; -15; 0"/>
+        <ellipse cx="0" cy="0" rx="156" ry="88" class="ellipse" stroke-width="3"/>
+        <path d="M-156 0H156" class="ellipse" fill="none" stroke-width="1.5" stroke-dasharray="5 7" opacity=".75"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- animated center and radius -->
+  <line x1="380" y1="335" x2="536" y2="247" class="locus" stroke-width="2.2" stroke-dasharray="6 6" opacity=".85">
+    <animate attributeName="x2" dur="8s" repeatCount="indefinite"
+      keyTimes="0;.0833;.1667;.25;.3333;.4167;.5;.5833;.6667;.75;.8333;.9167;1"
+      values="536;532.396;522.084;506.649;489.05;474.103;468;474.103;489.05;506.649;522.084;532.396;536"/>
+    <animate attributeName="y2" dur="8s" repeatCount="indefinite"
+      keyTimes="0;.0833;.1667;.25;.3333;.4167;.5;.5833;.6667;.75;.8333;.9167;1"
+      values="247;240.897;225.95;208.351;192.916;182.604;179;182.604;192.916;208.351;225.95;240.897;247"/>
+  </line>
+  <circle cx="536" cy="247" r="7" class="locus-fill">
+    <animate attributeName="cx" dur="8s" repeatCount="indefinite"
+      keyTimes="0;.0833;.1667;.25;.3333;.4167;.5;.5833;.6667;.75;.8333;.9167;1"
+      values="536;532.396;522.084;506.649;489.05;474.103;468;474.103;489.05;506.649;522.084;532.396;536"/>
+    <animate attributeName="cy" dur="8s" repeatCount="indefinite"
+      keyTimes="0;.0833;.1667;.25;.3333;.4167;.5;.5833;.6667;.75;.8333;.9167;1"
+      values="247;240.897;225.95;208.351;192.916;182.604;179;182.604;192.916;208.351;225.95;240.897;247"/>
+  </circle>
+  <text x="548" y="229" font-size="20" font-weight="650" class="locus-fill math">C
+    <animate attributeName="x" dur="8s" repeatCount="indefinite"
+      keyTimes="0;.0833;.1667;.25;.3333;.4167;.5;.5833;.6667;.75;.8333;.9167;1"
+      values="548;544.396;534.084;518.649;501.05;486.103;480;486.103;501.05;518.649;534.084;544.396;548"/>
+    <animate attributeName="y" dur="8s" repeatCount="indefinite"
+      keyTimes="0;.0833;.1667;.25;.3333;.4167;.5;.5833;.6667;.75;.8333;.9167;1"
+      values="229;222.897;207.95;190.351;174.916;164.604;161;164.604;174.916;190.351;207.95;222.897;229"/>
+  </text>
+
+  <!-- endpoint guides show the coordinate bounds b and a -->
+  <g fill="none" class="muted" stroke-width="1.5" stroke-dasharray="4 6" opacity=".8">
+    <path d="M468 179V335M380 179H468"/>
+    <path d="M536 247V335M380 247H536"/>
+  </g>
+  <g font-size="17" class="math muted-fill">
+    <text x="466" y="358" text-anchor="middle">b</text>
+    <text x="536" y="358" text-anchor="middle">a</text>
+    <text x="365" y="252" text-anchor="end">b</text>
+    <text x="365" y="184" text-anchor="end">a</text>
+  </g>
+
+  <g transform="translate(118 580)" font-size="15">
+    <line x1="0" y1="0" x2="34" y2="0" class="locus" stroke-width="7" stroke-linecap="round"/>
+    <text x="46" y="5">可取的中心轨迹</text>
+    <line x1="258" y1="0" x2="292" y2="0" class="muted" stroke-width="2" stroke-dasharray="6 7"/>
+    <text x="304" y="5">不可取的圆弧</text>
+  </g>
+</svg>

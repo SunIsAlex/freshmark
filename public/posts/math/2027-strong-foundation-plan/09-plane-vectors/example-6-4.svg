@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="450" viewBox="0 0 760 450" role="img" aria-labelledby="title desc">
+  <title id="title">例题 6.4 的定比分点构型</title>
+  <desc id="desc">直角三角形 ABC 中，P、Q 分别位于 AB、AC 上，条件推出直线 PQ 经过 AM 上满足 AT 比 AM 等于四比五的定点 T。目标最小值是点 M 到直线 PQ 的距离。</desc>
+  <defs><style>.s{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif}.m{font-family:"Cambria Math","Times New Roman",serif;font-style:italic}.l{font-size:18px;fill:#17252f}.u{font-size:15px;fill:#65747d}</style></defs>
+  <rect width="760" height="450" rx="18" fill="#f7faf9"/><rect x="22" y="22" width="716" height="406" rx="14" fill="#fff" stroke="#dce8e4"/>
+  <g>
+    <path d="M80 90 80 370 290 90Z" fill="#eef7fb" stroke="#3273b9" stroke-width="2.5"/>
+    <path d="M80 90 185 230" stroke="#9aa9b0" stroke-width="2" stroke-dasharray="6 5"/>
+    <path d="M80 314 248 90" stroke="#df5c4f" stroke-width="3"/>
+    <path d="M185 230 164 202" stroke="#0f8a72" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="80" cy="90" r="4"/><circle cx="80" cy="370" r="4"/><circle cx="290" cy="90" r="4"/><circle cx="80" cy="314" r="4" fill="#df5c4f"/><circle cx="248" cy="90" r="4" fill="#df5c4f"/><circle cx="185" cy="230" r="4" fill="#17252f"/><circle cx="164" cy="202" r="4" fill="#0f8a72"/>
+    <path d="M80 108H98V90" fill="none" stroke="#17252f" stroke-width="1.6"/>
+    <text x="58" y="80" class="m l">A</text><text x="58" y="392" class="m l">B</text><text x="296" y="86" class="m l">C</text><text x="57" y="307" class="m l">P</text><text x="251" y="82" class="m l">Q</text><text x="191" y="249" class="m l">M</text><text x="142" y="196" class="m l">T</text>
+    <text x="95" y="348" class="s u">AB=4</text><text x="188" y="78" class="s u">AC=3</text><text x="183" y="176" class="s u" fill="#0f8a72">AT : AM = 4 : 5</text>
+  </g>
+  <g class="s">
+    <rect x="430" y="67" width="278" height="315" rx="14" fill="#f1f6fa" stroke="#d8e3ea"/>
+    <text x="455" y="105" font-size="18" font-weight="700" fill="#17252f">条件锁定一条过定点的直线</text>
+    <text x="455" y="145" class="u">由 1/m + 1/n = 1/2</text><text x="455" y="178" class="u">可得 P、Q、T 三点共线</text>
+    <text x="455" y="215" font-size="18" fill="#0f8a72" font-family="Cambria Math,Times New Roman,serif">AT / AM = 4 / 5</text>
+    <line x1="455" y1="240" x2="682" y2="240" stroke="#cedbe1"/>
+    <text x="455" y="276" font-size="17" font-weight="700" fill="#17252f">目标量的几何意义</text>
+    <text x="455" y="310" class="u">min |λQP + QM| = d(M, PQ)</text>
+    <text x="455" y="346" font-size="19" fill="#df5c4f" font-family="Cambria Math,Times New Roman,serif">d(M,PQ) ≤ MT = 1/2</text>
+  </g>
+</svg>

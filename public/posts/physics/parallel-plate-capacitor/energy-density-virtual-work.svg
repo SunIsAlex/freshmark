@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 460" width="880" height="460" role="img" aria-labelledby="title desc">
+  <title id="title">虚功法推导单位体积电场能</title>
+  <desc id="desc">对比断开电源（Q 不变）时平行板电容器拉开 Δd 前后的状态：原有区域场强 E 不变，外力克服极板引力 F = ½QE 所做的功全部转化为新增空间 ΔV = S·Δd 内的电场能。</desc>
+  <style>
+    .card { fill: #ffffff; stroke: #cbd5e1; }
+    .state-bg { fill: #f8fafc; stroke: #e2e8f0; }
+    .old-field { fill: rgba(37, 99, 235, 0.10); }
+    .new-field { fill: rgba(16, 185, 129, 0.18); stroke: #10b981; }
+    .summary-bg { fill: #f1f5f9; stroke: #cbd5e1; }
+    .title { fill: #0f172a; font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif; font-size: 21px; font-weight: 700; }
+    .subtitle { fill: #475569; font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif; font-size: 13.5px; }
+    .label { fill: #1e293b; font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif; font-size: 14.5px; font-weight: 600; }
+    .small { fill: #475569; font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif; font-size: 13px; }
+    .math { font-family: "Cambria Math", "Times New Roman", serif; font-style: italic; }
+    .formula { fill: #0f172a; font-family: "Cambria Math", "Times New Roman", "Noto Sans SC", sans-serif; font-size: 15.5px; font-weight: 600; }
+    .pos-plate { fill: #fee2e2; stroke: #dc2626; }
+    .neg-plate { fill: #dbeafe; stroke: #2563eb; }
+    .pos-txt { fill: #dc2626; }
+    .neg-txt { fill: #2563eb; }
+    .e-vec { stroke: #2563eb; fill: none; }
+    .green-txt { fill: #059669; }
+    .force-in { stroke: #dc2626; fill: none; }
+    .force-out { stroke: #ea580c; fill: none; }
+    .orange-txt { fill: #ea580c; }
+    .dim { stroke: #64748b; fill: none; }
+
+    @media (prefers-color-scheme: dark) {
+      .card { fill: #0f172a; stroke: #334155; }
+      .state-bg { fill: #1e293b; stroke: #334155; }
+      .old-field { fill: rgba(96, 165, 250, 0.14); }
+      .new-field { fill: rgba(52, 211, 153, 0.18); stroke: #34d399; }
+      .summary-bg { fill: #1e293b; stroke: #334155; }
+      .title { fill: #f1f5f9; }
+      .subtitle { fill: #94a3b8; }
+      .label { fill: #e2e8f0; }
+      .small { fill: #cbd5e1; }
+      .formula { fill: #f8fafc; }
+      .pos-plate { fill: #450a0a; stroke: #f87171; }
+      .neg-plate { fill: #172554; stroke: #60a5fa; }
+      .pos-txt { fill: #f87171; }
+      .neg-txt { fill: #60a5fa; }
+      .e-vec { stroke: #60a5fa; }
+      .green-txt { fill: #34d399; }
+      .force-in { stroke: #f87171; }
+      .force-out { stroke: #fb923c; }
+      .orange-txt { fill: #fb923c; }
+      .dim { stroke: #94a3b8; }
+    }
+  </style>
+  <defs>
+    <marker id="e-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 1 L9 5 L0 9 z" fill="#2563eb"/>
+    </marker>
+    <marker id="fin-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M0 1 L9 5 L0 9 z" fill="#dc2626"/>
+    </marker>
+    <marker id="fout-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M0 1 L9 5 L0 9 z" fill="#ea580c"/>
+    </marker>
+  </defs>
+
+  <!-- Outer card -->
+  <rect class="card" x="12" y="12" width="856" height="436" rx="16" stroke-width="1.5"/>
+  <text class="title" x="36" y="48">虚功法推导单位体积电场能（断开电源，<tspan class="math">Q</tspan> 不变）</text>
+  <text class="subtitle" x="36" y="72">缓慢拉开极板 Δd：原有空间场强 E 保持不变，外力做功全部转化为新增空间 ΔV = S·Δd 内的电场能</text>
+
+  <!-- Top Panel: Initial State -->
+  <rect class="state-bg" x="36" y="92" width="808" height="126" rx="12" stroke-width="1"/>
+  <text class="label" x="56" y="132">① 初态</text>
+  <text class="small" x="56" y="156">间距为 <tspan class="math">d</tspan></text>
+  <text class="small" x="56" y="176">体积 <tspan class="math">V = S·d</tspan></text>
+
+  <!-- Initial Field Region -->
+  <rect class="old-field" x="210" y="108" width="280" height="84"/>
+  <line class="e-vec" x1="230" y1="130" x2="470" y2="130" stroke-width="1.8" marker-end="url(#e-arr)"/>
+  <line class="e-vec" x1="230" y1="150" x2="470" y2="150" stroke-width="1.8" marker-end="url(#e-arr)"/>
+  <line class="e-vec" x1="230" y1="170" x2="470" y2="170" stroke-width="1.8" marker-end="url(#e-arr)"/>
+  <text class="label neg-txt" x="620" y="155">内部匀强电场 <tspan class="math">E = 4πkσ / εᵣ</tspan></text>
+
+  <!-- Initial Plates -->
+  <rect class="pos-plate" x="196" y="106" width="14" height="88" rx="2" stroke-width="2"/>
+  <text class="small pos-txt math" x="186" y="122" text-anchor="end">+Q</text>
+
+  <rect class="neg-plate" x="490" y="106" width="14" height="88" rx="2" stroke-width="2"/>
+  <text class="small neg-txt math" x="514" y="122">−Q</text>
+
+  <!-- Dimension d -->
+  <path class="dim" d="M210 204 H490 M210 199 V209 M490 199 V209" stroke-width="1.3"/>
+  <text class="small math" x="350" y="214" text-anchor="middle">d</text>
+
+  <!-- Bottom Panel: Final State -->
+  <rect class="state-bg" x="36" y="232" width="808" height="146" rx="12" stroke-width="1"/>
+  <text class="label" x="56" y="274">② 末态</text>
+  <text class="small" x="56" y="298">缓慢拉开 <tspan class="math">Δd</tspan></text>
+  <text class="small green-txt" x="56" y="318">新增 <tspan class="math">ΔV = S·Δd</tspan></text>
+
+  <!-- Old Region (unchanged) -->
+  <rect class="old-field" x="210" y="258" width="280" height="84"/>
+  <line class="e-vec" x1="230" y1="278" x2="470" y2="278" stroke-width="1.8" marker-end="url(#e-arr)"/>
+  <line class="e-vec" x1="230" y1="300" x2="470" y2="300" stroke-width="1.8" marker-end="url(#e-arr)"/>
+  <line class="e-vec" x1="230" y1="322" x2="470" y2="322" stroke-width="1.8" marker-end="url(#e-arr)"/>
+  <text class="small neg-txt" x="350" y="250" text-anchor="middle">原空间场强仍为 <tspan class="math">E</tspan>（能量不变）</text>
+
+  <!-- New Region ΔV -->
+  <rect class="new-field" x="490" y="258" width="130" height="84" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <line class="e-vec" x1="504" y1="278" x2="606" y2="278" stroke-width="1.8" marker-end="url(#e-arr)"/>
+  <line class="e-vec" x1="504" y1="322" x2="606" y2="322" stroke-width="1.8" marker-end="url(#e-arr)"/>
+  <text class="small green-txt" x="555" y="250" text-anchor="middle">新增空间 <tspan class="math">ΔV = S·Δd</tspan></text>
+
+  <!-- Left Plate (+Q, fixed) -->
+  <rect class="pos-plate" x="196" y="256" width="14" height="88" rx="2" stroke-width="2"/>
+  <text class="small pos-txt math" x="186" y="272" text-anchor="end">+Q</text>
+
+  <!-- Right Plate (-Q, moved right by Δd) -->
+  <rect class="neg-plate" x="620" y="256" width="14" height="88" rx="2" stroke-width="2"/>
+  <text class="small neg-txt math" x="638" y="272">−Q</text>
+
+  <!-- Force arrows on right plate -->
+  <line class="force-in" x1="620" y1="300" x2="544" y2="300" stroke-width="2.6" marker-end="url(#fin-arr)"/>
+  <text class="small pos-txt" x="578" y="292" text-anchor="middle"><tspan class="math">F = ½QE</tspan></text>
+
+  <line class="force-out" x1="634" y1="300" x2="714" y2="300" stroke-width="2.6" marker-end="url(#fout-arr)"/>
+  <text class="label orange-txt" x="722" y="305"><tspan class="math">F</tspan><tspan font-size="11" dy="2">外</tspan><tspan class="math" dy="-2"> = F = ½QE</tspan></text>
+
+  <!-- Dimensions d and Δd -->
+  <path class="dim" d="M210 356 H490 M210 351 V361 M490 351 V361" stroke-width="1.3"/>
+  <text class="small math" x="350" y="370" text-anchor="middle">d</text>
+  <path class="dim" d="M490 356 H620 M620 351 V361" stroke-width="1.3"/>
+  <text class="small green-txt math" x="555" y="370" text-anchor="middle">Δd</text>
+
+  <!-- Bottom formula summary -->
+  <rect class="summary-bg" x="36" y="388" width="808" height="48" rx="10" stroke-width="1"/>
+  <text class="formula" x="440" y="418" text-anchor="middle">
+    <tspan class="orange-txt">ΔW</tspan><tspan class="orange-txt" font-size="11" dy="2">外</tspan><tspan class="orange-txt" dy="-2"> = F·Δd = ½QE·Δd</tspan>
+    <tspan dx="16">⇒</tspan>
+    <tspan class="green-txt" dx="16">w = ΔW</tspan><tspan class="green-txt" font-size="11" dy="2">外</tspan><tspan class="green-txt" dy="-2"> / (S·Δd) = ½ σ E = ½ ε₀εᵣ E² = εᵣ E² / (8πk)</tspan>
+  </text>
+</svg>
