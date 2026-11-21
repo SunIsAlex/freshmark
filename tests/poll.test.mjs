@@ -5,7 +5,7 @@ import { parsePollBody, renderPolls } from "../lib/markdown-poll.mjs";
 import pollHandler, { computeVoterHash, pollStorageKey } from "../netlify/functions/poll.mjs";
 import { setStoreFactory } from "../netlify/lib/store.mjs";
 import { createFileStoreFactory } from "../server/file-store.mjs";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
 
@@ -229,4 +229,16 @@ test("poll API handles concurrent votes without losing records", async () => {
   } finally {
     await rm(temporaryDirectory, { recursive: true, force: true });
   }
+});
+
+test("renderMarkdown wraps tables in scrollable .table-wrap and styles.css protects mobile polls/tables", async () => {
+  const { html } = await renderMarkdown("| Col A | Col B |\n| --- | --- |\n| Alpha | Beta |");
+  assert.match(html, /<div class="table-wrap" tabindex="0"><table>\s*<thead>/);
+  assert.match(html, /<\/tbody>\s*<\/table>\s*<\/div>$/);
+
+  const css = await readFile(new URL("../theme/styles.css", import.meta.url), "utf8");
+  assert.match(css, /\.poll-option\s*\{[^}]*flex-wrap:\s*wrap/);
+  assert.match(css, /\.poll-option-content\s*\{[^}]*overflow-wrap:\s*break-word/);
+  assert.match(css, /\.prose\s+\.table-wrap\s*\{[^}]*overflow-x:\s*auto/);
+  assert.match(css, /\.prose\s+th,\s*\.prose\s+td\s*\{[^}]*overflow-wrap:\s*break-word/);
 });
