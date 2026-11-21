@@ -102,6 +102,9 @@ html[data-navigation-direction="back"]::view-transition-new(freshmark-main) { an
 .prose { min-width:0; max-width:100%; overflow-wrap:anywhere; font-family:var(--font-serif); font-size:var(--text-md); line-height:1.4; }
 .prose > :nth-child(n+8) { content-visibility:auto; contain-intrinsic-size:auto 72px; }
 .prose > [data-search-reveal] { content-visibility:visible; }
+.prose[data-layout-settled] > :nth-child(n+8) { content-visibility:visible; }
+.prose [id] { scroll-margin-top:92px; }
+.prose a[id]:empty { display:inline-block; width:0; height:1em; vertical-align:top; }
 .prose h1,.prose h2,.prose h3,.prose h4 { scroll-margin-top:32px; font-family:var(--font-sans); font-weight:600; letter-spacing:normal; }
 .prose h1 { font-size:var(--heading-3xl); line-height:1; }
 .prose h2 { font-size:var(--heading-2xl); line-height:1.1; margin:2.5em 0 .75em; }

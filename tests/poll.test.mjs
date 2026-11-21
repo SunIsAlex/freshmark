@@ -242,3 +242,15 @@ test("renderMarkdown wraps tables in scrollable .table-wrap and styles.css prote
   assert.match(css, /\.prose\s+\.table-wrap\s*\{[^}]*overflow-x:\s*auto/);
   assert.match(css, /\.prose\s+th,\s*\.prose\s+td\s*\{[^}]*overflow-wrap:\s*break-word/);
 });
+
+test("hash anchor navigation settles content-visibility layout and protects anchor boxes", async () => {
+  const css = await readFile(new URL("../theme/styles.css", import.meta.url), "utf8");
+  assert.match(css, /\.prose\s*\[id\]\s*\{[^}]*scroll-margin-top:\s*92px/);
+  assert.match(css, /\.prose\s+a\[id\]:empty\s*\{[^}]*display:\s*inline-block/);
+  assert.match(css, /\.prose\[data-layout-settled\]\s*>\s*:nth-child\(n\+8\)\s*\{[^}]*content-visibility:\s*visible/);
+
+  const app = await readFile(new URL("../theme/app.js", import.meta.url), "utf8");
+  assert.match(app, /prose\.dataset\.layoutSettled\s*=\s*""/);
+  assert.match(app, /scrollToHash\(url,\s*\{\s*push:\s*false,\s*behavior:\s*"auto"\s*\}\)/);
+  assert.match(app, /scrollToHash\(initialUrl,\s*\{\s*push:\s*false,\s*behavior:\s*"auto"\s*\}\)/);
+});

@@ -39,6 +39,8 @@ import { searchableLatexText } from "../lib/search-text.mjs";
   let cachedHeadings = null;
   let loadedSearchIndex = null;
   let searchScrollRequest = 0;
+  let hashScrollRequest = 0;
+  let hashSyncHoldUntil = 0;
   let viewRequest = 0;
   let commentAuthModule;
   let commentSubmitModule;
@@ -366,6 +368,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     if (!target) return false;
     const request = ++searchScrollRequest;
     const prose = target.closest(".prose");
+    if (prose) prose.dataset.layoutSettled = "";
     let block = target;
     while (prose && block.parentElement && block.parentElement !== prose) block = block.parentElement;
     if (prose && block.parentElement === prose) block.dataset.searchReveal = "";
@@ -765,6 +768,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
 
   function syncReadingAnchor() {
     if (!(cachedProgressEl?.isConnected || (cachedProgressEl = document.querySelector("[data-reading-progress]")))) return;
+    if (Date.now() < hashSyncHoldUntil) return;
     const headings = cachedHeadings || (cachedHeadings = [...document.querySelectorAll(".prose h1[id], .prose h2[id], .prose h3[id], .prose h4[id], .prose h5[id], .prose h6[id]")]);
     const threshold = Math.min(160, innerHeight * 0.25);
     let heading = null;
@@ -960,16 +964,55 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     }
   }
 
-  function scrollToHash(url, { push = true } = {}) {
+  function resolveHashTarget(target) {
+    if (target?.tagName === "A" && !target.textContent.trim()) {
+      return target.closest("p, li, h1, h2, h3, h4, h5, h6, blockquote, div") || target;
+    }
+    return target;
+  }
+
+  function scrollToHash(url, { push = true, behavior = null } = {}) {
     const id = decodeURIComponent(url.hash.slice(1));
     const target = id ? document.getElementById(id) : document.documentElement;
     if (!target) return false;
+    const request = ++hashScrollRequest;
+    const prose = target.closest?.(".prose");
+    if (prose) prose.dataset.layoutSettled = "";
     if (push) {
       history.replaceState({ ...(history.state || {}), scrollY }, "", location.href);
       history.pushState({ spa: true, scrollY: 0 }, "", url);
     }
-    if (id) target.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
-    else scrollTo({ top: 0, behavior: "smooth" });
+    if (!id) {
+      scrollTo({ top: 0, behavior: behavior || "smooth" });
+      return true;
+    }
+    const anchorEl = resolveHashTarget(target);
+    const targetTop = (document.querySelector(".header")?.getBoundingClientRect().height || 68) + 20;
+    hashSyncHoldUntil = Date.now() + 1500;
+    const align = (remaining = 4) => {
+      if (request !== hashScrollRequest || !anchorEl.isConnected) return;
+      const delta = anchorEl.getBoundingClientRect().top - targetTop;
+      if (Math.abs(delta) > 2) scrollBy({ top: delta, behavior: "instant" });
+      if (remaining > 1) requestAnimationFrame(() => align(remaining - 1));
+    };
+    const scrollBehavior = behavior || (matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth");
+    const delta = anchorEl.getBoundingClientRect().top - targetTop;
+    if (scrollBehavior === "auto" || scrollBehavior === "instant" || Math.abs(delta) <= 2) {
+      align(4);
+    } else {
+      let settled = false;
+      const settle = () => {
+        if (settled) return;
+        settled = true;
+        removeEventListener("scrollend", settle);
+        hashSyncHoldUntil = Date.now() + 800;
+        requestAnimationFrame(() => align(3));
+      };
+      addEventListener("scrollend", settle, { once: true });
+      setTimeout(settle, 1100);
+      scrollBy({ top: delta, behavior: "smooth" });
+    }
+    document.fonts?.ready.then(() => { if (request === hashScrollRequest) align(2); });
     return true;
   }
 
@@ -1037,7 +1080,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
       closeSearch();
       if (restoreScroll !== null) scrollTo(0, restoreScroll);
       else if (searchMatch) scrollToSearchHighlight(searchMatch);
-      else if (url.hash) document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView();
+      else if (url.hash) scrollToHash(url, { push: false, behavior: "auto" });
       else scrollTo(0, 0);
       updateReadingState(true);
       const main = document.querySelector("main");
@@ -1146,6 +1189,7 @@ import { searchableLatexText } from "../lib/search-text.mjs";
     prepareGallery();
     const initialSearchMatch = highlightSearchTerm(initialUrl);
     if (initialSearchMatch) requestAnimationFrame(() => scrollToSearchHighlight(initialSearchMatch));
+    else if (initialUrl.hash) scrollToHash(initialUrl, { push: false, behavior: "auto" });
     updateReadingState(true);
     scheduleArticlePrefetch();
   });
