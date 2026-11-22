@@ -116,7 +116,7 @@ body:not(.has-file) #properties,body:not(.has-file) #editor { display:none; }
 .cm-content { padding:0 0 40px; caret-color:var(--ink); }
 /* Wide formulas and tables scroll on their own instead of widening the whole page. */
 #editor .cm-content { min-width:0; max-width:100%; flex-shrink:1; }
-.cm-math-block,.cm-math-display,.cm-math-peek-block,.cm-table,.cm-image { max-width:100%; }
+.cm-math-block,.cm-math-display,.cm-math-peek-block,.cm-svg-block,.cm-svg-peek-block,.cm-table,.cm-image { max-width:100%; }
 .cm-math-inline .katex { white-space:normal; }
 .cm-line { padding:0; }
 .cm-cursor { border-left:2px solid var(--ink); }
@@ -170,6 +170,17 @@ body:not(.has-file) #properties,body:not(.has-file) #editor { display:none; }
 .cm-math-peek-block > span { display:block; padding:.6em 1em; border:1px dashed var(--line); border-radius:10px; background:var(--peek); overflow-x:auto; text-align:center; }
 .cm-math-peek-block .katex-display { margin:0; }
 .math-error { color:var(--danger); font-family:var(--mono); font-size:.85em; }
+
+/* Inline SVG */
+.cm-svg-inline { display:inline-block; vertical-align:middle; cursor:pointer; }
+.cm-svg-block { display:block; padding:.5em 0; overflow-x:auto; overflow-y:hidden; text-align:center; cursor:pointer; }
+.cm-svg-source,.cm-svg-source-line { color:color-mix(in srgb,var(--ink) 80%,var(--accent)); font-family:var(--mono); font-size:.82em; line-height:1.65; }
+.cm-svg-source-line { background:color-mix(in srgb,var(--accent) 6%,transparent); }
+.cm-svg-peek { position:relative; display:inline-block; width:0; height:0; vertical-align:baseline; }
+.cm-svg-peek > span { position:absolute; z-index:5; right:0; top:1.5em; padding:6px 10px; border:1px solid var(--line); border-radius:10px; background:var(--peek); box-shadow:0 12px 30px -12px rgb(0 0 0 / .3); max-width:min(700px,calc(100vw - 48px)); overflow-x:auto; pointer-events:none; }
+.cm-svg-peek-block { padding:.3em 0 .6em; }
+.cm-svg-peek-block > div { display:block; padding:.75em 1em; border:1px dashed var(--line); border-radius:10px; background:var(--peek); overflow-x:auto; text-align:center; }
+.svg-error { color:var(--danger); font-family:var(--mono); font-size:.85em; }
 /* Formatting marks */
 .cm-eol { color:color-mix(in srgb,var(--muted) 60%,transparent); font-family:var(--sans); font-size:.8em; font-weight:400; font-style:normal; pointer-events:none; user-select:none; }
 #editor .cm-highlightSpace { background-image:radial-gradient(circle at 50% 55%,color-mix(in srgb,var(--muted) 70%,transparent) 11%,transparent 13%); background-position:center; }

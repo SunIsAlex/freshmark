@@ -4,6 +4,7 @@ import { EditorSelection, StateEffect, StateField } from "@codemirror/state";
 import { Decoration, EditorView, WidgetType } from "@codemirror/view";
 import { ensureSyntaxTree, syntaxTree } from "@codemirror/language";
 import { mathSource, renderMath } from "./math.js";
+import { mountSvg, svgSource } from "./svg.js";
 
 export const setSourceMode = StateEffect.define();
 export const sourceMode = StateField.define({
@@ -111,6 +112,48 @@ class MathPeekWidget extends WidgetType {
     element.setAttribute("aria-hidden", "true");
     const inner = document.createElement("span");
     inner.innerHTML = renderMath(this.source, this.display || this.block);
+    element.append(inner);
+    return element;
+  }
+  ignoreEvent() { return true; }
+}
+
+class SvgWidget extends WidgetType {
+  constructor(source, block = false) {
+    super();
+    this.source = source;
+    this.block = block;
+  }
+  eq(other) { return other.source === this.source && other.block === this.block; }
+  toDOM(view) {
+    const element = document.createElement(this.block ? "div" : "span");
+    element.className = this.block ? "cm-svg-block" : "cm-svg-inline";
+    mountSvg(element, this.source, { inline: !this.block });
+    element.addEventListener("mousedown", (event) => {
+      if (event.button !== 0 || event.shiftKey || event.ctrlKey || event.metaKey || event.altKey) return;
+      event.preventDefault();
+      const position = view.posAtDOM(element);
+      view.dispatch({ selection: { anchor: Math.min(position + (this.block ? 0 : 1), view.state.doc.length) } });
+      view.focus();
+    });
+    return element;
+  }
+  ignoreEvent() { return false; }
+}
+
+class SvgPeekWidget extends WidgetType {
+  constructor(source, block = false) {
+    super();
+    this.source = source;
+    this.block = block;
+  }
+  eq(other) { return other.source === this.source && other.block === this.block; }
+  toDOM() {
+    const element = document.createElement(this.block ? "div" : "span");
+    element.className = this.block ? "cm-svg-peek-block" : "cm-svg-peek";
+    element.setAttribute("aria-hidden", "true");
+    const inner = document.createElement(this.block ? "div" : "span");
+    mountSvg(inner, this.source, { inline: !this.block });
     element.append(inner);
     return element;
   }
@@ -318,6 +361,34 @@ function decorate(state) {
             eachLine(start, end, line("cm-math-source-line"));
             add(end, end, Decoration.widget({ widget: new MathPeekWidget(source, true, true), side: 1, block: true }));
           } else add(start, end, Decoration.replace({ widget: new MathWidget(source, true, true), block: true }));
+          return false;
+        }
+        case "SvgBlock": {
+          const [lineStart, lineEnd] = lineSpan(from, to);
+          if (!node.node.getChild("SvgClose")) {
+            eachLine(lineStart, lineEnd, line("cm-svg-source-line"));
+            return false;
+          }
+          const inQuote = node.node.parent?.name === "Blockquote";
+          const source = svgSource(doc.sliceString(from, to), inQuote);
+          if (touches(lineStart, lineEnd)) {
+            eachLine(lineStart, lineEnd, line("cm-svg-source-line"));
+            add(lineEnd, lineEnd, Decoration.widget({ widget: new SvgPeekWidget(source, true), side: 1, block: true }));
+          } else {
+            const replaceFrom = doc.sliceString(lineStart, from).trim() ? from : lineStart;
+            const replaceTo = doc.sliceString(to, lineEnd).trim() ? to : lineEnd;
+            add(replaceFrom, replaceTo, Decoration.replace({ widget: new SvgWidget(source, true), block: true }));
+          }
+          return false;
+        }
+        case "InlineSvg": {
+          const source = svgSource(doc.sliceString(from, to));
+          if (touches(from, to)) {
+            add(from, to, mark("cm-svg-source"));
+            add(to, to, Decoration.widget({ widget: new SvgPeekWidget(source, false), side: 1 }));
+          } else {
+            add(from, to, Decoration.replace({ widget: new SvgWidget(source, false) }));
+          }
           return false;
         }
         case "Blockquote": {

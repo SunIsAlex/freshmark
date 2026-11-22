@@ -11,6 +11,7 @@ import { gitCommit, gitStatus, parseStatus } from "../lib/editor-git.mjs";
 import { execFileSync } from "node:child_process";
 import { parseFrontmatter } from "../lib/markdown.mjs";
 import { mathSyntax, mathSource } from "../editor/math.js";
+import { svgSyntax, svgSource, isSafeSvgUrl, sanitizeSvgStyle, sanitizeSvgElement } from "../editor/svg.js";
 
 const root = new URL("../", import.meta.url);
 const contentDir = fileURLToPath(new URL("content/posts/", root));
@@ -235,4 +236,154 @@ test("the math grammar keeps formulas out of Markdown emphasis", () => {
   assert.ok(names("$\\begin{aligned}\na&=1\\\\\nb&=2\n\\end{aligned}$\n").includes("BlockMath"));
   assert.ok(!names("costs \\$5 and \\$6").includes("InlineMath"));
   assert.deepEqual(mathSource("$$x$$"), { source: "x", display: true });
+});
+
+test("the svg grammar parses block, inline, nested, quoted and unclosed SVGs cleanly", async () => {
+  const parser = markdownParser.configure([GFM, mathSyntax, svgSyntax]);
+  const collect = (text) => {
+    const nodes = [];
+    parser.parse(text).iterate({ enter: (node) => { nodes.push({ name: node.name, from: node.from, to: node.to, text: text.slice(node.from, node.to) }); } });
+    return nodes;
+  };
+  const names = (text) => collect(text).map((node) => node.name);
+
+  // Self-contained multi-line <svg> with blank lines and comments inside
+  const blankLineFixture = "## Stem\n\nText $x^2$.\n\n<svg viewBox=\"0 0 100 100\">\n  <!-- comment -->\n\n  <circle cx=\"50\" cy=\"50\" r=\"20\" />\n\n</svg>\n";
+  const fixtureNodes = collect(blankLineFixture);
+  assert.equal(fixtureNodes.filter((node) => node.name === "SvgBlock").length, 1);
+  assert.ok(fixtureNodes.some((node) => node.name === "SvgClose"));
+  assert.equal(fixtureNodes.filter((node) => node.name === "Paragraph").length, 1, "only the stem is a paragraph");
+  assert.ok(!fixtureNodes.some((node) => node.name === "HTMLBlock"));
+  assert.ok(!fixtureNodes.some((node) => node.name === "CommentBlock"));
+
+  // Live angle-bisector post parses every <svg> cleanly without HTMLBlock/CommentBlock splits
+  const angleBisector = await readFile(path.join(contentDir, "math", "angle-bisector", "index.md"), "utf8");
+  const { body } = readPost(angleBisector);
+  const postNodes = collect(body);
+  assert.ok(postNodes.filter((node) => node.name === "SvgBlock").length >= 1);
+  assert.equal(postNodes.filter((node) => node.name === "SvgBlock").length, postNodes.filter((node) => node.name === "SvgClose").length);
+  assert.ok(!postNodes.some((node) => node.name === "HTMLBlock"));
+  assert.ok(!postNodes.some((node) => node.name === "CommentBlock"));
+
+  // Single-line and self-closing SvgBlock
+  assert.deepEqual(names("<svg viewBox=\"0 0 10 10\"><circle cx=\"5\" cy=\"5\" r=\"4\"/></svg>\n").filter((n) => n !== "Document"), ["SvgBlock", "SvgClose"]);
+  assert.deepEqual(names("<svg viewBox=\"0 0 10 10\" />\n").filter((n) => n !== "Document"), ["SvgBlock", "SvgClose"]);
+
+  // Nested <svg>, comments, CDATA, and multi-line opening tag
+  const complex = "<svg\n  viewBox=\"0 0 20 20\"\n  data-hint=\">\">\n  <!-- </svg> -->\n  <![CDATA[</svg>]]>\n  <svg width=\"10\" height=\"10\"><rect/></svg>\n  <svg/>\n</svg>\n\nAfter.\n";
+  const complexNodes = collect(complex);
+  assert.equal(complexNodes.filter((n) => n.name === "SvgBlock").length, 1);
+  assert.equal(complexNodes.find((n) => n.name === "SvgBlock").text.trimEnd().endsWith("</svg>"), true);
+  assert.equal(complexNodes.filter((n) => n.name === "Paragraph").length, 1);
+
+  // Interrupts a paragraph without a blank line (endLeaf)
+  const afterPara = "Diagram:\n<svg viewBox=\"0 0 10 10\">\n<circle cx=\"5\" cy=\"5\" r=\"4\"/>\n</svg>\n";
+  assert.deepEqual(names(afterPara).filter((n) => ["Paragraph", "SvgBlock", "SvgClose"].includes(n)), ["Paragraph", "SvgBlock", "SvgClose"]);
+
+  // Inline SVG mid-paragraph and at line start with trailing text
+  assert.ok(names("Icon <svg width=\"12\" height=\"12\"><circle cx=\"6\" cy=\"6\" r=\"5\"/></svg> inline.").includes("InlineSvg"));
+  const inlineStart = "<svg width=\"12\" height=\"12\"><circle cx=\"6\" cy=\"6\" r=\"5\"/></svg> trailing text";
+  assert.deepEqual(names(inlineStart).filter((n) => ["Paragraph", "InlineSvg", "SvgBlock"].includes(n)), ["Paragraph", "InlineSvg"]);
+
+  // Fenced code blocks and inline code stay code, never rendered as SVG
+  assert.ok(!names("```svg\n<svg><circle/></svg>\n```\n").some((n) => n === "SvgBlock" || n === "InlineSvg"));
+  assert.ok(!names("```html\n<svg><circle/></svg>\n```\n").some((n) => n === "SvgBlock" || n === "InlineSvg"));
+  assert.ok(!names("Use `<svg><circle/></svg>` in prose.").some((n) => n === "SvgBlock" || n === "InlineSvg"));
+
+  // Unclosed <svg> does not produce SvgClose or InlineSvg
+  const unclosedBlock = names("<svg viewBox=\"0 0 10 10\">\n<circle/>\n");
+  assert.ok(unclosedBlock.includes("SvgBlock"));
+  assert.ok(!unclosedBlock.includes("SvgClose"));
+  assert.ok(!names("Text <svg> unclosed").includes("InlineSvg"));
+
+  // Blockquote <svg> and svgSource quote stripping
+  const quoted = "> <svg viewBox=\"0 0 10 10\">\n>   <circle/>\n> </svg>\n";
+  const quotedNodes = collect(quoted);
+  assert.ok(quotedNodes.some((n) => n.name === "Blockquote"));
+  assert.ok(quotedNodes.some((n) => n.name === "SvgBlock"));
+  assert.ok(quotedNodes.some((n) => n.name === "SvgClose"));
+  assert.equal(svgSource(quotedNodes.find((n) => n.name === "SvgBlock").text, true), "<svg viewBox=\"0 0 10 10\">\n  <circle/>\n</svg>");
+});
+
+test("svg URL, style and element sanitizers strip XSS vectors and preserve safe SVG", () => {
+  assert.equal(isSafeSvgUrl("#axis-arrow", { fragmentOnly: true }), true);
+  assert.equal(isSafeSvgUrl("https://example.com/a.svg", { fragmentOnly: true }), false);
+  assert.equal(isSafeSvgUrl("javascript:alert(1)"), false);
+  assert.equal(isSafeSvgUrl("  java\u0000script:alert(1)"), false);
+  assert.equal(isSafeSvgUrl("vbscript:msgbox(1)"), false);
+  assert.equal(isSafeSvgUrl("data:text/html,<script>alert(1)</script>", { allowImageData: true }), false);
+  assert.equal(isSafeSvgUrl("data:image/svg+xml,<svg onload=alert(1)>", { allowImageData: true }), false);
+  assert.equal(isSafeSvgUrl("data:image/png;base64,iVBORw0KGgo=", { allowImageData: true }), true);
+  assert.equal(isSafeSvgUrl("data:image/png;base64,iVBORw0KGgo=", { allowImageData: false }), false);
+  assert.equal(isSafeSvgUrl("https://example.com/a.png"), true);
+  assert.equal(isSafeSvgUrl("mailto:user@example.com", { allowImageData: false }), true);
+  assert.equal(isSafeSvgUrl("diagram.png"), true);
+
+  assert.equal(
+    sanitizeSvgStyle("@import url(https://evil.com); fill: url(#grad); stroke: url('https://evil.com/s'); behavior: url(#bad); color: currentColor;"),
+    " fill: url(#grad); stroke: none;  color: currentColor;",
+  );
+  assert.equal(sanitizeSvgStyle("width: expression(alert(1)); background: javascript:alert(1)"), "width: ; background: alert(1)");
+
+  const SVG_NS = "http://www.w3.org/2000/svg";
+  const el = (tag, attrs = {}, children = [], namespaceURI = SVG_NS) => {
+    const node = {
+      nodeType: 1,
+      localName: tag.toLowerCase(),
+      tagName: tag,
+      namespaceURI,
+      attributes: Object.entries(attrs).map(([name, value]) => ({ name, localName: name.includes(":") ? name.split(":")[1] : name, value, namespaceURI: name.startsWith("xlink:") ? "http://www.w3.org/1999/xlink" : null })),
+      childNodes: [],
+      textContent: "",
+      getAttribute(name) { return this.attributes.find((a) => a.name.toLowerCase() === name.toLowerCase())?.value ?? null; },
+      setAttribute(name, value) {
+        const existing = this.attributes.find((a) => a.name.toLowerCase() === name.toLowerCase());
+        if (existing) existing.value = String(value);
+        else this.attributes.push({ name, localName: name, value: String(value), namespaceURI: null });
+      },
+      removeAttribute(name) { this.attributes = this.attributes.filter((a) => a.name.toLowerCase() !== name.toLowerCase()); },
+      removeAttributeNS(_ns, localName) { this.attributes = this.attributes.filter((a) => a.localName !== localName); },
+      removeChild(child) { this.childNodes = this.childNodes.filter((c) => c !== child); },
+    };
+    for (const child of children) {
+      if (typeof child === "string") node.textContent += child;
+      else node.childNodes.push(child);
+    }
+    return node;
+  };
+
+  const scriptEl = el("script", {}, ["alert(1)"]);
+  const foreignEl = el("foreignObject", {}, [el("div", {}, [], "http://www.w3.org/1999/xhtml")]);
+  const badSet = el("set", { attributeName: "onload", to: "alert(1)" });
+  const badAnimate = el("animate", { attributeName: "href", values: "javascript:alert(1)" });
+  const goodAnimate = el("animate", { attributeName: "opacity", from: "0", to: "1" });
+  const badUse = el("use", { "xlink:href": "https://evil.com/x.svg#id" });
+  const goodUse = el("use", { href: "#shape" });
+  const badImg = el("image", { href: "data:image/svg+xml,<svg/>" });
+  const goodImg = el("image", { href: "data:image/png;base64,AAAA" });
+  const badLink = el("a", { href: "javascript:alert(1)" });
+  const styleEl = el("style", {}, ["@import 'https://evil.com'; .axis { stroke: currentColor; marker-end: url(#axis-arrow); }"]);
+  const pathEl = el("path", { d: "M 0 0 L 10 10", stroke: "currentColor", "marker-end": "url(#axis-arrow)", onclick: "alert(1)" });
+  const svg = el("svg", { viewBox: "0 0 100 100", onload: "alert(1)", style: "background: url(https://evil.com); color: currentColor" }, [
+    scriptEl, foreignEl, badSet, badAnimate, goodAnimate, badUse, goodUse, badImg, goodImg, badLink, styleEl, pathEl,
+  ]);
+
+  sanitizeSvgElement(svg);
+
+  assert.equal(svg.getAttribute("onload"), null);
+  assert.equal(svg.getAttribute("viewBox"), "0 0 100 100");
+  assert.equal(svg.getAttribute("style"), "background: none; color: currentColor");
+  assert.ok(!svg.childNodes.includes(scriptEl));
+  assert.ok(!svg.childNodes.includes(foreignEl));
+  assert.ok(!svg.childNodes.includes(badSet));
+  assert.ok(!svg.childNodes.includes(badAnimate));
+  assert.ok(svg.childNodes.includes(goodAnimate));
+  assert.equal(badUse.getAttribute("xlink:href"), null);
+  assert.equal(goodUse.getAttribute("href"), "#shape");
+  assert.equal(badImg.getAttribute("href"), null);
+  assert.equal(goodImg.getAttribute("href"), "data:image/png;base64,AAAA");
+  assert.equal(badLink.getAttribute("href"), null);
+  assert.equal(styleEl.textContent, " .axis { stroke: currentColor; marker-end: url(#axis-arrow); }");
+  assert.equal(pathEl.getAttribute("onclick"), null);
+  assert.equal(pathEl.getAttribute("marker-end"), "url(#axis-arrow)");
 });

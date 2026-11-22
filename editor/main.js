@@ -7,6 +7,7 @@ import { highlightSelectionMatches, search, searchKeymap } from "@codemirror/sea
 import { closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
 import { tags } from "@lezer/highlight";
 import { mathSyntax } from "./math.js";
+import { svgSyntax } from "./svg.js";
 import { headings, imageResolver, livePreviewExtension, setSourceMode, sourceMode } from "./live-preview.js";
 import { invisibles, setInvisibles } from "./invisibles.js";
 import { PropertiesPanel, chipEditor, element } from "./properties.js";
@@ -192,7 +193,7 @@ function editorExtensions() {
     highlightSelectionMatches(),
     EditorView.lineWrapping,
     EditorState.languageData.of(() => [{ closeBrackets: { brackets: ["(", "[", "{", "'", '"', "`"] } }]),
-    markdown({ base: markdownLanguage, extensions: [mathSyntax], addKeymap: true }),
+    markdown({ base: markdownLanguage, extensions: [mathSyntax, svgSyntax], addKeymap: true }),
     syntaxHighlighting(highlight),
     sourceMode,
     livePreviewExtension,
@@ -409,9 +410,9 @@ function toast(text) {
   toastTimer = setTimeout(() => { element.hidden = true; }, 3200);
 }
 
-// Counts CJK characters and Latin words, leaving formulas out.
+// Counts CJK characters and Latin words, leaving formulas and inline SVGs out.
 const countWords = (value) => {
-  const text = value.replace(/\$\$[\s\S]*?\$\$|\$[^$\n]*\$/g, " ");
+  const text = value.replace(/\$\$[\s\S]*?\$\$|\$[^$\n]*\$|<svg\b[\s\S]*?<\/svg\s*>/gi, " ");
   return (text.match(/[㐀-鿿]/g) || []).length + (text.replace(/[㐀-鿿]/g, " ").match(/[A-Za-z0-9]+(?:['’-][A-Za-z0-9]+)*/g) || []).length;
 };
 
