@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 175" width="620" height="175" font-family="'Times New Roman', serif" font-size="18">
+  <rect x="0" y="0" width="620" height="175" rx="8" fill="#fff"/>
+  <g stroke="#222" stroke-width="2" fill="none" stroke-linecap="round">
+    <!-- 图甲：电流表外接法 -->
+    <path d="M20 95 H120 M170 95 H232 M268 95 H295"/>
+    <rect x="120" y="87" width="50" height="16"/>
+    <path d="M85 95 V40 H127 M163 40 H205 V95"/>
+    <circle cx="145" cy="40" r="18"/>
+    <circle cx="250" cy="95" r="18"/>
+
+    <!-- 图乙：电流表内接法 -->
+    <path d="M325 95 H395 M445 95 H477 M513 95 H595"/>
+    <rect x="395" y="87" width="50" height="16"/>
+    <path d="M360 95 V40 H434.5 M470.5 40 H545 V95"/>
+    <circle cx="452.5" cy="40" r="18"/>
+    <circle cx="495" cy="95" r="18"/>
+  </g>
+
+  <!-- 节点圆点 -->
+  <g fill="#222">
+    <circle cx="85" cy="95" r="3.5"/>
+    <circle cx="205" cy="95" r="3.5"/>
+    <circle cx="360" cy="95" r="3.5"/>
+    <circle cx="545" cy="95" r="3.5"/>
+  </g>
+
+  <!-- 电表符号与图注 -->
+  <g fill="#222" text-anchor="middle" dominant-baseline="central">
+    <text x="145" y="40">V</text>
+    <text x="250" y="95">A</text>
+    <text x="452.5" y="40">V</text>
+    <text x="495" y="95">A</text>
+    <text x="157.5" y="148" font-family="'SimSun', 'Noto Serif CJK SC', serif" font-size="18">甲</text>
+    <text x="452.5" y="148" font-family="'SimSun', 'Noto Serif CJK SC', serif" font-size="18">乙</text>
+  </g>
+</svg>

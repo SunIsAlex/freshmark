@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 220" width="420" height="220" font-family="'Times New Roman', serif" font-size="18">
+  <rect x="0" y="0" width="420" height="220" rx="8" fill="#fff"/>
+  <g stroke="#222" stroke-width="2" fill="none" stroke-linecap="round">
+    <path d="M40 40 H125 M135 40 H360"/>
+    <path d="M40 40 V180 H360"/>
+    <path d="M360 40 V85 M360 135 V180"/>
+    <line x1="125" y1="24" x2="125" y2="56"/>
+    <line x1="135" y1="31" x2="135" y2="49" stroke-width="5"/>
+    <rect x="352" y="85" width="16" height="50"/>
+    <line x1="338" y1="148" x2="380" y2="76"/>
+  </g>
+  <polygon points="383,71 374,78 382,83" fill="#222"/>
+  <rect x="20" y="10" width="232" height="196" rx="6" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <circle cx="270" cy="40" r="4" fill="#fff" stroke="#222" stroke-width="2"/>
+  <circle cx="270" cy="180" r="4" fill="#fff" stroke="#222" stroke-width="2"/>
+  <g fill="#222">
+    <text x="264" y="30">A</text>
+    <text x="264" y="204">B</text>
+    <text x="104" y="80" font-style="italic">E′</text><text x="124" y="80">,</text><text x="132" y="80" font-style="italic">r′</text>
+    <text x="386" y="118" font-style="italic">R</text>
+  </g>
+</svg>
