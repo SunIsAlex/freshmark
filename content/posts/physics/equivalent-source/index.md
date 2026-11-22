@@ -70,23 +70,10 @@ $$U=E-Ir$$
 #### 传统方法
 
 > (I) 我们以 $R$ 为自变量，写出电阻消耗功率的函数：
-> $$
-> I=\frac{E}{r+R_0+R}\\
-> P=I^2R\\
-> =\frac{E^2R}{(R+R_0+r)^2}\\
-> =\frac{36R}{(R+3)^2}\\
-> =\frac{36}{R+\frac{9}{R}+6}\\
-> R\in(0,3),R+\frac{9}{R}+6\downarrow\\
-> R\in(3,10),R+\frac{9}{R}+6\uparrow\\
-> P\le P|_{R=3}=3\ (\text{W})
-> $$
+> $$I=\frac{E}{r+R_0+R}\\ P=I^2R\\ =\frac{E^2R}{(R+R_0+r)^2}\\ =\frac{36R}{(R+3)^2}\\ =\frac{36}{R+\frac{9}{R}+6}\\ R\in(0,3),R+\frac{9}{R}+6\downarrow\\ R\in(3,10),R+\frac{9}{R}+6\uparrow\\ P\le P|_{R=3}=3\ (\text{W})$$
 >
 > (II)
-> $$
-> U=IR\\
-> =\frac{R}{R+R_0+r}E\\
-> =\frac{6}{9}\times6=4\ (\text{V})
-> $$
+> $$U=IR\\ =\frac{R}{R+R_0+r}E\\ =\frac{6}{9}\times6=4\ (\text{V})$$
 
 #### 等效电源方法
 
@@ -95,33 +82,14 @@ $$U=E-Ir$$
 > ![等效电源](circuit-equivalent.svg "虚线框内的网络等效为一个电源")
 >
 > 我们求伏安特性曲线：设 $R$ 两端电压为 $U$，经过 $R$ 的电流为 $I$：
-> $$
-> U=E-I(R_0+r)\\
-> =E'-Ir'\\
-> E'=E=6\ (\text{V}),\ r'=R_0+r=3\ (\Omega)\\
-> P=UI\\
-> =[E-(R_0+r)I]I\\
-> =(6-3I)I\\
-> =-3I^2+6I\\
-> =-3(I-1)^2+3\le3\ (\text{W})
-> $$
+> $$U=E-I(R_0+r)\\ =E'-Ir'\\ E'=E=6\ (\text{V}),\ r'=R_0+r=3\ (\Omega)\\ P=UI\\ =[E-(R_0+r)I]I\\ =(6-3I)I\\ =-3I^2+6I\\ =-3(I-1)^2+3\le3\ (\text{W})$$
 > 取等条件：
-> $$
-> I=1\ (\text{A}),\ U=3\ (\text{V})\\
-> R=3\ (\Omega)\in(0,10)
-> $$
+> $$I=1\ (\text{A}),\ U=3\ (\text{V})\\ R=3\ (\Omega)\in(0,10)$$
 > 或者可以套用电源最大输出功率结论：
-> $$
-> P\le\frac{E'^2}{4r'}\\
-> =\frac{6^2}{4(1+2)}=3\ (\text{W})\\
-> R=r'=3\ (\Omega)
-> $$
+> $$P\le\frac{E'^2}{4r'}\\ =\frac{6^2}{4(1+2)}=3\ (\text{W})\\ R=r'=3\ (\Omega)$$
 >
 > (II)
-> $$
-> U=\frac{R}{r'+R}E'\\
-> =\frac{6}{3+6}\times6=4\ (\text{V})
-> $$
+> $$U=\frac{R}{r'+R}E'\\ =\frac{6}{3+6}\times6=4\ (\text{V})$$
 
 ## 源阻并联
 
@@ -137,24 +105,10 @@ $$U=E-Ir$$
 #### 传统方法
 
 > (I) 设电阻 $R$ 两端的电压为 $U$，通过电阻 $R$ 的电流为 $I$：
-> $$
-> U=E-\left(I+\frac{U}{R_0}\right)r\\
-> U=IR\\
-> I=\frac{E}{R+r\left(1+\frac{R}{R_0}\right)}\\
-> P=I^2R\\
-> =\left(\frac{E}{R+r\left(1+\frac{R}{R_0}\right)}\right)^2R\\
-> =\left(\frac{6}{3+\frac{3}{2}R}\right)^2R\\
-> =\left(\frac{4}{2+R}\right)^2R\\
-> \le P|_{R=2}=2\ (\text{W})\\
-> R=2\ (\Omega)
-> $$
+> $$U=E-\left(I+\frac{U}{R_0}\right)r\\ U=IR\\ I=\frac{E}{R+r\left(1+\frac{R}{R_0}\right)}\\ P=I^2R\\ =\left(\frac{E}{R+r\left(1+\frac{R}{R_0}\right)}\right)^2R\\ =\left(\frac{6}{3+\frac{3}{2}R}\right)^2R\\ =\left(\frac{4}{2+R}\right)^2R\\ \le P|_{R=2}=2\ (\text{W})\\ R=2\ (\Omega)$$
 >
 > (II)
-> $$
-> U=IR\\
-> =\frac{ER}{R+r\left(1+\frac{R}{R_0}\right)}\\
-> =\frac{6\times6}{6+3\left(1+\frac{6}{6}\right)}=3\ (\text{V})
-> $$
+> $$U=IR\\ =\frac{ER}{R+r\left(1+\frac{R}{R_0}\right)}\\ =\frac{6\times6}{6+3\left(1+\frac{6}{6}\right)}=3\ (\text{V})$$
 
 #### 等效电源方法
 
@@ -163,24 +117,14 @@ $$U=E-Ir$$
 > ![等效电源](circuit-equivalent.svg "虚线框内的网络等效为一个电源")
 >
 > (I)
-> $$
-> U=E-\left(I+\frac{U}{R_0}\right)r\\
-> U=\frac{E-Ir}{1+\frac{r}{R_0}}\\
-> =\frac{R_0}{R_0+r}E-\left(\frac{R_0}{R_0+r}r\right)I
-> $$
+> $$U=E-\left(I+\frac{U}{R_0}\right)r\\ U=\frac{E-Ir}{1+\frac{r}{R_0}}\\ =\frac{R_0}{R_0+r}E-\left(\frac{R_0}{R_0+r}r\right)I$$
 > 因此有 $E'=\frac{R_0}{R_0+r}E=4\ (\text{V})$，$r'=\frac{R_0}{R_0+r}r=2\ (\Omega)$。
 >
 > 套用输出功率结论：
-> $$
-> P\le\frac{E'^2}{4r'}=\frac{16}{4\times 2}=2\ (\text{W})\\
-> R=r'=2\ (\Omega)
-> $$
+> $$P\le\frac{E'^2}{4r'}=\frac{16}{4\times 2}=2\ (\text{W})\\ R=r'=2\ (\Omega)$$
 >
 > (II)
-> $$
-> U=\frac{R}{r'+R}E'\\
-> =\frac{6}{2+6}\times 4=3\ (\text{V})
-> $$
+> $$U=\frac{R}{r'+R}E'\\ =\frac{6}{2+6}\times 4=3\ (\text{V})$$
 
 # 小结：从高观点看等效电源
 
@@ -313,16 +257,26 @@ $$U=\underbrace{U_{\text{开}}}_{I=0\text{ 时}}-\underbrace{r'}_{\text{比例�
 
 #### 解答
 
-> 分析图甲：$U=IR$，$I'=\dfrac{U}{R_{\text{V}}}+I$，$U=\dfrac{I'}{\frac{1}{R_{\text{V}}}+\frac{1}{R}}=\dfrac{R_{\text{V}}R}{R_{\text{V}}+R}I'=I'R'$。
+> 设电压表、电流表的示数分别为 $U'$、$I'$，电阻测量值为 $R'=\dfrac{U'}{I'}$；流过待测电阻 $R$ 的真实电流为 $I$，其两端真实电压为 $U$。
 >
-> 由例 3“等效电源”结论，电流表外接，测得电阻：$R'=\dfrac{R_{\text{V}}}{R_{\text{V}}+R}R$，相对误差为 $\dfrac{R}{R+R_{\text{V}}}$。
+> **分析图甲（电流表外接）**：电压表与 $R$ 并联，故 $U'=U=IR$，$I'=\dfrac{U}{R_{\text{V}}}+I$，得
 >
-> 分析图乙：$U'=I(R+R_{\text{A}})=I'R'$，$R'=R+R_{\text{A}}$，相对误差为 $\dfrac{R_{\text{A}}}{R}$。
+> $$U'=\frac{I'}{\frac{1}{R_{\text{V}}}+\frac{1}{R}}=\frac{R_{\text{V}}R}{R_{\text{V}}+R}I' \implies R'=\frac{R_{\text{V}}}{R_{\text{V}}+R}R$$
 >
-> 比较：
-> $$
-> \frac{R}{R+R_{\text{V}}}-\frac{R_{\text{A}}}{R}\\
-> =\frac{R^2-R_{\text{A}}(R+R_{\text{V}})}{R(R+R_{\text{V}})}<\frac{R^2-R_{\text{A}}R_{\text{V}}}{R(R+R_{\text{V}})}<0
-> $$
+> 与例 3 图乙的“等效并联”模型一致，测得阻值偏小，相对误差为
 >
-> 因此图甲电路测量误差小，填“**甲**”。
+> $$\delta_{\text{甲}}=\frac{|R'-R|}{R}=\frac{R}{R+R_{\text{V}}}$$
+>
+> **分析图乙（电流表内接）**：电流表与 $R$ 串联，故 $I'=I$，$U'=I(R+R_{\text{A}})=I'R'$，得
+>
+> $$R'=R+R_{\text{A}}$$
+>
+> 与例 3 图甲的“等效串联”模型一致，测得阻值偏大，相对误差为
+>
+> $$\delta_{\text{乙}}=\frac{|R'-R|}{R}=\frac{R_{\text{A}}}{R}$$
+>
+> **比较误差**：
+>
+> $$\begin{aligned} \delta_{\text{甲}}-\delta_{\text{乙}} &= \frac{R}{R+R_{\text{V}}}-\frac{R_{\text{A}}}{R} \\ &= \frac{R^2-R_{\text{A}}(R+R_{\text{V}})}{R(R+R_{\text{V}})} < \frac{R^2-R_{\text{A}}R_{\text{V}}}{R(R+R_{\text{V}})} \end{aligned}$$
+>
+> 代入 $R\approx 5\ \Omega$、$R_{\text{A}}\approx 0.1\ \Omega$、$R_{\text{V}}\approx 3000\ \Omega$，有 $R^2\approx 25 < R_{\text{A}}R_{\text{V}}\approx 300$，因此 $\delta_{\text{甲}}-\delta_{\text{乙}}<0$，即图甲电路测量误差更小，填“**甲**”。
