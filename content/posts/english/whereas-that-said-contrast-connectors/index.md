@@ -20,6 +20,7 @@ draft: false
 母语者手里的转折词远不止这两个，而且每个词有自己的分工。看下面两句：
 
 > *My brother is an early riser, **whereas** I'm a night owl.*
+>
 > *The hotel was overpriced. **That said**, the staff couldn't have been friendlier.*
 
 第一句把两件同等分量的事并排放在一起比较，并不说谁对谁错；第二句是说话人先下了一个判断，紧接着又自己往回收了一点。两句都可以笼统地翻译成“但是”，背后的逻辑却完全不同。
@@ -54,12 +55,15 @@ draft: false
 ### ✅ 地道用法
 
 > *Some students thrive under pressure, **whereas** others freeze.*
+>
 > 有的学生越有压力越出色，有的却会僵住。
 
 > ***Whereas** the first experiment used mice, the second used human cell cultures.*
+>
 > 第一个实验用的是小鼠，第二个实验用的则是人体细胞培养物。
 
 > *In British English, "pants" means underwear, **whereas** in American English it means trousers.*
+>
 > 英式英语里 pants 指内裤，美式英语里则指长裤。
 
 可以看到：两个分句**结构相似、主语不同（或条件不同）、比较的是同一个维度**（应对压力的方式、实验材料、词义）。这是 `whereas` 最典型的场景。
@@ -71,6 +75,7 @@ draft: false
 **错误 1：把 whereas 当成“虽然”（让步）**
 
 > ❌ *Whereas it was pouring, we went for a walk.*
+>
 > ✅ ***Although** it was pouring, we went for a walk.*
 
 下雨和散步不是两个“平行比较”的事实，而是“有障碍，照样做”，属于让步关系，应当用 `although` / `even though`。`whereas` 不表达这种反预期。
@@ -78,7 +83,9 @@ draft: false
 **错误 2：把 whereas 当成副词放在句首，后面加逗号**
 
 > ❌ *I prefer tea. Whereas, my wife prefers coffee.*
+>
 > ✅ *I prefer tea, **whereas** my wife prefers coffee.*
+>
 > ✅ *I prefer tea. My wife, **on the other hand**, prefers coffee.*
 
 `whereas` 是连词，不是 `however` 那样的连接副词。它必须引导一个依附于主句的从句；单独起一个句子会变成残缺句（sentence fragment）。想另起一句，就换成 `on the other hand` 或 `in contrast`。
@@ -98,6 +105,7 @@ draft: false
 但 `while` 还能表示“当……的时候”和让步（“尽管”），有时会产生歧义：
 
 > *While I was cooking, he did the dishes.*（时间：我做饭的时候，他在洗碗）
+>
 > *While I admire her talent, I can't stand her attitude.*（让步：尽管我欣赏她的才华……）
 
 **写作中如果需要毫无歧义的对比，`whereas` 更清晰**；口语或轻松的文风里，`while` 更自然。
@@ -121,12 +129,15 @@ draft: false
 ### ✅ 地道用法
 
 > *The movie is way too long. **That said**, the last half hour is absolutely worth the wait.*
+>
 > 这部电影实在太长了。话虽如此，最后半小时绝对值得等。
 
 > *I'm not a fan of open-plan offices. **Having said that**, I do like being able to grab a colleague for a quick chat.*
+>
 > 我不太喜欢开放式办公室。话说回来，能随时拉同事聊两句确实挺方便。
 
 > *AI can draft a decent essay in seconds. **That being said**, it still can't tell you what you actually think.*
+>
 > AI 几秒钟就能写出一篇像样的文章。话虽这么说，它依然没法告诉你自己真正怎么想。
 
 在议论文里，`that said` 很适合用来**先承认反方，再拉回己方**，或者**先下结论，再补上限定条件**，体现思辨的分寸感。
@@ -136,7 +147,9 @@ draft: false
 **错误 1：当连词用，造成逗号粘连（comma splice）**
 
 > ❌ *The hotel was expensive, that said it was spotless.*
+>
 > ✅ *The hotel was expensive. **That said**, it was spotless.*
+>
 > ✅ *The hotel was expensive; **that said**, it was spotless.*
 
 `that said` 不能像 `but` 那样直接连接两个独立分句。前面要用句号或分号断开，后面通常加逗号。
@@ -144,6 +157,7 @@ draft: false
 **错误 2：用来比较两个不同的人或事物**
 
 > ❌ *Tom loves jazz. That said, Mary loves heavy metal.*
+>
 > ✅ *Tom loves jazz, **whereas** Mary loves heavy metal.*
 
 Tom 喜欢爵士和 Mary 喜欢重金属是两个平行事实，没有“先表态再保留”的意味，这是 `whereas` 的地盘。`that said` 的前后两句应当围绕**同一个话题**，体现说话人对这个话题的两面看法。
@@ -151,6 +165,7 @@ Tom 喜欢爵士和 Mary 喜欢重金属是两个平行事实，没有“先表�
 **错误 3：用来彻底推翻前一句**
 
 > ❌ *Many people believe goldfish have a three-second memory. That said, studies show they can remember things for months.*
+>
 > ✅ *Many people believe goldfish have a three-second memory. **In fact**, studies show they can remember things for months.*
 
 “话虽如此”的前提是**前一句仍然成立**。这里后一句是在证明前一句是错的，属于否定纠正，应当用 `in fact` / `actually`。
@@ -181,10 +196,13 @@ Tom 喜欢爵士和 Mary 喜欢重金属是两个平行事实，没有“先表�
 ### 1. although / though / even though
 
 > ✅ ***Although** she had never cooked before, the dinner turned out great.*
+>
 > ✅ ***Even though** I knew the answer, I kept quiet.*（even though 语气更强，强调“明明……”）
+>
 > ✅ *The food was pricey. Delicious, **though**.*（though 放句末是口语用法，相当于“不过”）
 
 > ❌ *Although she was tired, **but** she kept working.*
+>
 > ✅ *Although she was tired, she kept working.* / *She was tired, but she kept working.*
 
 这是中国学生最常见的错误之一。中文说“虽然……但是……”，英语里 `although` 和 `but` **只能选一个**。
@@ -194,10 +212,13 @@ Tom 喜欢爵士和 Mary 喜欢重金属是两个平行事实，没有“先表�
 两者是介词，后面接名词或动名词，**不能直接接从句**：
 
 > ✅ ***Despite** the rain, the match went ahead.*
+>
 > ✅ ***Despite** being exhausted, he finished the marathon.*
+>
 > ✅ ***Despite the fact that** he was exhausted, he finished the marathon.*
 
 > ❌ *Despite **of** the rain…*（despite 后面没有 of）
+>
 > ❌ *Despite he was exhausted…*（不能直接接从句）
 
 ### 3. nevertheless / nonetheless / even so / still
@@ -205,7 +226,9 @@ Tom 喜欢爵士和 Mary 喜欢重金属是两个平行事实，没有“先表�
 这一组都是副词，意思是“尽管如此，仍然……”，强调**结果顶着前面的障碍依然成立**：
 
 > ✅ *The plan was risky. **Nevertheless**, the board approved it.*（正式）
+>
 > ✅ *It's an old car. **Still**, it gets me where I need to go.*（口语）
+>
 > ✅ *The odds were against them. **Even so**, they refused to give up.*
 
 > ❌ *Tom is tall. Nevertheless, his brother is short.*
@@ -217,6 +240,7 @@ Tom 喜欢爵士和 Mary 喜欢重金属是两个平行事实，没有“先表�
 `yet` 作连词时语气比 `but` 更强，带着**意外、讽刺或感慨**，文学性较强：
 
 > ✅ *He had everything money could buy, **yet** he was deeply unhappy.*
+>
 > ✅ *It's a simple idea, **and yet** no one had thought of it before.*
 
 ---
@@ -230,6 +254,7 @@ Tom 喜欢爵士和 Mary 喜欢重金属是两个平行事实，没有“先表�
 `on the contrary` 用来**否定刚才的说法（或预设），并给出相反的事实**，前一句通常本身就带有否定：
 
 > ✅ *"Was the lecture boring?" "Not at all. **On the contrary**, it was fascinating."*
+>
 > ✅ *The new policy didn't reduce traffic. **On the contrary**, congestion got worse.*
 
 ### on the other hand：同一件事的另一面
@@ -237,6 +262,7 @@ Tom 喜欢爵士和 Mary 喜欢重金属是两个平行事实，没有“先表�
 `on the other hand` 用来**权衡同一问题的另一个方面**，前后两句都成立：
 
 > ✅ *Living in the city is convenient. **On the other hand**, it's expensive and noisy.*
+>
 > ✅ ***On the one hand**, I'd love the promotion. **On the other hand**, I'd have to move abroad.*
 
 ### ❌ 典型混用
@@ -266,7 +292,9 @@ Tom 喜欢爵士和 Mary 喜欢重金属是两个平行事实，没有“先表�
 `however` 是连接副词，不是连词。最常见的错误同样是逗号粘连：
 
 > ❌ *It was late, however we kept working.*
+>
 > ✅ *It was late. **However**, we kept working.*
+>
 > ✅ *It was late; **however**, we kept working.*
 
 `however` 的另一个优点是**位置灵活**，放在句中时可以突出对比的焦点：
