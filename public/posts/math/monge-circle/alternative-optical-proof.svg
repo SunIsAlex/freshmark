@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 650" role="img" aria-labelledby="title desc">
+  <title id="title">蒙日圆光学证明的精确解析构图</title>
+  <desc id="desc">取椭圆x平方除以25加y平方除以16等于1，以及两条垂直切线y等于正负x加根号41。图中全部切点、焦点、反射点和矩形顶点均由解析式精确确定。</desc>
+  <defs>
+    <style>
+      .paper{fill:#fff}.ink{stroke:#172126}.ink-fill{fill:#172126}.muted{stroke:#96a1a6}.muted-fill{fill:#667278}
+      .ellipse{fill:#2d8cff;fill-opacity:.1;stroke:#1677b8}.construction{stroke:#7b8790}.rectangle{stroke:#ff5a36}.rectangle-fill{fill:#ff5a36}.focus{fill:#7165d6}
+      text{font-family:Inter,"Noto Sans SC","Microsoft YaHei",sans-serif;fill:#172126}
+      .math{font-family:"Times New Roman","STIX Two Math",serif;font-style:italic}
+      .geometry path,.geometry line,.geometry ellipse{vector-effect:non-scaling-stroke}
+      @media (prefers-color-scheme:dark){.paper{fill:#11181c}.ink{stroke:#e8edef}.ink-fill{fill:#e8edef}.muted{stroke:#65747a}.muted-fill{fill:#aeb9bd}.ellipse{fill:#58b8ff;fill-opacity:.14;stroke:#65c0ff}.construction{stroke:#84939a}.rectangle{stroke:#ff795e}.rectangle-fill{fill:#ff795e}.focus{fill:#a79cff}text{fill:#e8edef}}
+    </style>
+  </defs>
+
+  <rect class="paper" width="900" height="650" rx="26"/>
+
+  <!--
+    Exact analytic model (r = sqrt(41)):
+      ellipse: x^2/25 + y^2/16 = 1
+      tangents: y = x + r, y = -x + r
+      P=(0,r), A=(-25/r,16/r), B=(25/r,16/r)
+      F1=(-3,0), F2=(3,0)
+      M=(-r,r-3), N=(r,r-3)
+      Q=(-(r+3)/2,(r-3)/2), S=((r+3)/2,(r-3)/2), R=(0,-3)
+    Geometry is drawn in mathematical coordinates and mapped by
+    translate(450 380) scale(50 -50).
+  -->
+  <g class="geometry" transform="translate(450 380) scale(50 -50)">
+    <!-- ellipse and major axis -->
+    <ellipse cx="0" cy="0" rx="5" ry="4" class="ellipse" stroke-width="3"/>
+    <line x1="-5" y1="0" x2="5" y2="0" class="muted" stroke-width="1.4" stroke-dasharray="5 7"/>
+
+    <!-- exact perpendicular tangents -->
+    <g fill="none" class="ink" stroke-width="2.6" stroke-linecap="round">
+      <path d="M-7 -.596875763L0 6.403124237"/>
+      <path d="M0 6.403124237L7 -.596875763"/>
+    </g>
+
+    <!-- optical paths: F2-A-M and F1-B-N -->
+    <g fill="none" class="ink" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 0L-3.904344047 2.498780190L-6.403124237 3.403124237"/>
+      <path d="M-3 0L3.904344047 2.498780190L6.403124237 3.403124237"/>
+    </g>
+
+    <!-- reflection lines F1-M and F2-N, extended to R -->
+    <g fill="none" class="construction" stroke-width="1.8" stroke-dasharray="7 7" stroke-linecap="round">
+      <path d="M-6.403124237 3.403124237L0 -3"/>
+      <path d="M6.403124237 3.403124237L0 -3"/>
+    </g>
+
+    <!-- exact auxiliary rectangle PQRS -->
+    <path d="M0 6.403124237L-4.701562119 1.701562119L0 -3L4.701562119 1.701562119Z"
+      fill="#ff5a36" fill-opacity=".055" class="rectangle" stroke-width="4" stroke-linejoin="round"/>
+
+    <!-- distances used by the rectangle identity -->
+    <g fill="none" class="rectangle" stroke-width="1.65" stroke-dasharray="5 6" opacity=".82">
+      <path d="M0 0L0 6.403124237"/>
+      <path d="M0 0L-4.701562119 1.701562119"/>
+      <path d="M0 0L0 -3"/>
+      <path d="M0 0L4.701562119 1.701562119"/>
+    </g>
+
+    <!-- exact right-angle marks, aligned with the square sides -->
+    <g fill="none" class="rectangle" stroke-width="2">
+      <path d="M-.24 6.163124237L0 5.923124237L.24 6.163124237"/>
+      <path d="M-.24 -2.76L0 -2.52L.24 -2.76"/>
+    </g>
+  </g>
+
+  <!-- points in screen coordinates, computed from the analytic model -->
+  <g>
+    <g class="rectangle-fill">
+      <circle cx="450" cy="59.843788" r="5.5"/>
+      <circle cx="214.921894" cy="294.921894" r="4.9"/>
+      <circle cx="450" cy="530" r="4.9"/>
+      <circle cx="685.078106" cy="294.921894" r="4.9"/>
+    </g>
+    <g class="ink-fill">
+      <circle cx="254.782798" cy="255.060990" r="4.7"/>
+      <circle cx="645.217202" cy="255.060990" r="4.7"/>
+      <circle cx="450" cy="380" r="4.7"/>
+    </g>
+    <g class="focus">
+      <circle cx="300" cy="380" r="5.2"/>
+      <circle cx="600" cy="380" r="5.2"/>
+    </g>
+    <g fill="none" class="rectangle" stroke-width="2.5">
+      <circle cx="129.843788" cy="209.843788" r="6.2"/>
+      <circle cx="770.156212" cy="209.843788" r="6.2"/>
+    </g>
+  </g>
+
+  <!-- labels -->
+  <g font-size="19" class="math">
+    <text x="462" y="58" class="rectangle-fill" font-weight="650">P</text>
+    <text x="192" y="289" class="rectangle-fill" font-weight="650">Q</text>
+    <text x="458" y="552" class="rectangle-fill" font-weight="650">R</text>
+    <text x="697" y="289" class="rectangle-fill" font-weight="650">S</text>
+    <text x="235" y="249">A</text>
+    <text x="654" y="249">B</text>
+    <text x="437" y="403">O</text>
+    <text x="274" y="404" class="focus">F<tspan baseline-shift="sub" font-size="13">1</tspan></text>
+    <text x="606" y="404" class="focus">F<tspan baseline-shift="sub" font-size="13">2</tspan></text>
+    <text x="102" y="213" class="rectangle-fill">M</text>
+    <text x="781" y="213" class="rectangle-fill">N</text>
+  </g>
+
+  <!-- exact length annotations -->
+  <g font-size="16" class="math">
+    <g transform="translate(330 324) rotate(20)">
+      <rect x="-28" y="-16" width="56" height="24" rx="12" class="paper" opacity=".94"/>
+      <text x="0" y="2" text-anchor="middle" class="rectangle-fill">a = 5</text>
+    </g>
+    <g transform="translate(570 324) rotate(-20)">
+      <rect x="-28" y="-16" width="56" height="24" rx="12" class="paper" opacity=".94"/>
+      <text x="0" y="2" text-anchor="middle" class="rectangle-fill">a = 5</text>
+    </g>
+    <text x="461" y="463" class="rectangle-fill">c = 3</text>
+  </g>
+
+  <!-- compact analytic caption -->
+  <g transform="translate(450 600)" text-anchor="middle">
+    <rect x="-260" y="-23" width="520" height="42" rx="21" fill="#2d8cff" fill-opacity=".07" class="muted" stroke-width="1"/>
+    <text x="0" y="5" font-size="18" class="math">x²/25 + y²/16 = 1　　y = ±x + √41</text>
+  </g>
+</svg>

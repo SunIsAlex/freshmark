@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 440" width="880" height="440" role="img" aria-labelledby="title desc">
+  <title id="title">电源恒压充电的 u–q 图像与能量分配</title>
+  <desc id="desc">左侧为电源电动势 ℰ 通过电阻对电容 C 充电的电路；右侧为 u-q 图像，展示电容电场能为下三角形面积 ½Qℰ，而电源总功为矩形面积 Qℰ，另一半能量转化为焦耳热或电磁辐射。</desc>
+  <style>
+    .card { fill: #ffffff; stroke: #cbd5e1; }
+    .panel { fill: #f8fafc; stroke: #e2e8f0; }
+    .summary-bg { fill: #f1f5f9; stroke: #cbd5e1; }
+    .wire { stroke: #334155; fill: none; }
+    .axis { stroke: #334155; fill: none; }
+    .dashed { stroke: #64748b; fill: none; }
+    .title { fill: #0f172a; font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif; font-size: 21px; font-weight: 700; }
+    .subtitle { fill: #475569; font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif; font-size: 13.5px; }
+    .panel-title { fill: #0f172a; font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif; font-size: 16px; font-weight: 700; }
+    .label { fill: #1e293b; font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif; font-size: 14px; font-weight: 600; }
+    .small { fill: #475569; font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif; font-size: 13px; }
+    .math { font-family: "Cambria Math", "Times New Roman", serif; font-style: italic; }
+    .tri-energy { fill: rgba(37, 99, 235, 0.16); }
+    .tri-loss { fill: rgba(234, 88, 12, 0.14); }
+    .strip { fill: rgba(37, 99, 235, 0.40); stroke: #2563eb; }
+    .line-uq { stroke: #2563eb; fill: none; }
+    .blue-txt { fill: #1d4ed8; }
+    .orange-txt { fill: #c2410c; }
+    .resistor { fill: #ffffff; stroke: #334155; }
+
+    @media (prefers-color-scheme: dark) {
+      .card { fill: #0f172a; stroke: #334155; }
+      .panel { fill: #1e293b; stroke: #334155; }
+      .summary-bg { fill: #1e293b; stroke: #334155; }
+      .wire { stroke: #cbd5e1; }
+      .axis { stroke: #cbd5e1; }
+      .dashed { stroke: #94a3b8; }
+      .title { fill: #f1f5f9; }
+      .subtitle { fill: #94a3b8; }
+      .panel-title { fill: #f8fafc; }
+      .label { fill: #e2e8f0; }
+      .small { fill: #cbd5e1; }
+      .tri-energy { fill: rgba(96, 165, 250, 0.20); }
+      .tri-loss { fill: rgba(251, 146, 60, 0.18); }
+      .strip { fill: rgba(96, 165, 250, 0.45); stroke: #60a5fa; }
+      .line-uq { stroke: #60a5fa; }
+      .blue-txt { fill: #93c5fd; }
+      .orange-txt { fill: #fdba74; }
+      .resistor { fill: #0f172a; stroke: #cbd5e1; }
+    }
+  </style>
+  <defs>
+    <marker id="axis-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M0 1 L9 5 L0 9 z" fill="#475569"/>
+    </marker>
+    <marker id="curr-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 1 L9 5 L0 9 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+
+  <!-- Outer card -->
+  <rect class="card" x="12" y="12" width="856" height="416" rx="16" stroke-width="1.5"/>
+  <text class="title" x="36" y="48">电源恒压充电的 <tspan class="math">u–q</tspan> 图像与能量分配</text>
+  <text class="subtitle" x="36" y="72">极板电压随电荷量线性上升（u = q/C），导致电场能始终只占电源非静电力做功的一半</text>
+
+  <!-- Left panel: Circuit -->
+  <rect class="panel" x="36" y="94" width="320" height="314" rx="12" stroke-width="1"/>
+  <text class="panel-title" x="56" y="124">充电回路模型</text>
+
+  <!-- Circuit wires -->
+  <path class="wire" d="M96 226 V158 H142 M176 158 H208 M262 158 H298 V224" stroke-width="2.2"/>
+  <path class="wire" d="M96 244 V312 H298 V244" stroke-width="2.2"/>
+
+  <!-- Battery -->
+  <line class="wire" x1="80" y1="226" x2="112" y2="226" stroke-width="2.2"/>
+  <line class="wire" x1="88" y1="244" x2="104" y2="244" stroke-width="4.2"/>
+  <text class="label" x="62" y="240" text-anchor="middle"><tspan class="math">ℰ</tspan></text>
+
+  <!-- Switch S -->
+  <circle class="wire" cx="142" cy="158" r="2.5" stroke-width="2"/>
+  <circle class="wire" cx="176" cy="158" r="2.5" stroke-width="2"/>
+  <line class="wire" x1="144" y1="157" x2="174" y2="145" stroke-width="2.2"/>
+  <text class="small" x="158" y="140" text-anchor="middle">S</text>
+
+  <!-- Resistor R -->
+  <rect class="resistor" x="208" y="148" width="54" height="20" rx="3" stroke-width="2"/>
+  <text class="small" x="235" y="140" text-anchor="middle"><tspan class="math">R</tspan>（含辐射耗散）</text>
+
+  <!-- Current arrow -->
+  <line x1="184" y1="174" x2="216" y2="174" stroke="#2563eb" stroke-width="2" marker-end="url(#curr-arr)"/>
+  <text class="small blue-txt math" x="200" y="191" text-anchor="middle">i(t)</text>
+
+  <!-- Capacitor C -->
+  <line class="wire" x1="274" y1="224" x2="322" y2="224" stroke-width="3"/>
+  <line class="wire" x1="274" y1="244" x2="322" y2="244" stroke-width="3"/>
+  <text class="label math" x="256" y="239" text-anchor="end">C</text>
+  <text class="small blue-txt math" x="330" y="220">+q</text>
+  <text class="small orange-txt math" x="330" y="255">−q</text>
+
+  <!-- Circuit summary box -->
+  <rect class="summary-bg" x="54" y="332" width="284" height="60" rx="8" stroke-width="1"/>
+  <text class="small" x="68" y="356">电源总功：<tspan class="label math">W</tspan><tspan class="label" font-size="11" dy="2">总</tspan><tspan class="label math" dy="-2"> = Qℰ = Cℰ²</tspan></text>
+  <text class="small" x="68" y="380">稳定条件：<tspan class="label math">U = ℰ,  Q = Cℰ</tspan></text>
+
+  <!-- Right panel: u-q graph -->
+  <rect class="panel" x="376" y="94" width="468" height="314" rx="12" stroke-width="1"/>
+  <text class="panel-title" x="396" y="124"><tspan class="math">u–q</tspan> 图像面积 = 能量转换</text>
+
+  <!-- Shaded regions -->
+  <polygon class="tri-loss" points="445,164 755,164 445,336"/>
+  <polygon class="tri-energy" points="445,336 755,164 755,336"/>
+
+  <!-- Micro-element strip dq -->
+  <rect class="strip" x="572" y="257" width="14" height="79" stroke-width="1.2"/>
+  <text class="small blue-txt math" x="579" y="354" text-anchor="middle">dq</text>
+  <text class="small blue-txt" x="579" y="246" text-anchor="middle"><tspan class="math">dW = u·dq</tspan></text>
+
+  <!-- Dashed rectangle completion -->
+  <polyline class="dashed" points="445,164 755,164 755,336" stroke-width="1.5" stroke-dasharray="5 5"/>
+
+  <!-- Diagonal line u = q/C -->
+  <line class="line-uq" x1="445" y1="336" x2="755" y2="164" stroke-width="3"/>
+
+  <!-- Axes -->
+  <line class="axis" x1="445" y1="336" x2="805" y2="336" stroke-width="2" marker-end="url(#axis-arr)"/>
+  <line class="axis" x1="445" y1="336" x2="445" y2="122" stroke-width="2" marker-end="url(#axis-arr)"/>
+
+  <!-- Axis ticks and labels -->
+  <text class="label math" x="430" y="348" text-anchor="middle">O</text>
+  <text class="label math" x="818" y="341">q</text>
+  <text class="label math" x="445" y="114" text-anchor="middle">u</text>
+  <text class="label math" x="434" y="169" text-anchor="end">ℰ</text>
+  <text class="label math" x="755" y="356" text-anchor="middle">Q = Cℰ</text>
+
+  <!-- Region annotations -->
+  <text class="label orange-txt" x="530" y="196" text-anchor="middle">耗散能量（焦耳热 / 辐射）</text>
+  <text class="label orange-txt math" x="530" y="217" text-anchor="middle">ΔE = ½ Qℰ = ½ Cℰ²</text>
+
+  <text class="label blue-txt" x="678" y="294" text-anchor="middle">电容电场能</text>
+  <text class="label blue-txt math" x="678" y="315" text-anchor="middle">W<tspan font-size="11" dy="2">E</tspan><tspan dy="-2"> = ½ Qℰ = ½ Cℰ²</tspan></text>
+
+  <!-- Bottom note inside right panel -->
+  <text class="small" x="396" y="388">矩形总面积 <tspan class="label math">Qℰ</tspan>（电源做功）= 下三角 <tspan class="blue-txt math">½Qℰ</tspan>（储能）+ 上三角 <tspan class="orange-txt math">½Qℰ</tspan>（损耗，与 R 大小无关）</text>
+</svg>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 220" width="420" height="220" font-family="'Times New Roman', serif" font-size="18">
+  <rect x="0" y="0" width="420" height="220" rx="8" fill="#fff"/>
+  <g stroke="#222" stroke-width="2" fill="none" stroke-linecap="round">
+    <!-- top wire -->
+    <path d="M40 40 H95 M105 40 H170 M220 40 H360"/>
+    <!-- left / bottom wire -->
+    <path d="M40 40 V180 H360"/>
+    <!-- right wire with R -->
+    <path d="M360 40 V85 M360 135 V180"/>
+    <!-- battery: long plate (+) / short plate (-) -->
+    <line x1="95" y1="24" x2="95" y2="56"/>
+    <line x1="105" y1="31" x2="105" y2="49" stroke-width="5"/>
+    <!-- R0 -->
+    <rect x="170" y="32" width="50" height="16"/>
+    <!-- R (rheostat) -->
+    <rect x="352" y="85" width="16" height="50"/>
+    <line x1="338" y1="148" x2="380" y2="76"/>
+  </g>
+  <polygon points="383,71 374,78 382,83" fill="#222"/>
+  <!-- dashed network box -->
+  <rect x="20" y="10" width="232" height="196" rx="6" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <!-- terminals -->
+  <circle cx="270" cy="40" r="4" fill="#fff" stroke="#222" stroke-width="2"/>
+  <circle cx="270" cy="180" r="4" fill="#fff" stroke="#222" stroke-width="2"/>
+  <g fill="#222">
+    <text x="264" y="30">A</text>
+    <text x="264" y="204">B</text>
+    <text x="78" y="78" font-style="italic">E</text><text x="91" y="78">,</text><text x="99" y="78" font-style="italic">r</text>
+    <text x="180" y="72" font-style="italic">R<tspan font-size="12" dy="4" font-style="normal">0</tspan></text>
+    <text x="386" y="118" font-style="italic">R</text>
+  </g>
+</svg>
